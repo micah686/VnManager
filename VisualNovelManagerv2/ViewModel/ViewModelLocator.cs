@@ -12,6 +12,7 @@
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Ioc;
 using Microsoft.Practices.ServiceLocation;
+using VisualNovelManagerv2.ViewModel.VisualNovels;
 
 namespace VisualNovelManagerv2.ViewModel
 {

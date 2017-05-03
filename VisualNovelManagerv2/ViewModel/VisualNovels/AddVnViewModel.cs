@@ -2,8 +2,9 @@
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
 using VisualNovelManagerv2.Design;
+using VisualNovelManagerv2.Design.VisualNovel;
 
-namespace VisualNovelManagerv2.ViewModel
+namespace VisualNovelManagerv2.ViewModel.VisualNovels
 {
     public class AddVnViewModel: ViewModelBase
     {

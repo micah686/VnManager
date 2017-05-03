@@ -4,9 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:license="clr-namespace:VisualNovelManagerv2.Pages.Links.About.LicenseText"
+             xmlns:mui="http://firstfloorsoftware.com/ModernUI"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="500">
-    <Grid>
+             d:DesignHeight="300" d:DesignWidth="500"
+             >
+    <!--<Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="Auto"/>
@@ -17,11 +19,11 @@
             <ListBox Name="NoteList" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" ItemsSource="{x:Static Fonts.SystemFontFamilies}" Margin="0,0,5,5"/>
         </Grid>
 
-        <!--#region Divider-->
+        --><!--#region Divider--><!--
         <StackPanel Grid.Column="1" Orientation="Horizontal" Width="3" Margin="5,0,5,0">
             <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
         </StackPanel>
-        <!--#endregion-->
+        --><!--#endregion--><!--
         
         <ScrollViewer Grid.Column="2" VerticalScrollBarVisibility="Auto" Margin="5">
            <Grid>
@@ -41,5 +43,17 @@
         </ScrollViewer>
         
 
+    </Grid>-->
+    <Grid>
+        <DataGrid Name="LicenseDataGrid" ItemsSource="{Binding}" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeRows="False" CanUserResizeColumns="False" CanUserReorderColumns="False"
+                  CanUserSortColumns="False" IsReadOnly="True">
+            <DataGrid.Columns>
+                <mui:DataGridTextColumn Header="Software"  Binding="{Binding Software}"/>
+                <mui:DataGridTextColumn Header="Info" Binding="{Binding Info}" />
+                <mui:DataGridTextColumn Header="Url" Binding="{Binding Url}"/>
+                <mui:DataGridTextColumn Header="License" Binding="{Binding License}" />
+
+            </DataGrid.Columns>
+        </DataGrid>
     </Grid>
 </UserControl>
