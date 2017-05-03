@@ -18,10 +18,10 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Column="0" Margin="0,5,0,0">Processing</TextBlock>
-                    <Image Grid.Column="1" MaxHeight="32" MaxWidth="32" Source="D:\Documents\Visual Studio 2017\Projects\Testing Projects\VisualNovelManagerv2\VisualNovelManagerv2\Resources\appbar.key.png"></Image>
+                    <Image Grid.Column="1" MaxHeight="32" MaxWidth="32" Source="D:\Documents\Visual Studio 2017\Projects\Testing Projects\Visual-Novel-Manager-v2\VisualNovelManagerv2\Resources\appbar.key.png"></Image>
                     <Grid Grid.Column="2" MaxHeight="32" MaxWidth="32">
                         <Image x:Name="SqlImg"
-                               Source="D:\Documents\Visual Studio 2017\Projects\Testing Projects\VisualNovelManagerv2\VisualNovelManagerv2\Resources\appbar.database.png" >
+                               Source="D:\Documents\Visual Studio 2017\Projects\Testing Projects\Visual-Novel-Manager-v2\VisualNovelManagerv2\Resources\appbar.database.png" >
                             <Image.Style>
                                 <Style>
                                     <Style.Triggers>

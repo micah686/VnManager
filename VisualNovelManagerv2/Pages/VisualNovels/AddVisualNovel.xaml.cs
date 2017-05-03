@@ -12,6 +12,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using GalaSoft.MvvmLight.Messaging;
+using Microsoft.Win32;
+using VisualNovelManagerv2.Design;
 
 namespace VisualNovelManagerv2.Pages.VisualNovels
 {
@@ -23,6 +26,30 @@ namespace VisualNovelManagerv2.Pages.VisualNovels
         public AddVisualNovel()
         {
             InitializeComponent();
+            Messenger.Default.Register<AddVnViewModelService>(this, OpenFilePickerDialog);
+        }
+
+        private void OpenFilePickerDialog(AddVnViewModelService _service)
+        {
+            OpenFileDialog dialog = new OpenFileDialog
+            {
+                FileName = "",
+                DefaultExt = ".exe",
+                Filter = "Applications (*.exe)|*.exe",
+                DereferenceLinks = true,
+                CheckFileExists = true,
+                CheckPathExists = true,
+                Title = "Browse for Visual Novel Application"
+            };
+            bool? result = dialog.ShowDialog();
+            if (result.HasValue && result.Value)
+            {
+                _service.PickedFileName = dialog.FileName;
+                if (_service.FilePicked != null)
+                {
+                    _service.FilePicked.Invoke();
+                }
+            }
         }
     }
 }

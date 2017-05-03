@@ -24,7 +24,7 @@
                     <ListBox Grid.Row="0"  Name="NoteList" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Visible" ItemsSource="{x:Static Fonts.SystemFontFamilies}" Margin="0,0,5,5"/>
                     <Grid Grid.Row="1" ShowGridLines="True" Margin="0,5,5,5">
                         <Image HorizontalAlignment="Left"   VerticalAlignment="Top" Stretch="Uniform" 
-                   Source="D:\Documents\Visual Studio 2017\Projects\Testing Projects\VisualNovelManagerv2\VisualNovelManagerv2\Resources\character.jpg"/>
+                   Source="D:\Documents\Visual Studio 2017\Projects\Testing Projects\Visual-Novel-Manager-v2\VisualNovelManagerv2\Resources\character.jpg"/>
                     </Grid>
                 </Grid>
             </Grid>

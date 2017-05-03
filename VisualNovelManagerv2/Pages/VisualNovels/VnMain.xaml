@@ -55,7 +55,7 @@
                             </Grid.ColumnDefinitions>
 
                             <Image Grid.Column="0" MaxWidth="48" MaxHeight="48" Margin="10,5,0,0" 
-                                        Source="D:\Documents\Visual Studio 2017\Projects\Testing Projects\VisualNovelManagerv2\VisualNovelManagerv2\Resources\icon.ico"/>
+                                        Source="D:\Documents\Visual Studio 2017\Projects\Testing Projects\Visual-Novel-Manager-v2\VisualNovelManagerv2\Resources\icon.ico"/>
                             <StackPanel Grid.Column="1">
                                 <Label Content="GameName" Margin="5,10,0,0" />
                                 <Label Content="Original Name" Margin="5,5,0,0"/>
@@ -99,7 +99,7 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Image VerticalAlignment="Top" Width="256" Height="326" Grid.Column="0" 
-                                        Source="D:\Documents\Visual Studio 2017\Projects\Testing Projects\VisualNovelManagerv2\VisualNovelManagerv2\Resources\17102.jpg"/>
+                                        Source="D:\Documents\Visual Studio 2017\Projects\Testing Projects\Visual-Novel-Manager-v2\VisualNovelManagerv2\Resources\17102.jpg"/>
 
                             <StackPanel Grid.Column="1" Margin="10,10,0,0">
                                 <Grid Margin="10,10,0,0">

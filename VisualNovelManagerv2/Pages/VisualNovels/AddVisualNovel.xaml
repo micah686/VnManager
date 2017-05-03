@@ -6,7 +6,8 @@
              xmlns:local="clr-namespace:VisualNovelManagerv2.Pages"
              xmlns:mui="http://firstfloorsoftware.com/ModernUI"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="500">
+             d:DesignHeight="300" d:DesignWidth="500"
+             DataContext="{Binding AddVn, Source={StaticResource Locator}}">
     <Grid Margin="{StaticResource RootMargin}">
         <Grid x:Name="AddVn" Margin="20,10,10,35">
             <ScrollViewer>
@@ -56,8 +57,8 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <Label Content="Path" Width="120" Target="{Binding ElementName=TextPath}"/>
-                        <TextBox x:Name="TextPath" Grid.Column="1" Width="150" Text="{Binding LastName, Mode=TwoWay, ValidatesOnDataErrors=True}" />
-                        <Button Content="Browse" Grid.Column="2" Margin="10,0,0,0"></Button>
+                        <TextBox x:Name="TextPath" Grid.Column="1" Width="150" Text="{Binding FileName, Mode=TwoWay}" />
+                        <Button Content="Browse" Command="{Binding GetFile}" Grid.Column="2" Margin="10,0,0,0"/>
                     </Grid>
 
                     <Grid Grid.Row="5" Margin="0,10,0,0">
@@ -69,44 +70,6 @@
                     </Grid>
 
                 </Grid>
-                <!--<StackPanel MinWidth="200">
-
-
-                            <StackPanel x:Name="Form" Orientation="Vertical">
-
-                                <StackPanel.Resources>
-                                    <Style TargetType="StackPanel">
-                                        <Setter Property="Orientation" Value="Horizontal" />
-                                        <Setter Property="Margin" Value="0,0,0,4" />
-                                    </Style>
-                                    <Style TargetType="Label" BasedOn="{StaticResource {x:Type Label}}">
-                                        <Setter Property="Width" Value="50" />
-                                        <Setter Property="VerticalAlignment" Value="Center" />
-                                    </Style>
-                                    <Style TargetType="CheckBox" BasedOn="{StaticResource {x:Type CheckBox}}">
-                                        <Setter Property="Padding" Value="0,3" />
-                                    </Style>
-                                    <Style TargetType="RadioButton" BasedOn="{StaticResource {x:Type RadioButton}}">
-                                        <Setter Property="Padding" Value="0,3" />
-                                    </Style>
-                                </StackPanel.Resources>
-
-                                
-
-                                <StackPanel>
-                                    <Label Content="Path" Target="{Binding ElementName=TextPath}"/>
-                                    <TextBox x:Name="TextPath" Width="150" Text="{Binding FirstName, Mode=TwoWay, ValidatesOnDataErrors=True}" />
-                                </StackPanel>
-
-                                <StackPanel>
-                                    <Label Content="Name"/>
-                                    <TextBox Width="100"></TextBox>
-                                </StackPanel>
-
-                                <Button Content="Submit" Margin="50,16,0,0" HorizontalAlignment="Left" />
-
-                            </StackPanel>
-                        </StackPanel>-->
             </ScrollViewer>
         </Grid>
         <local:BottomStatusBar/>
