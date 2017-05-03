@@ -3,7 +3,7 @@
 A complete rework of my old visual novel manager, found here:
 [https://github.com/micah686/Visual-Novel-Manager](https://github.com/micah686/Visual-Novel-Manager)
 
-This will be NON-FUNCTIONAL for a while, as I am slowly adding fucntionality to it. 
+This will be NON-FUNCTIONAL for a while, as I am slowly adding functionality to it. 
 I'll remove this notice when I actually have some features implemented.
 
 if you have feature suggestions, please put create an Issue or comment on this google doc:
