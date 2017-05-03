@@ -17,7 +17,11 @@
             </mui:LinkGroup.Links>
         </mui:LinkGroup>
         
-        <mui:LinkGroup DisplayName="Advanced"></mui:LinkGroup>
+        <mui:LinkGroup DisplayName="Advanced">
+            <mui:LinkGroup.Links>
+                <mui:Link DisplayName="TEST" Source="../Pages/Test.xaml"/>
+            </mui:LinkGroup.Links>
+        </mui:LinkGroup>
     </mui:ModernWindow.MenuLinkGroups>
     
     <mui:ModernWindow.TitleLinks>

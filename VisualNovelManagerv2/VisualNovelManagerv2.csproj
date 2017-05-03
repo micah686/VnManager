@@ -108,6 +108,12 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Pages\Links\About\FullText.xaml.cs">
+      <DependentUpon>FullText.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Links\About\LicenseText\MicrosoftProprietary.xaml.cs">
+      <DependentUpon>MicrosoftProprietary.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ViewModel\VisualNovels\AddVnViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Page Include="MainWindow.xaml">
@@ -123,11 +129,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Pages\Links\About\FullText.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Pages\Links\About\Info.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\Links\About\Licenses.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Links\About\LicenseText\MicrosoftProprietary.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
