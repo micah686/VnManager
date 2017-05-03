@@ -25,7 +25,7 @@
     </mui:ModernWindow.MenuLinkGroups>
     
     <mui:ModernWindow.TitleLinks>
-        <mui:Link DisplayName="settings" Source="Pages/Links/LinksPage.xaml" />
+        <mui:Link DisplayName="settings" Source="Pages/Links/Settings/LinksPage.xaml" />
         <mui:Link DisplayName="about" Source="Pages/Links/About/About.xaml"/>
     </mui:ModernWindow.TitleLinks>
 </mui:ModernWindow>

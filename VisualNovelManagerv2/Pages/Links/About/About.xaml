@@ -4,15 +4,20 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+             xmlns:local="clr-namespace:VisualNovelManagerv2.Pages"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <Grid Style="{StaticResource ContentRoot}">
-        <mui:ModernTab Layout="Tab" SelectedSource="../../../Pages/Links/About/Info.xaml">
-            <mui:ModernTab.Links>
-                <mui:Link DisplayName="About" Source="../../../Pages/Links/About/Info.xaml"/>
-                <mui:Link DisplayName="Licenses" Source="../../../Pages/Links/About/Licenses.xaml"/>
-                <mui:Link DisplayName="FullText" Source="../../../Pages/Links/About/FullText.xaml"/>
-            </mui:ModernTab.Links>
-        </mui:ModernTab>
+    <Grid Margin="{StaticResource RootMargin}">
+        <Grid Style="{StaticResource ContentRoot}" Margin="20,20,20,35">
+            <mui:ModernTab Layout="Tab" SelectedSource="../../../Pages/Links/About/Info.xaml">
+                <mui:ModernTab.Links>
+                    <mui:Link DisplayName="About" Source="../../../Pages/Links/About/Info.xaml"/>
+                    <mui:Link DisplayName="Licenses" Source="../../../Pages/Links/About/Licenses.xaml"/>
+                    <mui:Link DisplayName="FullText" Source="../../../Pages/Links/About/FullText.xaml"/>
+                </mui:ModernTab.Links>
+            </mui:ModernTab>
+        </Grid>
+        
+        <local:BottomStatusBar></local:BottomStatusBar>
     </Grid>
 </UserControl>

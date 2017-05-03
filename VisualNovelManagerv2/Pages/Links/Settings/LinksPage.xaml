@@ -1,21 +1,20 @@
-﻿<UserControl x:Class="VisualNovelManagerv2.Pages.Links.About.FullText"
+﻿<UserControl x:Class="VisualNovelManagerv2.Pages.Links.LinksPage"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:VisualNovelManagerv2.Pages.Links.About"
              xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+             xmlns:local="clr-namespace:VisualNovelManagerv2.Pages"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <Grid>
-        <Grid>
-            <mui:ModernTab  Layout="List">
+    <Grid Margin="{StaticResource RootMargin}">
+        <Grid Style="{StaticResource ContentRoot}" Margin="10,10,10,35">
+            <mui:ModernTab Layout="List" SelectedSource="../../../Pages/Links/Settings/Appearance.xaml">
                 <mui:ModernTab.Links>
-                    <mui:Link DisplayName="MIT" Source="../../../Pages/Links/About/LicenseText/MIT.xaml"/>
-                    <mui:Link DisplayName="MS-PL" Source="../../../Pages/Links/About/LicenseText/MS-PL.xaml"/>
-                    <mui:Link DisplayName="Microsoft Proprietary" Source="../../../Pages/Links/About/LicenseText/MicrosoftProprietary.xaml"/>
+                    <mui:Link DisplayName="Appearance" Source="../../../Pages/Links/Settings/Appearance.xaml"/>
                 </mui:ModernTab.Links>
             </mui:ModernTab>
         </Grid>
+        <local:BottomStatusBar/>
     </Grid>
 </UserControl>
