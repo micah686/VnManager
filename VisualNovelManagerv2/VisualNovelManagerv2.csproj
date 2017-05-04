@@ -95,6 +95,9 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
+    <Reference Include="VndbSharp">
+      <HintPath>..\..\VndbSharp-master\VndbSharp\bin\Debug\netstandard1.3\VndbSharp.dll</HintPath>
+    </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />

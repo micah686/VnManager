@@ -10,6 +10,8 @@ using MvvmValidation;
 using VisualNovelManagerv2.Design;
 using VisualNovelManagerv2.Design.VisualNovel;
 using VisualNovelManagerv2.Infrastructure;
+using VndbSharp;
+
 // ReSharper disable ExplicitCallerInfoArgument
 
 namespace VisualNovelManagerv2.ViewModel.VisualNovels
@@ -93,7 +95,9 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             Validator.AddRequiredRule(()=> VnId, "Vndb ID is required");
             Validator.AddRule(nameof(VnId),
                 () => RuleResult.Assert(VnId >= 1, "Vndb ID must be at leat 1"));
-            Validator.AddRequiredRule(() => FileName, "Path to application is required");
+	        Validator.AddRule(nameof(VnId),
+		        () => RuleResult.Assert(VnId <= GetDatabaseVnCount().Result, "Not a Valid Vndb ID"));
+			Validator.AddRequiredRule(() => FileName, "Path to application is required");
             Validator.AddRule(nameof(FileName),
                 () =>
                 {
@@ -102,6 +106,16 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                     return RuleResult.Assert(filepath && ext.EndsWith(".exe"), "Not a valid file path");
                 });
         }
+
+        private async Task<uint> GetDatabaseVnCount()
+        {
+	        using (Vndb _client = new Vndb(true).WithClientDetails("VisualNovelManagerv2", "0.0.0"))
+	        {
+		        var stats = await _client.GetDatabaseStatsAsync();
+				_client.Logout();
+		        return stats.VisualNovels;
+	        }
+		}
 
         #region Validation Methods
         private async void Validate()
