@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -11,14 +12,14 @@ using VisualNovelManagerv2.Design;
 using VisualNovelManagerv2.Design.VisualNovel;
 using VisualNovelManagerv2.Infrastructure;
 using VndbSharp;
+using VndbSharp.Models;
 
 // ReSharper disable ExplicitCallerInfoArgument
 
 namespace VisualNovelManagerv2.ViewModel.VisualNovels
 {
     public class AddVnViewModel: ValidatableViewModelBase
-    {
-        
+    {        
         private readonly AddVnViewModelService _service;
         public RelayCommand GetFile { get; private set; }
         public ICommand ValidateCommand { get; private set; }
@@ -107,19 +108,41 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 });
         }
 
-        private async Task<uint> GetDatabaseVnCount()
+        private static async Task<uint> GetDatabaseVnCount()
         {
-	        using (Vndb _client = new Vndb(true).WithClientDetails("VisualNovelManagerv2", "0.0.0"))
+	        using (Vndb client = new Vndb(true).WithClientDetails("VisualNovelManagerv2", "0.0.0"))
 	        {
-		        var stats = await _client.GetDatabaseStatsAsync();
-				_client.Logout();
+		        DatabaseStats stats = await client.GetDatabaseStatsAsync();
+				client.Logout();
 		        return stats.VisualNovels;
 	        }
 		}
 
+        private void ValidateExe()
+        {
+            if (!File.Exists(FileName)) return;
+            var twoBytes = new byte[2];
+            using (FileStream fileStream = File.Open(FileName, FileMode.Open))
+            {
+                fileStream.Read(twoBytes, 0, 2);
+            }
+            switch (Encoding.UTF8.GetString(twoBytes))
+            {
+                case "MZ":
+                    break;
+                case "ZM":
+                    break;
+                default:
+                    Validator.AddRule(nameof(FileName),
+                        () => RuleResult.Invalid("This application is invalid"));
+                    break;
+            }
+        }
+
         #region Validation Methods
         private async void Validate()
         {
+            ValidateExe();
             await ValidateAsync();
         }
 
