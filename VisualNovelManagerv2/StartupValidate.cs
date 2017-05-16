@@ -12,26 +12,24 @@ namespace VisualNovelManagerv2
 {
     public class StartupValidate
     {
-        readonly string _directoryPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-
         public void CreateFolders()
         {
-            Directory.CreateDirectory(_directoryPath + @"\Data\config");
-            Directory.CreateDirectory(_directoryPath + @"\Data\Database");
-            Directory.CreateDirectory(_directoryPath + @"\Data\images\character");
-            Directory.CreateDirectory(_directoryPath + @"\Data\images\cover");
-            Directory.CreateDirectory(_directoryPath + @"\Data\images\screenshots");
-            Directory.CreateDirectory(_directoryPath + @"\Data\images\thumbs");
-            Directory.CreateDirectory(_directoryPath + @"\Data\images\vnlist");
-            Directory.CreateDirectory(_directoryPath + @"\Data\libs\");
-            Directory.CreateDirectory(_directoryPath + @"\Data\res\country_flags");
-            Directory.CreateDirectory(_directoryPath + @"\Data\res\icons");
+            Directory.CreateDirectory(Globals.directoryPath + @"\Data\config");
+            Directory.CreateDirectory(Globals.directoryPath + @"\Data\Database");
+            Directory.CreateDirectory(Globals.directoryPath + @"\Data\images\character");
+            Directory.CreateDirectory(Globals.directoryPath + @"\Data\images\cover");
+            Directory.CreateDirectory(Globals.directoryPath + @"\Data\images\screenshots");
+            Directory.CreateDirectory(Globals.directoryPath + @"\Data\images\thumbs");
+            Directory.CreateDirectory(Globals.directoryPath + @"\Data\images\vnlist");
+            Directory.CreateDirectory(Globals.directoryPath + @"\Data\libs\");
+            Directory.CreateDirectory(Globals.directoryPath + @"\Data\res\country_flags");
+            Directory.CreateDirectory(Globals.directoryPath + @"\Data\res\icons");
         }
 
         public void CheckForDatabase()
         {
             string dbPath =
-                Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\Data\Database\Database.db");
+                Path.Combine(Globals.directoryPath + @"\Data\Database\Database.db");
 
             if (!File.Exists(dbPath))
             {
@@ -47,14 +45,14 @@ namespace VisualNovelManagerv2
             }
         }
 
-        private static bool DbConnection()
+        static bool DbConnection()
         {
             //TODO:try to check for the tables as well
             try
             {
                 using (
                     SQLiteConnection conn =
-                        new SQLiteConnection(@"Data Source=|DataDirectory|\Database\Database.db;" + "Version=3;"))
+                        new SQLiteConnection(Globals.connectionString))
                 {
                     conn.Open();
                     return true;
@@ -72,17 +70,9 @@ namespace VisualNovelManagerv2
 
         void CreateDatabase()
         {
-
-            string connectionString = @"Data Source=|DataDirectory|\Data\Database\Database.db;" +
-                                      "Version=3;" + "Pooling=True;" + "Max Pool Size=5;" + "Page Size=4096;" +
-                                      "Cache Size=4000;"+ "PRAGMA foreign_keys = ON;";
-            //string connectionString = $"Data Source={Path.Combine(this._directoryPath, @"\Data\Database\Database.db")};" +
-            //                          "Version=3;" + "Pooling=True;" + "Max Pool Size=5;" + "Page Size=4096;" +
-            //                          "Cache Size=4000;";
-
-            using (SQLiteConnection conn = new SQLiteConnection(connectionString))
+            using (SQLiteConnection conn = new SQLiteConnection(Globals.connectionString))
             {
-                //SQLiteConnection.CreateFile(Path.Combine(this._directoryPath, @"\Data\Database\Database.db"));
+                
                 conn.Open();
 
                 using (SQLiteCommand query = conn.CreateCommand())
@@ -342,7 +332,6 @@ namespace VisualNovelManagerv2
                         CREATE TABLE VnUserData (
                             PK_Id integer NOT NULL,
                             VnId integer DEFAULT NULL,
-                            VnName text DEFAULT NULL,
                             ExePath text DEFAULT NULL,
                             IconPath text DEFAULT NULL,
                             LastPlayed text DEFAULT NULL,

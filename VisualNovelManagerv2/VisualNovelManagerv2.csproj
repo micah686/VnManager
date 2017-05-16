@@ -111,6 +111,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Globals.cs" />
     <Compile Include="Infrastructure\ValidatableViewModelBase.cs" />
     <Compile Include="Pages\Links\About\FullText.xaml.cs">
       <DependentUpon>FullText.xaml</DependentUpon>
