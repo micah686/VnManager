@@ -19,7 +19,7 @@ namespace VisualNovelManagerv2.Tests.ViewModelTests
             AddVnViewModel data = new AddVnViewModel();
             Random rnd = new Random();
             var test1 = Convert.ToUInt32(rnd.Next());
-            data.VnId = Convert.ToUInt32(test1);
+            //data.VnId = Convert.ToUInt32(test1);
             Assert.GreaterOrEqual(data.VnId, 0);
             Assert.IsNotNull(data.VnId);
         }

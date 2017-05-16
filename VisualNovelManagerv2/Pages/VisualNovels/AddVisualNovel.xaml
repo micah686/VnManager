@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:VisualNovelManagerv2.Pages"
+             xmlns:custom="clr-namespace:VisualNovelManagerv2.CustomClasses"
              xmlns:mui="http://firstfloorsoftware.com/ModernUI"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="500"
@@ -31,7 +32,8 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <Label Content="ChangeWithBinding" Width="120" />
-                        <TextBox x:Name="TextVnId" Grid.Column="1" Width="150" Text="{Binding VnId, Mode=TwoWay, ValidatesOnDataErrors=True}" />
+                        <TextBox x:Name="TextVnId" Grid.Column="1" Width="150" MaxLength="10"
+                              custom:TextBoxService.IsNumericOnly="True"  Text="{Binding VnId, Mode=TwoWay, ValidatesOnDataErrors=True}" />
                     </Grid>
 
                     <Grid Grid.Row="3" Margin="0,10,0,0">

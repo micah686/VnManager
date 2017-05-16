@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -8,6 +9,7 @@ using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
 using MvvmValidation;
+using VisualNovelManagerv2.CustomClasses.Database;
 using VisualNovelManagerv2.Design;
 using VisualNovelManagerv2.Design.VisualNovel;
 using VisualNovelManagerv2.Infrastructure;
@@ -72,8 +74,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             }
         }
 
-        private uint _vnId;
-        public uint VnId
+        private int? _vnId;
+        public int? VnId
         {
             get { return _vnId; }
             set
@@ -93,12 +95,14 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
         private void ConfigureValidationRules()
         {
-            Validator.AddRequiredRule(()=> VnId, "Vndb ID is required");
+            Validator.AddRequiredRule(() => VnId, "Vndb ID is required");
             Validator.AddRule(nameof(VnId),
-                () => RuleResult.Assert(VnId >= 1, "Vndb ID must be at leat 1"));
-	        Validator.AddRule(nameof(VnId),
-		        () => RuleResult.Assert(VnId <= GetDatabaseVnCount().Result, "Not a Valid Vndb ID"));
-			Validator.AddRequiredRule(() => FileName, "Path to application is required");
+                () => RuleResult.Assert(VnId >= 1, "Vndb ID must be at least 1"));
+            Validator.AddRule(nameof(VnId),
+                () => RuleResult.Assert(VnId <= GetDatabaseVnCount().Result, "Not a Valid Vndb ID"));
+
+
+            Validator.AddRequiredRule(() => FileName, "Path to application is required");
             Validator.AddRule(nameof(FileName),
                 () =>
                 {
@@ -122,7 +126,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         {
             if (!File.Exists(FileName)) return;
             var twoBytes = new byte[2];
-            using (FileStream fileStream = File.Open(FileName, FileMode.Open))
+            using (FileStream fileStream = File.Open(FileName, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 fileStream.Read(twoBytes, 0, 2);
             }
@@ -144,6 +148,12 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         {
             ValidateExe();
             await ValidateAsync();
+            if (IsValid == false)
+            {
+                AddToDatabase atd = new AddToDatabase();
+                atd.GetId(Convert.ToInt32(VnId));
+            }
+            
         }
 
         private async Task ValidateAsync()
