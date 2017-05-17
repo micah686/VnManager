@@ -336,7 +336,6 @@ namespace VisualNovelManagerv2
                             IconPath text DEFAULT NULL,
                             LastPlayed text DEFAULT NULL,
                             SecondsPlayed text DEFAULT NULL,
-                            Categories integer DEFAULT NULL,
                             PRIMARY KEY (PK_Id),
                             CONSTRAINT fkey0 FOREIGN KEY (PK_Id) REFERENCES VnUserDataCategories (PK_Id)
                         );
