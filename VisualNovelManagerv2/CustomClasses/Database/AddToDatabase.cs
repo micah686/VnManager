@@ -45,10 +45,10 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                 VndbResponse<VisualNovel> visualNovels = await client.GetVisualNovelAsync(VndbFilters.Id.Equals(_uvnid), VndbFlags.FullVisualNovel);
                 VndbResponse<Release> releases = await client.GetReleaseAsync(VndbFilters.VisualNovel.Equals(_vnid), VndbFlags.FullRelease);
                 //VndbResponse<Producer> producers = await client.GetProducerAsync(VndbFilters.Id.Equals(9), VndbFlags.FullProducer);
-                //VndbResponse<Character> characters = await client.GetCharacterAsync(VndbFilters.VisualNovel.Equals(_vnid), VndbFlags.FullCharacter);
+                VndbResponse<Character> characters = await client.GetCharacterAsync(VndbFilters.VisualNovel.Equals(_vnid), VndbFlags.FullCharacter);
                 //AddDataToDbVn(visualNovels);
                 //AddDataToDbUserData(visualNovels);
-                AddDataToDbReleases(visualNovels, releases);
+                AddDataToDbReleases(visualNovels, releases, characters);
                 //Console.WriteLine();
                 Thread.Sleep(0);
             }
@@ -174,7 +174,7 @@ namespace VisualNovelManagerv2.CustomClasses.Database
             }
         }
 
-        void AddDataToDbReleases(VndbResponse<VisualNovel> visualNovels, VndbResponse<Release> releases)
+        void AddDataToDbReleases(VndbResponse<VisualNovel> visualNovels, VndbResponse<Release> releases, VndbResponse<Character> characters)
         {
             lock (Globals.WriteLock)
             {
@@ -267,6 +267,68 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                             }
 
                             #endregion
+
+                            
+                            foreach (Character character in characters)
+                            {
+                                #region VnCharacter
+                                cmd.CommandText = "INSERT OR REPLACE INTO VnCharacter VALUES(@PK_Id, @VnId, @CharacterId, @Name, @Original, @Gender, @BloodType, @Birthday, @Aliases, @Description," +
+                                                  "@ImageLink, @Bust, @Waist, @Hip, @Height, @Weight)";
+                                cmd.Parameters.AddWithValue("@PK_Id", null);
+                                cmd.Parameters.AddWithValue("@VnId", CheckForDbNull(Convert.ToInt32(visualNovels.Items[0].Id)));
+                                cmd.Parameters.AddWithValue("@CharacterId", CheckForDbNull(character.Id));
+                                cmd.Parameters.AddWithValue("@Name", CheckForDbNull(character.Name));
+                                cmd.Parameters.AddWithValue("@Original", CheckForDbNull(character.OriginalName));
+                                cmd.Parameters.AddWithValue("@Gender", CheckForDbNull(character.Gender.ToString()));
+                                cmd.Parameters.AddWithValue("@BloodType", CheckForDbNull(character.BloodType.ToString()));
+                                cmd.Parameters.AddWithValue("@Birthday", CheckForDbNull(character.Birthday.ToString()));
+                                string charalias = string.Join(",", character.Aliases);
+                                cmd.Parameters.AddWithValue("@Aliases", CheckForDbNull(charalias));
+                                cmd.Parameters.AddWithValue("@Description", CheckForDbNull(character.Description));
+                                cmd.Parameters.AddWithValue("@ImageLink", CheckForDbNull(character.Image));
+                                cmd.Parameters.AddWithValue("@Bust", CheckForDbNull(Convert.ToInt32(character.Bust)));
+                                cmd.Parameters.AddWithValue("@Waist", CheckForDbNull(Convert.ToInt32(character.Waist)));
+                                cmd.Parameters.AddWithValue("@Hip", CheckForDbNull(Convert.ToInt32(character.Hip)));
+                                cmd.Parameters.AddWithValue("@Height", CheckForDbNull(Convert.ToInt32(character.Height)));
+                                cmd.Parameters.AddWithValue("@Weight", CheckForDbNull(Convert.ToInt32(character.Weight)));
+                                cmd.ExecuteNonQuery();
+                                #endregion
+
+                                #region VnCharacterTraits
+                                if (character.Traits.Count >0) continue;
+                                foreach (TraitMetadata trait in character.Traits)
+                                {
+                                    cmd.CommandText =
+                                        "INSERT OR REPLACE INTO VnCharacterTraits VALUES(@PK_Id, @CharacterId, @SpoilerLevel)";
+                                    cmd.Parameters.AddWithValue("@PK_Id", null);
+                                    cmd.Parameters.AddWithValue("@CharacterId", CheckForDbNull(trait.Id));
+                                    cmd.Parameters.AddWithValue("@SpoilerLevel", CheckForDbNull(trait.SpoilerLevel.ToString()));
+                                    cmd.ExecuteNonQuery();
+                                }
+
+                                #endregion
+
+                                #region VnCharacterVns
+                                if (character.VisualNovels.Count > 0) continue;
+                                foreach (VndbSharp.Models.Character.VisualNovelMetadata vn in character.VisualNovels)
+                                {
+                                    cmd.CommandText =
+                                        "INSERT OR REPLACE INTO VnCharacterVns VALUES(@PK_Id, @CharacterId, @VnId, @ReleaseId, @SpoilerLevel, @Role)";
+                                    cmd.Parameters.AddWithValue("@PK_Id", null);
+                                    cmd.Parameters.AddWithValue("@CharacterId", CheckForDbNull(character.Id));
+                                    cmd.Parameters.AddWithValue("@VnId", CheckForDbNull(vn.Id));
+                                    cmd.Parameters.AddWithValue("@ReleaseId", CheckForDbNull(vn.ReleaseId));
+                                    cmd.Parameters.AddWithValue("@SpoilerLevel", CheckForDbNull(vn.SpoilerLevel.ToString()));
+                                    cmd.Parameters.AddWithValue("@Role", CheckForDbNull(vn.Role.ToString()));
+                                    cmd.ExecuteNonQuery();
+                                }
+
+
+                                #endregion
+                            }
+
+                            
+
 
 
                         }
