@@ -78,14 +78,46 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                                 cmd.Parameters.AddWithValue("@Title", CheckForDbNull(visualNovel.Name));
                                 cmd.Parameters.AddWithValue("@Original", CheckForDbNull(visualNovel.OriginalName));
                                 cmd.Parameters.AddWithValue("@Released", CheckForDbNull(visualNovel.Released?.ToString() ?? null));
-                                string vnlang = string.Join(",", visualNovel.Languages);
-                                cmd.Parameters.AddWithValue("@Languages", CheckForDbNull(vnlang));
-                                string origvnlang = string.Join(",", visualNovel.OriginalLanguages);
-                                cmd.Parameters.AddWithValue("@OriginalLanguage", CheckForDbNull(origvnlang));
-                                string vnplat = string.Join(",", visualNovel.Platforms);
-                                cmd.Parameters.AddWithValue("@Platforms", CheckForDbNull(vnplat));
-                                string vnalias = string.Join(",", visualNovel.Aliases);
-                                cmd.Parameters.AddWithValue("@Aliases", CheckForDbNull(vnalias));
+                                //TODO: possibly find a way to make this cleaner, maybe LINQ?
+                                if (visualNovel.Languages != null)
+                                {
+                                    string vnlang = string.Join(",", visualNovel.Languages);
+                                    cmd.Parameters.AddWithValue("@Languages", CheckForDbNull(vnlang));
+                                }
+                                else
+                                {
+                                    cmd.Parameters.AddWithValue("@Languages", CheckForDbNull(visualNovel.Languages));
+                                }
+
+                                if (visualNovel.OriginalLanguages != null)
+                                {
+                                    string origvnlang = string.Join(",", visualNovel.OriginalLanguages);
+                                    cmd.Parameters.AddWithValue("@OriginalLanguage", CheckForDbNull(origvnlang));
+                                }
+                                else
+                                {
+                                    cmd.Parameters.AddWithValue("@OriginalLanguage", CheckForDbNull(visualNovel.OriginalLanguages));
+                                }
+
+                                if (visualNovel.Platforms != null)
+                                {
+                                    string vnplat = string.Join(",", visualNovel.Platforms);
+                                    cmd.Parameters.AddWithValue("@Platforms", CheckForDbNull(vnplat));
+                                }
+                                else
+                                {
+                                    cmd.Parameters.AddWithValue("@Platforms", CheckForDbNull(visualNovel.Platforms));
+                                }
+
+                                if (visualNovel.Aliases != null)
+                                {
+                                    string vnalias = string.Join(",", visualNovel.Aliases);
+                                    cmd.Parameters.AddWithValue("@Aliases", CheckForDbNull(vnalias));
+                                }
+                                else
+                                {
+                                    cmd.Parameters.AddWithValue("@Aliases", CheckForDbNull(visualNovel.Aliases));
+                                }                                                                
                                 cmd.Parameters.AddWithValue("@Length", CheckForDbNull(visualNovel.Length));
                                 cmd.Parameters.AddWithValue("@Description", CheckForDbNull(visualNovel.Description));
                                 cmd.Parameters.AddWithValue("@ImageLink", CheckForDbNull(visualNovel.Image));
@@ -97,14 +129,13 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                                 #endregion
 
                                 #region VnInfoLinks
-                                //TODO: This needs to be revisited when the API is fixed, currently it only shows as null
-                                //cmd.CommandText ="INSERT OR REPLACE INTO VnInfoLinks VALUES(@PK_Id, @VnId, @Wikipedia, @Encubed, @Renai)";
-                                //cmd.Parameters.AddWithValue("@PK_Id", null);
-                                //cmd.Parameters.AddWithValue("@VnId", Convert.ToInt32(visualNovel.Id));
-                                //cmd.Parameters.AddWithValue("@Wikipedia", visualNovel.VisualNovelLinks.Wikipedia);
-                                //cmd.Parameters.AddWithValue("@Encubed", CheckForDbNull(visualNovel.VisualNovelLinks.Encubed));
-                                //cmd.Parameters.AddWithValue("@Renai", CheckForDbNull(visualNovel.VisualNovelLinks.Renai));
-                                //cmd.ExecuteNonQuery();
+                                cmd.CommandText = "INSERT OR REPLACE INTO VnInfoLinks VALUES(@PK_Id, @VnId, @Wikipedia, @Encubed, @Renai)";
+                                cmd.Parameters.AddWithValue("@PK_Id", null);
+                                cmd.Parameters.AddWithValue("@VnId", Convert.ToInt32(visualNovel.Id));
+                                cmd.Parameters.AddWithValue("@Wikipedia", visualNovel.VisualNovelLinks.Wikipedia);
+                                cmd.Parameters.AddWithValue("@Encubed", CheckForDbNull(visualNovel.VisualNovelLinks.Encubed));
+                                cmd.Parameters.AddWithValue("@Renai", CheckForDbNull(visualNovel.VisualNovelLinks.Renai));
+                                cmd.ExecuteNonQuery();
 
                                 #endregion
 
@@ -166,15 +197,30 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                                 cmd.Parameters.AddWithValue("@Patch", CheckForDbNull(release.IsPatch.ToString()));
                                 cmd.Parameters.AddWithValue("@Freeware", CheckForDbNull(release.IsFreeware.ToString()));
                                 cmd.Parameters.AddWithValue("@Doujin", CheckForDbNull(release.IsDoujin.ToString()));
-                                string rellang = string.Join(",", release.Languages);
-                                cmd.Parameters.AddWithValue("@Languages", CheckForDbNull(rellang));
+                                if (release.Languages != null)
+                                {
+                                    string rellang = string.Join(",", release.Languages);
+                                    cmd.Parameters.AddWithValue("@Languages", CheckForDbNull(rellang));
+                                }
+                                else
+                                {
+                                    cmd.Parameters.AddWithValue("@Languages", CheckForDbNull(release.Languages));
+                                }
                                 cmd.Parameters.AddWithValue("@Website", CheckForDbNull(release.Website));
                                 cmd.Parameters.AddWithValue("@Notes", CheckForDbNull(release.Notes));
                                 cmd.Parameters.AddWithValue("@MinAge", CheckForDbNull(release.MinimumAge));
                                 cmd.Parameters.AddWithValue("@Gtin", CheckForDbNull(release.Gtin));
                                 cmd.Parameters.AddWithValue("@Catalog", CheckForDbNull(release.Catalog));
-                                string relplats = string.Join(",", release.Platforms);
-                                cmd.Parameters.AddWithValue("@Platforms", CheckForDbNull(relplats));
+                                if (release.Platforms != null)
+                                {
+                                    string relplats = string.Join(",", release.Platforms);
+                                    cmd.Parameters.AddWithValue("@Platforms", CheckForDbNull(relplats));
+                                }
+                                else
+                                {
+                                    cmd.Parameters.AddWithValue("@Platforms", CheckForDbNull(release.Platforms));
+                                }
+                               
                                 cmd.ExecuteNonQuery();
                                 #endregion
 
@@ -244,8 +290,15 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                                 cmd.Parameters.AddWithValue("@Gender", CheckForDbNull(character.Gender?.ToString() ?? null));
                                 cmd.Parameters.AddWithValue("@BloodType", CheckForDbNull(character.BloodType?.ToString() ?? null));
                                 cmd.Parameters.AddWithValue("@Birthday", CheckForDbNull(character.Birthday?.ToString() ?? null));
-                                string charalias = string.Join(",", character.Aliases);
-                                cmd.Parameters.AddWithValue("@Aliases", CheckForDbNull(charalias));
+                                if (character.Aliases != null)
+                                {
+                                    string charalias = string.Join(",", character.Aliases);
+                                    cmd.Parameters.AddWithValue("@Aliases", CheckForDbNull(charalias));
+                                }
+                                else
+                                {
+                                    cmd.Parameters.AddWithValue("@Aliases", CheckForDbNull(null));
+                                }                               
                                 cmd.Parameters.AddWithValue("@Description", CheckForDbNull(character.Description));
                                 cmd.Parameters.AddWithValue("@ImageLink", CheckForDbNull(character.Image));
                                 cmd.Parameters.AddWithValue("@Bust", CheckForDbNull(character.Bust));
