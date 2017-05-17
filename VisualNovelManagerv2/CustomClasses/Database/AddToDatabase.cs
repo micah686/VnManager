@@ -15,6 +15,7 @@ using VndbSharp.Models.Errors;
 using VndbSharp.Models.Producer;
 using VndbSharp.Models.Release;
 using VndbSharp.Models.VisualNovel;
+using VisualNovelMetadata = VndbSharp.Models.Release.VisualNovelMetadata;
 
 namespace VisualNovelManagerv2.CustomClasses.Database
 {
@@ -40,14 +41,16 @@ namespace VisualNovelManagerv2.CustomClasses.Database
 
             using (Vndb client = new Vndb(true).WithClientDetails(Globals.ClientInfo[0], Globals.ClientInfo[1]))
             {
-                stats = await client.GetDatabaseStatsAsync();
+                //stats = await client.GetDatabaseStatsAsync();
                 VndbResponse<VisualNovel> visualNovels = await client.GetVisualNovelAsync(VndbFilters.Id.Equals(_uvnid), VndbFlags.FullVisualNovel);
                 VndbResponse<Release> releases = await client.GetReleaseAsync(VndbFilters.VisualNovel.Equals(_vnid), VndbFlags.FullRelease);
-                VndbResponse<Producer> producers = await client.GetProducerAsync(VndbFilters.Id.Equals(9), VndbFlags.FullProducer);
-                VndbResponse<Character> characters = await client.GetCharacterAsync(VndbFilters.VisualNovel.Equals(_vnid), VndbFlags.FullCharacter);
-                AddDataToDbVn(visualNovels);
-                AddDataToDbUserData(visualNovels);
-                Console.WriteLine();
+                //VndbResponse<Producer> producers = await client.GetProducerAsync(VndbFilters.Id.Equals(9), VndbFlags.FullProducer);
+                //VndbResponse<Character> characters = await client.GetCharacterAsync(VndbFilters.VisualNovel.Equals(_vnid), VndbFlags.FullCharacter);
+                //AddDataToDbVn(visualNovels);
+                //AddDataToDbUserData(visualNovels);
+                AddDataToDbReleases(visualNovels, releases);
+                //Console.WriteLine();
+                Thread.Sleep(0);
             }
 
         }
@@ -86,7 +89,7 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                             query.Parameters.AddWithValue("@Popularity", visualNovels.Items[0].Popularity);
                             query.Parameters.AddWithValue("@Rating", visualNovels.Items[0].Rating);
 
-                            //query.ExecuteNonQuery();
+                            query.ExecuteNonQuery();
 
 
                             //VnInfoLinks
@@ -113,7 +116,7 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                                     query.Parameters.AddWithValue("@TitleJpn", CheckForDbNull(anime.KanjiTitle));
                                     query.Parameters.AddWithValue("@Year", CheckForDbNull(anime.AiringYear.ToString()));
                                     query.Parameters.AddWithValue("@AnimeType", CheckForDbNull(anime.Type));
-                                    //query.ExecuteNonQuery();
+                                    query.ExecuteNonQuery();
                                 }
                             }
 
@@ -129,7 +132,7 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                                 query.Parameters.AddWithValue("@TagName", CheckForDbNull(null));
                                 query.Parameters.AddWithValue("@Score", CheckForDbNull(tag.Score));
                                 query.Parameters.AddWithValue("@Spoiler", CheckForDbNull(tag.SpoilerLevel.ToString()));
-                                //query.ExecuteNonQuery();
+                                query.ExecuteNonQuery();
                                 
                             }
 
@@ -171,9 +174,120 @@ namespace VisualNovelManagerv2.CustomClasses.Database
             }
         }
 
-        void AddDataToDbReleases(VndbResponse<Release> releases)
+        void AddDataToDbReleases(VndbResponse<VisualNovel> visualNovels, VndbResponse<Release> releases)
         {
-            
+            lock (Globals.WriteLock)
+            {
+                using (SQLiteConnection connection = new SQLiteConnection(Globals.ConnectionString))
+                {
+                    connection.Open();
+                    using (SQLiteTransaction transaction = connection.BeginTransaction())
+                    {
+                        using (SQLiteCommand cmd = connection.CreateCommand())
+                        {
+                            cmd.Transaction = transaction;
+
+                            #region VnRelease
+                            foreach (Release release in releases)
+                            {
+                                #region VnRelease
+                                cmd.CommandText =
+                                    "INSERT OR REPLACE INTO VnRelease VALUES(@PK_Id, @VnId, @ReleaseId, @Title, @Original, @Released, @ReleaseType, @Patch, @Freeware, @Doujin, @Languages," +
+                                    "@Website, @Notes, @MinAge, @Gtin, @Catalog, @Platforms)";
+                                cmd.Parameters.AddWithValue("@PK_Id", null);
+                                cmd.Parameters.AddWithValue("@VnId", CheckForDbNull(Convert.ToInt32(visualNovels.Items[0].Id)));
+                                cmd.Parameters.AddWithValue("@ReleaseId", CheckForDbNull(release.Id));
+                                cmd.Parameters.AddWithValue("@Title", CheckForDbNull(release.Name));
+                                cmd.Parameters.AddWithValue("@Original", CheckForDbNull(release.OriginalName));
+                                cmd.Parameters.AddWithValue("@Released", CheckForDbNull(release.Released.ToString()));
+                                cmd.Parameters.AddWithValue("@ReleaseType", CheckForDbNull(release.Type.ToString()));
+                                cmd.Parameters.AddWithValue("@Patch", CheckForDbNull(release.IsPatch.ToString()));
+                                cmd.Parameters.AddWithValue("@Freeware", CheckForDbNull(release.IsFreeware.ToString()));
+                                cmd.Parameters.AddWithValue("@Doujin", CheckForDbNull(release.IsDoujin.ToString()));
+                                string rellang = string.Join(",", release.Languages);
+                                cmd.Parameters.AddWithValue("@Languages", CheckForDbNull(rellang));
+                                cmd.Parameters.AddWithValue("@Website", CheckForDbNull(release.Website));
+                                cmd.Parameters.AddWithValue("@Notes", CheckForDbNull(release.Notes));
+                                cmd.Parameters.AddWithValue("@MinAge", CheckForDbNull(release.MinimumAge));
+                                cmd.Parameters.AddWithValue("@Gtin", CheckForDbNull(release.Gtin));
+                                cmd.Parameters.AddWithValue("@Catalog", CheckForDbNull(release.Catalog));
+                                string relplats = string.Join(",", release.Platforms);
+                                cmd.Parameters.AddWithValue("@Platforms", CheckForDbNull(relplats));
+                                cmd.ExecuteNonQuery();
+                                #endregion
+
+                                #region VnReleaseMedia
+                                if (release.Media.Count <= 0) continue;
+                                foreach (Media media in release.Media)
+                                {
+                                    cmd.CommandText =
+                                        "INSERT OR REPLACE INTO VnReleaseMedia VALUES(@PK_Id, @ReleaseId, @Medium, @Quantity)";
+                                    cmd.Parameters.AddWithValue("@PK_Id", null);
+                                    cmd.Parameters.AddWithValue("@ReleaseId", CheckForDbNull(release.Id));
+                                    cmd.Parameters.AddWithValue("@Medium", CheckForDbNull(media.Medium));
+                                    cmd.Parameters.AddWithValue("@Quantity", CheckForDbNull(media.Quantity));
+                                    cmd.ExecuteNonQuery();
+                                }
+                                #endregion
+
+                                #region VnReleaseVn
+                                if (release.VisualNovels.Count <= 0) continue;
+                                foreach (VisualNovelMetadata vn in release.VisualNovels)
+                                {
+                                    cmd.CommandText =
+                                        "INSERT OR REPLACE INTO VnReleaseVn VALUES(@PK_Id, @ReleaseId, @VnId, @Name, @Original)";
+                                    cmd.Parameters.AddWithValue("@PK_Id", null);
+                                    cmd.Parameters.AddWithValue("@ReleaseId", CheckForDbNull(release.Id));
+                                    cmd.Parameters.AddWithValue("@VnId", CheckForDbNull(Convert.ToInt32(vn.Id)));
+                                    cmd.Parameters.AddWithValue("@Name", CheckForDbNull(vn.Name));
+                                    cmd.Parameters.AddWithValue("@Original", CheckForDbNull(vn.OriginalName));
+                                    cmd.ExecuteNonQuery();
+                                }
+
+
+                                #endregion
+
+                                #region VnReleaseProducers
+                                if (release.Producers.Count <= 0) continue;
+                                foreach (ProducerRelease producer in release.Producers)
+                                {
+                                    cmd.CommandText = "INSERT OR REPLACE INTO VnReleaseProducers VALUES(@PK_Id, @ReleaseId, @ProducerId, @Developer, @Publisher, @Name, @Original, @ProducerType)";
+                                    cmd.Parameters.AddWithValue("@PK_Id", null);
+                                    cmd.Parameters.AddWithValue("@ReleaseId", CheckForDbNull(release.Id));
+                                    cmd.Parameters.AddWithValue("@ProducerId", CheckForDbNull(producer.Id));
+                                    cmd.Parameters.AddWithValue("@Developer", CheckForDbNull(producer.IsDeveloper.ToString()));
+                                    cmd.Parameters.AddWithValue("@Publisher", CheckForDbNull(producer.IsPublisher.ToString()));
+                                    cmd.Parameters.AddWithValue("@Name", CheckForDbNull(producer.Name));
+                                    cmd.Parameters.AddWithValue("@Original", CheckForDbNull(producer.OriginalName));
+                                    cmd.Parameters.AddWithValue("@ProducerType", CheckForDbNull(producer.ProducerType));
+                                    cmd.ExecuteNonQuery();
+                                }
+                                #endregion
+
+                            }
+
+                            #endregion
+
+
+                        }
+                        transaction.Commit();
+                    }
+                    connection.Close();
+                }
+
+
+                //using (SQLiteConnection connection = new SQLiteConnection(Globals.ConnectionString))
+                //{
+                //    connection.Open();
+                //    using (SQLiteTransaction transaction = connection.BeginTransaction())
+                //    {
+                //        using (SQLiteCommand cmd = connection.CreateCommand())
+                //        {
+
+                //        }
+                //    }
+                //}
+            }
         }
 
 

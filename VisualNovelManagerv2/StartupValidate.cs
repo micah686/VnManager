@@ -214,7 +214,7 @@ namespace VisualNovelManagerv2
 
                         CREATE TABLE VnReleaseProducers(
                             PK_Id integer NOT NULL,
-                            VnId integer DEFAULT NULL,
+                            ReleaseId integer DEFAULT NULL,
                             ProducerId integer DEFAULT NULL,
                             Developer text DEFAULT NULL,
                             Publisher text DEFAULT NULL,
