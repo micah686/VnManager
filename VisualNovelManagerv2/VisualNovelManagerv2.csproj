@@ -112,6 +112,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="CustomClasses\Database\AddToDatabase.cs" />
+    <Compile Include="CustomClasses\MeasureStringSize.cs" />
     <Compile Include="CustomClasses\TextBoxService.cs" />
     <Compile Include="Globals.cs" />
     <Compile Include="Infrastructure\ValidatableViewModelBase.cs" />

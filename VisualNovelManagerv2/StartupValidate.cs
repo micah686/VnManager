@@ -14,22 +14,22 @@ namespace VisualNovelManagerv2
     {
         public void CreateFolders()
         {
-            Directory.CreateDirectory(Globals.directoryPath + @"\Data\config");
-            Directory.CreateDirectory(Globals.directoryPath + @"\Data\Database");
-            Directory.CreateDirectory(Globals.directoryPath + @"\Data\images\character");
-            Directory.CreateDirectory(Globals.directoryPath + @"\Data\images\cover");
-            Directory.CreateDirectory(Globals.directoryPath + @"\Data\images\screenshots");
-            Directory.CreateDirectory(Globals.directoryPath + @"\Data\images\thumbs");
-            Directory.CreateDirectory(Globals.directoryPath + @"\Data\images\vnlist");
-            Directory.CreateDirectory(Globals.directoryPath + @"\Data\libs\");
-            Directory.CreateDirectory(Globals.directoryPath + @"\Data\res\country_flags");
-            Directory.CreateDirectory(Globals.directoryPath + @"\Data\res\icons");
+            Directory.CreateDirectory(Globals.DirectoryPath + @"\Data\config");
+            Directory.CreateDirectory(Globals.DirectoryPath + @"\Data\Database");
+            Directory.CreateDirectory(Globals.DirectoryPath + @"\Data\images\character");
+            Directory.CreateDirectory(Globals.DirectoryPath + @"\Data\images\cover");
+            Directory.CreateDirectory(Globals.DirectoryPath + @"\Data\images\screenshots");
+            Directory.CreateDirectory(Globals.DirectoryPath + @"\Data\images\thumbs");
+            Directory.CreateDirectory(Globals.DirectoryPath + @"\Data\images\vnlist");
+            Directory.CreateDirectory(Globals.DirectoryPath + @"\Data\libs\");
+            Directory.CreateDirectory(Globals.DirectoryPath + @"\Data\res\country_flags");
+            Directory.CreateDirectory(Globals.DirectoryPath + @"\Data\res\icons");
         }
 
         public void CheckForDatabase()
         {
             string dbPath =
-                Path.Combine(Globals.directoryPath + @"\Data\Database\Database.db");
+                Path.Combine(Globals.DirectoryPath + @"\Data\Database\Database.db");
 
             if (!File.Exists(dbPath))
             {
@@ -52,7 +52,7 @@ namespace VisualNovelManagerv2
             {
                 using (
                     SQLiteConnection conn =
-                        new SQLiteConnection(Globals.connectionString))
+                        new SQLiteConnection(Globals.ConnectionString))
                 {
                     conn.Open();
                     return true;
@@ -70,7 +70,7 @@ namespace VisualNovelManagerv2
 
         void CreateDatabase()
         {
-            using (SQLiteConnection conn = new SQLiteConnection(Globals.connectionString))
+            using (SQLiteConnection conn = new SQLiteConnection(Globals.ConnectionString))
             {
                 
                 conn.Open();
@@ -120,10 +120,10 @@ namespace VisualNovelManagerv2
                             AniDbId integer DEFAULT NULL,
                             AnnId integer DEFAULT NULL,
                             AniNfoId text DEFAULT NULL,
-                            Title_Eng text DEFAULT NULL,
-                            Title_Jpn text DEFAULT NULL,
+                            TitleEng text DEFAULT NULL,
+                            TitleJpn text DEFAULT NULL,
                             Year integer DEFAULT NULL,
-                            Anime_Type text DEFAULT NULL,
+                            AnimeType text DEFAULT NULL,
                             PRIMARY KEY (PK_Id) 
                         );
 

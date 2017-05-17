@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Documents;
 using VisualNovelManagerv2.ViewModel.VisualNovels;
@@ -37,7 +38,7 @@ namespace VisualNovelManagerv2.CustomClasses.Database
             List<object>[] data = new List<object>[5];
             
 
-            using (Vndb client = new Vndb(true).WithClientDetails("VNMv2", "0.1"))
+            using (Vndb client = new Vndb(true).WithClientDetails(Globals.ClientInfo[0], Globals.ClientInfo[1]))
             {
                 stats = await client.GetDatabaseStatsAsync();
                 VndbResponse<VisualNovel> visualNovels = await client.GetVisualNovelAsync(VndbFilters.Id.Equals(_uvnid), VndbFlags.FullVisualNovel);
@@ -53,50 +54,99 @@ namespace VisualNovelManagerv2.CustomClasses.Database
 
         void AddDataToDbVn(VndbResponse<VisualNovel> visualNovels)
         {
-            lock (Globals.writeLock)
+            lock (Globals.WriteLock)
             {
-                using (SQLiteConnection connection = new SQLiteConnection(Globals.connectionString))
+                using (SQLiteConnection connection = new SQLiteConnection(Globals.ConnectionString))
                 {
                     connection.Open();
-                    using (SQLiteCommand query = new SQLiteCommand(connection))
+                    using (SQLiteTransaction trans= connection.BeginTransaction())
                     {
-                        object[] querytmp = {query };
-                        query.CommandText =
-                            "INSERT OR REPLACE INTO VnInfo VALUES(@PK_Id, @VnId, @Title, @Original, @Released, @Languages, @OriginalLanguage, @Platforms, @Aliases, @Length," +
-                            " @Description, @ImageLink, @ImageNsfw, @Popularity, @Rating)";
-                        query.Parameters.AddWithValue("@PK_Id", null);
-                        query.Parameters.AddWithValue("@VnId", Convert.ToInt32(visualNovels.Items[0].Id));
-                        query.Parameters.AddWithValue("@Title", visualNovels.Items[0].Name);
-                        query.Parameters.AddWithValue("@Original", visualNovels.Items[0].OriginalName);
-                        query.Parameters.AddWithValue("@Released", visualNovels.Items[0].Released.ToString());
-                        string vnlang = string.Join(",", visualNovels.Items[0].Languages);
-                        query.Parameters.AddWithValue("@Languages", vnlang);
-                        string origvnlang = string.Join(",", visualNovels.Items[0].OriginalLanguages);
-                        query.Parameters.AddWithValue("@OriginalLanguage", origvnlang);
-                        string vnplat = string.Join(",", visualNovels.Items[0].Platforms);
-                        query.Parameters.AddWithValue("@Platforms", vnplat);
-                        string vnalias = string.Join(",", visualNovels.Items[0].Aliases);
-                        query.Parameters.AddWithValue("@Aliases", vnalias);
-                        query.Parameters.AddWithValue("@Length", visualNovels.Items[0].Length);
-                        query.Parameters.AddWithValue("@Description", visualNovels.Items[0].Description);
-                        query.Parameters.AddWithValue("@ImageLink", visualNovels.Items[0].Image);
-                        query.Parameters.AddWithValue("@ImageNsfw", visualNovels.Items[0].IsImageNsfw.ToString());
-                        query.Parameters.AddWithValue("@Popularity", visualNovels.Items[0].Popularity);
-                        query.Parameters.AddWithValue("@Rating", visualNovels.Items[0].Rating);
+                        using (SQLiteCommand query = new SQLiteCommand("", connection, trans))
+                        {
+                            query.CommandText =
+                                "INSERT OR REPLACE INTO VnInfo VALUES(@PK_Id, @VnId, @Title, @Original, @Released, @Languages, @OriginalLanguage, @Platforms, @Aliases, @Length," +
+                                " @Description, @ImageLink, @ImageNsfw, @Popularity, @Rating);";
+                            query.Parameters.AddWithValue("@PK_Id", null);
+                            query.Parameters.AddWithValue("@VnId", Convert.ToInt32(visualNovels.Items[0].Id));
+                            query.Parameters.AddWithValue("@Title", visualNovels.Items[0].Name);
+                            query.Parameters.AddWithValue("@Original", visualNovels.Items[0].OriginalName);
+                            query.Parameters.AddWithValue("@Released", visualNovels.Items[0].Released.ToString());
+                            string vnlang = string.Join(",", visualNovels.Items[0].Languages);
+                            query.Parameters.AddWithValue("@Languages", vnlang);
+                            string origvnlang = string.Join(",", visualNovels.Items[0].OriginalLanguages);
+                            query.Parameters.AddWithValue("@OriginalLanguage", origvnlang);
+                            string vnplat = string.Join(",", visualNovels.Items[0].Platforms);
+                            query.Parameters.AddWithValue("@Platforms", vnplat);
+                            string vnalias = string.Join(",", visualNovels.Items[0].Aliases);
+                            query.Parameters.AddWithValue("@Aliases", vnalias);
+                            query.Parameters.AddWithValue("@Length", visualNovels.Items[0].Length);
+                            query.Parameters.AddWithValue("@Description", visualNovels.Items[0].Description);
+                            query.Parameters.AddWithValue("@ImageLink", visualNovels.Items[0].Image);
+                            query.Parameters.AddWithValue("@ImageNsfw", visualNovels.Items[0].IsImageNsfw.ToString());
+                            query.Parameters.AddWithValue("@Popularity", visualNovels.Items[0].Popularity);
+                            query.Parameters.AddWithValue("@Rating", visualNovels.Items[0].Rating);
 
-                        
+                            //query.ExecuteNonQuery();
 
-                        query.ExecuteNonQuery();
+
+                            //VnInfoLinks
+                            //query.CommandText =
+                            //    "INSERT OR REPLACE INTO VnInfoLinks VALUES(@PK_Id, @VnId, @Wikipedia, @Encubed, @Renai)";
+                            //query.Parameters.AddWithValue("@PK_Id", null);
+                            //query.Parameters.AddWithValue("@VnId", Convert.ToInt32(visualNovels.Items[0].Id));
+                            //query.Parameters.AddWithValue("@", visualNovels.Items[0].VisualNovelLinks.Wikipedia);
+
+
+                            //VnAnime
+                            if (visualNovels.Items[0].Anime.Length >= 1)
+                            {
+                                foreach (AnimeMetadata anime in visualNovels.Items[0].Anime)
+                                {
+                                    query.CommandText =
+                                        "INSERT OR REPLACE INTO VnAnime VALUES(@PK_Id, @VnId, @AniDbId, @AnnId, @AniNfoId, @TitleEng, @TitleJpn, @Year, @AnimeType);";
+                                    query.Parameters.AddWithValue("@PK_Id", null);
+                                    query.Parameters.AddWithValue("@VnId", Convert.ToInt32(visualNovels.Items[0].Id));
+                                    query.Parameters.AddWithValue("@AniDbId", CheckForDbNull(anime.AniDbId));
+                                    query.Parameters.AddWithValue("@AnnId", CheckForDbNull(anime.AnimeNewsNetworkId));
+                                    query.Parameters.AddWithValue("@AniNfoId", CheckForDbNull(anime.AnimeNfoId));
+                                    query.Parameters.AddWithValue("@TitleEng", CheckForDbNull(anime.RomajiTitle));
+                                    query.Parameters.AddWithValue("@TitleJpn", CheckForDbNull(anime.KanjiTitle));
+                                    query.Parameters.AddWithValue("@Year", CheckForDbNull(anime.AiringYear.ToString()));
+                                    query.Parameters.AddWithValue("@AnimeType", CheckForDbNull(anime.Type));
+                                    //query.ExecuteNonQuery();
+                                }
+                            }
+
+
+                            //VnTags
+                            foreach (TagMetadata tag in visualNovels.Items[0].Tags)
+                            {
+                                query.CommandText =
+                                    "INSERT OR REPLACE INTO VnTags VALUES(@PK_Id, @VnId, @TagId, @TagName, @Score, @Spoiler);";
+                                query.Parameters.AddWithValue("@PK_Id", null);
+                                query.Parameters.AddWithValue("@VnId", Convert.ToInt32(visualNovels.Items[0].Id));
+                                query.Parameters.AddWithValue("@TagId", CheckForDbNull(tag.Id));
+                                query.Parameters.AddWithValue("@TagName", CheckForDbNull(null));
+                                query.Parameters.AddWithValue("@Score", CheckForDbNull(tag.Score));
+                                query.Parameters.AddWithValue("@Spoiler", CheckForDbNull(tag.SpoilerLevel.ToString()));
+                                //query.ExecuteNonQuery();
+                                
+                            }
+
+
+                        }
+                        trans.Commit();
                     }
+                    
                 }
             }
         }
 
         void AddDataToDbUserData(VndbResponse<VisualNovel> visualNovels)
         {
-            lock (Globals.writeLock)
+            lock (Globals.WriteLock)
             {
-                using (SQLiteConnection connection = new SQLiteConnection(Globals.connectionString))
+                using (SQLiteConnection connection = new SQLiteConnection(Globals.ConnectionString))
                 {
                     connection.Open();
                     using (SQLiteCommand query = new SQLiteCommand(connection))
@@ -179,6 +229,13 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                 return false;
             }
             return true;
+        }
+
+
+        //this forces entries that are null to work in the database
+        public object CheckForDbNull(object value)
+        {
+            return value ?? DBNull.Value;
         }
 
         private void HandleError(IVndbError error)
