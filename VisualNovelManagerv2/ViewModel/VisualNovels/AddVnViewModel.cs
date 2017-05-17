@@ -148,10 +148,12 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         {
             ValidateExe();
             await ValidateAsync();
-            if (IsValid == false)
+            if (IsValid == true)
             {
                 AddToDatabase atd = new AddToDatabase();
-                atd.GetId(Convert.ToInt32(VnId));
+                atd.GetId(Convert.ToInt32(VnId), FileName);
+                FileName = String.Empty;
+                VnId = 0;
             }
             
         }

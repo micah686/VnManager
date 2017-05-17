@@ -264,6 +264,13 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\System.Data.SQLite.Core.1.0.105.0\build\net46\System.Data.SQLite.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\System.Data.SQLite.Core.1.0.105.0\build\net46\System.Data.SQLite.Core.targets'))" />
   </Target>
+  <PropertyGroup>
+    <PostBuildEvent>ROBOCOPY "$(TargetDir) " "$(TargetDir)Data\libs\ " *.dll *.pdb *.xml /MOVE
+ROBOCOPY "$(TargetDir)x86" "$(TargetDir)Data\libs\x86 "  /MOVE
+ROBOCOPY "$(TargetDir)x64" "$(TargetDir)Data\libs\x64 "  /MOVE
+DEL *.dll *.pdb *.xml
+if errorlevel 1 exit 0 else exit %25errorlevel%25</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
