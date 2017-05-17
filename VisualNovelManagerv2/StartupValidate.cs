@@ -303,7 +303,6 @@ namespace VisualNovelManagerv2
                             Original text DEFAULT NULL,
                             ProducerType text DEFAULT NULL,
                             Language text DEFAULT NULL,
-                            Links text DEFAULT NULL,
                             Aliases text DEFAULT NULL,
                             Description text DEFAULT NULL,
                             PRIMARY KEY (PK_Id),
