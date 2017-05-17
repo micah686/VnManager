@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:VisualNovelManagerv2.Pages"
+             xmlns:vm="clr-namespace:VisualNovelManagerv2.ViewModel.VisualNovels"
              xmlns:custom="clr-namespace:VisualNovelManagerv2.CustomClasses"
              xmlns:mui="http://firstfloorsoftware.com/ModernUI"
              mc:Ignorable="d" 
@@ -27,13 +28,20 @@
                     <mui:BBCodeBlock Grid.Row="1" BBCode="Fill in the required information to add a visual novel to this program" Margin="0,0,0,16"/>
 
                     <Grid Grid.Row="2">
+                        <Grid.Resources>
+                            <vm:BoolToStringConverter x:Key="BoolToStringConverter"/>
+                            <BooleanToVisibilityConverter x:Key="ConvVisibility"/>
+                        </Grid.Resources>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <Label Content="ChangeWithBinding" Width="120" />
-                        <TextBox x:Name="TextVnId" Grid.Column="1" Width="150" MaxLength="10"
-                              custom:TextBoxService.IsNumericOnly="True"  Text="{Binding VnId, Mode=TwoWay, ValidatesOnDataErrors=True}" />
+                        <Label Content="{Binding Path=IsNameChecked, Converter={StaticResource BoolToStringConverter}}" Width="120" />
+                        <TextBox x:Name="TextVnId" Grid.Column="1" Width="150" MaxLength="10" custom:TextBoxService.IsNumericOnly="True"
+                            Text="{Binding VnId, Mode=TwoWay, ValidatesOnDataErrors=True}" Visibility="{Binding IsChecked, ElementName=VnIdRadio, Converter={StaticResource ConvVisibility}}"/>
+
+                        <ComboBox x:Name="ComboVnName" Grid.Column="1" Width="150"  IsEditable="True"
+                            Text="{Binding VnName, Mode=TwoWay, ValidatesOnDataErrors=True}" Visibility="{Binding IsChecked, ElementName=VnNameRadio, Converter={StaticResource ConvVisibility}}"/>
                     </Grid>
 
                     <Grid Grid.Row="3" Margin="0,10,0,0">
@@ -42,9 +50,9 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <Label Grid.Column="0" Content="VnId or Name" Width="100"/>
-                        <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="20,0,0,0" IsEnabled="False">
-                            <RadioButton Content="VnId" Margin="0,0,5,0"/>
-                            <RadioButton Content="Name" Margin="10,0,0,0" />
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="20,0,0,0" IsEnabled="True">
+                            <RadioButton x:Name="VnIdRadio" Content="VnId" Margin="0,0,5,0"  IsChecked="True"/>
+                            <RadioButton x:Name="VnNameRadio" Content="Name" Margin="10,0,0,0" IsChecked="{Binding IsNameChecked}"/>
                         </StackPanel>
 
                     </Grid>
@@ -71,6 +79,6 @@
                 </Grid>
             </ScrollViewer>
         </Grid>
-        <local:BottomStatusBar/>
+        <!--<local:BottomStatusBar/>-->
     </Grid>
 </UserControl>

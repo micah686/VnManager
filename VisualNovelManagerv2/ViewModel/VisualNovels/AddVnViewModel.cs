@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows.Data;
 using System.Windows.Input;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
@@ -39,6 +41,65 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
         #region Static Properties
 
+        private int? _vnId;
+        public int? VnId
+        {
+            get { return _vnId; }
+            set
+            {
+                _vnId = value;
+                RaisePropertyChanged(nameof(VnId));
+                Validator.ValidateAsync(VnId);
+            }
+        }
+
+        private string _fileName;
+        public string FileName
+        {
+            get { return _fileName; }
+            set
+            {
+                _fileName = value;
+                RaisePropertyChanged(nameof(FileName));
+                Validator.ValidateAsync(FileName);
+
+            }
+        }
+
+        private string _vnName;
+        public string VnName
+        {
+            get { return _vnName; }
+            set
+            {
+                _vnName = value;
+                RaisePropertyChanged(nameof(VnName));
+                Validator.ValidateAsync(VnName);
+            }
+        }
+
+        private bool _isNameChecked;
+        public bool IsNameChecked
+        {
+            get { return _isNameChecked; }
+            set
+            {
+                _isNameChecked = value;
+                RaisePropertyChanged(nameof(IsNameChecked));                                
+            }
+        }
+
+        private bool _isChecked;
+        public bool IsChecked
+        {
+            get { return _isChecked; }
+            set
+            {
+                _isChecked = value;
+                RaisePropertyChanged(nameof(IsChecked));
+            }
+        }
+
         private bool? _isValid;
         public bool? IsValid
         {
@@ -60,32 +121,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 RaisePropertyChanged(nameof(ValidationErrorsString));
             }
         }
-
-        private string _fileName;
-        public string FileName
-        {
-            get { return _fileName; }
-            set
-            {
-                _fileName = value;
-                RaisePropertyChanged(nameof(FileName));
-                Validator.ValidateAsync(FileName);
-
-            }
-        }
-
-        private int? _vnId;
-        public int? VnId
-        {
-            get { return _vnId; }
-            set
-            {
-                _vnId = value;
-                RaisePropertyChanged(nameof(VnId));
-                Validator.ValidateAsync(VnId);
-            }
-        }
-
         #endregion
 
         private void FilePicked()
@@ -181,5 +216,21 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             ValidationErrorsString = validationResult.ToString();
         }
         #endregion
+    }
+
+    public class BoolToStringConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value != null && (bool)value)
+                return "Vn Name";
+            else
+                return "Vn ID";
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
