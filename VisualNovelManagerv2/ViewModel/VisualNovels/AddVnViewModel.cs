@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using GalaSoft.MvvmLight;
@@ -31,7 +32,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         public RelayCommand GetFile { get; private set; }
         public ICommand ValidateCommand { get; private set; }
         public ObservableCollection<string> SuggestedNamesCollection { get; set; }
-        public int MyKey { get; set; }
 
         public AddVnViewModel()
         {
@@ -44,6 +44,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             Validator.ResultChanged += OnValidationResultChanged;
             //for VnName search box
             this.SuggestedNamesCollection = new ObservableCollection<string>();
+            SourceIndex = 0;
         }
 
         #region Static Properties
@@ -127,6 +128,17 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             {
                 _isDropDownOpen = value;
                 RaisePropertyChanged(nameof(IsDropDownOpen));
+            }
+        }
+
+        private int _sourceIndex;
+        public int SourceIndex
+        {
+            get { return _sourceIndex; }
+            set
+            {
+                _sourceIndex = value;
+                RaisePropertyChanged(nameof(SourceIndex));
             }
         }
 
