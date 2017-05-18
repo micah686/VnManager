@@ -7,6 +7,8 @@
              xmlns:vm="clr-namespace:VisualNovelManagerv2.ViewModel.VisualNovels"
              xmlns:custom="clr-namespace:VisualNovelManagerv2.CustomClasses"
              xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="500"
              DataContext="{Binding AddVn, Source={StaticResource Locator}}">
@@ -41,7 +43,14 @@
                             Text="{Binding VnId, Mode=TwoWay, ValidatesOnDataErrors=True}" Visibility="{Binding IsChecked, ElementName=VnIdRadio, Converter={StaticResource ConvVisibility}}"/>
 
                         <ComboBox x:Name="ComboVnName" Grid.Column="1" Width="150"  IsEditable="True"
-                            Text="{Binding VnName, Mode=TwoWay, ValidatesOnDataErrors=True}" Visibility="{Binding IsChecked, ElementName=VnNameRadio, Converter={StaticResource ConvVisibility}}"/>
+                            Text="{Binding VnName, Mode=TwoWay, ValidatesOnDataErrors=True}" Visibility="{Binding IsChecked, ElementName=VnNameRadio, Converter={StaticResource ConvVisibility}}"
+                                  ItemsSource="{Binding SuggestedNamesCollection}" IsDropDownOpen="{Binding IsDropDownOpen}">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="KeyUp">
+                                    <ei:CallMethodAction TargetObject="{Binding}" MethodName="SearchName"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </ComboBox>
                     </Grid>
 
                     <Grid Grid.Row="3" Margin="0,10,0,0">

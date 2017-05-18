@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -17,6 +19,7 @@ using VisualNovelManagerv2.Design.VisualNovel;
 using VisualNovelManagerv2.Infrastructure;
 using VndbSharp;
 using VndbSharp.Models;
+using VndbSharp.Models.VisualNovel;
 
 // ReSharper disable ExplicitCallerInfoArgument
 
@@ -27,6 +30,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         private readonly AddVnViewModelService _service;
         public RelayCommand GetFile { get; private set; }
         public ICommand ValidateCommand { get; private set; }
+        public ObservableCollection<string> SuggestedNamesCollection { get; set; }
+        public int MyKey { get; set; }
 
         public AddVnViewModel()
         {
@@ -37,6 +42,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             ValidateCommand = new RelayCommand(Validate);
             ConfigureValidationRules();
             Validator.ResultChanged += OnValidationResultChanged;
+            //for VnName search box
+            this.SuggestedNamesCollection = new ObservableCollection<string>();
         }
 
         #region Static Properties
@@ -100,6 +107,29 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             }
         }
 
+        private bool _isRunning;
+
+        public bool IsRunning
+        {
+            get { return _isRunning; }
+            set
+            {
+                _isRunning = value;
+                RaisePropertyChanged(nameof(IsRunning));
+            }
+        }
+
+        private bool _isDropDownOpen;
+        public bool IsDropDownOpen
+        {
+            get { return _isDropDownOpen; }
+            set
+            {
+                _isDropDownOpen = value;
+                RaisePropertyChanged(nameof(IsDropDownOpen));
+            }
+        }
+
         private bool? _isValid;
         public bool? IsValid
         {
@@ -122,7 +152,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             }
         }
         #endregion
-
         private void FilePicked()
         {
             this.FileName = _service.PickedFileName;
@@ -176,6 +205,31 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                         () => RuleResult.Invalid("This application is invalid"));
                     break;
             }
+        }
+
+        public async void SearchName()
+        {
+            if(VnName == null || VnName.Length <= 2)return;
+            if(IsRunning != false)return;
+            IsRunning = true;
+            using (Vndb client= new Vndb(true))
+            {
+                VndbResponse<VisualNovel> response = await client.GetVisualNovelAsync(VndbFilters.Search.Fuzzy(VnName));
+                //namelist gets a  list of english names if text input was english, or japanese names if input was japanese
+                List<string> nameList = IsJapaneseText(VnName) == true ? response.Select(item => item.OriginalName).ToList() : response.Select(item => item.Name).ToList();
+                foreach (string name in nameList)
+                {
+                    SuggestedNamesCollection.Add(name);
+                }
+                IsDropDownOpen = true;
+                IsRunning = false;
+            }
+        }
+
+        private bool IsJapaneseText(string text)
+        {
+            Regex regex = new Regex(@"/[\u3000-\u303F]|[\u3040-\u309F]|[\u30A0-\u30FF]|[\uFF00-\uFFEF]|[\u4E00-\u9FAF]|[\u2605-\u2606]|[\u2190-\u2195]|\u203B/g");
+            return regex.IsMatch(text);
         }
 
         #region Validation Methods
