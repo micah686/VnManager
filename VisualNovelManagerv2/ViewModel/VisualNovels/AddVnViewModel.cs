@@ -226,12 +226,17 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             IsRunning = true;
             using (Vndb client= new Vndb(true))
             {
+                SuggestedNamesCollection.Clear();
                 VndbResponse<VisualNovel> response = await client.GetVisualNovelAsync(VndbFilters.Search.Fuzzy(VnName));
                 //namelist gets a  list of english names if text input was english, or japanese names if input was japanese
                 List<string> nameList = IsJapaneseText(VnName) == true ? response.Select(item => item.OriginalName).ToList() : response.Select(item => item.Name).ToList();
                 foreach (string name in nameList)
                 {
-                    SuggestedNamesCollection.Add(name);
+                    if (!string.IsNullOrEmpty(name))
+                    {
+                        SuggestedNamesCollection.Add(name);
+                    }
+                    
                 }
                 IsDropDownOpen = true;
                 IsRunning = false;
