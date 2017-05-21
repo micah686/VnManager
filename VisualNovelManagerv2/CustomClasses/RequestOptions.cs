@@ -10,10 +10,9 @@ namespace VisualNovelManagerv2.CustomClasses
 {
     public class RequestOptions: IRequestOptions
     {
-        public int? page { get; set; }
-        [JsonProperty("results")]
-        public int? count { get; set; }
-        public string sort { get; set; }
-        public bool? reverse { get; set; }
+        public int? Page { get; set; }
+        public int? Count { get; set; }
+        public string Sort { get; set; }
+        public bool? Reverse { get; set; }
     }
 }

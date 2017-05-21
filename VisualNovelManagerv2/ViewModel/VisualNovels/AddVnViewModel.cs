@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -35,7 +36,9 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         public RelayCommand GetFile { get; private set; }
         public ICommand ValidateCommand { get; private set; }
         public ObservableCollection<string> SuggestedNamesCollection { get; set; }
-        public static uint MaxVnId;
+        private static uint _maxVnId;
+        private static uint _selectedVnId;
+        private static VndbResponse<VisualNovel> _vnNameList;
 
         public AddVnViewModel()
         {
@@ -44,9 +47,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             _service = new AddVnViewModelService {FilePicked = this.FilePicked};
             //for mvvmValidation
             ValidateCommand = new RelayCommand(Validate);
-            ConfigureValidationRules();
-            Validator.ResultChanged += OnValidationResultChanged;
-            //for VnName search box
             this.SuggestedNamesCollection = new ObservableCollection<string>();
             SourceIndex = 0;
         }
@@ -113,7 +113,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         }
 
         private bool _isRunning;
-
         public bool IsRunning
         {
             get { return _isRunning; }
@@ -175,15 +174,16 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
         private void ConfigureValidationRules()
         {
-            Validator.AddRequiredRule(() => VnId, "Vndb ID is required");
-            Validator.AddRule(nameof(VnId),
-                () => RuleResult.Assert(VnId >= 1, "Vndb ID must be at least 1"));
-            Validator.AddRule(nameof(VnId),
-                () => RuleResult.Assert(VnId <= IsAboveMaxId().Result, "Not a Valid Vndb ID"));
-            Validator.AddRule(nameof(VnId),
-                () => RuleResult.Assert(IsDeletedVn().Result!= true, "This Vndb ID has been removed"));
-
-
+            if (IsNameChecked != true)
+            {
+                Validator.AddRequiredRule(() => VnId, "Vndb ID is required");
+                Validator.AddRule(nameof(VnId),
+                    () => RuleResult.Assert(VnId >= 1, "Vndb ID must be at least 1"));
+                Validator.AddRule(nameof(VnId),
+                    () => RuleResult.Assert(VnId <= IsAboveMaxId().Result, "Not a Valid Vndb ID"));
+                Validator.AddRule(nameof(VnId),
+                    () => RuleResult.Assert(IsDeletedVn().Result != true, "This Vndb ID has been removed"));
+            }
 
             Validator.AddRequiredRule(() => FileName, "Path to application is required");
             Validator.AddRule(nameof(FileName),
@@ -201,14 +201,14 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             {
                 RequestOptions ro = new RequestOptions
                 {
-                    reverse = true,
-                    sort = "id",
-                    count = 1
+                    Reverse = true,
+                    Sort = "id",
+                    Count = 1
                 };
                 VndbResponse<VisualNovel> response = await client.GetVisualNovelAsync(VndbFilters.Id.GreaterThan(1), VndbFlags.Basic, ro);
-                MaxVnId = response.Items[0].Id;
+                _maxVnId = response.Items[0].Id;
                 client.Logout();
-                return MaxVnId;
+                return _maxVnId;
             }
         }
 
@@ -253,16 +253,16 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             using (Vndb client= new Vndb(true))
             {
                 SuggestedNamesCollection.Clear();
-                VndbResponse<VisualNovel> response = await client.GetVisualNovelAsync(VndbFilters.Search.Fuzzy(VnName));
+                _vnNameList = null;
+                _vnNameList = await client.GetVisualNovelAsync(VndbFilters.Search.Fuzzy(VnName));
                 //namelist gets a  list of english names if text input was english, or japanese names if input was japanese
-                List<string> nameList = IsJapaneseText(VnName) == true ? response.Select(item => item.OriginalName).ToList() : response.Select(item => item.Name).ToList();
+                List<string> nameList = IsJapaneseText(VnName) == true ? _vnNameList.Select(item => item.OriginalName).ToList() : _vnNameList.Select(item => item.Name).ToList();
                 foreach (string name in nameList)
                 {
                     if (!string.IsNullOrEmpty(name))
                     {
                         SuggestedNamesCollection.Add(name);
-                    }
-                    
+                    }                    
                 }
                 IsDropDownOpen = true;
                 IsRunning = false;
@@ -279,13 +279,30 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         private async void Validate()
         {
             ValidateExe();
+            //set validation rules here, so they are are checked on submit
+            ConfigureValidationRules();
+            Validator.ResultChanged += OnValidationResultChanged;
             await ValidateAsync();
             if (IsValid == true)
             {
-                AddToDatabase atd = new AddToDatabase();
-                atd.GetId(Convert.ToInt32(VnId), FileName);
-                FileName = String.Empty;
-                VnId = 0;
+                if (VnName != null || VnName != string.Empty)
+                {
+                    _selectedVnId = _vnNameList.Items[SourceIndex].Id;
+                    AddToDatabase atd = new AddToDatabase();
+                    atd.GetId(Convert.ToInt32(_selectedVnId), FileName);
+                    FileName = String.Empty;
+                    VnId = 0;
+                    VnName = string.Empty;
+                    _selectedVnId = 0;
+                }
+                else
+                {
+                    AddToDatabase atd = new AddToDatabase();
+                    atd.GetId(Convert.ToInt32(VnId), FileName);
+                    FileName = String.Empty;
+                    VnId = 0;
+                }
+                
             }
             
         }
@@ -302,7 +319,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             if (!IsValid.GetValueOrDefault(true))
             {
                 ValidationResult validationResult = Validator.GetResult();
-
+                Debug.WriteLine(" validation updated: "+ validationResult);
                 UpdateValidationSummary(validationResult);
             }
         }

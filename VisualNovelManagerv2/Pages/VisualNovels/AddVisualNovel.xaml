@@ -44,7 +44,7 @@
 
                         <ComboBox x:Name="ComboVnName" Grid.Column="1" Width="150"  IsEditable="True"
                             Text="{Binding VnName, Mode=TwoWay, ValidatesOnDataErrors=True}" Visibility="{Binding IsChecked, ElementName=VnNameRadio, Converter={StaticResource ConvVisibility}}"
-                                  ItemsSource="{Binding SuggestedNamesCollection}" IsDropDownOpen="{Binding IsDropDownOpen}">
+                                  ItemsSource="{Binding SuggestedNamesCollection}" IsDropDownOpen="{Binding IsDropDownOpen}" SelectedIndex="{Binding SourceIndex}">
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="KeyUp">
                                     <ei:CallMethodAction TargetObject="{Binding}" MethodName="SearchName"/>

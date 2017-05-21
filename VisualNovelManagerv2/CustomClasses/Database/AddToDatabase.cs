@@ -45,7 +45,7 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                 VndbResponse<Character> characters = await client.GetCharacterAsync(VndbFilters.VisualNovel.Equals(_vnid), VndbFlags.FullCharacter);
                 //AddDataToDbVn(visualNovels);
                 //AddDataToDbUserData(visualNovels);
-                AddDataToDbReleases(visualNovels, releases, characters, producers);
+                AddDataToDb(visualNovels, releases, characters, producers);
                 //Console.WriteLine();
                 Thread.Sleep(0);
                 Console.WriteLine("done");
@@ -53,7 +53,7 @@ namespace VisualNovelManagerv2.CustomClasses.Database
 
         }
 
-        void AddDataToDbReleases(VndbResponse<VisualNovel> visualNovels, VndbResponse<Release> releases, VndbResponse<Character> characters, VndbResponse<Producer> producers)
+        void AddDataToDb(VndbResponse<VisualNovel> visualNovels, VndbResponse<Release> releases, VndbResponse<Character> characters, VndbResponse<Producer> producers)
         {
             lock (Globals.WriteLock)
             {
