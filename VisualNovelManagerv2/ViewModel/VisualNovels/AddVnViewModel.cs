@@ -14,11 +14,14 @@ using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
 using MvvmValidation;
+using Newtonsoft.Json;
+using VisualNovelManagerv2.CustomClasses;
 using VisualNovelManagerv2.CustomClasses.Database;
 using VisualNovelManagerv2.Design;
 using VisualNovelManagerv2.Design.VisualNovel;
 using VisualNovelManagerv2.Infrastructure;
 using VndbSharp;
+using VndbSharp.Interfaces;
 using VndbSharp.Models;
 using VndbSharp.Models.VisualNovel;
 
@@ -32,6 +35,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         public RelayCommand GetFile { get; private set; }
         public ICommand ValidateCommand { get; private set; }
         public ObservableCollection<string> SuggestedNamesCollection { get; set; }
+        public static uint MaxVnId;
 
         public AddVnViewModel()
         {
@@ -175,7 +179,10 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             Validator.AddRule(nameof(VnId),
                 () => RuleResult.Assert(VnId >= 1, "Vndb ID must be at least 1"));
             Validator.AddRule(nameof(VnId),
-                () => RuleResult.Assert(VnId <= GetDatabaseVnCount().Result, "Not a Valid Vndb ID"));
+                () => RuleResult.Assert(VnId <= IsAboveMaxId().Result, "Not a Valid Vndb ID"));
+            Validator.AddRule(nameof(VnId),
+                () => RuleResult.Assert(IsDeletedVn().Result!= true, "This Vndb ID has been removed"));
+
 
 
             Validator.AddRequiredRule(() => FileName, "Path to application is required");
@@ -188,15 +195,34 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 });
         }
 
-        private static async Task<uint> GetDatabaseVnCount()
+        private async Task<uint> IsAboveMaxId()
         {
-	        using (Vndb client = new Vndb(true).WithClientDetails("VisualNovelManagerv2", "0.0.0"))
-	        {
-		        DatabaseStats stats = await client.GetDatabaseStatsAsync();
-				client.Logout();
-		        return stats.VisualNovels;
-	        }
-		}
+            using (Vndb client = new Vndb(true).WithClientDetails("VisualNovelManagerv2", "0.0.0"))
+            {
+                RequestOptions ro = new RequestOptions
+                {
+                    reverse = true,
+                    sort = "id",
+                    count = 1
+                };
+                VndbResponse<VisualNovel> response = await client.GetVisualNovelAsync(VndbFilters.Id.GreaterThan(1), VndbFlags.Basic, ro);
+                MaxVnId = response.Items[0].Id;
+                client.Logout();
+                return MaxVnId;
+            }
+        }
+
+        private async Task<bool> IsDeletedVn()
+        {
+            using (Vndb client = new Vndb(true).WithClientDetails("VisualNovelManagerv2", "0.0.0"))
+            {
+                uint vnid = Convert.ToUInt32(VnId);
+                VndbResponse<VisualNovel> response = await client.GetVisualNovelAsync(VndbFilters.Id.Equals(vnid));
+                
+                client.Logout();
+                return response.Count < 1;
+            }
+        }
 
         private void ValidateExe()
         {
