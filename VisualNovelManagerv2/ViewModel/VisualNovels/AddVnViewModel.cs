@@ -21,6 +21,7 @@ using VisualNovelManagerv2.CustomClasses.Database;
 using VisualNovelManagerv2.Design;
 using VisualNovelManagerv2.Design.VisualNovel;
 using VisualNovelManagerv2.Infrastructure;
+using VisualNovelManagerv2.Pages.VisualNovels;
 using VndbSharp;
 using VndbSharp.Interfaces;
 using VndbSharp.Models;
@@ -32,8 +33,10 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 {
     public class AddVnViewModel: ValidatableViewModelBase
     {        
-        private readonly AddVnViewModelService _service;
+        private readonly AddVnViewModelService _exeService;
+        private readonly AddVnViewModelService _iconService;
         public RelayCommand GetFile { get; private set; }
+        public RelayCommand GetIcon { get; private set; }
         public ICommand ValidateCommand { get; private set; }
         public ObservableCollection<string> SuggestedNamesCollection { get; set; }
         private static uint _maxVnId;
@@ -43,8 +46,10 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         public AddVnViewModel()
         {
             //for openFileDialog
-            this.GetFile = new RelayCommand(() => Messenger.Default.Send(_service));
-            _service = new AddVnViewModelService {FilePicked = this.FilePicked};
+            this.GetFile = new RelayCommand(() => Messenger.Default.Send(_exeService));
+            this.GetIcon = new RelayCommand(() => AddVisualNovel.IconMessenger.Send(_iconService));
+            _exeService = new AddVnViewModelService {FilePicked = this.FilePicked};
+            _iconService = new AddVnViewModelService { FilePicked = this.IconPicked};
             //for mvvmValidation
             ValidateCommand = new RelayCommand(Validate);
             this.SuggestedNamesCollection = new ObservableCollection<string>();
@@ -75,6 +80,18 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 RaisePropertyChanged(nameof(FileName));
                 Validator.ValidateAsync(FileName);
 
+            }
+        }
+
+        private string _iconName;
+        public string IconName
+        {
+            get { return _iconName; }
+            set
+            {
+                _iconName = value;
+                RaisePropertyChanged(nameof(IconName));
+                Validator.ValidateAsync(IconName);
             }
         }
 
@@ -145,6 +162,17 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             }
         }
 
+        private bool _isIconEnabled;
+        public bool IsIconEnabled
+        {
+            get { return _isIconEnabled; }
+            set
+            {
+                _isIconEnabled = value;
+                RaisePropertyChanged(nameof(IsIconEnabled));
+            }
+        }
+
         private bool? _isValid;
         public bool? IsValid
         {
@@ -169,7 +197,12 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         #endregion
         private void FilePicked()
         {
-            this.FileName = _service.PickedFileName;
+            this.FileName = _exeService.PickedFileName;
+        }
+
+        private void IconPicked()
+        {
+            IconName = _iconService.PickedFileName;
         }
 
         private void ConfigureValidationRules()
@@ -192,6 +225,14 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                     bool filepath = File.Exists(FileName);
                     string ext = Path.GetExtension(FileName) ?? string.Empty;
                     return RuleResult.Assert(filepath && ext.EndsWith(".exe"), "Not a valid file path");
+                });
+
+            Validator.AddRule(nameof(IconName),
+                () =>
+                {
+                    bool filepath = File.Exists(IconName);
+                    string ext = Path.GetExtension(IconName) ?? string.Empty;
+                    return RuleResult.Assert(filepath && ext.EndsWith(".ico"), "Not a valid file path");
                 });
         }
 
@@ -285,11 +326,11 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             await ValidateAsync();
             if (IsValid == true)
             {
-                if (VnName != null || VnName != string.Empty)
+                if (VnName != null)
                 {
                     _selectedVnId = _vnNameList.Items[SourceIndex].Id;
                     AddToDatabase atd = new AddToDatabase();
-                    atd.GetId(Convert.ToInt32(_selectedVnId), FileName);
+                    atd.GetId(Convert.ToInt32(_selectedVnId), FileName, IconName);
                     FileName = String.Empty;
                     VnId = 0;
                     VnName = string.Empty;
@@ -298,7 +339,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 else
                 {
                     AddToDatabase atd = new AddToDatabase();
-                    atd.GetId(Convert.ToInt32(VnId), FileName);
+                    atd.GetId(Convert.ToInt32(VnId), FileName, IconName);
                     FileName = String.Empty;
                     VnId = 0;
                 }

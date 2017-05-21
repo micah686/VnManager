@@ -24,13 +24,15 @@ namespace VisualNovelManagerv2.CustomClasses.Database
     {
         private int _vnid;
         private uint _uvnid;
-        private string exepath;
+        private string _exepath;
+        private string _iconpath;
 
-        public async void GetId(int id, string exe)
+        public async void GetId(int id, string exe, string icon)
         {
             _vnid = id;
             _uvnid = Convert.ToUInt32(id);
-            exepath = exe;
+            _exepath = exe;
+            _iconpath = icon;
             await GetData();
         }
 
@@ -287,8 +289,8 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                                 cmd.CommandText = "INSERT OR REPLACE INTO VnUserData VALUES(@PK_Id, @VnId, @ExePath, @IconPath, @LastPlayed, @SecondsPlayed)";
                                 cmd.Parameters.AddWithValue("@PK_Id", null);
                                 cmd.Parameters.AddWithValue("@VnId", Convert.ToInt32(visualNovels.Items[0].Id));
-                                cmd.Parameters.AddWithValue("@ExePath", exepath);
-                                cmd.Parameters.AddWithValue("@IconPath", null);
+                                cmd.Parameters.AddWithValue("@ExePath", _exepath);
+                                cmd.Parameters.AddWithValue("@IconPath", CheckForDbNull(_iconpath));
                                 cmd.Parameters.AddWithValue("@LastPlayed", null);
                                 cmd.Parameters.AddWithValue("@SecondsPlayed", null);
                                 //TODO: add the rest of these values

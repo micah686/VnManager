@@ -24,13 +24,15 @@ namespace VisualNovelManagerv2.Pages.VisualNovels
     /// </summary>
     public partial class AddVisualNovel : UserControl
     {
+       public static Messenger IconMessenger = new Messenger();
         public AddVisualNovel()
         {
             InitializeComponent();
-            Messenger.Default.Register<AddVnViewModelService>(this, OpenFilePickerDialog);
+            Messenger.Default.Register<AddVnViewModelService>(this, OpenExeFilePickerDialog);
+            IconMessenger.Register<AddVnViewModelService>(this, OpenIconFilePickerDialog);
         }
 
-        private void OpenFilePickerDialog(AddVnViewModelService _service)
+        private void OpenExeFilePickerDialog(AddVnViewModelService service)
         {
             OpenFileDialog dialog = new OpenFileDialog
             {
@@ -45,12 +47,31 @@ namespace VisualNovelManagerv2.Pages.VisualNovels
             bool? result = dialog.ShowDialog();
             if (result.HasValue && result.Value)
             {
-                _service.PickedFileName = dialog.FileName;
-                if (_service.FilePicked != null)
+                service.PickedFileName = dialog.FileName;
+                if (service.FilePicked != null)
                 {
-                    _service.FilePicked.Invoke();
+                    service.FilePicked.Invoke();
                 }
             }
         }
+
+        private void OpenIconFilePickerDialog(AddVnViewModelService service)
+        {
+            OpenFileDialog dialog = new OpenFileDialog
+            {
+                FileName = "",
+                DefaultExt = ".ico",
+                Filter = "Icons (*.ico)|*.ico",
+                DereferenceLinks = true,
+                CheckFileExists = true,
+                CheckPathExists = true,
+                Title = "Browse for Application Icon"
+            };
+            bool? result = dialog.ShowDialog();
+            if (!result.HasValue || !result.Value) return;
+            service.PickedFileName = dialog.FileName;
+            service.FilePicked?.Invoke();
+        }
+
     }
 }
