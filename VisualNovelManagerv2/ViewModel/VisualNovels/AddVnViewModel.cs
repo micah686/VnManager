@@ -39,9 +39,9 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         public RelayCommand GetIcon { get; private set; }
         public ICommand ValidateCommand { get; private set; }
         public ObservableCollection<string> SuggestedNamesCollection { get; set; }
-        private static uint _maxVnId;
-        private static uint _selectedVnId;
-        private static VndbResponse<VisualNovel> _vnNameList;
+        public static uint _maxVnId;
+        public static uint _selectedVnId;
+        public static VndbResponse<VisualNovel> _vnNameList;
 
         public AddVnViewModel()
         {

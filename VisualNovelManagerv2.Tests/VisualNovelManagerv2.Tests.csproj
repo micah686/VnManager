@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{2D840BCB-F563-4D09-BF1F-3DEC70207504}</ProjectGuid>
+    <ProjectGuid>{937BCBEF-9059-4866-BA7A-8DBA5FED56EC}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>VisualNovelManagerv2.Tests</RootNamespace>
@@ -57,11 +57,23 @@
     <Reference Include="Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\MSTest.TestFramework.1.1.11\lib\net45\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll</HintPath>
     </Reference>
+    <Reference Include="Mono.Cecil, Version=0.9.6.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <HintPath>..\packages\NUnit.Engine.3.6.1\lib\Mono.Cecil.dll</HintPath>
+    </Reference>
     <Reference Include="MvvmValidation, Version=3.0.0.0, Culture=neutral, PublicKeyToken=113792d2053ac461, processorArchitecture=MSIL">
       <HintPath>..\packages\MvvmValidation.3.0.0\lib\netstandard1.0\MvvmValidation.dll</HintPath>
     </Reference>
-    <Reference Include="NSubstitute, Version=2.0.3.0, Culture=neutral, PublicKeyToken=92dd2e9066daa5ca, processorArchitecture=MSIL">
-      <HintPath>..\packages\NSubstitute.2.0.3\lib\net45\NSubstitute.dll</HintPath>
+    <Reference Include="nunit-agent, Version=3.6.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\NUnit.Engine.3.6.1\lib\nunit-agent.exe</HintPath>
+    </Reference>
+    <Reference Include="nunit-agent-x86, Version=3.6.1.0, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\packages\NUnit.Engine.3.6.1\lib\nunit-agent-x86.exe</HintPath>
+    </Reference>
+    <Reference Include="nunit.engine, Version=3.6.1.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
+      <HintPath>..\packages\NUnit.Engine.3.6.1\lib\nunit.engine.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.engine.api, Version=3.0.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
+      <HintPath>..\packages\NUnit.Engine.3.6.1\lib\nunit.engine.api.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework, Version=3.6.1.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
       <HintPath>..\packages\NUnit.3.6.1\lib\net45\nunit.framework.dll</HintPath>
@@ -72,12 +84,14 @@
       <HintPath>..\packages\MvvmLightLibs.5.3.0.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
     </Reference>
     <Reference Include="VndbSharp">
-      <HintPath>..\..\VndbSharp-master\VndbSharp\bin\Debug\netstandard1.3\VndbSharp.dll</HintPath>
+      <HintPath>..\..\..\..\..\Visual Studio 2015\Projects\VndbSharp\VndbSharp\bin\Debug\netstandard1.3\VndbSharp.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CustomClasses\Database\AddToDatabaseTests.cs" />
+    <Compile Include="UnitTest1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ViewModelTests\AddVnViewModelTest.cs" />
+    <Compile Include="ViewModel\VisualNovels\AddVnViewModelTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -89,7 +103,6 @@
       <Name>VisualNovelManagerv2</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

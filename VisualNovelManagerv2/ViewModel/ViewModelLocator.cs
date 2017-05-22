@@ -29,11 +29,17 @@ namespace VisualNovelManagerv2.ViewModel
         {
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
             SimpleIoc.Default.Register<AddVnViewModel>();
+            SimpleIoc.Default.Register<VnMainViewModel>();
         }
 
         public AddVnViewModel AddVn
         {
             get { return ServiceLocator.Current.GetInstance<AddVnViewModel>(); }
+        }
+
+        public VnMainViewModel VnMain
+        {
+            get { return ServiceLocator.Current.GetInstance<VnMainViewModel>(); }
         }
 
         public static void Cleanup()

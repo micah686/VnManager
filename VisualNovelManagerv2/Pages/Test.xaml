@@ -9,14 +9,18 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid Margin="{StaticResource RootMargin}" ShowGridLines="True">
-        <Grid Style="{StaticResource ContentRoot}">
-            <controls:ModernTab  Layout="List">
-                <controls:ModernTab.Links>
-                    <controls:Link DisplayName="MIT" Source="../Pages/Links/About/LicenseText/MIT.xaml"/>
-                    <controls:Link DisplayName="MS-PL" Source="../Pages/Links/About/LicenseText/MS-PL.xaml" />
-                </controls:ModernTab.Links>
-            </controls:ModernTab>
+        <Grid >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0">
+                <ListBox Name="NoteList" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" ItemsSource="{x:Static Fonts.SystemFontFamilies}" Margin="0,0,5,5"/>
+            </Grid>
+            
+            <Button Grid.Column="1" Content="Button" HorizontalAlignment="Left"  VerticalAlignment="Top" Width="75" Margin="40,124,0,0" Click="Button_Click"/>
+
         </Grid>
-        <local:BottomStatusBar ></local:BottomStatusBar>
+        <!--<local:BottomStatusBar ></local:BottomStatusBar>-->
     </Grid>
 </UserControl>

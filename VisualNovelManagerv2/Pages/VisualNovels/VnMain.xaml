@@ -5,7 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local ="clr-namespace:VisualNovelManagerv2.Pages"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="300"
+             DataContext="{Binding VnMain, Source={StaticResource Locator}}">
     <Grid Margin="{StaticResource RootMargin}">
 
         <Grid x:Name="VnMainGrid" Margin="10,10,10,35">
@@ -17,7 +18,8 @@
                 </Grid.ColumnDefinitions>
 
                 <Grid Grid.Column="0" >
-                    <ListBox Name="NoteList" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" ItemsSource="{x:Static Fonts.SystemFontFamilies}" Margin="0,0,5,5"/>
+                    <ListBox Name="NoteList" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" ItemsSource="{Binding VnNameCollection}" Margin="0,0,5,5"
+                             Width="{Binding MaxListWidth}" MaxWidth="{Binding MaxListWidth}" MinWidth="50"/>
                 </Grid>
 
                 <!--#region Divider-->
@@ -281,7 +283,7 @@
                 </ScrollViewer>
             </Grid>
         </Grid>
-        <local:BottomStatusBar ></local:BottomStatusBar>
+        <!--<local:BottomStatusBar ></local:BottomStatusBar>-->
 
         
     </Grid>
