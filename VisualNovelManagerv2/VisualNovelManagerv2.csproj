@@ -119,6 +119,7 @@
     <Compile Include="CustomClasses\MeasureStringSize.cs" />
     <Compile Include="CustomClasses\RequestOptions.cs" />
     <Compile Include="CustomClasses\TextBoxService.cs" />
+    <Compile Include="Design\VisualNovel\VnMainModel.cs" />
     <Compile Include="Globals.cs" />
     <Compile Include="Infrastructure\ValidatableViewModelBase.cs" />
     <Compile Include="Pages\Links\About\FullText.xaml.cs">

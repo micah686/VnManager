@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local ="clr-namespace:VisualNovelManagerv2.Pages"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300"
+             d:DesignHeight="600" d:DesignWidth="500"
              DataContext="{Binding VnMain, Source={StaticResource Locator}}">
     <Grid Margin="{StaticResource RootMargin}">
 
@@ -19,7 +19,7 @@
 
                 <Grid Grid.Column="0" >
                     <ListBox Name="NoteList" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" ItemsSource="{Binding VnNameCollection}" Margin="0,0,5,5"
-                             Width="{Binding MaxListWidth}" MaxWidth="{Binding MaxListWidth}" MinWidth="50"/>
+                             Width="{Binding MaxListWidth}" MaxWidth="{Binding MaxListWidth}" MinWidth="50" SelectedIndex="{Binding SelectedListItemIndex}"/>
                 </Grid>
 
                 <!--#region Divider-->
@@ -56,11 +56,11 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
 
-                            <Image Grid.Column="0" MaxWidth="48" MaxHeight="48" Margin="10,5,0,0" 
-                                        Source="D:\Documents\Visual Studio 2017\Projects\Testing Projects\Visual-Novel-Manager-v2\VisualNovelManagerv2\Resources\icon.ico"/>
+                            <Image Grid.Column="0" MaxWidth="40" MaxHeight="40" Margin="10,5,0,0" 
+                                        Source="{Binding VnMainModel.VnIcon}" RenderOptions.BitmapScalingMode="Fant"/>
                             <StackPanel Grid.Column="1">
-                                <Label Content="GameName" Margin="5,10,0,0" />
-                                <Label Content="Original Name" Margin="5,5,0,0"/>
+                                <Label Content="{Binding VnMainModel.Name}" Margin="5,10,0,0" />
+                                <Label Content="{Binding VnMainModel.Original}" Margin="5,5,0,0"/>
                             </StackPanel>
                         </Grid>
 
@@ -70,7 +70,7 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
 
-                            <Button Grid.Column="0" Margin="10,5,0,0" Width="100" Height="40" Content="Play" />
+                            <Button Grid.Column="0" Margin="10,5,0,0" Width="100" Height="40" Content="Play" Command="{Binding GetVnDataCommand}"/>
 
                             <Grid Margin="10,5,0,0" Grid.Column="1">
                                 <Grid>

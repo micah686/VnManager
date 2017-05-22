@@ -17,5 +17,6 @@ namespace VisualNovelManagerv2
         public static readonly string DirectoryPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         public static readonly object WriteLock = new object();
         public static readonly List<string> ClientInfo = new List<string>{"Visual Novel Manager v2", "0.0.1"};
+        public static int VnId;
     }
 }
