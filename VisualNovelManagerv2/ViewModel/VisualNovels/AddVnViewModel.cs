@@ -227,13 +227,17 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                     return RuleResult.Assert(filepath && ext.EndsWith(".exe"), "Not a valid file path");
                 });
 
-            Validator.AddRule(nameof(IconName),
-                () =>
-                {
-                    bool filepath = File.Exists(IconName);
-                    string ext = Path.GetExtension(IconName) ?? string.Empty;
-                    return RuleResult.Assert(filepath && ext.EndsWith(".ico"), "Not a valid file path");
-                });
+            if (IsIconEnabled == true)
+            {
+                Validator.AddRule(nameof(IconName),
+                    () =>
+                    {
+                        bool filepath = File.Exists(IconName);
+                        string ext = Path.GetExtension(IconName) ?? string.Empty;
+                        return RuleResult.Assert(filepath && ext.EndsWith(".ico"), "Not a valid file path");
+                    });
+            }
+            
         }
 
         private async Task<uint> IsAboveMaxId()
