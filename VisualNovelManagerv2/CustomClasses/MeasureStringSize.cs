@@ -9,19 +9,16 @@ using System.Windows.Media;
 
 namespace VisualNovelManagerv2.CustomClasses
 {
-    class MeasureStringSize
+    public class MeasureStringSize
     {
-        //private Size MeasureString(string candidate)
-        //{
-        //    var formattedText = new FormattedText(
-        //        candidate,
-        //        CultureInfo.CurrentUICulture,
-        //        FlowDirection.LeftToRight,
-        //        new Typeface(this.Textbox.FontFamily, this.textbox.FontStyle, this.textbox.FontWeight, this.textbox.FontStretch),
-        //        this.textbox.FontSize,
-        //        Brushes.Black);
-
-        //    return new Size(formattedText.Width, formattedText.Height);
-        //}
+        public static double GetMaxStringWidth(string text)
+        {
+            FormattedText formattedText = new FormattedText(
+                text, CultureInfo.CurrentCulture, FlowDirection.LeftToRight,
+                new Typeface(new System.Windows.Media.FontFamily("Segoe UI"), FontStyles.Normal, FontWeights.Bold, FontStretches.Normal),
+                13, Brushes.Black);
+            //add 10 for some extra padding
+            return (formattedText.Width + 10);
+        }
     }
 }

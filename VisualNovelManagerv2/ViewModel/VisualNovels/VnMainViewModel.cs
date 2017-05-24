@@ -19,6 +19,7 @@ using GalaSoft.MvvmLight.Command;
 using VisualNovelManagerv2.Design.VisualNovel;
 using static System.Windows.FontStyles;
 using Brushes = System.Windows.Media.Brushes;
+using VisualNovelManagerv2.CustomClasses;
 
 
 // ReSharper disable ExplicitCallerInfoArgument
@@ -99,18 +100,13 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
         public void SetMaxWidth()
         {
-            string longestString = VnNameCollection.OrderByDescending(s => s.Length).First();
-            FormattedText ft = new FormattedText
-            (
-                longestString,
-                CultureInfo.CurrentCulture,
-                FlowDirection.LeftToRight,
-                new Typeface(new System.Windows.Media.FontFamily("Segoe UI"),FontStyles.Normal,FontWeights.Bold,FontStretches.Normal),
-                13,
-                Brushes.Black
-            );
-            MaxListWidth = (ft.Width + 10);
-            Thread.Sleep(0);
+            if (VnNameCollection.Count > 0)
+            {
+                string longestString = VnNameCollection.OrderByDescending(s => s.Length).First();
+                MaxListWidth = MeasureStringSize.GetMaxStringWidth(longestString);
+                Thread.Sleep(0);
+            }
+            
         }
 
         private void GetVnData()

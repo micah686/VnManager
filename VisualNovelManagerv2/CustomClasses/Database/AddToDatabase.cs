@@ -144,6 +144,24 @@ namespace VisualNovelManagerv2.CustomClasses.Database
 
                                 #endregion
 
+                                #region VnScreens
+                                if (visualNovel.Screenshots.Length > 0)
+                                {
+                                    foreach (ScreenshotMetadata screenshot in visualNovel.Screenshots)
+                                    {
+                                        cmd.CommandText ="INSERT OR REPLACE INTO VnScreens VALUES(@PK_Id, @VnId, @ImageUrl, @ReleaseId, @Nsfw, @Height, @Width)";
+                                        cmd.Parameters.AddWithValue("@PK_Id", null);
+                                        cmd.Parameters.AddWithValue("@VnId", Convert.ToInt32(visualNovels.Items[0].Id));
+                                        cmd.Parameters.AddWithValue("@ImageUrl", CheckForDbNull(screenshot.Url));
+                                        cmd.Parameters.AddWithValue("@ReleaseId", CheckForDbNull(screenshot.ReleaseId));
+                                        cmd.Parameters.AddWithValue("@Nsfw", CheckForDbNull(screenshot.IsNsfw));
+                                        cmd.Parameters.AddWithValue("@Height", CheckForDbNull(screenshot.Height));
+                                        cmd.Parameters.AddWithValue("@Width", CheckForDbNull(screenshot.Width));
+                                        cmd.ExecuteNonQuery();
+                                    }
+                                }
+                                #endregion
+
                             }
                             #endregion
 
