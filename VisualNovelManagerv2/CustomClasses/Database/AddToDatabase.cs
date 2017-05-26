@@ -94,7 +94,7 @@ namespace VisualNovelManagerv2.CustomClasses.Database
 
                                 cmd.ExecuteNonQuery();
                                 #endregion
-                                
+
                                 #region VnInfoLinks
                                 cmd.CommandText = "INSERT OR REPLACE INTO VnInfoLinks VALUES(@PK_Id, @VnId, @Wikipedia, @Encubed, @Renai)";
                                 cmd.Parameters.AddWithValue("@PK_Id", null);
@@ -107,41 +107,47 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                                 #endregion
 
                                 #region VnAnime
-                                if (visualNovel.Anime.Length > 0) continue;
-                                foreach (AnimeMetadata anime in visualNovel.Anime)
+
+                                if (visualNovel.Anime.Length > 0)
                                 {
-                                    cmd.CommandText =
-                                        "INSERT OR REPLACE INTO VnAnime VALUES(@PK_Id, @VnId, @AniDbId, @AnnId, @AniNfoId, @TitleEng, @TitleJpn, @Year, @AnimeType);";
-                                    cmd.Parameters.AddWithValue("@PK_Id", null);
-                                    cmd.Parameters.AddWithValue("@VnId", Convert.ToInt32(visualNovel.Id));
-                                    cmd.Parameters.AddWithValue("@AniDbId", CheckForDbNull(anime.AniDbId));
-                                    cmd.Parameters.AddWithValue("@AnnId", CheckForDbNull(anime.AnimeNewsNetworkId));
-                                    cmd.Parameters.AddWithValue("@AniNfoId", CheckForDbNull(anime.AnimeNfoId));
-                                    cmd.Parameters.AddWithValue("@TitleEng", CheckForDbNull(anime.RomajiTitle));
-                                    cmd.Parameters.AddWithValue("@TitleJpn", CheckForDbNull(anime.KanjiTitle));
-                                    cmd.Parameters.AddWithValue("@Year", CheckForDbNull(anime.AiringYear?.ToString()?? null));
-                                    cmd.Parameters.AddWithValue("@AnimeType", CheckForDbNull(anime.Type));
-                                    cmd.ExecuteNonQuery();
+                                    foreach (AnimeMetadata anime in visualNovel.Anime)
+                                    {
+                                        cmd.CommandText =
+                                            "INSERT OR REPLACE INTO VnAnime VALUES(@PK_Id, @VnId, @AniDbId, @AnnId, @AniNfoId, @TitleEng, @TitleJpn, @Year, @AnimeType);";
+                                        cmd.Parameters.AddWithValue("@PK_Id", null);
+                                        cmd.Parameters.AddWithValue("@VnId", Convert.ToInt32(visualNovel.Id));
+                                        cmd.Parameters.AddWithValue("@AniDbId", CheckForDbNull(anime.AniDbId));
+                                        cmd.Parameters.AddWithValue("@AnnId", CheckForDbNull(anime.AnimeNewsNetworkId));
+                                        cmd.Parameters.AddWithValue("@AniNfoId", CheckForDbNull(anime.AnimeNfoId));
+                                        cmd.Parameters.AddWithValue("@TitleEng", CheckForDbNull(anime.RomajiTitle));
+                                        cmd.Parameters.AddWithValue("@TitleJpn", CheckForDbNull(anime.KanjiTitle));
+                                        cmd.Parameters.AddWithValue("@Year", CheckForDbNull(anime.AiringYear?.ToString() ?? null));
+                                        cmd.Parameters.AddWithValue("@AnimeType", CheckForDbNull(anime.Type));
+                                        cmd.ExecuteNonQuery();
+                                    }
                                 }
+                                
 
                                 #endregion
 
                                 #region VnTags
-                                if(visualNovel.Tags.Length >0) continue;
-                                foreach (TagMetadata tag in visualNovel.Tags)
+                                if (visualNovel.Tags.Length > 0)
                                 {
-                                    cmd.CommandText = "INSERT OR REPLACE INTO VnTags VALUES(@PK_Id, @VnId, @TagId, @TagName, @Score, @Spoiler);";
-                                    cmd.Parameters.AddWithValue("@PK_Id", null);
-                                    cmd.Parameters.AddWithValue("@VnId", Convert.ToInt32(visualNovels.Items[0].Id));
-                                    cmd.Parameters.AddWithValue("@TagId", CheckForDbNull(tag.Id));
-                                    //TODO: need to implement some way to get the name of the tags
-                                    cmd.Parameters.AddWithValue("@TagName", CheckForDbNull(null));
-                                    cmd.Parameters.AddWithValue("@Score", CheckForDbNull(tag.Score));
-                                    cmd.Parameters.AddWithValue("@Spoiler", CheckForDbNull(tag.SpoilerLevel.ToString()?? null));
-                                    cmd.ExecuteNonQuery();
+                                    foreach (TagMetadata tag in visualNovel.Tags)
+                                    {
+                                        cmd.CommandText = "INSERT OR REPLACE INTO VnTags VALUES(@PK_Id, @VnId, @TagId, @TagName, @Score, @Spoiler);";
+                                        cmd.Parameters.AddWithValue("@PK_Id", null);
+                                        cmd.Parameters.AddWithValue("@VnId", Convert.ToInt32(visualNovels.Items[0].Id));
+                                        cmd.Parameters.AddWithValue("@TagId", CheckForDbNull(tag.Id));
+                                        //TODO: need to implement some way to get the name of the tags
+                                        cmd.Parameters.AddWithValue("@TagName", CheckForDbNull(null));
+                                        cmd.Parameters.AddWithValue("@Score", CheckForDbNull(tag.Score));
+                                        cmd.Parameters.AddWithValue("@Spoiler", CheckForDbNull(tag.SpoilerLevel.ToString() ?? null));
+                                        cmd.ExecuteNonQuery();
 
+                                    }
                                 }
-
+                                
                                 #endregion
 
                                 #region VnScreens
@@ -154,7 +160,7 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                                         cmd.Parameters.AddWithValue("@VnId", Convert.ToInt32(visualNovels.Items[0].Id));
                                         cmd.Parameters.AddWithValue("@ImageUrl", CheckForDbNull(screenshot.Url));
                                         cmd.Parameters.AddWithValue("@ReleaseId", CheckForDbNull(screenshot.ReleaseId));
-                                        cmd.Parameters.AddWithValue("@Nsfw", CheckForDbNull(screenshot.IsNsfw));
+                                        cmd.Parameters.AddWithValue("@Nsfw", CheckForDbNull(screenshot.IsNsfw.ToString()));
                                         cmd.Parameters.AddWithValue("@Height", CheckForDbNull(screenshot.Height));
                                         cmd.Parameters.AddWithValue("@Width", CheckForDbNull(screenshot.Width));
                                         cmd.ExecuteNonQuery();

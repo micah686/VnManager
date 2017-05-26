@@ -30,6 +30,7 @@ namespace VisualNovelManagerv2.ViewModel
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
             SimpleIoc.Default.Register<AddVnViewModel>();
             SimpleIoc.Default.Register<VnMainViewModel>();
+            SimpleIoc.Default.Register<VnScreenshotViewModel>();
         }
 
         public AddVnViewModel AddVn
@@ -40,6 +41,11 @@ namespace VisualNovelManagerv2.ViewModel
         public VnMainViewModel VnMain
         {
             get { return ServiceLocator.Current.GetInstance<VnMainViewModel>(); }
+        }
+
+        public VnScreenshotViewModel VnScreenshotViewModel
+        {
+            get { return ServiceLocator.Current.GetInstance<VnScreenshotViewModel>(); }
         }
 
         public static void Cleanup()

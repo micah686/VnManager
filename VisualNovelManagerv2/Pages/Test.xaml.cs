@@ -38,10 +38,7 @@ namespace VisualNovelManagerv2.Pages
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            var test = NoteList.SelectedItem;
-
-            Console.WriteLine(Foo(test.ToString())); 
-            //var sample = MeasureString(test.ToString());
+            VnScreenshotViewModel.GetScreenshotList();
         }
 
         
