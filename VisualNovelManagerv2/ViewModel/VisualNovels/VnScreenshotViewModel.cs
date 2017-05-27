@@ -14,6 +14,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using GalaSoft.MvvmLight.CommandWpf;
 using System.Net;
+using VisualNovelManagerv2.Converters;
 using VisualNovelManagerv2.CustomClasses;
 using VisualNovelManagerv2.Design.VisualNovel;
 
@@ -29,12 +30,13 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         public VnScreenshotViewModel()
         {
             _screenshotModel = new VnScreenshotModel();
-            GetScreenshotData = new RelayCommand(GetScreenshotList);
+            GetScreenshotData = new RelayCommand(DownloadScreenshots);
             LoadLargeScreenshotCommand = new RelayCommand(LoadLargeScreenshot);
             
             ScreenshotCollection = new ObservableCollection<ScreenshotViewModelCollection>();
             Globals.VnId = 4;
-            GetScreenshotList();
+            LoadScreenshotList();
+            DownloadScreenshots();
         }
 
         #region StaticProperties
@@ -91,10 +93,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         #endregion
 
 
-        public void GetScreenshotList()
+        private void LoadScreenshotList()
         {
-            
-            //ScreenshotCollection = new ObservableCollection<VnScreenshotModel>();
             using (SQLiteConnection connection = new SQLiteConnection(Globals.ConnectionString))
             {
                 connection.Open();
@@ -109,12 +109,15 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
                     while (reader.Read())
                     {
-                        ScreenshotList.Add(new Screenshot{Url = (string)reader["ImageUrl"], IsNsfw = Convert.ToBoolean(reader["Nsfw"]) });
+                        ScreenshotList.Add(new Screenshot { Url = (string)reader["ImageUrl"], IsNsfw = Convert.ToBoolean(reader["Nsfw"]) });
                     }
                 }
                 connection.Close();
             }
+        }
 
+        public void DownloadScreenshots()
+        {
             //TODO: check for no images in screenshots (some not popular vns have none)
             foreach (var screenshot in ScreenshotList)
             {
@@ -135,23 +138,11 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                         WebClient client = new WebClient();
                         using (MemoryStream stream = new MemoryStream(client.DownloadData(new Uri(image))))
                         {
-                            ConvertToBase64 convertToBase64 = new ConvertToBase64();
-                            string base64img = convertToBase64.ImageToBase64(Image.FromStream(stream), ImageFormat.Jpeg);
+                            string base64img = Base64Converter.ImageToBase64(Image.FromStream(stream), ImageFormat.Jpeg);
                             File.WriteAllText(pathNoExt, base64img);
                         }                        
                     }
-                    else
-                    {
-                        ConvertToBase64 convertToBase64 = new ConvertToBase64();
-                        BitmapImage bImage = convertToBase64.GetBitmapImageFromBytes(File.ReadAllText(pathNoExt));
-
-                        _screenshotCollection.Add(new ScreenshotViewModelCollection
-                        {
-                            ScreenshotModel = new VnScreenshotModel{Screenshot = bImage}
-                        });
-                    }
                 }
-
                 if (screenshot.IsNsfw == false)
                 {                    
                     if (!File.Exists(path))
@@ -159,17 +150,39 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                         WebClient client = new WebClient();
                         client.DownloadFile(new Uri(image), path);
                     }
-                    else
-                    {
-                        BitmapImage bImage = new BitmapImage(new Uri(path));
-                        _screenshotCollection.Add(new ScreenshotViewModelCollection
-                        {
-                            ScreenshotModel = new VnScreenshotModel{Screenshot = bImage}
-                        });
-                    }
                 }
             }
+            BindScreenshots();
+        }
 
+        private void BindScreenshots()
+        {
+            foreach (var screenshot in ScreenshotList)
+            {
+                var image = screenshot.Url;
+                string filename = Path.GetFileNameWithoutExtension(image);
+                string pathNoExt = string.Format(@"{0}\Data\images\screenshots\{1}\{2}", Globals.DirectoryPath, Globals.VnId, filename);
+                string path = string.Format(@"{0}\Data\images\screenshots\{1}\{2}", Globals.DirectoryPath, Globals.VnId, Path.GetFileName(image));
+
+                if (screenshot.IsNsfw == true)
+                {
+                    BitmapImage bImage = Base64Converter.GetBitmapImageFromBytes(File.ReadAllText(pathNoExt));
+
+                    _screenshotCollection.Add(new ScreenshotViewModelCollection
+                    {
+                        ScreenshotModel = new VnScreenshotModel { Screenshot = bImage }
+                    });
+                }
+                if (screenshot.IsNsfw == false)
+                {
+                    BitmapImage bImage = new BitmapImage(new Uri(path));
+                    _screenshotCollection.Add(new ScreenshotViewModelCollection
+                    {
+                        ScreenshotModel = new VnScreenshotModel { Screenshot = bImage }
+                    });
+                }
+
+            }
         }
 
         private void LoadLargeScreenshot()
@@ -179,8 +192,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             {
                 string filename = Path.GetFileNameWithoutExtension(ScreenshotList[SelectedScreenIndex].Url);
                 string pathNoExt = string.Format(@"{0}\Data\images\screenshots\{1}\{2}", Globals.DirectoryPath, Globals.VnId, filename);
-                ConvertToBase64 convertToBase64 = new ConvertToBase64();
-                BitmapImage bImage = convertToBase64.GetBitmapImageFromBytes(File.ReadAllText(pathNoExt));
+                BitmapImage bImage = Base64Converter.GetBitmapImageFromBytes(File.ReadAllText(pathNoExt));
                 MainImage = bImage;
             }
             if (ScreenshotList[SelectedScreenIndex].IsNsfw == false)
@@ -191,16 +203,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             }
         }
 
-        private Bitmap CreateThumbnail(Bitmap image)
-        {
-            Bitmap thumbBitmap = new Bitmap(64,64);
-            using (Graphics g = Graphics.FromImage(thumbBitmap))
-            {
-                g.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                g.DrawImage(image, 0, 0, 64, 64);
-            }
-            return thumbBitmap;
-        }
     }
 
     public class Screenshot

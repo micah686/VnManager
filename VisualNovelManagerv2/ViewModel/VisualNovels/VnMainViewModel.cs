@@ -144,7 +144,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 connection.Close();
             }
             VnScreenshotViewModel vm = new VnScreenshotViewModel();
-            vm.GetScreenshotList();
+            vm.DownloadScreenshots();
         }
 
         private BitmapSource LoadIcon()

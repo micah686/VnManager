@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 
-namespace VisualNovelManagerv2.CustomClasses
+namespace VisualNovelManagerv2.Converters
 {
     public class NullImageConverter : IValueConverter
     {

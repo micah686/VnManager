@@ -115,10 +115,10 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="CustomClasses\ConvertToBase64.cs" />
+    <Compile Include="Converters\Base64Converter.cs" />
     <Compile Include="CustomClasses\Database\AddToDatabase.cs" />
     <Compile Include="CustomClasses\MeasureStringSize.cs" />
-    <Compile Include="CustomClasses\NullImageConverter.cs" />
+    <Compile Include="Converters\NullImageConverter.cs" />
     <Compile Include="CustomClasses\RequestOptions.cs" />
     <Compile Include="CustomClasses\TextBoxService.cs" />
     <Compile Include="Design\VisualNovel\VnMainModel.cs" />
