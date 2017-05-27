@@ -96,6 +96,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 connection.Close();
             }
             SetMaxWidth();
+
         }
 
         public void SetMaxWidth()
@@ -142,6 +143,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 }
                 connection.Close();
             }
+            VnScreenshotViewModel vm = new VnScreenshotViewModel();
+            vm.GetScreenshotList();
         }
 
         private BitmapSource LoadIcon()

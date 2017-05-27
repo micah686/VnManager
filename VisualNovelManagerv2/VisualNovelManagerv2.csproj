@@ -118,9 +118,11 @@
     <Compile Include="CustomClasses\ConvertToBase64.cs" />
     <Compile Include="CustomClasses\Database\AddToDatabase.cs" />
     <Compile Include="CustomClasses\MeasureStringSize.cs" />
+    <Compile Include="CustomClasses\NullImageConverter.cs" />
     <Compile Include="CustomClasses\RequestOptions.cs" />
     <Compile Include="CustomClasses\TextBoxService.cs" />
     <Compile Include="Design\VisualNovel\VnMainModel.cs" />
+    <Compile Include="Design\VisualNovel\VnScreenshotModel.cs" />
     <Compile Include="Globals.cs" />
     <Compile Include="Infrastructure\ValidatableViewModelBase.cs" />
     <Compile Include="Pages\Links\About\FullText.xaml.cs">

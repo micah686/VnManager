@@ -36,5 +36,34 @@ namespace VisualNovelManagerv2.CustomClasses
                 return base64String;
             }
         }
+
+        public string BitmapToBase64(BitmapImage bi)
+        {
+            MemoryStream ms = new MemoryStream();
+            PngBitmapEncoder encoder = new PngBitmapEncoder();
+            encoder.Frames.Add(BitmapFrame.Create(bi));
+            encoder.Save(ms);
+            byte[] bitmapdata = ms.ToArray();
+
+            return Convert.ToBase64String(bitmapdata);
+        }
+
+        public BitmapImage GetBitmapImageFromBytes(string base64)
+        {
+            byte[] imageBytes = Convert.FromBase64String(base64);
+            BitmapImage btm;
+            using (MemoryStream ms = new MemoryStream(imageBytes))
+            {
+                btm = new BitmapImage();
+                btm.BeginInit();
+                btm.StreamSource = ms;
+                // Below code for caching is crucial.
+                btm.CacheOption = BitmapCacheOption.OnLoad;
+                btm.EndInit();
+                btm.Freeze();
+            }
+            return btm;
+        }
+
     }
 }

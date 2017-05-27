@@ -43,7 +43,7 @@ namespace VisualNovelManagerv2.ViewModel
             get { return ServiceLocator.Current.GetInstance<VnMainViewModel>(); }
         }
 
-        public VnScreenshotViewModel VnScreenshotViewModel
+        public VnScreenshotViewModel VnScreenshot
         {
             get { return ServiceLocator.Current.GetInstance<VnScreenshotViewModel>(); }
         }

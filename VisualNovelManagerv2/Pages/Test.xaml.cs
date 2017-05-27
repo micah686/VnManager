@@ -38,7 +38,7 @@ namespace VisualNovelManagerv2.Pages
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            VnScreenshotViewModel.GetScreenshotList();
+            //VnScreenshotViewModel.GetScreenshotList();
         }
 
         

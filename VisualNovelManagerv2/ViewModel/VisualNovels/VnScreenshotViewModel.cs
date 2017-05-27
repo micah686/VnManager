@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -14,6 +15,7 @@ using System.IO;
 using GalaSoft.MvvmLight.CommandWpf;
 using System.Net;
 using VisualNovelManagerv2.CustomClasses;
+using VisualNovelManagerv2.Design.VisualNovel;
 
 namespace VisualNovelManagerv2.ViewModel.VisualNovels
 {
@@ -21,15 +23,45 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
     {
         public ICommand GetScreenshotData { get; private set; }
         public static List<Screenshot> ScreenshotList = new List<Screenshot>();
+        
+
         public VnScreenshotViewModel()
         {
+            _screenshotModel = new VnScreenshotModel();
             GetScreenshotData = new RelayCommand(GetScreenshotList);
+            
+            ScreenshotCollection = new ObservableCollection<ScreenshotViewModelCollection>();
+            Globals.VnId = 93;
+            GetScreenshotList();
         }
 
 
-
-        public static void GetScreenshotList()
+        private ObservableCollection<ScreenshotViewModelCollection> _screenshotCollection;
+        public ObservableCollection<ScreenshotViewModelCollection> ScreenshotCollection
         {
+            get { return _screenshotCollection; }
+            set
+            {
+                _screenshotCollection = value;
+                RaisePropertyChanged(nameof(ScreenshotCollection));
+            }
+        }
+
+        private VnScreenshotModel _screenshotModel;
+        public VnScreenshotModel ScreenshotModel
+        {
+            get { return _screenshotModel; }
+            set
+            {
+                _screenshotModel = value;
+                RaisePropertyChanged(nameof(ScreenshotModel));
+            }
+        }
+
+        public void GetScreenshotList()
+        {
+            
+            //ScreenshotCollection = new ObservableCollection<VnScreenshotModel>();
             using (SQLiteConnection connection = new SQLiteConnection(Globals.ConnectionString))
             {
                 connection.Open();
@@ -49,6 +81,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 }
                 connection.Close();
             }
+
             //TODO: check for no images in screenshots (some not popular vns have none)
             foreach (var screenshot in ScreenshotList)
             {
@@ -74,6 +107,16 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                             File.WriteAllText(pathNoExt, base64img);
                         }                        
                     }
+                    else
+                    {
+                        ConvertToBase64 convertToBase64 = new ConvertToBase64();
+                        BitmapImage bImage = convertToBase64.GetBitmapImageFromBytes(File.ReadAllText(pathNoExt));
+
+                        _screenshotCollection.Add(new ScreenshotViewModelCollection
+                        {
+                            ScreenshotModel = new VnScreenshotModel{Screenshot = bImage}
+                        });
+                    }
                 }
 
                 if (screenshot.IsNsfw == false)
@@ -82,6 +125,14 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                     {
                         WebClient client = new WebClient();
                         client.DownloadFile(new Uri(image), path);
+                    }
+                    else
+                    {
+                        BitmapImage bImage = new BitmapImage(new Uri(path));
+                        _screenshotCollection.Add(new ScreenshotViewModelCollection
+                        {
+                            ScreenshotModel = new VnScreenshotModel{Screenshot = bImage}
+                        });
                     }
                 }
             }
@@ -104,5 +155,10 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
     {
         public string Url { get; set; }
         public bool IsNsfw { get; set; }
+    }
+
+    public class ScreenshotViewModelCollection
+    {
+        public VnScreenshotModel ScreenshotModel { get; set; }
     }
 }
