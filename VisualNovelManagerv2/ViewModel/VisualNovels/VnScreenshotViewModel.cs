@@ -22,6 +22,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
     public class VnScreenshotViewModel: ViewModelBase
     {
         public ICommand GetScreenshotData { get; private set; }
+        public ICommand LoadLargeScreenshotCommand { get; private set; }
         public static List<Screenshot> ScreenshotList = new List<Screenshot>();
         
 
@@ -29,13 +30,14 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         {
             _screenshotModel = new VnScreenshotModel();
             GetScreenshotData = new RelayCommand(GetScreenshotList);
+            LoadLargeScreenshotCommand = new RelayCommand(LoadLargeScreenshot);
             
             ScreenshotCollection = new ObservableCollection<ScreenshotViewModelCollection>();
-            Globals.VnId = 93;
+            Globals.VnId = 4;
             GetScreenshotList();
         }
 
-
+        #region StaticProperties
         private ObservableCollection<ScreenshotViewModelCollection> _screenshotCollection;
         public ObservableCollection<ScreenshotViewModelCollection> ScreenshotCollection
         {
@@ -57,6 +59,37 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 RaisePropertyChanged(nameof(ScreenshotModel));
             }
         }
+
+        private int _selectedScreenIndex = -1;
+
+        public int SelectedScreenIndex
+        {
+            get { return _selectedScreenIndex; }
+            set
+            {
+                //if (value < 0)
+                //{
+                //    value = 0;
+                //}
+                _selectedScreenIndex = value;
+                RaisePropertyChanged(nameof(SelectedScreenIndex));
+            }
+        }
+
+
+        private BitmapImage _mainImage;
+
+        public BitmapImage MainImage
+        {
+            get { return _mainImage; }
+            set
+            {
+                _mainImage = value;
+                RaisePropertyChanged(nameof(MainImage));
+            }
+        }
+        #endregion
+
 
         public void GetScreenshotList()
         {
@@ -137,6 +170,25 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 }
             }
 
+        }
+
+        private void LoadLargeScreenshot()
+        {
+
+            if (ScreenshotList[SelectedScreenIndex].IsNsfw == true)
+            {
+                string filename = Path.GetFileNameWithoutExtension(ScreenshotList[SelectedScreenIndex].Url);
+                string pathNoExt = string.Format(@"{0}\Data\images\screenshots\{1}\{2}", Globals.DirectoryPath, Globals.VnId, filename);
+                ConvertToBase64 convertToBase64 = new ConvertToBase64();
+                BitmapImage bImage = convertToBase64.GetBitmapImageFromBytes(File.ReadAllText(pathNoExt));
+                MainImage = bImage;
+            }
+            if (ScreenshotList[SelectedScreenIndex].IsNsfw == false)
+            {
+                string path = string.Format(@"{0}\Data\images\screenshots\{1}\{2}", Globals.DirectoryPath, Globals.VnId, Path.GetFileName(ScreenshotList[SelectedScreenIndex].Url));
+                BitmapImage bImage = new BitmapImage(new Uri(path));
+                MainImage = bImage;;
+            }
         }
 
         private Bitmap CreateThumbnail(Bitmap image)
