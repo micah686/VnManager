@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 using System.Windows.Media.Imaging;
 using System.IO;
+using VisualNovelManagerv2.CustomClasses;
 
 namespace VisualNovelManagerv2.Converters
 {
@@ -35,22 +37,32 @@ namespace VisualNovelManagerv2.Converters
 
             return Convert.ToBase64String(bitmapdata);
         }
-
         public static BitmapImage GetBitmapImageFromBytes(string base64)
         {
-            byte[] imageBytes = Convert.FromBase64String(base64);
-            BitmapImage btm;
-            using (MemoryStream ms = new MemoryStream(imageBytes))
+            try
             {
-                btm = new BitmapImage();
-                btm.BeginInit();
-                btm.StreamSource = ms;
-                // Below code for caching is crucial.
-                btm.CacheOption = BitmapCacheOption.OnLoad;
-                btm.EndInit();
-                btm.Freeze();
+                byte[] imageBytes = Convert.FromBase64String(base64);
+                BitmapImage btm;
+                using (MemoryStream ms = new MemoryStream(imageBytes))
+                {
+                    btm = new BitmapImage();
+                    btm.BeginInit();
+                    btm.StreamSource = ms;
+                    // Below code for caching is crucial.
+                    btm.CacheOption = BitmapCacheOption.OnLoad;
+                    btm.EndInit();
+                    btm.Freeze();
+                }
+                return btm;
             }
-            return btm;
+            catch (Exception ex)
+            {
+                DebugLogging.WriteDebugLog(ex);
+                //TODO: see about binding the error to the statusbar
+                Debug.WriteLine(ex);
+                throw;
+            }
+            
         }
     }
 }

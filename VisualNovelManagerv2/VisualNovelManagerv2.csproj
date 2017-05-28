@@ -117,6 +117,7 @@
     </Compile>
     <Compile Include="Converters\Base64Converter.cs" />
     <Compile Include="CustomClasses\Database\AddToDatabase.cs" />
+    <Compile Include="CustomClasses\DebugLogging.cs" />
     <Compile Include="CustomClasses\MeasureStringSize.cs" />
     <Compile Include="Converters\NullImageConverter.cs" />
     <Compile Include="CustomClasses\RequestOptions.cs" />

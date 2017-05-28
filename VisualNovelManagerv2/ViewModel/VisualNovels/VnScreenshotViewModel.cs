@@ -34,7 +34,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             LoadLargeScreenshotCommand = new RelayCommand(LoadLargeScreenshot);
             
             ScreenshotCollection = new ObservableCollection<ScreenshotViewModelCollection>();
-            Globals.VnId = 4;
+            Globals.VnId = 21001;
             LoadScreenshotList();
             DownloadScreenshots();
         }
@@ -95,32 +95,41 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
         private void LoadScreenshotList()
         {
-            using (SQLiteConnection connection = new SQLiteConnection(Globals.ConnectionString))
+            ScreenshotList.Clear();
+            ScreenshotCollection.Clear();
+            try
             {
-                connection.Open();
-
-                using (SQLiteCommand cmd = connection.CreateCommand())
+                using (SQLiteConnection connection = new SQLiteConnection(Globals.ConnectionString))
                 {
+                    connection.Open();
 
-                    cmd.CommandText = "SELECT * FROM VnScreens WHERE VnId = @VnId ";
-                    cmd.Parameters.AddWithValue("@VnId", Globals.VnId);
-                    //ScreenshotList.Clear();
-                    SQLiteDataReader reader = cmd.ExecuteReader();
-
-                    while (reader.Read())
+                    using (SQLiteCommand cmd = connection.CreateCommand())
                     {
-                        ScreenshotList.Add(new Screenshot { Url = (string)reader["ImageUrl"], IsNsfw = Convert.ToBoolean(reader["Nsfw"]) });
+                        cmd.CommandText = "SELECT * FROM VnScreens WHERE VnId = @VnId ";
+                        cmd.Parameters.AddWithValue("@VnId", Globals.VnId);
+                        SQLiteDataReader reader = cmd.ExecuteReader();
+
+                        while (reader.Read())
+                        {
+                            ScreenshotList.Add(new Screenshot { Url = (string)reader["ImageUrl"], IsNsfw = Convert.ToBoolean(reader["Nsfw"]) });
+                        }
                     }
+                    connection.Close();
                 }
-                connection.Close();
             }
+            catch (System.Data.SQLite.SQLiteException ex)
+            {
+                DebugLogging.WriteDebugLog(ex);
+                throw;
+            }
+            
         }
 
         public void DownloadScreenshots()
         {
-            //TODO: check for no images in screenshots (some not popular vns have none)
             foreach (var screenshot in ScreenshotList)
             {
+                if(ScreenshotList.Count < 1) return;
                 if (!Directory.Exists(string.Format(@"{0}\Data\images\screenshots\{1}", Globals.DirectoryPath,Globals.VnId)))
                 {
                     Directory.CreateDirectory(string.Format(@"{0}\Data\images\screenshots\{1}", Globals.DirectoryPath, Globals.VnId));
@@ -131,26 +140,40 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 string filename = Path.GetFileNameWithoutExtension(image);
                 string pathNoExt = string.Format(@"{0}\Data\images\screenshots\{1}\{2}", Globals.DirectoryPath, Globals.VnId, filename);
                 string path = string.Format(@"{0}\Data\images\screenshots\{1}\{2}", Globals.DirectoryPath, Globals.VnId, Path.GetFileName(image));
-                if (screenshot.IsNsfw == true)
+                try
                 {
-                    if (!File.Exists(pathNoExt))
+                    if (screenshot.IsNsfw == true)
                     {
-                        WebClient client = new WebClient();
-                        using (MemoryStream stream = new MemoryStream(client.DownloadData(new Uri(image))))
+                        if (!File.Exists(pathNoExt))
                         {
-                            string base64img = Base64Converter.ImageToBase64(Image.FromStream(stream), ImageFormat.Jpeg);
-                            File.WriteAllText(pathNoExt, base64img);
-                        }                        
+                            WebClient client = new WebClient();
+                            using (MemoryStream stream = new MemoryStream(client.DownloadData(new Uri(image))))
+                            {
+                                string base64img =
+                                    Base64Converter.ImageToBase64(Image.FromStream(stream), ImageFormat.Jpeg);
+                                File.WriteAllText(pathNoExt, base64img);
+                            }
+                        }
                     }
-                }
-                if (screenshot.IsNsfw == false)
-                {                    
-                    if (!File.Exists(path))
+                    if (screenshot.IsNsfw == false)
                     {
-                        WebClient client = new WebClient();
-                        client.DownloadFile(new Uri(image), path);
+                        if (!File.Exists(path))
+                        {
+                            WebClient client = new WebClient();
+                            client.DownloadFile(new Uri(image), path);
+                        }
                     }
                 }
+                catch (System.Net.WebException ex)
+                {
+                    DebugLogging.WriteDebugLog(ex);
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    DebugLogging.WriteDebugLog(ex);
+                }
+                
             }
             BindScreenshots();
         }
@@ -159,6 +182,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         {
             foreach (var screenshot in ScreenshotList)
             {
+                if (ScreenshotList.Count < 1) return;
                 var image = screenshot.Url;
                 string filename = Path.GetFileNameWithoutExtension(image);
                 string pathNoExt = string.Format(@"{0}\Data\images\screenshots\{1}\{2}", Globals.DirectoryPath, Globals.VnId, filename);

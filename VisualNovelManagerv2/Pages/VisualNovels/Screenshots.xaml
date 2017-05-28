@@ -18,7 +18,7 @@
     </UserControl.Resources>
 
     <Grid Margin="{StaticResource RootMargin}">
-        <Grid x:Name="ScreenshotGrid" ShowGridLines="True" Margin="10,10,10,35">
+        <Grid x:Name="ScreenshotGrid"  Margin="10,10,10,35">
             <Grid.RowDefinitions>
                 <RowDefinition Height="9*"/>
                 <RowDefinition Height="2.5*"/>
