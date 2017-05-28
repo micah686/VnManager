@@ -180,27 +180,31 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                         VnMainModel.VnIcon = LoadIcon();
                         VnMainModel.Original = items[3].ToString();
                         VnMainModel.Released = items[4].ToString();
-                        VnMainModel.Platforms = items[7].ToString();
-                        VnMainModel.Aliases = items[8].ToString();
-                        VnMainModel.Length = items[9].ToString();
-                        VnMainModel.Description = items[10].ToString();
-                        DownloadCoverImage(items[11].ToString(), Convert.ToBoolean(items[12]));
-                        VnMainModel.Popularity = Math.Round(Convert.ToDouble(items[13]), 2);
-                        VnMainModel.Rating = Convert.ToInt32(items[14]);
 
-                        
                         List<string> languages = GetLangauges(items[5].ToString());
                         foreach (string language in languages)
                         {
                             _languageCollection.Add(new LanguagesCollection { VnMainModel = new VnMainModel { Languages = new BitmapImage(new Uri(language)) } });
                         }
-
                         List<string> orig_languages = GetLangauges(items[6].ToString());
                         foreach (string language in orig_languages)
                         {
-                            _originalLanguagesCollection.Add(new OriginalLanguagesCollection{VnMainModel = new VnMainModel{OriginalLanguages = new BitmapImage(new Uri(language)) } });
+                            _originalLanguagesCollection.Add(new OriginalLanguagesCollection { VnMainModel = new VnMainModel { OriginalLanguages = new BitmapImage(new Uri(language)) } });
                         }
+                        VnMainModel.Platforms = items[7].ToString();
+                        VnMainModel.Aliases = items[8].ToString();
+                        VnMainModel.Length = items[9].ToString();
+                        VnMainModel.Description = ConvertRichTextDocument.ConvertToFlowDocument(items[10].ToString());
+                        DownloadCoverImage(items[11].ToString(), Convert.ToBoolean(items[12]));
+                        VnMainModel.Popularity = Math.Round(Convert.ToDouble(items[13]), 2);
+                        VnMainModel.Rating = Convert.ToInt32(items[14]);
+
+
+                        
+
+                        
                         Thread.Sleep(0);
+
 
 
 

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Documents;
 using System.Windows.Media.Imaging;
 
 namespace VisualNovelManagerv2.Design.VisualNovel
@@ -120,15 +121,15 @@ namespace VisualNovelManagerv2.Design.VisualNovel
 
 
 
-        public string Description
+        public FlowDocument Description
         {
-            get { return (string)GetValue(DescriptionProperty); }
+            get { return (FlowDocument)GetValue(DescriptionProperty); }
             set { SetValue(DescriptionProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for Description.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty DescriptionProperty =
-            DependencyProperty.Register("Description", typeof(string), typeof(VnMainModel), new PropertyMetadata(null));
+            DependencyProperty.Register("Description", typeof(FlowDocument), typeof(VnMainModel), new PropertyMetadata(null));
 
 
 
