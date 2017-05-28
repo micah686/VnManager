@@ -116,6 +116,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Converters\Base64Converter.cs" />
+    <Compile Include="CustomClasses\BindableRichTextBox.cs" />
     <Compile Include="CustomClasses\Database\AddToDatabase.cs" />
     <Compile Include="CustomClasses\DebugLogging.cs" />
     <Compile Include="CustomClasses\MeasureStringSize.cs" />
@@ -266,8 +267,40 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="Resources\" />
+    <Content Include="Resources\flags\ar.png" />
+    <Content Include="Resources\flags\ca.png" />
+    <Content Include="Resources\flags\cs.png" />
+    <Content Include="Resources\flags\da.png" />
+    <Content Include="Resources\flags\de.png" />
+    <Content Include="Resources\flags\en.png" />
+    <Content Include="Resources\flags\es.png" />
+    <Content Include="Resources\flags\fi.png" />
+    <Content Include="Resources\flags\fr.png" />
+    <Content Include="Resources\flags\he.png" />
+    <Content Include="Resources\flags\hr.png" />
+    <Content Include="Resources\flags\hu.png" />
+    <Content Include="Resources\flags\id.png" />
+    <Content Include="Resources\flags\it.png" />
+    <Content Include="Resources\flags\ja.png" />
+    <Content Include="Resources\flags\ko.png" />
+    <Content Include="Resources\flags\nl.png" />
+    <Content Include="Resources\flags\no.png" />
+    <Content Include="Resources\flags\pl.png" />
+    <Content Include="Resources\flags\pt-br.png" />
+    <Content Include="Resources\flags\pt-pt.png" />
+    <Content Include="Resources\flags\ro.png" />
+    <Content Include="Resources\flags\ru.png" />
+    <Content Include="Resources\flags\sk.png" />
+    <Content Include="Resources\flags\sv.png" />
+    <Content Include="Resources\flags\ta.png" />
+    <Content Include="Resources\flags\th.png" />
+    <Content Include="Resources\flags\tr.png" />
+    <Content Include="Resources\flags\uk.png" />
+    <Content Include="Resources\flags\Unknown.png" />
+    <Content Include="Resources\flags\vi.png" />
+    <Content Include="Resources\flags\zh.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\System.Data.SQLite.Core.1.0.105.0\build\net46\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.105.0\build\net46\System.Data.SQLite.Core.targets')" />
@@ -282,6 +315,11 @@
 ROBOCOPY "$(TargetDir)x86" "$(TargetDir)Data\libs\x86 "  /MOVE
 ROBOCOPY "$(TargetDir)x64" "$(TargetDir)Data\libs\x64 "  /MOVE
 DEL *.dll *.pdb *.xml
+
+
+ROBOCOPY "$(SolutionDir)Resources " "$(TargetDir)Data\res\ "
+ROBOCOPY "D:\Documents\Visual Studio 2017\Projects\Testing Projects\Visual-Novel-Manager-v2\VisualNovelManagerv2\Resources\flags" "D:\Documents\Visual Studio 2017\Projects\Testing Projects\Visual-Novel-Manager-v2\VisualNovelManagerv2\bin\Debug\Data\res\country_flags"
+
 if errorlevel 1 exit 0 else exit %25errorlevel%25</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

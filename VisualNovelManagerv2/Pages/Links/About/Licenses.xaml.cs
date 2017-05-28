@@ -42,6 +42,7 @@ namespace VisualNovelManagerv2.Pages.Links.About
             data.Add(new LicenseData { Software = "System.Reflection.TypeExtensions", Info = "Provides extensions for reflection", Url = "https://www.nuget.org/packages/System.Reflection.TypeExtensions", License = "Microsoft Proprietary" });
             data.Add(new LicenseData { Software = "System.Security.SecureString", Info = "Provides the SecureString class", Url = "https://www.nuget.org/packages/System.Security.SecureString", License = "Microsoft Proprietary" });
             data.Add(new LicenseData { Software = "MvvmValidation", Info = "Framework that removes boilerplate for validation", Url = "https://www.nuget.org/packages/MvvmValidation", License = "MIT" });
+            data.Add(new LicenseData{Software = "GoSquared Flag Icons", Info = "A large set of flag icons", Url = "https://github.com/gosquared/flags", License = "MIT"});
             return data;
         }
     }

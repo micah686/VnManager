@@ -60,15 +60,15 @@ namespace VisualNovelManagerv2.Design.VisualNovel
 
 
 
-        public string Languages
+        public BitmapImage Languages
         {
-            get { return (string)GetValue(LanguagesProperty); }
+            get { return (BitmapImage)GetValue(LanguagesProperty); }
             set { SetValue(LanguagesProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for Languages.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty LanguagesProperty =
-            DependencyProperty.Register("Languages", typeof(string), typeof(VnMainModel), new PropertyMetadata(null));
+            DependencyProperty.Register("Languages", typeof(BitmapImage), typeof(VnMainModel), new PropertyMetadata(null));
 
 
 

@@ -4,9 +4,17 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local ="clr-namespace:VisualNovelManagerv2.Pages"
+             xmlns:custom="clr-namespace:VisualNovelManagerv2.CustomClasses"
              mc:Ignorable="d" 
-             d:DesignHeight="600" d:DesignWidth="500"
+             d:DesignHeight="600" d:DesignWidth="800"
              DataContext="{Binding VnMain, Source={StaticResource Locator}}">
+
+    <UserControl.Resources>
+        <DataTemplate x:Key="LanguageDataTemplate">
+            <Image Source="{Binding VnMainModel.Languages}" Stretch="UniformToFill"  Height="16" Width="16" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+        </DataTemplate>
+    </UserControl.Resources>
+
     <Grid Margin="{StaticResource RootMargin}">
 
         <Grid x:Name="VnMainGrid" Margin="10,10,10,35">
@@ -19,7 +27,7 @@
 
                 <Grid Grid.Column="0" >
                     <ListBox Name="NoteList" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" ItemsSource="{Binding VnNameCollection}" Margin="0,0,5,5"
-                             Width="{Binding MaxListWidth}" MaxWidth="{Binding MaxListWidth}" MinWidth="50" SelectedIndex="{Binding SelectedListItemIndex}"/>
+                             Width="{Binding MaxListWidth}" MaxWidth="{Binding MaxListWidth}" MinWidth="150" SelectedIndex="{Binding SelectedListItemIndex}"/>
                 </Grid>
 
                 <!--#region Divider-->
@@ -101,7 +109,7 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Image VerticalAlignment="Top" Width="256" Height="326" Grid.Column="0" 
-                                        Source="D:\Documents\Visual Studio 2017\Projects\Testing Projects\Visual-Novel-Manager-v2\VisualNovelManagerv2\Resources\17102.jpg"/>
+                                        Source="{Binding VnMainModel.Image}"/>
 
                             <StackPanel Grid.Column="1" Margin="10,10,0,0">
                                 <Grid Margin="10,10,0,0">
@@ -111,7 +119,7 @@
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
                                         <Label Grid.Column="0" Content="Aliases:" />
-                                        <Label Grid.Column="1" Content="XXXXXX" Width="150" Margin="15,0,0,0"/>
+                                        <Label Grid.Column="1" Content="{Binding VnMainModel.Aliases}" Width="Auto" Margin="15,0,0,0"/>
                                     </Grid>
                                 </Grid>
 
@@ -122,7 +130,7 @@
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
                                         <Label Grid.Column="0" Content="Released:" />
-                                        <Label Grid.Column="1" Content="XXXXXX" Width="150" Margin="15,0,0,0"/>
+                                        <Label Grid.Column="1" Content="{Binding VnMainModel.Released}" Width="150" Margin="15,0,0,0"/>
                                     </Grid>
                                 </Grid>
 
@@ -133,7 +141,7 @@
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
                                         <Label Grid.Column="0" Content="Length:" />
-                                        <Label Grid.Column="1" Content="XXXXXX" Width="150" Margin="15,0,0,0"/>
+                                        <Label Grid.Column="1" Content="{Binding VnMainModel.Length}" Width="150" Margin="15,0,0,0"/>
                                     </Grid>
                                 </Grid>
 
@@ -144,7 +152,14 @@
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
                                         <Label Grid.Column="0" Content="Languages:" />
-                                        <Label Grid.Column="1" Content="XXXXXX" Width="150" Margin="15,0,0,0"/>
+                                        <ListBox Grid.Column="1" ItemsSource="{Binding LanguageCollection}" ItemTemplate="{StaticResource LanguageDataTemplate}" Margin="15,0,0,0" >
+                                            <ListBox.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <StackPanel Orientation="Horizontal"/>
+                                                </ItemsPanelTemplate>
+                                            </ListBox.ItemsPanel>
+                                        </ListBox>
+                                        <!--<Label Grid.Column="1" Content="XXXXXX" Width="150" Margin="15,0,0,0"/>-->
                                     </Grid>
                                 </Grid>
 
@@ -155,7 +170,7 @@
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
                                         <Label Grid.Column="0" Content="Original Language:" />
-                                        <Label Grid.Column="1" Content="XXXXXX" Width="150" Margin="15,0,0,0"/>
+                                        <Label Grid.Column="1" Content="{Binding VnMainModel.OriginalLanguages}" Width="150" Margin="15,0,0,0"/>
                                     </Grid>
                                 </Grid>
 
@@ -166,7 +181,7 @@
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
                                         <Label Grid.Column="0" Content="Platforms:" />
-                                        <Label Grid.Column="1" Content="XXXXXX" Width="150" Margin="15,0,0,0"/>
+                                        <Label Grid.Column="1" Content="{Binding VnMainModel.Platforms}" Width="150" Margin="15,0,0,0"/>
                                     </Grid>
                                 </Grid>
 
@@ -177,7 +192,7 @@
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
                                         <Label Grid.Column="0" Content="Popularity:" />
-                                        <Label Grid.Column="1" Content="XXXXXX" Width="150" Margin="15,0,0,0"/>
+                                        <Label Grid.Column="1" Content="{Binding VnMainModel.Popularity}" Width="150" Margin="15,0,0,0"/>
                                     </Grid>
                                 </Grid>
 
@@ -188,7 +203,7 @@
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
                                         <Label Grid.Column="0" Content="Rating:" />
-                                        <Label Grid.Column="1" Content="XXXXXX" Width="150" Margin="15,0,0,0"/>
+                                        <Label Grid.Column="1" Content="{Binding VnMainModel.Rating}" Width="150" Margin="15,0,0,0"/>
                                     </Grid>
                                 </Grid>
 
@@ -223,7 +238,7 @@
                         <Label Grid.Row="4" Grid.Column="0" Margin="5,10,0,0" Content="Summary:"/>
 
                         <Grid Grid.Row="5" Grid.Column="0" Margin="10,10,25,0">
-                            <TextBox IsReadOnly="True" MinWidth="250" MinHeight="70"/>
+                            <TextBox IsReadOnly="True" MinWidth="250" MinHeight="70" Text="{Binding VnMainModel.Description}" TextWrapping="Wrap"/>
                         </Grid>
 
                         <TextBlock Grid.Row="6" Text="Tags" Margin="10,20,0,0" Style="{StaticResource Heading2}"/>

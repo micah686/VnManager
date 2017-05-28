@@ -85,7 +85,7 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                                 cmd.Parameters.AddWithValue("@OriginalLanguage", CheckForDbNull(ConvertToCsv(visualNovel.OriginalLanguages)));
                                 cmd.Parameters.AddWithValue("@Platforms", CheckForDbNull(ConvertToCsv(visualNovel.Platforms)));
                                 cmd.Parameters.AddWithValue("@Aliases", CheckForDbNull(ConvertToCsv(visualNovel.Aliases)));                                                                                               
-                                cmd.Parameters.AddWithValue("@Length", CheckForDbNull(visualNovel.Length));
+                                cmd.Parameters.AddWithValue("@Length", CheckForDbNull(visualNovel.Length.Value));
                                 cmd.Parameters.AddWithValue("@Description", CheckForDbNull(visualNovel.Description));
                                 cmd.Parameters.AddWithValue("@ImageLink", CheckForDbNull(visualNovel.Image));
                                 cmd.Parameters.AddWithValue("@ImageNsfw", CheckForDbNull(visualNovel.IsImageNsfw.ToString()));
