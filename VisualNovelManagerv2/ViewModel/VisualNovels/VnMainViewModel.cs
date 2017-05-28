@@ -40,12 +40,16 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         {
             VnNameCollection = new ObservableCollection<string>();
             LanguageCollection = new ObservableCollection<LanguagesCollection>();
+            OriginalLanguagesCollection = new ObservableCollection<OriginalLanguagesCollection>();
             BindVnNameCollectionCommand = new RelayCommand(LoadVnNameCollection);
             GetVnDataCommand = new RelayCommand(GetVnData);
             LoadVnNameCollection();
             _vnMainModel = new VnMainModel();
         }
+
         #region Static Properties
+
+        #region maxwidth
         private double _maxListWidth;
         public double MaxListWidth
         {
@@ -56,7 +60,9 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 RaisePropertyChanged(nameof(MaxListWidth));
             }
         }
+        #endregion
 
+        #region SelectedListItemIndex
         private int _selectedListItemIndex;
         public int SelectedListItemIndex
         {
@@ -67,7 +73,9 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 RaisePropertyChanged(nameof(SelectedListItemIndex));
             }
         }
+        #endregion
 
+        #region VnMainMode
         private VnMainModel _vnMainModel;
         public VnMainModel VnMainModel
         {
@@ -78,9 +86,10 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 RaisePropertyChanged(nameof(VnMainModel));
             }
         }
+        #endregion
 
+        #region ObservableLanguageCollection
         private ObservableCollection<LanguagesCollection> _languageCollection;
-
         public ObservableCollection<LanguagesCollection> LanguageCollection
         {
             get { return _languageCollection; }
@@ -90,6 +99,25 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 RaisePropertyChanged(nameof(LanguageCollection));
             }
         }
+        #endregion
+
+        #region ObserableOriginalLanguageCollection
+
+        private ObservableCollection<OriginalLanguagesCollection> _originalLanguagesCollection;
+        public ObservableCollection<OriginalLanguagesCollection> OriginalLanguagesCollection
+        {
+            get { return _originalLanguagesCollection; }
+            set
+            {
+                _originalLanguagesCollection = value;
+                RaisePropertyChanged(nameof(OriginalLanguagesCollection));
+            }
+        }
+        
+
+        #endregion
+
+
         #endregion
         private void LoadVnNameCollection()
         {
@@ -129,6 +157,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
         private void GetVnData()
         {
+            _languageCollection.Clear();
+            _originalLanguagesCollection.Clear();
             DataTable dataTable = new DataTable();
             using (SQLiteConnection connection = new SQLiteConnection(Globals.ConnectionString))
             {
@@ -150,7 +180,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                         VnMainModel.VnIcon = LoadIcon();
                         VnMainModel.Original = items[3].ToString();
                         VnMainModel.Released = items[4].ToString();
-                        VnMainModel.OriginalLanguages = items[6].ToString();
                         VnMainModel.Platforms = items[7].ToString();
                         VnMainModel.Aliases = items[8].ToString();
                         VnMainModel.Length = items[9].ToString();
@@ -158,7 +187,19 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                         DownloadCoverImage(items[11].ToString(), Convert.ToBoolean(items[12]));
                         VnMainModel.Popularity = Math.Round(Convert.ToDouble(items[13]), 2);
                         VnMainModel.Rating = Convert.ToInt32(items[14]);
-                        GetLangauges(items[5].ToString());
+
+                        
+                        List<string> languages = GetLangauges(items[5].ToString());
+                        foreach (string language in languages)
+                        {
+                            _languageCollection.Add(new LanguagesCollection { VnMainModel = new VnMainModel { Languages = new BitmapImage(new Uri(language)) } });
+                        }
+
+                        List<string> orig_languages = GetLangauges(items[6].ToString());
+                        foreach (string language in orig_languages)
+                        {
+                            _originalLanguagesCollection.Add(new OriginalLanguagesCollection{VnMainModel = new VnMainModel{OriginalLanguages = new BitmapImage(new Uri(language)) } });
+                        }
                         Thread.Sleep(0);
 
 
@@ -184,115 +225,102 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 switch (lang)
                 {
                     case "ar":
-                        filenames.Add(string.Format(@"{0}\Data\res\country_flags\{1}.png",Globals.DirectoryPath,lang));
+                        filenames.Add($@"{Globals.DirectoryPath}\Data\res\country_flags\{lang}.png");
                         break;
                     case "ca":
-                        filenames.Add(string.Format(@"{0}\Data\res\country_flags\{1}.png", Globals.DirectoryPath, lang));
+                        filenames.Add($@"{Globals.DirectoryPath}\Data\res\country_flags\{lang}.png");
                         break;
                     case "cs":
-                        filenames.Add(string.Format(@"{0}\Data\res\country_flags\{1}.png", Globals.DirectoryPath, lang));
+                        filenames.Add($@"{Globals.DirectoryPath}\Data\res\country_flags\{lang}.png");
                         break;
                     case "da":
-                        filenames.Add(string.Format(@"{0}\Data\res\country_flags\{1}.png", Globals.DirectoryPath, lang));
+                        filenames.Add($@"{Globals.DirectoryPath}\Data\res\country_flags\{lang}.png");
                         break;
                     case "de":
-                        filenames.Add(string.Format(@"{0}\Data\res\country_flags\{1}.png", Globals.DirectoryPath, lang));
+                        filenames.Add($@"{Globals.DirectoryPath}\Data\res\country_flags\{lang}.png");
                         break;
                     case "en":
-                        filenames.Add(string.Format(@"{0}\Data\res\country_flags\{1}.png", Globals.DirectoryPath, lang));
+                        filenames.Add($@"{Globals.DirectoryPath}\Data\res\country_flags\{lang}.png");
                         break;
                     case "es":
-                        filenames.Add(string.Format(@"{0}\Data\res\country_flags\{1}.png", Globals.DirectoryPath, lang));
+                        filenames.Add($@"{Globals.DirectoryPath}\Data\res\country_flags\{lang}.png");
                         break;
                     case "fi":
-                        filenames.Add(string.Format(@"{0}\Data\res\country_flags\{1}.png", Globals.DirectoryPath, lang));
+                        filenames.Add($@"{Globals.DirectoryPath}\Data\res\country_flags\{lang}.png");
                         break;
                     case "fr":
-                        filenames.Add(string.Format(@"{0}\Data\res\country_flags\{1}.png", Globals.DirectoryPath, lang));
+                        filenames.Add($@"{Globals.DirectoryPath}\Data\res\country_flags\{lang}.png");
                         break;
                     case "he":
-                        filenames.Add(string.Format(@"{0}\Data\res\country_flags\{1}.png", Globals.DirectoryPath, lang));
+                        filenames.Add($@"{Globals.DirectoryPath}\Data\res\country_flags\{lang}.png");
                         break;
                     case "hr":
-                        filenames.Add(string.Format(@"{0}\Data\res\country_flags\{1}.png", Globals.DirectoryPath, lang));
+                        filenames.Add($@"{Globals.DirectoryPath}\Data\res\country_flags\{lang}.png");
                         break;
                     case "hu":
-                        filenames.Add(string.Format(@"{0}\Data\res\country_flags\{1}.png", Globals.DirectoryPath, lang));
+                        filenames.Add($@"{Globals.DirectoryPath}\Data\res\country_flags\{lang}.png");
                         break;
                     case "id":
-                        filenames.Add(string.Format(@"{0}\Data\res\country_flags\{1}.png", Globals.DirectoryPath, lang));
+                        filenames.Add($@"{Globals.DirectoryPath}\Data\res\country_flags\{lang}.png");
                         break;
                     case "it":
-                        filenames.Add(string.Format(@"{0}\Data\res\country_flags\{1}.png", Globals.DirectoryPath, lang));
+                        filenames.Add($@"{Globals.DirectoryPath}\Data\res\country_flags\{lang}.png");
                         break;
                     case "ja":
-                        filenames.Add(string.Format(@"{0}\Data\res\country_flags\{1}.png", Globals.DirectoryPath, lang));
+                        filenames.Add($@"{Globals.DirectoryPath}\Data\res\country_flags\{lang}.png");
                         break;
                     case "ko":
-                        filenames.Add(string.Format(@"{0}\Data\res\country_flags\{1}.png", Globals.DirectoryPath, lang));
+                        filenames.Add($@"{Globals.DirectoryPath}\Data\res\country_flags\{lang}.png");
                         break;
                     case "nl":
-                        filenames.Add(string.Format(@"{0}\Data\res\country_flags\{1}.png", Globals.DirectoryPath, lang));
+                        filenames.Add($@"{Globals.DirectoryPath}\Data\res\country_flags\{lang}.png");
                         break;
                     case "pl":
-                        filenames.Add(string.Format(@"{0}\Data\res\country_flags\{1}.png", Globals.DirectoryPath, lang));
+                        filenames.Add($@"{Globals.DirectoryPath}\Data\res\country_flags\{lang}.png");
                         break;
                     case "pt-br":
-                        filenames.Add(string.Format(@"{0}\Data\res\country_flags\{1}.png", Globals.DirectoryPath, lang));
+                        filenames.Add($@"{Globals.DirectoryPath}\Data\res\country_flags\{lang}.png");
                         break;
                     case "pt-pt":
-                        filenames.Add(string.Format(@"{0}\Data\res\country_flags\{1}.png", Globals.DirectoryPath, lang));
+                        filenames.Add($@"{Globals.DirectoryPath}\Data\res\country_flags\{lang}.png");
                         break;
                     case "ro":
-                        filenames.Add(string.Format(@"{0}\Data\res\country_flags\{1}.png", Globals.DirectoryPath, lang));
+                        filenames.Add($@"{Globals.DirectoryPath}\Data\res\country_flags\{lang}.png");
                         break;
                     case "ru":
-                        filenames.Add(string.Format(@"{0}\Data\res\country_flags\{1}.png", Globals.DirectoryPath, lang));
+                        filenames.Add($@"{Globals.DirectoryPath}\Data\res\country_flags\{lang}.png");
                         break;
                     case "sk":
-                        filenames.Add(string.Format(@"{0}\Data\res\country_flags\{1}.png", Globals.DirectoryPath, lang));
+                        filenames.Add($@"{Globals.DirectoryPath}\Data\res\country_flags\{lang}.png");
                         break;
                     case "sv":
-                        filenames.Add(string.Format(@"{0}\Data\res\country_flags\{1}.png", Globals.DirectoryPath, lang));
+                        filenames.Add($@"{Globals.DirectoryPath}\Data\res\country_flags\{lang}.png");
                         break;
                     case "ta":
-                        filenames.Add(string.Format(@"{0}\Data\res\country_flags\{1}.png", Globals.DirectoryPath, lang));
+                        filenames.Add($@"{Globals.DirectoryPath}\Data\res\country_flags\{lang}.png");
                         break;
                     case "th":
-                        filenames.Add(string.Format(@"{0}\Data\res\country_flags\{1}.png", Globals.DirectoryPath, lang));
+                        filenames.Add($@"{Globals.DirectoryPath}\Data\res\country_flags\{lang}.png");
                         break;
                     case "tr":
-                        filenames.Add(string.Format(@"{0}\Data\res\country_flags\{1}.png", Globals.DirectoryPath, lang));
+                        filenames.Add($@"{Globals.DirectoryPath}\Data\res\country_flags\{lang}.png");
                         break;
                     case "uk":
-                        filenames.Add(string.Format(@"{0}\Data\res\country_flags\{1}.png", Globals.DirectoryPath, lang));
+                        filenames.Add($@"{Globals.DirectoryPath}\Data\res\country_flags\{lang}.png");
                         break;
-                    case "zi":
-                        filenames.Add(string.Format(@"{0}\Data\res\country_flags\{1}.png", Globals.DirectoryPath, lang));
+                    case "vi":
+                        filenames.Add($@"{Globals.DirectoryPath}\Data\res\country_flags\{lang}.png");
                         break;
                     case "zh":
-                        filenames.Add(string.Format(@"{0}\Data\res\country_flags\{1}.png", Globals.DirectoryPath, lang));
+                        filenames.Add($@"{Globals.DirectoryPath}\Data\res\country_flags\{lang}.png");
                         break;
                     default:
-                        filenames.Add(string.Format(@"{0}\Data\res\country_flags\unknown.png", Globals.DirectoryPath));
+                        filenames.Add($@"{Globals.DirectoryPath}\Data\res\country_flags\Unknown.png");
                         break;
                 }
             }
 
             return filenames;
-        }
-
-        private void LoadLanguages()
-        {
-            string image =
-                @"D:\Documents\Visual Studio 2017\Projects\Testing Projects\Visual-Novel-Manager-v2\VisualNovelManagerv2\Resources\flags\Unknown.png";
-
-            BitmapImage bImage = new BitmapImage(new Uri(image));
-            for (int i = 0; i < 5; i++)
-            {
-                _languageCollection.Add(new LanguagesCollection{VnMainModel = new VnMainModel{Languages = bImage}});
-            }
-            //VnMainModel.Languages = languageList;
         }
 
         private BitmapSource LoadIcon()
@@ -410,6 +438,11 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
     }
 
     public class LanguagesCollection
+    {
+        public VnMainModel VnMainModel { get; set; }
+    }
+
+    public class OriginalLanguagesCollection
     {
         public VnMainModel VnMainModel { get; set; }
     }

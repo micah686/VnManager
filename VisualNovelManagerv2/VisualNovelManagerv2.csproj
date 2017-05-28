@@ -317,8 +317,7 @@ ROBOCOPY "$(TargetDir)x64" "$(TargetDir)Data\libs\x64 "  /MOVE
 DEL *.dll *.pdb *.xml
 
 
-ROBOCOPY "$(SolutionDir)Resources " "$(TargetDir)Data\res\ "
-ROBOCOPY "D:\Documents\Visual Studio 2017\Projects\Testing Projects\Visual-Novel-Manager-v2\VisualNovelManagerv2\Resources\flags" "D:\Documents\Visual Studio 2017\Projects\Testing Projects\Visual-Novel-Manager-v2\VisualNovelManagerv2\bin\Debug\Data\res\country_flags"
+ROBOCOPY "$(TargetDir)..\..\Resources\Flags " "$(TargetDir)Data\res\country_flags " *.png 
 
 if errorlevel 1 exit 0 else exit %25errorlevel%25</PostBuildEvent>
   </PropertyGroup>
