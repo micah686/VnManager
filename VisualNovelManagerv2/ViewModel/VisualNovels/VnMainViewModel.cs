@@ -267,11 +267,10 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 _vnInfoRelation.Add(new VnInfoRelation { Title = row["Title"].ToString(), Original = row["Original"].ToString(), Relation = row["Relation"].ToString(), Official = row["Official"].ToString() });
             }
 
-            //dataTable.Clear();
             dataTable = dataSet.Tables["VnInfoTags"];
             foreach (DataRow row in dataTable.Rows)
             {
-                _vnInfoTagCollection.Add(row["TagId"].ToString());
+                _vnInfoTagCollection.Add(row["TagName"].ToString());
             }
 
             VnMainModel.Name = vninfo[2].ToString();
