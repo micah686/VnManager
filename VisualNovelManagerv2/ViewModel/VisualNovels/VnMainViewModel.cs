@@ -25,6 +25,8 @@ using VisualNovelManagerv2.Design.VisualNovel;
 using static System.Windows.FontStyles;
 using Brushes = System.Windows.Media.Brushes;
 using VisualNovelManagerv2.CustomClasses;
+using VndbSharp;
+using VndbSharp.Models.Dumps;
 
 
 // ReSharper disable ExplicitCallerInfoArgument
@@ -43,6 +45,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             LanguageCollection = new ObservableCollection<LanguagesCollection>();
             OriginalLanguagesCollection = new ObservableCollection<OriginalLanguagesCollection>();
             VnInfoRelation = new ObservableCollection<VnInfoRelation>();
+            VnInfoTagCollection = new ObservableCollection<string>();
             BindVnNameCollectionCommand = new RelayCommand(LoadVnNameCollection);
             GetVnDataCommand = new RelayCommand(GetVnData);
             LoadVnNameCollection();
@@ -132,6 +135,18 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         }
         #endregion
 
+        #region VnTagObservableCollection
+        private ObservableCollection<string> _vnInfoTagCollection;
+        public ObservableCollection<string> VnInfoTagCollection
+        {
+            get { return _vnInfoTagCollection; }
+            set
+            {
+                _vnInfoTagCollection = value;
+                RaisePropertyChanged(nameof(VnInfoTagCollection));
+            }
+        }        
+        #endregion
 
         #endregion
         private void LoadVnNameCollection()
@@ -172,8 +187,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
         private void GetVnData()
         {
-            _languageCollection.Clear();
-            _originalLanguagesCollection.Clear();
+            
             DataSet dataSet =new DataSet();
             SQLiteDataAdapter adapter = new SQLiteDataAdapter();
             using (SQLiteConnection connection = new SQLiteConnection(Globals.ConnectionString))
@@ -235,6 +249,14 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 connection.Close();
             }
 
+            BindVnData(dataSet);
+            
+        }
+
+        private async void BindVnData(DataSet dataSet)
+        {
+            _languageCollection.Clear();
+            _originalLanguagesCollection.Clear();
             var vninfo = dataSet.Tables[0].Rows[0].ItemArray;
 
             DataTable dataTable = new DataTable();
@@ -242,10 +264,25 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             //TODO: WARNING: CURRENT BUILD OF VNDBSHARP ONLY RETURNS SEQUEL FOR RELATION TYPE
             foreach (DataRow row in dataTable.Rows)
             {
-                _vnInfoRelation.Add(new VnInfoRelation{Title = row["Title"].ToString(), Original = row["Original"].ToString(), Relation = row["Relation"].ToString(), Official = row["Official"].ToString() });
+                _vnInfoRelation.Add(new VnInfoRelation { Title = row["Title"].ToString(), Original = row["Original"].ToString(), Relation = row["Relation"].ToString(), Official = row["Official"].ToString() });
             }
 
-            
+            //dataTable.Clear();
+            dataTable = dataSet.Tables["VnInfoTags"];
+            foreach (DataRow row in dataTable.Rows)
+            {
+                _vnInfoTagCollection.Add(row["TagId"].ToString());
+            }
+
+
+            IEnumerable<Tag> test = await VndbUtils.GetTagsDumpAsync();
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+            IEnumerable<Tag> matches = test.AsParallel().Where(el => el.Id == Convert.ToUInt32(VnInfoTagCollection));
+            sw.Stop();
+            Console.WriteLine(sw.Elapsed.TotalMilliseconds);
+            Thread.Sleep(0);
+
             VnMainModel.Name = vninfo[2].ToString();
             VnMainModel.VnIcon = LoadIcon();
             VnMainModel.Original = vninfo[3].ToString();
@@ -270,7 +307,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             VnMainModel.Rating = Convert.ToInt32(vninfo[14]);
 
             VnScreenshotViewModel vm = new VnScreenshotViewModel();
-            
+
             vm.DownloadScreenshots();
         }
 

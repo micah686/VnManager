@@ -277,7 +277,7 @@
                                     <ColumnDefinition Width="7*"/>
                                 </Grid.ColumnDefinitions>
                                 <!--change listbox to use max width of largest string, so it doesn't dynamically adjust-->
-                                <ListBox Grid.Column="0"   ItemsSource="{x:Static Fonts.SystemFontFamilies}" Height="250"/>
+                                <ListBox Grid.Column="0"   ItemsSource="{Binding VnInfoTagCollection}" Height="250"/>
                                 <TextBox Grid.Column="1" MinWidth="250" MinHeight="70" IsReadOnly="True" Margin="15,0,25,0"/>
                             </Grid>
                         </Grid>

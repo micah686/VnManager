@@ -23,6 +23,9 @@ using System.Drawing;
 using Brushes = System.Windows.Media.Brushes;
 using FontFamily = System.Drawing.FontFamily;
 using Size = System.Drawing.Size;
+using System.IO.Compression;
+using VndbSharp.Models.Dumps;
+using VndbSharp.Models.VisualNovel;
 
 namespace VisualNovelManagerv2.Pages
 {
@@ -36,21 +39,54 @@ namespace VisualNovelManagerv2.Pages
             InitializeComponent();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private async void Button_Click(object sender, RoutedEventArgs e)
         {
             //VnScreenshotViewModel.GetScreenshotList();
+            test1();
+            //Vndb vndb= new Vndb(true);
+            //var vn = await vndb.GetVisualNovelAsync(VndbFilters.Id.Equals(92), VndbFlags.Tags);
+            //var tags = vn.Items[0].Tags;
+            //IEnumerable<Tag> tagDump = await VndbUtils.GetTagsDumpAsync();
+
+            //foreach (var tag in tags)
+            //{
+            //    foreach (var tgTag in tagDump)
+            //    {
+            //        if (tgTag.Id == tag.Id)
+            //        {
+            //            Console.WriteLine($"dump id: {tgTag.Id}, tag to match:{tag.Id}\n");
+
+            //        }
+            //    }
+            //}
+
+
+            //Thread.Sleep(0);
         }
 
-        
-
-        private float Foo(string text)
+        private async void test1()
         {
-            Font stringFont = new Font("Segoe UI", 13, System.Drawing.FontStyle.Regular);
-            Bitmap b = new Bitmap(2200, 2200);
-            Graphics g = Graphics.FromImage(b);
-            SizeF sizeOfString = new SizeF();
-            sizeOfString = g.MeasureString(text, stringFont);
-            return sizeOfString.Width;
+            Vndb vndb = new Vndb(true);
+            var vn = await vndb.GetVisualNovelAsync(VndbFilters.Id.Equals(92), VndbFlags.Tags);
+            TagMetadata[] tags = vn.Items[0].Tags;
+            IEnumerable<Tag> tagDump = await VndbUtils.GetTagsDumpAsync();
+
+            var test = from tagMetadata in tags from tTag in tagDump where tTag.Id == tagMetadata.Id select tTag;
+
+            
+            foreach (var tag in tags)
+            {
+                foreach (var tgTag in tagDump)
+                {
+                    if (tgTag.Id == tag.Id)
+                    {
+
+                        Console.WriteLine(tgTag.Id);
+
+                    }
+                }
+            };
         }
+
     }
 }
