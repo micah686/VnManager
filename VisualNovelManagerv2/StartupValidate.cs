@@ -289,6 +289,8 @@ namespace VisualNovelManagerv2
                         CREATE TABLE VnCharacterTraits (
                             PK_Id integer NOT NULL DEFAULT NULL,
                             CharacterId integer DEFAULT NULL,
+                            TraitId integer DEFAULT NULL,
+                            TraitName text DEFAULT NULL,
                             SpoilerLevel integer DEFAULT NULL,
                             PRIMARY KEY (PK_Id) 
                         );
