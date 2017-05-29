@@ -274,15 +274,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 _vnInfoTagCollection.Add(row["TagId"].ToString());
             }
 
-
-            IEnumerable<Tag> test = await VndbUtils.GetTagsDumpAsync();
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
-            IEnumerable<Tag> matches = test.AsParallel().Where(el => el.Id == Convert.ToUInt32(VnInfoTagCollection));
-            sw.Stop();
-            Console.WriteLine(sw.Elapsed.TotalMilliseconds);
-            Thread.Sleep(0);
-
             VnMainModel.Name = vninfo[2].ToString();
             VnMainModel.VnIcon = LoadIcon();
             VnMainModel.Original = vninfo[3].ToString();
