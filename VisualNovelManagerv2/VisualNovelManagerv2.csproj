@@ -99,9 +99,6 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
-    <Reference Include="VndbSharp">
-      <HintPath>..\..\..\..\..\Visual Studio 2015\Projects\VndbSharp\VndbSharp\bin\Debug\netstandard1.3\VndbSharp.dll</HintPath>
-    </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -268,7 +265,12 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\Visual Studio 2015\Projects\VndbSharp\VndbSharp\VndbSharp.csproj">
+      <Project>{18887b6f-5cf8-4865-b27f-9e293e29026f}</Project>
+      <Name>VndbSharp</Name>
+    </ProjectReference>
+  </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\flags\ar.png" />
     <Content Include="Resources\flags\ca.png" />

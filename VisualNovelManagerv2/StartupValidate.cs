@@ -121,7 +121,7 @@ namespace VisualNovelManagerv2
                             PRIMARY KEY (PK_Id) 
                         );
 
-                        CREATE TABLE VnAnime (
+                        CREATE TABLE VnInfoAnime (
                             PK_Id integer NOT NULL,
                             VnId integer DEFAULT NULL,
                             AniDbId integer DEFAULT NULL,
@@ -134,7 +134,7 @@ namespace VisualNovelManagerv2
                             PRIMARY KEY (PK_Id) 
                         );
 
-                        CREATE TABLE VnRelations (
+                        CREATE TABLE VnInfoRelations (
                             PK_Id integer NOT NULL,
                             VnId integer DEFAULT NULL,
                             RelationId integer DEFAULT NULL,
@@ -145,7 +145,7 @@ namespace VisualNovelManagerv2
                             PRIMARY KEY (PK_Id) 
                         );
 
-                        CREATE TABLE VnTags (
+                        CREATE TABLE VnInfoTags (
                             PK_Id integer NOT NULL,
                             VnId integer DEFAULT NULL,
                             TagId integer DEFAULT NULL,
@@ -155,7 +155,7 @@ namespace VisualNovelManagerv2
                             PRIMARY KEY (PK_Id) 
                         );
 
-                        CREATE TABLE VnScreens (
+                        CREATE TABLE VnInfoScreens (
                             PK_Id integer NOT NULL,
                             VnId integer DEFAULT NULL,
                             ImageUrl text DEFAULT NULL,

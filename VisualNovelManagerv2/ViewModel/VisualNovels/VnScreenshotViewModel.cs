@@ -105,7 +105,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
                     using (SQLiteCommand cmd = connection.CreateCommand())
                     {
-                        cmd.CommandText = "SELECT * FROM VnScreens WHERE VnId = @VnId ";
+                        cmd.CommandText = "SELECT * FROM VnInfoScreens WHERE VnId = @VnId ";
                         cmd.Parameters.AddWithValue("@VnId", Globals.VnId);
                         SQLiteDataReader reader = cmd.ExecuteReader();
 

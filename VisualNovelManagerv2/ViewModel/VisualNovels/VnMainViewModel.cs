@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Data.SQLite;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Design;
 using System.Drawing.Imaging;
@@ -41,6 +42,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             VnNameCollection = new ObservableCollection<string>();
             LanguageCollection = new ObservableCollection<LanguagesCollection>();
             OriginalLanguagesCollection = new ObservableCollection<OriginalLanguagesCollection>();
+            VnInfoRelation = new ObservableCollection<VnInfoRelation>();
             BindVnNameCollectionCommand = new RelayCommand(LoadVnNameCollection);
             GetVnDataCommand = new RelayCommand(GetVnData);
             LoadVnNameCollection();
@@ -113,8 +115,21 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 RaisePropertyChanged(nameof(OriginalLanguagesCollection));
             }
         }
-        
 
+
+        #endregion
+
+        #region VnInfoRelation
+        private ObservableCollection<VnInfoRelation> _vnInfoRelation;
+        public ObservableCollection<VnInfoRelation> VnInfoRelation
+        {
+            get { return _vnInfoRelation; }
+            set
+            {
+                _vnInfoRelation = value;
+                RaisePropertyChanged(nameof(VnInfoRelation));
+            }
+        }
         #endregion
 
 
@@ -159,62 +174,101 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         {
             _languageCollection.Clear();
             _originalLanguagesCollection.Clear();
-            DataTable dataTable = new DataTable();
+            DataSet dataSet =new DataSet();
+            SQLiteDataAdapter adapter = new SQLiteDataAdapter();
             using (SQLiteConnection connection = new SQLiteConnection(Globals.ConnectionString))
             {
                 connection.Open();
+
+                #region OldConnection
+                using (SQLiteCommand cmd = connection.CreateCommand())
+                {
+                    cmd.CommandText = "SELECT VnId FROM VnInfo WHERE PK_Id= @PK_Id";
+                    cmd.Parameters.AddWithValue("@PK_Id", SelectedListItemIndex + 1);
+                    Globals.VnId = Convert.ToInt32(cmd.ExecuteScalar());
+                }
+
+                #endregion
                 using (SQLiteTransaction transaction = connection.BeginTransaction())
                 {
-                    using (SQLiteCommand cmd = connection.CreateCommand())
-                    {
-                        cmd.Transaction = transaction;
+                    var cmd =new SQLiteCommand("SELECT * FROM VnInfo WHERE PK_Id= @PK_Id", connection, transaction);
+                    cmd.Parameters.AddWithValue("@PK_Id", SelectedListItemIndex + 1);
+                    var cmd1 = new SQLiteCommand("SELECT * FROM VnInfoTags WHERE VnId=@VnId", connection, transaction);
+                    cmd1.Parameters.AddWithValue("@VnId", Globals.VnId);
+                    var cmd2 = new SQLiteCommand("SELECT * FROM VnInfoRelations WHERE VnId=@VnId", connection, transaction);
+                    cmd2.Parameters.AddWithValue("@VnId", Globals.VnId);
+                    var cmd3 = new SQLiteCommand("SELECT * FROM VnInfoAnime WHERE VnId=@VnId", connection, transaction);
+                    cmd3.Parameters.AddWithValue("@VnId", Globals.VnId);
+                    var cmd4 = new SQLiteCommand("SELECT * FROM VnInfoLinks WHERE VnId=@VnId", connection, transaction);
+                    cmd4.Parameters.AddWithValue("@VnId", Globals.VnId);
+                    var cmd5 = new SQLiteCommand("SELECT * FROM VnInfoStaff WHERE VnId=@VnId", connection, transaction);
+                    cmd5.Parameters.AddWithValue("@VnId", Globals.VnId);
+                    var cmd6 = new SQLiteCommand("SELECT * FROM VnInfoScreens WHERE VnId=@VnId", connection, transaction);
+                    cmd6.Parameters.AddWithValue("@VnId", Globals.VnId);
 
-                        cmd.CommandText = "SELECT * FROM VnInfo WHERE PK_Id= @PK_Id";
-                        cmd.Parameters.AddWithValue("@PK_Id", SelectedListItemIndex +1);
-                        SQLiteDataReader reader = cmd.ExecuteReader();
+                    dataSet.Tables.Add("VnInfo");
+                    dataSet.Tables.Add("VnInfoTags");
+                    dataSet.Tables.Add("VnInfoRelations");
+                    dataSet.Tables.Add("VnInfoAnime");
+                    dataSet.Tables.Add("VnInfoLinks");
+                    dataSet.Tables.Add("VnInfoStaff");
+                    dataSet.Tables.Add("VnInfoScreens");
 
-                        dataTable.Load(reader);
-                        var items = dataTable.Rows[0].ItemArray;
-                        Globals.VnId = Convert.ToInt32(items[1]);
-                        VnMainModel.Name = items[2].ToString();
-                        VnMainModel.VnIcon = LoadIcon();
-                        VnMainModel.Original = items[3].ToString();
-                        VnMainModel.Released = items[4].ToString();
+                    adapter.SelectCommand = cmd;
+                    adapter.Fill(dataSet.Tables["VnInfo"]);                    
+                    adapter.SelectCommand = cmd1;
+                    adapter.Fill(dataSet.Tables["VnInfoTags"]);
+                    adapter.SelectCommand = cmd2;
+                    adapter.Fill(dataSet.Tables["VnInfoRelations"]);
+                    adapter.SelectCommand = cmd3;
+                    adapter.Fill(dataSet.Tables["VnInfoAnime"]);
+                    adapter.SelectCommand = cmd4;
+                    adapter.Fill(dataSet.Tables["VnInfoLinks"]);
+                    adapter.SelectCommand = cmd5;
+                    adapter.Fill(dataSet.Tables["VnInfoStaff"]);
+                    adapter.SelectCommand = cmd6;
+                    adapter.Fill(dataSet.Tables["VnInfoScreens"]);
 
-                        List<string> languages = GetLangauges(items[5].ToString());
-                        foreach (string language in languages)
-                        {
-                            _languageCollection.Add(new LanguagesCollection { VnMainModel = new VnMainModel { Languages = new BitmapImage(new Uri(language)) } });
-                        }
-                        List<string> orig_languages = GetLangauges(items[6].ToString());
-                        foreach (string language in orig_languages)
-                        {
-                            _originalLanguagesCollection.Add(new OriginalLanguagesCollection { VnMainModel = new VnMainModel { OriginalLanguages = new BitmapImage(new Uri(language)) } });
-                        }
-                        VnMainModel.Platforms = items[7].ToString();
-                        VnMainModel.Aliases = items[8].ToString();
-                        VnMainModel.Length = items[9].ToString();
-                        VnMainModel.Description = ConvertRichTextDocument.ConvertToFlowDocument(items[10].ToString());
-                        DownloadCoverImage(items[11].ToString(), Convert.ToBoolean(items[12]));
-                        VnMainModel.Popularity = Math.Round(Convert.ToDouble(items[13]), 2);
-                        VnMainModel.Rating = Convert.ToInt32(items[14]);
-
-
-                        
-
-                        
-                        Thread.Sleep(0);
-
-
-
-
-
-                        //TODO: put code to get all info I need in 1 transaction, so it runs fast.
-                    }
                     transaction.Commit();
+
                 }
                 connection.Close();
             }
+
+            var vninfo = dataSet.Tables[0].Rows[0].ItemArray;
+
+            DataTable dataTable = new DataTable();
+            dataTable = dataSet.Tables["VnInfoRelations"];
+            //TODO: WARNING: CURRENT BUILD OF VNDBSHARP ONLY RETURNS SEQUEL FOR RELATION TYPE
+            foreach (DataRow row in dataTable.Rows)
+            {
+                _vnInfoRelation.Add(new VnInfoRelation{Title = row["Title"].ToString(), Original = row["Original"].ToString(), Relation = row["Relation"].ToString(), Official = row["Official"].ToString() });
+            }
+
+            
+            VnMainModel.Name = vninfo[2].ToString();
+            VnMainModel.VnIcon = LoadIcon();
+            VnMainModel.Original = vninfo[3].ToString();
+            VnMainModel.Released = vninfo[4].ToString();
+
+            List<string> languages = GetLangauges(vninfo[5].ToString());
+            foreach (string language in languages)
+            {
+                _languageCollection.Add(new LanguagesCollection { VnMainModel = new VnMainModel { Languages = new BitmapImage(new Uri(language)) } });
+            }
+            List<string> orig_languages = GetLangauges(vninfo[6].ToString());
+            foreach (string language in orig_languages)
+            {
+                _originalLanguagesCollection.Add(new OriginalLanguagesCollection { VnMainModel = new VnMainModel { OriginalLanguages = new BitmapImage(new Uri(language)) } });
+            }
+            VnMainModel.Platforms = vninfo[7].ToString();
+            VnMainModel.Aliases = vninfo[8].ToString();
+            VnMainModel.Length = vninfo[9].ToString();
+            VnMainModel.Description = ConvertRichTextDocument.ConvertToFlowDocument(vninfo[10].ToString());
+            DownloadCoverImage(vninfo[11].ToString(), Convert.ToBoolean(vninfo[12]));
+            VnMainModel.Popularity = Math.Round(Convert.ToDouble(vninfo[13]), 2);
+            VnMainModel.Rating = Convert.ToInt32(vninfo[14]);
+
             VnScreenshotViewModel vm = new VnScreenshotViewModel();
             
             vm.DownloadScreenshots();
@@ -449,5 +503,13 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
     public class OriginalLanguagesCollection
     {
         public VnMainModel VnMainModel { get; set; }
+    }
+
+    public class VnInfoRelation
+    {
+        public string Title { get; set; }
+        public string Relation { get; set; }
+        public string Original { get; set; }
+        public string Official { get; set; }
     }
 }
