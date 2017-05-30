@@ -34,9 +34,10 @@ namespace VisualNovelManagerv2.Pages.Links.About
         private ObservableCollection<LicenseData> GetData()
         {
             var data = new ObservableCollection<LicenseData>();
-            data.Add(new LicenseData { Software = "MVVMLight", Info = "Toolkit for MVVM in WPF", Url = "https://mvvmlight.codeplex.com", License = "MIT",  });
-            data.Add(new LicenseData { Software = "MUI", Info = "ModernUI for WPF(MUI)", Url = "https://github.com/firstfloorsoftware/mui", License = "MS-PL",  });
-            data.Add(new LicenseData { Software = "SQLite", Info = "SQLite database engine", Url = "https://system.data.sqlite.org/index.html/doc/trunk/www/index.wiki", License = "MS-PL",  });
+            data.Add(new LicenseData{ Software = "VndbSharp", Info = "A C# Vndb API", Url = "https://github.com/Nikey646/VndbSharp" ,License = "MIT"});
+            data.Add(new LicenseData { Software = "MVVMLight", Info = "Toolkit for MVVM in WPF", Url = "https://mvvmlight.codeplex.com", License = "MIT"  });
+            data.Add(new LicenseData { Software = "MUI", Info = "ModernUI for WPF(MUI)", Url = "https://github.com/firstfloorsoftware/mui", License = "MS-PL"  });
+            data.Add(new LicenseData { Software = "SQLite", Info = "SQLite database engine", Url = "https://system.data.sqlite.org/index.html/doc/trunk/www/index.wiki", License = "MS-PL"  });
             data.Add(new LicenseData { Software = "System.Net.Security", Info = "Provides types for SSL/TLS", Url = "https://www.nuget.org/packages/System.Net.Security/", License = "Microsoft Proprietary"});
             data.Add(new LicenseData { Software = "System.Net.Sockets", Info = "Provides types for sockets", Url = "https://www.nuget.org/packages/System.Net.Sockets", License = "Microsoft Proprietary" });
             data.Add(new LicenseData { Software = "System.Reflection.TypeExtensions", Info = "Provides extensions for reflection", Url = "https://www.nuget.org/packages/System.Reflection.TypeExtensions", License = "Microsoft Proprietary" });
