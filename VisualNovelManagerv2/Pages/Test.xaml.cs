@@ -39,10 +39,11 @@ namespace VisualNovelManagerv2.Pages
             InitializeComponent();
         }
 
-        private async void Button_Click(object sender, RoutedEventArgs e)
+        private void Button_Click(object sender, RoutedEventArgs e)
         {
             //VnScreenshotViewModel.GetScreenshotList();
-            test1();
+            VnMainViewModel.ClearCollectionsCommand.Execute(null);
+            //test1();
             //Vndb vndb= new Vndb(true);
             //var vn = await vndb.GetVisualNovelAsync(VndbFilters.Id.Equals(92), VndbFlags.Tags);
             //var tags = vn.Items[0].Tags;
@@ -88,5 +89,9 @@ namespace VisualNovelManagerv2.Pages
             };
         }
 
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            VnMainViewModel.LoadBindVnDataCommand.Execute(null);
+        }
     }
 }

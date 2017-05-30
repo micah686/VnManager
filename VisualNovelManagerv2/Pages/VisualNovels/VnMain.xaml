@@ -30,7 +30,7 @@
 
                 <Grid Grid.Column="0" >
                     <ListBox Name="NoteList" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" ItemsSource="{Binding VnNameCollection}" Margin="0,0,5,5"
-                             Width="{Binding MaxListWidth}" MaxWidth="{Binding MaxListWidth}" MinWidth="150" SelectedIndex="{Binding SelectedListItemIndex}"/>
+                             Width="{Binding MaxListWidth}" MaxWidth="{Binding MaxListWidth}" MinWidth="150" SelectedIndex="{Binding SelectedListItemIndex}" SelectedItem="{Binding SelectedVn}"/>
                 </Grid>
 
                 <!--#region Divider-->
@@ -81,7 +81,7 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
 
-                            <Button Grid.Column="0" Margin="10,5,0,0" Width="100" Height="40" Content="Play" Command="{Binding GetVnDataCommand}"/>
+                            <Button Grid.Column="0" Margin="10,5,0,0" Width="100" Height="40" Content="Play" Command="{Binding LoadBindVnDataCommand}"/>
 
                             <Grid Margin="10,5,0,0" Grid.Column="1">
                                 <Grid>

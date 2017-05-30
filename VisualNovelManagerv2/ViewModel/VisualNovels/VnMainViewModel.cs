@@ -35,21 +35,88 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 {
     public class VnMainViewModel : ViewModelBase
     {
-        public ObservableCollection<string> VnNameCollection { get; set; }
-        
-        public ICommand BindVnNameCollectionCommand;
-        public ICommand GetVnDataCommand { get; set; }
+        #region observableCollections
+
+        #region ObservableVnNameCollection
+        private ObservableCollection<string> _vnNameCollection = new ObservableCollection<string>();
+        public ObservableCollection<string> VnNameCollection
+        {
+            get { return _vnNameCollection; }
+            set
+            {
+                _vnNameCollection = value;
+                RaisePropertyChanged(nameof(VnNameCollection));
+            }
+        }
+        #endregion
+
+
+        #region ObservableLanguageCollection
+        private ObservableCollection<LanguagesCollection> _languageCollection = new ObservableCollection<LanguagesCollection>();
+        public ObservableCollection<LanguagesCollection> LanguageCollection
+        {
+            get { return _languageCollection; }
+            set
+            {
+                _languageCollection = value;
+                RaisePropertyChanged(nameof(LanguageCollection));
+            }
+        }
+        #endregion
+
+        #region ObserableOriginalLanguageCollection
+        private ObservableCollection<OriginalLanguagesCollection> _originalLanguagesCollection = new ObservableCollection<OriginalLanguagesCollection>();
+        public ObservableCollection<OriginalLanguagesCollection> OriginalLanguagesCollection
+        {
+            get { return _originalLanguagesCollection; }
+            set
+            {
+                _originalLanguagesCollection = value;
+                RaisePropertyChanged(nameof(OriginalLanguagesCollection));
+            }
+        }
+        #endregion
+
+        #region VnInfoRelation
+        private ObservableCollection<VnInfoRelation> _vnInfoRelation = new ObservableCollection<VnInfoRelation>();
+        public ObservableCollection<VnInfoRelation> VnInfoRelation
+        {
+            get { return _vnInfoRelation; }
+            set
+            {
+                _vnInfoRelation = value;
+                RaisePropertyChanged(nameof(VnInfoRelation));
+            }
+        }
+        #endregion
+
+        #region ObservableCollectionVnTag
+        private ObservableCollection<string> _vnInfoTagCollection = new ObservableCollection<string>();
+        public ObservableCollection<string> VnInfoTagCollection
+        {
+            get { return _vnInfoTagCollection; }
+            set
+            {
+                _vnInfoTagCollection = value;
+                RaisePropertyChanged(nameof(VnInfoTagCollection));
+            }
+        }
+        #endregion
+
+        #endregion
+
+
+
+        public static ICommand LoadBindVnDataCommand { get; set; }
+        public static ICommand ClearCollectionsCommand { get; private set; }
         public VnMainViewModel()
         {
-            VnNameCollection = new ObservableCollection<string>();
-            LanguageCollection = new ObservableCollection<LanguagesCollection>();
-            OriginalLanguagesCollection = new ObservableCollection<OriginalLanguagesCollection>();
-            VnInfoRelation = new ObservableCollection<VnInfoRelation>();
-            VnInfoTagCollection = new ObservableCollection<string>();
-            BindVnNameCollectionCommand = new RelayCommand(LoadVnNameCollection);
-            GetVnDataCommand = new RelayCommand(GetVnData);
-            LoadVnNameCollection();
+            LoadBindVnDataCommand = new RelayCommand(LoadVnNameCollection);
+            ClearCollectionsCommand = new RelayCommand(ClearCollections);
+
             _vnMainModel = new VnMainModel();
+            LoadVnNameCollection();
+            
         }
 
         #region Static Properties
@@ -68,6 +135,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         #endregion
 
         #region SelectedListItemIndex
+
         private int _selectedListItemIndex;
         public int SelectedListItemIndex
         {
@@ -80,7 +148,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         }
         #endregion
 
-        #region VnMainMode
+        #region VnMainModel
         private VnMainModel _vnMainModel;
         public VnMainModel VnMainModel
         {
@@ -93,62 +161,31 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         }
         #endregion
 
-        #region ObservableLanguageCollection
-        private ObservableCollection<LanguagesCollection> _languageCollection;
-        public ObservableCollection<LanguagesCollection> LanguageCollection
+        #region SelectedVn
+        private string _selectedVn;
+        public string SelectedVn
         {
-            get { return _languageCollection; }
+            get { return _selectedVn; }
             set
             {
-                _languageCollection = value;
-                RaisePropertyChanged(nameof(LanguageCollection));
-            }
-        }
-        #endregion
-
-        #region ObserableOriginalLanguageCollection
-
-        private ObservableCollection<OriginalLanguagesCollection> _originalLanguagesCollection;
-        public ObservableCollection<OriginalLanguagesCollection> OriginalLanguagesCollection
-        {
-            get { return _originalLanguagesCollection; }
-            set
-            {
-                _originalLanguagesCollection = value;
-                RaisePropertyChanged(nameof(OriginalLanguagesCollection));
-            }
-        }
-
-
-        #endregion
-
-        #region VnInfoRelation
-        private ObservableCollection<VnInfoRelation> _vnInfoRelation;
-        public ObservableCollection<VnInfoRelation> VnInfoRelation
-        {
-            get { return _vnInfoRelation; }
-            set
-            {
-                _vnInfoRelation = value;
-                RaisePropertyChanged(nameof(VnInfoRelation));
-            }
-        }
-        #endregion
-
-        #region VnTagObservableCollection
-        private ObservableCollection<string> _vnInfoTagCollection;
-        public ObservableCollection<string> VnInfoTagCollection
-        {
-            get { return _vnInfoTagCollection; }
-            set
-            {
-                _vnInfoTagCollection = value;
-                RaisePropertyChanged(nameof(VnInfoTagCollection));
+                _selectedVn = value;
+                RaisePropertyChanged(nameof(SelectedVn));
+                GetVnData();
             }
         }        
         #endregion
 
         #endregion
+
+        private void ClearCollections()
+        {
+            VnNameCollection.Clear();
+            LanguageCollection.Clear();
+            OriginalLanguagesCollection.Clear();
+            VnInfoRelation.Clear();
+            VnInfoTagCollection.Clear();
+        }
+
         private void LoadVnNameCollection()
         {
             using (SQLiteConnection connection = new SQLiteConnection(Globals.ConnectionString))
@@ -157,11 +194,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
                     using (SQLiteCommand cmd = connection.CreateCommand())
                     {
-
                         cmd.CommandText = "SELECT Title FROM VnInfo";
-                        VnNameCollection.Clear();
                         SQLiteDataReader reader = cmd.ExecuteReader();
-
                         while (reader.Read())
                         {
                             VnNameCollection.Add((string)reader["Title"]);
@@ -171,7 +205,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 connection.Close();
             }
             SetMaxWidth();
-
         }
 
         public void SetMaxWidth()
@@ -186,26 +219,27 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         }
 
         private void GetVnData()
-        {
-            
+        {            
             DataSet dataSet =new DataSet();
             SQLiteDataAdapter adapter = new SQLiteDataAdapter();
             using (SQLiteConnection connection = new SQLiteConnection(Globals.ConnectionString))
             {
                 connection.Open();
 
-                #region OldConnection
+                #region GetVnId
                 using (SQLiteCommand cmd = connection.CreateCommand())
                 {
                     cmd.CommandText = "SELECT VnId FROM VnInfo WHERE PK_Id= @PK_Id";
+                    Console.WriteLine(SelectedListItemIndex);
                     cmd.Parameters.AddWithValue("@PK_Id", SelectedListItemIndex + 1);
                     Globals.VnId = Convert.ToInt32(cmd.ExecuteScalar());
                 }
-
                 #endregion
+
+                #region SQLite Transaction
                 using (SQLiteTransaction transaction = connection.BeginTransaction())
                 {
-                    var cmd =new SQLiteCommand("SELECT * FROM VnInfo WHERE PK_Id= @PK_Id", connection, transaction);
+                    var cmd = new SQLiteCommand("SELECT * FROM VnInfo WHERE PK_Id= @PK_Id", connection, transaction);
                     cmd.Parameters.AddWithValue("@PK_Id", SelectedListItemIndex + 1);
                     var cmd1 = new SQLiteCommand("SELECT * FROM VnInfoTags WHERE VnId=@VnId", connection, transaction);
                     cmd1.Parameters.AddWithValue("@VnId", Globals.VnId);
@@ -229,7 +263,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                     dataSet.Tables.Add("VnInfoScreens");
 
                     adapter.SelectCommand = cmd;
-                    adapter.Fill(dataSet.Tables["VnInfo"]);                    
+                    adapter.Fill(dataSet.Tables["VnInfo"]);
                     adapter.SelectCommand = cmd1;
                     adapter.Fill(dataSet.Tables["VnInfoTags"]);
                     adapter.SelectCommand = cmd2;
@@ -244,13 +278,13 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                     adapter.Fill(dataSet.Tables["VnInfoScreens"]);
 
                     transaction.Commit();
-
                 }
+                #endregion
+
                 connection.Close();
             }
 
-            BindVnData(dataSet);
-            
+            BindVnData(dataSet);            
         }
 
         private async void BindVnData(DataSet dataSet)
