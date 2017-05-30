@@ -15,6 +15,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -184,6 +185,46 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 RaisePropertyChanged(nameof(SelectedVn));
                 GetVnData();
             }
+        }
+        #endregion
+
+        #region SelectedTag
+        private string _selectedTag;
+        public string SelectedTag
+        {
+            get { return _selectedTag; }
+            set
+            {
+                _selectedTag = value;
+                RaisePropertyChanged(nameof(SelectedTag));
+                BindTagDescription();
+            }
+        }
+        #endregion
+
+        #region SelectedTagIndex
+        private int _selectedTagIndex;
+        public int SelectedTagIndex
+        {
+            get { return _selectedTagIndex; }
+            set
+            {
+                _selectedTagIndex = value;
+                RaisePropertyChanged(nameof(SelectedTagIndex));
+            }
+        }        
+        #endregion
+
+        #region TagDescription
+        private FlowDocument _tagDescription;
+        public FlowDocument TagDescription
+        {
+            get { return _tagDescription; }
+            set
+            {
+                _tagDescription = value;
+                RaisePropertyChanged(nameof(TagDescription));
+            }
         }        
         #endregion
 
@@ -304,6 +345,25 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             BindVnData(dataSet);            
         }
 
+        private void BindTagDescription()
+        {
+            if (SelectedTagIndex < 0)
+            {
+                return;
+            }
+            using (SQLiteConnection connection = new SQLiteConnection(Globals.ConnectionString))
+            {
+                connection.Open();
+                using (SQLiteCommand cmd = connection.CreateCommand())
+                {
+                    cmd.CommandText = "SELECT Description FROM VnTagData WHERE Name= @Name";
+                    cmd.Parameters.AddWithValue("@Name", SelectedTag);
+
+                    TagDescription = ConvertRichTextDocument.ConvertToFlowDocument(cmd.ExecuteScalar().ToString());
+                }
+            }
+        }
+
         private async void BindVnData(DataSet dataSet)
         {
             var vninfo = dataSet.Tables[0].Rows[0].ItemArray;
@@ -343,7 +403,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                     AniDb = anidb, Ann = ann
                 });
             }
-
             VnMainModel.Name = vninfo[2].ToString();
             VnMainModel.VnIcon = LoadIcon();
             VnMainModel.Original = vninfo[3].ToString();

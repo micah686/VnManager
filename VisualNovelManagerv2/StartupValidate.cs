@@ -152,7 +152,8 @@ namespace VisualNovelManagerv2
                             TagName text DEFAULT NULL,
                             Score numeric(5,2) DEFAULT NULL,
                             Spoiler integer DEFAULT NULL,
-                            PRIMARY KEY (PK_Id) 
+                            PRIMARY KEY (PK_Id)
+                            CONSTRAINT fkey0 FOREIGN KEY (PK_Id) REFERENCES VnTagData(PK_Id)
                         );
 
                         CREATE TABLE VnInfoScreens (
@@ -292,7 +293,8 @@ namespace VisualNovelManagerv2
                             TraitId integer DEFAULT NULL,
                             TraitName text DEFAULT NULL,
                             SpoilerLevel integer DEFAULT NULL,
-                            PRIMARY KEY (PK_Id) 
+                            PRIMARY KEY (PK_Id),
+                            CONSTRAINT fkey0 FOREIGN KEY (PK_Id) REFERENCES VnTraitData (PK_Id)
                         );
                         
                         CREATE TABLE VnCharacterVns (
@@ -320,22 +322,47 @@ namespace VisualNovelManagerv2
                         );
 
                         CREATE TABLE VnProducerRelations (
-                            PK_id integer NOT NULL,
+                            PK_Id integer NOT NULL,
                             RelationId integer DEFAULT NULL,
                             ProducerId integer DEFAULT NULL,
                             Relation text DEFAULT NULL,
                             Name text DEFAULT NULL,
                             Original text DEFAULT NULL,
-                            PRIMARY KEY (PK_id) 
+                            PRIMARY KEY (PK_Id) 
                         );
 
                         CREATE TABLE VnProducerLinks (
-                            PK_id integer NOT NULL,
+                            PK_Id integer NOT NULL,
                             ProducerId integer DEFAULT NULL,
                             Homepage text DEFAULT NULL,
                             Wikipedia text DEFAULT NULL,
-                            PRIMARY KEY (PK_id) 
+                            PRIMARY KEY (PK_Id) 
                         );
+
+                        CREATE TABLE VnTagData (
+                            PK_Id integer NOT NULL,
+                            TagId integer DEFAULT NULL,
+                            Name text DEFAULT NULL,
+                            Description text DEFAULT NULL,
+                            Meta text DEFAULT NULL,
+                            Vns integer DEFAULT NULL,
+                            Cat string DEFAULT NULL,
+                            Aliases text DEFAULT NULL,
+                            Parents text DEFAULT NULL,
+                            PRIMARY KEY (PK_Id)
+                            );
+
+                        CREATE TABLE VnTraitData (
+                            PK_Id integer NOT NULL,
+                            TraitId integer DEFAULT NULL,
+                            Name text DEFAULT NULL,
+                            Description text DEFAULT NULL,
+                            Meta text DEFAULT NULL,
+                            Chars integer DEFAULT NULL,
+                            Aliases text DEFAULT NULL,
+                            Parents text DEFAULT NULL,
+                            PRIMARY KEY (PK_Id)
+                            );
 
                         CREATE TABLE VnUserData (
                             PK_Id integer NOT NULL,

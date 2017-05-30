@@ -150,9 +150,10 @@ namespace VisualNovelManagerv2.CustomClasses.Database
 
                             #region VnTags
 
+                            IEnumerable<Tag> tagMatches = null;
                             if (visualNovel.Tags.Length > 0)
                             {
-                                var tagMatches = await GetDetailsFromTagDump(visualNovel.Tags);
+                                 tagMatches = await GetDetailsFromTagDump(visualNovel.Tags);
 
 
                                 int count = 0;
@@ -175,6 +176,29 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                                 }
                             }
 
+                            #endregion
+
+                            #region TagData
+
+                            if (tagMatches != null)
+                            {
+                                foreach (Tag tag in tagMatches)
+                                {
+                                    sql = "INSERT OR REPLACE INTO VnTagData VALUES(@PK_Id, @TagId, @Name, @Description, @Meta, @Vns, @Cat, @Aliases, @Parents);";
+                                    cmd = new SQLiteCommand(sql, connection, transaction);
+                                    cmd.Parameters.AddWithValue("@PK_Id", null);
+                                    cmd.Parameters.AddWithValue("@TagId", CheckForDbNull(tag.Id));
+                                    cmd.Parameters.AddWithValue("@Name", CheckForDbNull(tag.Name));
+                                    cmd.Parameters.AddWithValue("@Description", CheckForDbNull(tag.Description));
+                                    cmd.Parameters.AddWithValue("@Meta", CheckForDbNull(tag.IsMeta.ToString()));
+                                    cmd.Parameters.AddWithValue("@Vns", CheckForDbNull(tag.VisualNovels));
+                                    cmd.Parameters.AddWithValue("@Cat", CheckForDbNull(tag.TagCategory.ToString()));
+                                    cmd.Parameters.AddWithValue("@Aliases", CheckForDbNull(ConvertToCsv(tag.Aliases)));
+                                    string parents = string.Join(",", tag.Parents);
+                                    cmd.Parameters.AddWithValue("@Parents", CheckForDbNull(parents));
+                                    cmd.ExecuteNonQuery();
+                                }
+                            }
                             #endregion
 
                             #region VnScreens
