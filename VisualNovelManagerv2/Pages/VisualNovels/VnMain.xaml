@@ -29,7 +29,15 @@
                 </Grid.ColumnDefinitions>
 
                 <Grid Grid.Column="0" >
-                    <ListBox Name="NoteList" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" ItemsSource="{Binding VnNameCollection}" Margin="0,0,5,5"
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Style="{StaticResource Emphasis}" Text="Categories" Margin="0,0,5,5" TextAlignment="Center"/>
+                    <ComboBox Grid.Row="1" Margin="0,5,5,10" MinWidth="175"></ComboBox>
+                    
+                    <ListBox Grid.Row="2" Name="NoteList" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" ItemsSource="{Binding VnNameCollection}" Margin="0,0,5,5"
                              Width="{Binding MaxListWidth}" MaxWidth="{Binding MaxListWidth}" MinWidth="150" SelectedIndex="{Binding SelectedListItemIndex}" SelectedItem="{Binding SelectedVn}"/>
                 </Grid>
 
@@ -189,7 +197,7 @@
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
                                         <Label Grid.Column="0" Content="Platforms:" />
-                                        <Label Grid.Column="1" Content="{Binding VnMainModel.Platforms}" Width="150" Margin="15,0,0,0"/>
+                                        <Label Grid.Column="1" Content="{Binding VnMainModel.Platforms}" Width="Auto" Margin="15,0,0,0"/>
                                     </Grid>
                                 </Grid>
 

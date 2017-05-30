@@ -418,17 +418,17 @@ namespace VisualNovelManagerv2.CustomClasses.Database
 
                         #region VnUserData
 
-                        //sql = "INSERT OR REPLACE INTO VnUserData VALUES(@PK_Id, @VnId, @ExePath, @IconPath, @LastPlayed, @SecondsPlayed)";
-                        //cmd = new SQLiteCommand(sql, connection, transaction);
-                        //cmd.Parameters.AddWithValue("@PK_Id", null);
-                        //cmd.Parameters.AddWithValue("@VnId", Convert.ToInt32(visualNovels.Items[0].Id));
-                        //cmd.Parameters.AddWithValue("@ExePath", _exepath);
-                        //cmd.Parameters.AddWithValue("@IconPath", CheckForDbNull(_iconpath));
-                        //cmd.Parameters.AddWithValue("@LastPlayed", null);
-                        //cmd.Parameters.AddWithValue("@SecondsPlayed", null);
-                        ////TODO: add the rest of these values
+                        sql = "INSERT OR REPLACE INTO VnUserData VALUES(@PK_Id, @VnId, @ExePath, @IconPath, @LastPlayed, @SecondsPlayed)";
+                        cmd = new SQLiteCommand(sql, connection, transaction);
+                        cmd.Parameters.AddWithValue("@PK_Id", null);
+                        cmd.Parameters.AddWithValue("@VnId", Convert.ToInt32(visualNovels.Items[0].Id));
+                        cmd.Parameters.AddWithValue("@ExePath", _exepath);
+                        cmd.Parameters.AddWithValue("@IconPath", CheckForDbNull(_iconpath));
+                        cmd.Parameters.AddWithValue("@LastPlayed", null);
+                        cmd.Parameters.AddWithValue("@SecondsPlayed", null);
+                        //TODO: add the rest of these values
 
-                        //cmd.ExecuteNonQuery();
+                        cmd.ExecuteNonQuery();
 
                         #endregion
 
@@ -508,6 +508,8 @@ namespace VisualNovelManagerv2.CustomClasses.Database
             finally
             {
                 semaphoreSlim.Release();
+                //try to fix the database is locked when using bindvndata
+               
             }
 
             Console.WriteLine("done");
