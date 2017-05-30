@@ -285,16 +285,15 @@
                         <Grid Grid.Row="8" Margin="5,20,25,0">
                             <StackPanel>
                                 <TextBlock DockPanel.Dock="Top" Text="Anime" Style="{StaticResource Heading2}" Margin="0,10,0,0" />
-                                <DataGrid Name="DG1" ItemsSource="{Binding}" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False" 
+                                <DataGrid Name="DG1" ItemsSource="{Binding VnInfoAnimeCollection}" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False" 
                                   CanUserResizeColumns="False" CanUserResizeRows="False" IsReadOnly="True">
                                     <DataGrid.Columns>
-                                        <DataGridTextColumn Header="First Name"  Binding="{Binding FirstName}"/>
-                                        <DataGridTextColumn Header="Title_JPN"/>
-                                        <DataGridTextColumn Header="AniDB"/>
-                                        <DataGridTextColumn Header="ANN"/>
-                                        <DataGridTextColumn Header="AnimeNfo"/>
-                                        <DataGridTextColumn Header="Year"/>
-                                        <DataGridTextColumn Header="Type"/>
+                                        <DataGridTextColumn Header="Title"  Binding="{Binding Title}"/>
+                                        <DataGridTextColumn Header="Original Title" Binding="{Binding OriginalName}"/>
+                                        <DataGridTextColumn Header="Year" Binding="{Binding Year}"/>
+                                        <DataGridTextColumn Header="Type" Binding="{Binding AnimeType}"/>
+                                        <DataGridTextColumn Header="AniDb" Binding="{Binding AniDb}"/>
+                                        <DataGridTextColumn Header="Anime News Network" Binding="{Binding Ann}"/>
 
                                     </DataGrid.Columns>
                                 </DataGrid>

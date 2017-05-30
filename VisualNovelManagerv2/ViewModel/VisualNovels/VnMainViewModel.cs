@@ -50,6 +50,18 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         }
         #endregion
 
+        #region ObservableVnInfoAnime
+        private ObservableCollection<VnInfoAnime> _vnAnimeCollection = new ObservableCollection<VnInfoAnime>();
+        public ObservableCollection<VnInfoAnime> VnInfoAnimeCollection
+        {
+            get { return _vnAnimeCollection; }
+            set
+            {
+                _vnAnimeCollection = value;
+                RaisePropertyChanged(nameof(VnInfoAnimeCollection));
+            }
+        }
+        #endregion
 
         #region ObservableLanguageCollection
         private ObservableCollection<LanguagesCollection> _languageCollection = new ObservableCollection<LanguagesCollection>();
@@ -184,6 +196,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             OriginalLanguagesCollection.Clear();
             VnInfoRelation.Clear();
             VnInfoTagCollection.Clear();
+            VnInfoAnimeCollection.Clear();
         }
 
         private void LoadVnNameCollection()
@@ -219,7 +232,12 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         }
 
         private void GetVnData()
-        {            
+        {
+            LanguageCollection.Clear();
+            OriginalLanguagesCollection.Clear();
+            VnInfoRelation.Clear();
+            VnInfoTagCollection.Clear();
+            VnInfoAnimeCollection.Clear();
             DataSet dataSet =new DataSet();
             SQLiteDataAdapter adapter = new SQLiteDataAdapter();
             using (SQLiteConnection connection = new SQLiteConnection(Globals.ConnectionString))
@@ -230,7 +248,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 using (SQLiteCommand cmd = connection.CreateCommand())
                 {
                     cmd.CommandText = "SELECT VnId FROM VnInfo WHERE PK_Id= @PK_Id";
-                    Console.WriteLine(SelectedListItemIndex);
                     cmd.Parameters.AddWithValue("@PK_Id", SelectedListItemIndex + 1);
                     Globals.VnId = Convert.ToInt32(cmd.ExecuteScalar());
                 }
@@ -289,8 +306,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
         private async void BindVnData(DataSet dataSet)
         {
-            _languageCollection.Clear();
-            _originalLanguagesCollection.Clear();
             var vninfo = dataSet.Tables[0].Rows[0].ItemArray;
 
             DataTable dataTable = new DataTable();
@@ -305,6 +320,28 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             foreach (DataRow row in dataTable.Rows)
             {
                 _vnInfoTagCollection.Add(row["TagName"].ToString());
+            }
+
+            dataTable = dataSet.Tables["VnInfoAnime"];
+            foreach (DataRow row in dataTable.Rows)
+            {
+                var row2 = row.ItemArray[2];
+                var row3 = row.ItemArray[3];
+                string anidb = null;
+                string ann = null;
+                if (row2 != null)
+                {
+                    anidb = $"anidb.net/a{row.ItemArray[2].ToString()}";
+                }
+                if (row3 != null)
+                {
+                    ann = $"animenewsnetwork.com/encyclopedia/anime.php?id={row.ItemArray[2].ToString()}";
+                }
+                _vnAnimeCollection.Add(new VnInfoAnime
+                {
+                    Title = row["TitleEng"].ToString(), OriginalName = row["TitleJpn"].ToString(), Year = row["Year"].ToString(), AnimeType = row["AnimeType"].ToString(),
+                    AniDb = anidb, Ann = ann
+                });
             }
 
             VnMainModel.Name = vninfo[2].ToString();
@@ -572,5 +609,15 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         public string Relation { get; set; }
         public string Original { get; set; }
         public string Official { get; set; }
+    }
+
+    public class VnInfoAnime
+    {
+        public string Title { get; set; }
+        public string OriginalName { get; set; }
+        public string Year { get; set; }
+        public string AnimeType { get; set; }
+        public string AniDb { get; set; }
+        public string Ann { get; set; }
     }
 }

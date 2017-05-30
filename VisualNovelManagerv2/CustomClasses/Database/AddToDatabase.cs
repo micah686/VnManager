@@ -154,19 +154,24 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                             {
                                 var tagMatches = await GetDetailsFromTagDump(visualNovel.Tags);
 
+
                                 int count = 0;
                                 foreach (TagMetadata tag in visualNovel.Tags)
                                 {
-                                    sql = "INSERT OR REPLACE INTO VnInfoTags VALUES(@PK_Id, @VnId, @TagId, @TagName, @Score, @Spoiler);";
-                                    cmd = new SQLiteCommand(sql, connection, transaction);
-                                    cmd.Parameters.AddWithValue("@PK_Id", null);
-                                    cmd.Parameters.AddWithValue("@VnId", Convert.ToInt32(visualNovels.Items[0].Id));
-                                    cmd.Parameters.AddWithValue("@TagId", CheckForDbNull(tag.Id));
-                                    cmd.Parameters.AddWithValue("@TagName", CheckForDbNull(tagMatches.ElementAt(count).Name));
-                                    cmd.Parameters.AddWithValue("@Score", CheckForDbNull(tag.Score));
-                                    cmd.Parameters.AddWithValue("@Spoiler", CheckForDbNull(tag.SpoilerLevel.ToString() ?? null));
-                                    cmd.ExecuteNonQuery();
-                                    count++;
+                                    if (tagMatches.Any(c => c.Id == tag.Id))//makes sure the matches contains tagid before proceeding, prevents crashing with tags waiting for approval
+                                    {
+                                        sql = "INSERT OR REPLACE INTO VnInfoTags VALUES(@PK_Id, @VnId, @TagId, @TagName, @Score, @Spoiler);";
+                                        cmd = new SQLiteCommand(sql, connection, transaction);
+                                        cmd.Parameters.AddWithValue("@PK_Id", null);
+                                        cmd.Parameters.AddWithValue("@VnId", Convert.ToInt32(visualNovels.Items[0].Id));
+                                        cmd.Parameters.AddWithValue("@TagId", CheckForDbNull(tag.Id));
+                                        cmd.Parameters.AddWithValue("@TagName", CheckForDbNull(tagMatches.ElementAt(count).Name));
+                                        cmd.Parameters.AddWithValue("@Score", CheckForDbNull(tag.Score));
+                                        cmd.Parameters.AddWithValue("@Spoiler", CheckForDbNull(tag.SpoilerLevel.ToString() ?? null));
+                                        cmd.ExecuteNonQuery();
+                                        count++;
+                                    }
+                                    
                                 }
                             }
 
@@ -375,15 +380,19 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                             int count = 0;
                             foreach (TraitMetadata trait in character.Traits)
                             {
-                                sql = "INSERT OR REPLACE INTO VnCharacterTraits VALUES(@PK_Id, @CharacterId, @TraitId, @TraitName, @SpoilerLevel)";
-                                cmd = new SQLiteCommand(sql, connection, transaction);
-                                cmd.Parameters.AddWithValue("@PK_Id", null);
-                                cmd.Parameters.AddWithValue("@CharacterId", CheckForDbNull(character.Id));
-                                cmd.Parameters.AddWithValue("@TraitId", CheckForDbNull(trait.Id));
-                                cmd.Parameters.AddWithValue("@TraitName", CheckForDbNull(traitMatches.ElementAt(count).Name));
-                                cmd.Parameters.AddWithValue("@SpoilerLevel", CheckForDbNull(trait.SpoilerLevel.ToString() ?? null));
-                                cmd.ExecuteNonQuery();
-                                count++;
+                                if (traitMatches.Any(c => c.Id == trait.Id))//prevents crashes with awaiting traits
+                                {
+                                    sql = "INSERT OR REPLACE INTO VnCharacterTraits VALUES(@PK_Id, @CharacterId, @TraitId, @TraitName, @SpoilerLevel)";
+                                    cmd = new SQLiteCommand(sql, connection, transaction);
+                                    cmd.Parameters.AddWithValue("@PK_Id", null);
+                                    cmd.Parameters.AddWithValue("@CharacterId", CheckForDbNull(character.Id));
+                                    cmd.Parameters.AddWithValue("@TraitId", CheckForDbNull(trait.Id));
+                                    cmd.Parameters.AddWithValue("@TraitName", CheckForDbNull(traitMatches.ElementAt(count).Name));
+                                    cmd.Parameters.AddWithValue("@SpoilerLevel", CheckForDbNull(trait.SpoilerLevel.ToString() ?? null));
+                                    cmd.ExecuteNonQuery();
+                                    count++;
+                                }
+                                
                             }
                             #endregion
 
@@ -502,6 +511,8 @@ namespace VisualNovelManagerv2.CustomClasses.Database
             }
 
             Console.WriteLine("done");
+            VnMainViewModel.ClearCollectionsCommand.Execute(null);
+            VnMainViewModel.LoadBindVnDataCommand.Execute(null);
         }
 
         private async Task<IEnumerable<Tag>> GetDetailsFromTagDump(TagMetadata[] tags)
@@ -510,7 +521,6 @@ namespace VisualNovelManagerv2.CustomClasses.Database
             IEnumerable<Tag> matches = from tagMetadata in tags from tTag in tagDump where tTag.Id == tagMetadata.Id select tTag;
             //the above does these foreach loops, only a LOT faster
             //foreach (var tag in tags){ foreach (var tgTag in tagDump){ if (tgTag.Id == tag.Id){ } } };
-            
             return matches;
         }
 

@@ -39,36 +39,50 @@ namespace VisualNovelManagerv2.Pages
             InitializeComponent();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private async void Button_Click(object sender, RoutedEventArgs e)
         {
-            //VnScreenshotViewModel.GetScreenshotList();
-            VnMainViewModel.ClearCollectionsCommand.Execute(null);
+
             //test1();
-            //Vndb vndb= new Vndb(true);
-            //var vn = await vndb.GetVisualNovelAsync(VndbFilters.Id.Equals(92), VndbFlags.Tags);
-            //var tags = vn.Items[0].Tags;
-            //IEnumerable<Tag> tagDump = await VndbUtils.GetTagsDumpAsync();
+            Vndb vndb = new Vndb(true);
+            var vn = await vndb.GetVisualNovelAsync(VndbFilters.Id.Equals(4), VndbFlags.Tags);
+            IEnumerable<Tag> tagDump = await VndbUtils.GetTagsDumpAsync();
+            Console.WriteLine("====list of tags to match===\n");
+            var tags = vn.Items[0].Tags;
+            foreach (var td in tagDump)
+            {
+                if (td.Id==2638)
+                {
+                    Thread.Sleep(0);
+                }
+            }
 
-            //foreach (var tag in tags)
-            //{
-            //    foreach (var tgTag in tagDump)
-            //    {
-            //        if (tgTag.Id == tag.Id)
-            //        {
-            //            Console.WriteLine($"dump id: {tgTag.Id}, tag to match:{tag.Id}\n");
-
-            //        }
-            //    }
-            //}
+            foreach (var tagMetadata in tags)
+            {
+                Console.WriteLine(tagMetadata.Id);
+            }
 
 
-            //Thread.Sleep(0);
+            Console.WriteLine("\n\n====list of tags ids===\n");
+            foreach (var tag in tags)
+            {
+                foreach (var tgTag in tagDump)
+                {
+                    if (tgTag.Id == tag.Id)
+                    {
+                        Console.WriteLine(tgTag.Id);
+
+                    }
+                }
+            }
+
+
+            Thread.Sleep(0);
         }
 
         private async void test1()
         {
             Vndb vndb = new Vndb(true);
-            var vn = await vndb.GetVisualNovelAsync(VndbFilters.Id.Equals(92), VndbFlags.Tags);
+            var vn = await vndb.GetVisualNovelAsync(VndbFilters.Id.Equals(4), VndbFlags.Tags);
             TagMetadata[] tags = vn.Items[0].Tags;
             IEnumerable<Tag> tagDump = await VndbUtils.GetTagsDumpAsync();
 
