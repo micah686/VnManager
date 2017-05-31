@@ -170,5 +170,33 @@ namespace VisualNovelManagerv2.Design.VisualNovel
 
 
 
+
+
+
+
+        public string PlayTime
+        {
+            get { return (string)GetValue(PlayTimeProperty); }
+            set { SetValue(PlayTimeProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for PlayTime.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty PlayTimeProperty =
+            DependencyProperty.Register("PlayTime", typeof(string), typeof(VnMainModel), new PropertyMetadata(null));
+
+
+
+        public string LastPlayed
+        {
+            get { return (string)GetValue(LastPlayedProperty); }
+            set { SetValue(LastPlayedProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for LastPlayed.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty LastPlayedProperty =
+            DependencyProperty.Register("LastPlayed", typeof(string), typeof(VnMainModel), new PropertyMetadata(null));
+
+
+
     }
 }

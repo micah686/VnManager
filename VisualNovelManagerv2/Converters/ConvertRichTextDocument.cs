@@ -5,8 +5,9 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Documents;
+using VisualNovelManagerv2.CustomClasses;
 
-namespace VisualNovelManagerv2.CustomClasses
+namespace VisualNovelManagerv2.Converters
 {
     public class ConvertRichTextDocument
     {

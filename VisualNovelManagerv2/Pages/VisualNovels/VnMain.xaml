@@ -98,7 +98,7 @@
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
                                     <Label Grid.Column="0" Content="You've Played:" />
-                                    <Label Grid.Column="1" Content="XXXXXX" Width="150" Margin="15,0,0,0"/>
+                                    <Label Grid.Column="1" Content="{Binding VnMainModel.LastPlayed}"  Margin="15,0,0,0"/>
                                 </Grid>
                             </Grid>
 
@@ -109,7 +109,7 @@
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
                                     <Label Grid.Column="0" Content="Last Played:" />
-                                    <Label Grid.Column="1" Content="XXXXXX" Width="150" Margin="15,0,0,0"/>
+                                    <Label Grid.Column="1" Content="{Binding VnMainModel.PlayTime}"  Margin="15,0,0,0"/>
                                 </Grid>
                             </Grid>
                         </Grid>

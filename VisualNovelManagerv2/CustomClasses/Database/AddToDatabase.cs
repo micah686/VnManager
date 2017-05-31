@@ -248,24 +248,24 @@ namespace VisualNovelManagerv2.CustomClasses.Database
 
                             #region VnInfoStaff
 
-                            if (visualNovel.Staff.Length > 0)
-                            {
-                                foreach (StaffMetadata staff in visualNovel.Staff)
-                                {
-                                    sql =
-                                        "INSERT OR REPLACE INTO VnInfoStaff VALUES(@PK_Id, @VnId, @StaffId, @AliasId, @Name, @Original, @Role, @Note)";
-                                    cmd = new SQLiteCommand(sql, connection, transaction);
-                                    cmd.Parameters.AddWithValue("@PK_Id", null);
-                                    cmd.Parameters.AddWithValue("@VnId", Convert.ToInt32(visualNovels.Items[0].Id));
-                                    cmd.Parameters.AddWithValue("@StaffId", CheckForDbNull(staff.StaffId));
-                                    cmd.Parameters.AddWithValue("@AliasId", CheckForDbNull(staff.AliasId));
-                                    cmd.Parameters.AddWithValue("@Name", CheckForDbNull(staff.Name));
-                                    cmd.Parameters.AddWithValue("@Original", CheckForDbNull(staff.Kanji));
-                                    cmd.Parameters.AddWithValue("@Role", CheckForDbNull(staff.Role));
-                                    cmd.Parameters.AddWithValue("@Note", CheckForDbNull(staff.Note));
-                                    cmd.ExecuteNonQuery();
-                                }
-                            }
+                            //if (visualNovel.Staff.Count > 0)
+                            //{
+                            //    foreach (StaffMetadata staff in visualNovel.Staff)
+                            //    {
+                            //        sql =
+                            //            "INSERT OR REPLACE INTO VnInfoStaff VALUES(@PK_Id, @VnId, @StaffId, @AliasId, @Name, @Original, @Role, @Note)";
+                            //        cmd = new SQLiteCommand(sql, connection, transaction);
+                            //        cmd.Parameters.AddWithValue("@PK_Id", null);
+                            //        cmd.Parameters.AddWithValue("@VnId", Convert.ToInt32(visualNovels.Items[0].Id));
+                            //        cmd.Parameters.AddWithValue("@StaffId", CheckForDbNull(staff.StaffId));
+                            //        cmd.Parameters.AddWithValue("@AliasId", CheckForDbNull(staff.AliasId));
+                            //        cmd.Parameters.AddWithValue("@Name", CheckForDbNull(staff.Name));
+                            //        cmd.Parameters.AddWithValue("@Original", CheckForDbNull(staff.Kanji));
+                            //        cmd.Parameters.AddWithValue("@Role", CheckForDbNull(staff.Role));
+                            //        cmd.Parameters.AddWithValue("@Note", CheckForDbNull(staff.Note));
+                            //        cmd.ExecuteNonQuery();
+                            //    }
+                            //}
 
 
                             #endregion
@@ -442,14 +442,14 @@ namespace VisualNovelManagerv2.CustomClasses.Database
 
                         #region VnUserData
 
-                        sql = "INSERT OR REPLACE INTO VnUserData VALUES(@PK_Id, @VnId, @ExePath, @IconPath, @LastPlayed, @SecondsPlayed)";
+                        sql = "INSERT OR REPLACE INTO VnUserData VALUES(@PK_Id, @VnId, @ExePath, @IconPath, @LastPlayed, @PlayTime)";
                         cmd = new SQLiteCommand(sql, connection, transaction);
                         cmd.Parameters.AddWithValue("@PK_Id", null);
                         cmd.Parameters.AddWithValue("@VnId", Convert.ToInt32(visualNovels.Items[0].Id));
                         cmd.Parameters.AddWithValue("@ExePath", _exepath);
                         cmd.Parameters.AddWithValue("@IconPath", CheckForDbNull(_iconpath));
-                        cmd.Parameters.AddWithValue("@LastPlayed", null);
-                        cmd.Parameters.AddWithValue("@SecondsPlayed", null);
+                        cmd.Parameters.AddWithValue("@LastPlayed", "");
+                        cmd.Parameters.AddWithValue("@PlayTime", "0,0,0,0");
                         //TODO: add the rest of these values
 
                         cmd.ExecuteNonQuery();
@@ -532,8 +532,7 @@ namespace VisualNovelManagerv2.CustomClasses.Database
             finally
             {
                 semaphoreSlim.Release();
-                //try to fix the database is locked when using bindvndata
-               
+                semaphoreSlim.Dispose();
             }
 
             Console.WriteLine("done");

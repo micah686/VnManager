@@ -311,6 +311,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                     cmd5.Parameters.AddWithValue("@VnId", Globals.VnId);
                     var cmd6 = new SQLiteCommand("SELECT * FROM VnInfoScreens WHERE VnId=@VnId", connection, transaction);
                     cmd6.Parameters.AddWithValue("@VnId", Globals.VnId);
+                    var cmd7 = new SQLiteCommand("SELECT * FROM VnUserData WHERE VnId=@VnId", connection, transaction);
+                    cmd7.Parameters.AddWithValue("@VnId", Globals.VnId);
 
                     dataSet.Tables.Add("VnInfo");
                     dataSet.Tables.Add("VnInfoTags");
@@ -319,6 +321,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                     dataSet.Tables.Add("VnInfoLinks");
                     dataSet.Tables.Add("VnInfoStaff");
                     dataSet.Tables.Add("VnInfoScreens");
+                    dataSet.Tables.Add("VnUserData");
 
                     adapter.SelectCommand = cmd;
                     adapter.Fill(dataSet.Tables["VnInfo"]);
@@ -334,6 +337,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                     adapter.Fill(dataSet.Tables["VnInfoStaff"]);
                     adapter.SelectCommand = cmd6;
                     adapter.Fill(dataSet.Tables["VnInfoScreens"]);
+                    adapter.SelectCommand = cmd7;
+                    adapter.Fill(dataSet.Tables["VnUserData"]);
 
                     transaction.Commit();
                 }
@@ -345,32 +350,12 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             BindVnData(dataSet);            
         }
 
-        private void BindTagDescription()
-        {
-            if (SelectedTagIndex < 0)
-            {
-                return;
-            }
-            using (SQLiteConnection connection = new SQLiteConnection(Globals.ConnectionString))
-            {
-                connection.Open();
-                using (SQLiteCommand cmd = connection.CreateCommand())
-                {
-                    cmd.CommandText = "SELECT Description FROM VnTagData WHERE Name= @Name";
-                    cmd.Parameters.AddWithValue("@Name", SelectedTag);
-
-                    TagDescription = ConvertRichTextDocument.ConvertToFlowDocument(cmd.ExecuteScalar().ToString());
-                }
-            }
-        }
-
-        private async void BindVnData(DataSet dataSet)
+        private void BindVnData(DataSet dataSet)
         {
             var vninfo = dataSet.Tables[0].Rows[0].ItemArray;
 
             DataTable dataTable = new DataTable();
             dataTable = dataSet.Tables["VnInfoRelations"];
-            //TODO: WARNING: CURRENT BUILD OF VNDBSHARP ONLY RETURNS SEQUEL FOR RELATION TYPE
             foreach (DataRow row in dataTable.Rows)
             {
                 _vnInfoRelation.Add(new VnInfoRelation { Title = row["Title"].ToString(), Original = row["Original"].ToString(), Relation = row["Relation"].ToString(), Official = row["Official"].ToString() });
@@ -399,8 +384,12 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 }
                 _vnAnimeCollection.Add(new VnInfoAnime
                 {
-                    Title = row["TitleEng"].ToString(), OriginalName = row["TitleJpn"].ToString(), Year = row["Year"].ToString(), AnimeType = row["AnimeType"].ToString(),
-                    AniDb = anidb, Ann = ann
+                    Title = row["TitleEng"].ToString(),
+                    OriginalName = row["TitleJpn"].ToString(),
+                    Year = row["Year"].ToString(),
+                    AnimeType = row["AnimeType"].ToString(),
+                    AniDb = anidb,
+                    Ann = ann
                 });
             }
             VnMainModel.Name = vninfo[2].ToString();
@@ -426,11 +415,88 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             VnMainModel.Popularity = Math.Round(Convert.ToDouble(vninfo[13]), 2);
             VnMainModel.Rating = Convert.ToInt32(vninfo[14]);
 
+            #region UserData Bind
+            dataTable = dataSet.Tables["VnUserData"];
+            var vnuserdata = dataSet.Tables[7].Rows[0].ItemArray;
+
+            if (vnuserdata[4].ToString() == "")
+            {
+                VnMainModel.LastPlayed = "Never";
+            }
+            else
+            {
+                if ((Convert.ToDateTime(vnuserdata[4]) - DateTime.Today).Days > -7)//need to set to negative, for the difference in days
+                {
+                    if (Convert.ToDateTime(vnuserdata[4]) == DateTime.Today)
+                    {
+                        VnMainModel.LastPlayed = "Today";
+                    }
+                    else if ((Convert.ToDateTime(vnuserdata[4]) - DateTime.Today).Days > -2 && (Convert.ToDateTime(vnuserdata[4]) - DateTime.Today).Days < 0)
+                    {
+                        VnMainModel.LastPlayed = "Yesterday";
+                    }
+                    else
+                    {
+                        VnMainModel.LastPlayed = Convert.ToDateTime(vnuserdata[4]).DayOfWeek.ToString();
+                    }
+                }
+                else
+                {
+                    VnMainModel.LastPlayed = vnuserdata[4].ToString();
+                }
+            }
+
+            var splitPlayTime = vnuserdata[5].ToString().Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            List<int> timeList = new List<int>(4);
+            foreach (string time in splitPlayTime)
+            {
+                timeList.Add(Convert.ToInt32(time));
+            }
+            TimeSpan timeSpan = new TimeSpan(timeList[0], timeList[1], timeList[2], timeList[3]);
+
+            if (timeSpan < new TimeSpan(0, 0, 0, 1))
+            {
+                VnMainModel.PlayTime = "Never";
+            }
+            if (timeSpan < new TimeSpan(0, 0, 0, 60))
+            {
+                VnMainModel.PlayTime = "Less than 1 minute";
+            }
+            else
+            {
+                string formatted = string.Format("{0}{1}{2}",
+                    timeSpan.Duration().Days > 0 ? string.Format("{0:0} day{1}, ", timeSpan.Days, timeSpan.Days == 1 ? String.Empty : "s") : string.Empty,
+                    timeSpan.Duration().Hours > 0 ? string.Format("{0:0} hour{1}, ", timeSpan.Hours, timeSpan.Hours == 1 ? String.Empty : "s") : string.Empty,
+                    timeSpan.Duration().Minutes > 0 ? string.Format("{0:0} minute{1} ", timeSpan.Minutes, timeSpan.Minutes == 1 ? String.Empty : "s") : string.Empty);
+                VnMainModel.PlayTime = formatted;
+            }
+            #endregion
             VnScreenshotViewModel vm = new VnScreenshotViewModel();
 
             vm.DownloadScreenshots();
         }
 
+
+
+        private void BindTagDescription()
+        {
+            if (SelectedTagIndex < 0)
+            {
+                return;
+            }
+            using (SQLiteConnection connection = new SQLiteConnection(Globals.ConnectionString))
+            {
+                connection.Open();
+                using (SQLiteCommand cmd = connection.CreateCommand())
+                {
+                    cmd.CommandText = "SELECT Description FROM VnTagData WHERE Name= @Name";
+                    cmd.Parameters.AddWithValue("@Name", SelectedTag);
+
+                    TagDescription = ConvertRichTextDocument.ConvertToFlowDocument(cmd.ExecuteScalar().ToString());
+                }
+            }
+        }
+        
         private List<string> GetLangauges(string csv)
         {
             List<string>filenames = new List<string>();

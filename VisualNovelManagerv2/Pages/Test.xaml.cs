@@ -79,29 +79,6 @@ namespace VisualNovelManagerv2.Pages
             Thread.Sleep(0);
         }
 
-        private async void test1()
-        {
-            Vndb vndb = new Vndb(true);
-            var vn = await vndb.GetVisualNovelAsync(VndbFilters.Id.Equals(4), VndbFlags.Tags);
-            TagMetadata[] tags = vn.Items[0].Tags;
-            IEnumerable<Tag> tagDump = await VndbUtils.GetTagsDumpAsync();
-
-            var test = from tagMetadata in tags from tTag in tagDump where tTag.Id == tagMetadata.Id select tTag;
-
-            
-            foreach (var tag in tags)
-            {
-                foreach (var tgTag in tagDump)
-                {
-                    if (tgTag.Id == tag.Id)
-                    {
-
-                        Console.WriteLine(tgTag.Id);
-
-                    }
-                }
-            };
-        }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {

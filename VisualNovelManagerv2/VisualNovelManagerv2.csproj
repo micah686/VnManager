@@ -105,9 +105,6 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
-    <Reference Include="VndbSharp">
-      <HintPath>..\..\..\..\..\Visual Studio 2015\Projects\VndbSharp\VndbSharp\bin\Release\netstandard1.3\VndbSharp.dll</HintPath>
-    </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -123,7 +120,7 @@
     </Compile>
     <Compile Include="Converters\Base64Converter.cs" />
     <Compile Include="CustomClasses\BindableRichTextBox.cs" />
-    <Compile Include="CustomClasses\ConvertRichTextDocument.cs" />
+    <Compile Include="Converters\ConvertRichTextDocument.cs" />
     <Compile Include="CustomClasses\Database\AddToDatabase.cs" />
     <Compile Include="CustomClasses\DebugLogging.cs" />
     <Compile Include="CustomClasses\MeasureStringSize.cs" />
@@ -143,6 +140,7 @@
     <Compile Include="StartupValidate.cs" />
     <Compile Include="ViewModel\VisualNovels\AddVnViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
+    <Compile Include="ViewModel\VisualNovels\VnCharacterViewModel.cs" />
     <Compile Include="ViewModel\VisualNovels\VnMainViewModel.cs" />
     <Compile Include="ViewModel\VisualNovels\VnScreenshotViewModel.cs" />
     <Page Include="MainWindow.xaml">
@@ -307,6 +305,12 @@
     <Content Include="Resources\flags\Unknown.png" />
     <Content Include="Resources\flags\vi.png" />
     <Content Include="Resources\flags\zh.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\Visual Studio 2015\Projects\VndbSharp\VndbSharp\VndbSharp.csproj">
+      <Project>{ee3b5ff3-a292-41e8-be6a-8f024af622b9}</Project>
+      <Name>VndbSharp</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\System.Data.SQLite.Core.1.0.105.0\build\net46\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.105.0\build\net46\System.Data.SQLite.Core.targets')" />

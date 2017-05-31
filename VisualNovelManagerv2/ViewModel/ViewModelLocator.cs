@@ -31,6 +31,7 @@ namespace VisualNovelManagerv2.ViewModel
             SimpleIoc.Default.Register<AddVnViewModel>();
             SimpleIoc.Default.Register<VnMainViewModel>();
             SimpleIoc.Default.Register<VnScreenshotViewModel>();
+            SimpleIoc.Default.Register<VnCharacterViewModel>();
         }
 
         public AddVnViewModel AddVn
@@ -46,6 +47,11 @@ namespace VisualNovelManagerv2.ViewModel
         public VnScreenshotViewModel VnScreenshot
         {
             get { return ServiceLocator.Current.GetInstance<VnScreenshotViewModel>(); }
+        }
+
+        public VnCharacterViewModel VnCharacter
+        {
+            get { return ServiceLocator.Current.GetInstance<VnCharacterViewModel>(); }
         }
 
         public static void Cleanup()
