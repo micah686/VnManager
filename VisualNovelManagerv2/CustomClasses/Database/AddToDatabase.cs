@@ -119,7 +119,7 @@ namespace VisualNovelManagerv2.CustomClasses.Database
 
                         #region VnAnime
 
-                        if (visualNovel.Anime.Length > 0)
+                        if (visualNovel.Anime.Count > 0)
                         {
                             foreach (AnimeMetadata anime in visualNovel.Anime)
                             {
@@ -146,7 +146,7 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                         #region VnTags
 
                         IEnumerable<Tag> tagMatches = null;
-                        if (visualNovel.Tags.Length > 0)
+                        if (visualNovel.Tags.Count > 0)
                         {
                             tagMatches = await GetDetailsFromTagDump(visualNovel.Tags);
 
@@ -198,7 +198,7 @@ namespace VisualNovelManagerv2.CustomClasses.Database
 
                         #region VnScreens
 
-                        if (visualNovel.Screenshots.Length > 0)
+                        if (visualNovel.Screenshots.Count > 0)
                         {
                             foreach (ScreenshotMetadata screenshot in visualNovel.Screenshots)
                             {
@@ -220,7 +220,7 @@ namespace VisualNovelManagerv2.CustomClasses.Database
 
                         #region VnInfoRelations
 
-                        if (visualNovel.Relations.Length > 0)
+                        if (visualNovel.Relations.Count > 0)
                         {
                             foreach (VisualNovelRelation relation in visualNovel.Relations)
                             {
@@ -243,7 +243,7 @@ namespace VisualNovelManagerv2.CustomClasses.Database
 
                         #region VnInfoStaff
 
-                        if (visualNovel.Staff.Length> 0)
+                        if (visualNovel.Staff.Count> 0)
                         {
                             foreach (StaffMetadata staff in visualNovel.Staff)
                             {
@@ -529,7 +529,7 @@ namespace VisualNovelManagerv2.CustomClasses.Database
             VnMainViewModel.LoadBindVnDataCommand.Execute(null);
         }
 
-        private async Task<IEnumerable<Tag>> GetDetailsFromTagDump(TagMetadata[] tags)
+        private async Task<IEnumerable<Tag>> GetDetailsFromTagDump(ReadOnlyCollection<TagMetadata> tags)
         {
             IEnumerable<Tag> tagDump = await VndbUtils.GetTagsDumpAsync();
             IEnumerable<Tag> matches = from tagMetadata in tags from tTag in tagDump where tTag.Id == tagMetadata.Id select tTag;
