@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,8 @@ using GalaSoft.MvvmLight.Command;
 using System.Data.SQLite;
 using System.IO;
 using System.Net;
+using System.Windows;
+using System.Windows.Media.Imaging;
 using VisualNovelManagerv2.CustomClasses;
 
 namespace VisualNovelManagerv2.ViewModel.VisualNovels
@@ -25,27 +28,31 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         }
 
         #region ObservableCollections
-        static ObservableCollection<string> _vnCharacterCollection = new ObservableCollection<string>();
-        public ObservableCollection<string> VnCharacterCollection
+
+        private static ObservableCollection<string> _characterNameCollection = new ObservableCollection<string>();
+        public ObservableCollection<string> CharacterNameCollection
         {
-            get { return _vnCharacterCollection; }
+            get { return _characterNameCollection; }
             set
             {
-                _vnCharacterCollection = value;
-                RaisePropertyChanged(nameof(VnCharacterCollection));
+                _characterNameCollection = value;
+                RaisePropertyChanged(nameof(CharacterNameCollection));
             }
         }
-        
+
 
         #endregion
 
         public VnCharacterViewModel()
         {
-
+            _vnCharacterModel = new VnCharacterModel();
+            
+            LoadCharacterUrlList();
         }
 
         #region Properties
-        private static VnCharacterModel _vnCharacterModel = new VnCharacterModel();
+
+        private static VnCharacterModel _vnCharacterModel;
         public VnCharacterModel VnCharacterModel
         {
             get { return _vnCharacterModel; }
@@ -56,17 +63,40 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             }
         }
 
-        private int _selectedItemIndex;
-        public int SelectedItemIndex
+        private double _maxWidth;
+        public double MaxWidth
         {
-            get { return _selectedItemIndex; }
+            get { return _maxWidth; }
             set
             {
-                _selectedItemIndex = value;
-                RaisePropertyChanged(nameof(SelectedItemIndex));
+                _maxWidth = value;
+                RaisePropertyChanged(nameof(MaxWidth));
             }
         }
 
+        private int _selectedCharacterIndex;
+        public int SelectedCharacterIndex
+        {
+            get { return _selectedCharacterIndex; }
+            set
+            {
+                _selectedCharacterIndex = value;
+                RaisePropertyChanged(nameof(SelectedCharacterIndex));
+            }
+        }
+
+        private string _selectedCharacter;
+
+        public string SelectedCharacter
+        {
+            get { return _selectedCharacter; }
+            set
+            {
+                _selectedCharacter = value;
+                RaisePropertyChanged(nameof(SelectedCharacter));
+                LoadCharacterData();
+            }
+        }
 
         #endregion
 
@@ -140,7 +170,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
         private void LoadCharacterNameList()
         {
-            VnCharacterCollection.Clear();
+            CharacterNameCollection.Clear();
             try
             {
                 using (SQLiteConnection connection = new SQLiteConnection(Globals.ConnectionString))
@@ -155,7 +185,9 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
                         while (reader.Read())
                         {
-                            VnCharacterCollection.Add(reader["Name"].ToString());
+                            string name = reader["Name"].ToString();
+                            BitmapImage bitmap = new BitmapImage();
+                            CharacterNameCollection.Add(name);
                         }
                     }
                     connection.Close();
@@ -166,11 +198,36 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 DebugLogging.WriteDebugLog(ex);
                 throw;
             }
+            SetMaxWidth();
+        }
+
+        private void SetMaxWidth()
+        {
+            if (CharacterNameCollection.Count > 0)
+            {
+                string longestString = CharacterNameCollection.OrderByDescending(s => s.Length).First();
+                MaxWidth = MeasureStringSize.GetMaxStringWidth(longestString);
+            }
         }
 
         private void LoadCharacterData()
         {
             
+            DataSet dataSet = new DataSet();
+            using (SQLiteConnection connection = new SQLiteConnection(Globals.ConnectionString))
+            {
+                connection.Open();
+                var cmd = new SQLiteCommand("SELECT * FROM VnCharacter WHERE Name= @Name AND VnId=@VnId", connection);
+                cmd.Parameters.AddWithValue("@Name", SelectedCharacter);
+                cmd.Parameters.AddWithValue("@VnId", Globals.VnId);
+                SQLiteDataAdapter adapter = new SQLiteDataAdapter(cmd);
+                adapter.Fill(dataSet);
+                connection.Close();
+            }
+
+            var characterInfo = dataSet.Tables[0].Rows[0].ItemArray;
+            VnCharacterModel.Name = characterInfo[3].ToString();
+
         }
 
         private void sample()
@@ -178,5 +235,4 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             VnCharacterModel.Name = "changed";
         }
     }
-
 }

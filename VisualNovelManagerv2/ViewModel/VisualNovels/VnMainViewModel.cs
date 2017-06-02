@@ -493,8 +493,10 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             }
             
             VnScreenshotViewModel vm = new VnScreenshotViewModel();
-
             vm.DownloadScreenshots();
+
+            VnCharacterViewModel vmchar = new VnCharacterViewModel();
+            vmchar.LoadCharacterCommand.Execute(null);
         }
 
 
