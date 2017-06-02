@@ -14,6 +14,7 @@
                     <mui:Link DisplayName="MIT" Source="../../../Pages/Links/About/LicenseText/MIT.xaml"/>
                     <mui:Link DisplayName="MS-PL" Source="../../../Pages/Links/About/LicenseText/MS-PL.xaml"/>
                     <mui:Link DisplayName="Microsoft Proprietary" Source="../../../Pages/Links/About/LicenseText/MicrosoftProprietary.xaml"/>
+                    <mui:Link DisplayName="OFL" Source="../../../Pages/Links/About/LicenseText/OFL.xaml"/>
                 </mui:ModernTab.Links>
             </mui:ModernTab>
         </Grid>

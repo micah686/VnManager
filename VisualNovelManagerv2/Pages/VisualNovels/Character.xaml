@@ -4,8 +4,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:VisualNovelManagerv2.Pages"
+             xmlns:custom="clr-namespace:VisualNovelManagerv2.CustomClasses"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300"
+             d:DesignHeight="900" d:DesignWidth="600"
              DataContext="{Binding VnCharacter, Source={StaticResource Locator}}">
     <Grid Margin="{StaticResource RootMargin}">
         <Grid x:Name="CharacterControl" Margin="10,10,10,35">
@@ -26,8 +27,8 @@
                              ItemsSource="{Binding CharacterNameCollection}" SelectedIndex="{Binding SelectedCharacterIndex}" Width="{Binding MaxWidth}" SelectedItem="{Binding SelectedCharacter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                     </ListBox>
                     <Grid Grid.Row="1" ShowGridLines="True" Margin="0,5,5,5">
-                        <Image HorizontalAlignment="Left"   VerticalAlignment="Top" Stretch="Uniform" 
-                   Source="D:\Documents\Visual Studio 2017\Projects\Testing Projects\Visual-Novel-Manager-v2\VisualNovelManagerv2\Resources\character.jpg"/>
+                        <Image HorizontalAlignment="Left"  VerticalAlignment="Top" Stretch="Uniform" 
+                   Source="{Binding VnCharacterModel.Image}"/>
                     </Grid>
                 </Grid>
             </Grid>
@@ -84,7 +85,7 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Label Grid.Column="0" Content="Original Name:"/>
-                            <Label Grid.Column="1" Content="XXXXXX" Width="150" Margin="15,0,0,0"/>
+                            <Label Grid.Column="1" Content="{Binding VnCharacterModel.OriginalName}" Width="150" Margin="15,0,0,0"/>
                         </Grid>
                     </Grid>
 
@@ -117,7 +118,7 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Label Grid.Column="0" Content="Blood Type:"/>
-                            <Label Grid.Column="1" Content="XXXXXX" Width="150" Margin="15,0,0,0"/>
+                            <Label Grid.Column="1" Content="{Binding VnCharacterModel.BloodType}" Width="150" Margin="15,0,0,0"/>
                         </Grid>
                     </Grid>
 
@@ -192,7 +193,26 @@
                     </Grid>
 
                     <Grid Grid.Row="13" Margin="10,10,10,0">
-                        <TextBox IsReadOnly="True" MinWidth="250" MinHeight="70"></TextBox>
+                        <custom:BindableRichTextBox IsReadOnly="True" MinWidth="250" MinHeight="70" IsReadOnlyCaretVisible="True" Focusable="False" IsDocumentEnabled="True" Background="#333" BorderThickness="0"
+                           Foreground="#DCDCDC" Document="{Binding VnCharacterModel.Description}">
+                            <custom:BindableRichTextBox.Resources>
+                                <Style x:Key="{x:Type Hyperlink}" TargetType="{x:Type Hyperlink}">
+                                    <Setter Property="Foreground" Value="Orange"/>
+                                    <Setter Property="TextDecorations" Value="Underline"/>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Foreground" Value="Red"/>
+                                        </Trigger>
+                                        <Trigger Property="IsEnabled" Value="False">
+                                            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                                        </Trigger>
+                                        <Trigger Property="IsEnabled" Value="True">
+                                            <Setter Property="Cursor" Value="Hand"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </custom:BindableRichTextBox.Resources>
+                            </custom:BindableRichTextBox>
                     </Grid>
 
                     <Grid Grid.Row="14" Margin="5,20,0,0">

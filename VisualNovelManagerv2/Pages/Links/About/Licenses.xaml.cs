@@ -42,10 +42,11 @@ namespace VisualNovelManagerv2.Pages.Links.About
             data.Add(new LicenseData { Software = "System.Net.Sockets", Info = "Provides types for sockets", Url = "https://www.nuget.org/packages/System.Net.Sockets", License = "Microsoft Proprietary" });
             data.Add(new LicenseData { Software = "System.Reflection.TypeExtensions", Info = "Provides extensions for reflection", Url = "https://www.nuget.org/packages/System.Reflection.TypeExtensions", License = "Microsoft Proprietary" });
             data.Add(new LicenseData { Software = "System.Security.SecureString", Info = "Provides the SecureString class", Url = "https://www.nuget.org/packages/System.Security.SecureString", License = "Microsoft Proprietary" });
+            data.Add(new LicenseData { Software = "System.IO.Compression", Info = "Provides (de)/compression of streams", Url = "https://www.nuget.org/packages/System.IO.Compression/", License = "Microsoft Proprietary" });
+            data.Add(new LicenseData { Software = "System.Net.Http", Info = "Provides a programming interface for modern HTTP applications", Url = "https://www.nuget.org/packages/System.Net.Http", License = "Microsoft Proprietary" });
             data.Add(new LicenseData { Software = "MvvmValidation", Info = "Framework that removes boilerplate for validation", Url = "https://www.nuget.org/packages/MvvmValidation", License = "MIT" });
             data.Add(new LicenseData { Software = "GoSquared Flag Icons", Info = "A large set of flag icons", Url = "https://github.com/gosquared/flags", License = "MIT"});
-            data.Add(new LicenseData { Software = "System.IO.COmpression", Info = "Provides (de)/compression of streams", Url = "https://www.nuget.org/packages/System.IO.Compression/", License = "Microsoft Proprietary" });
-            data.Add(new LicenseData { Software = "System.Net.Http", Info = "Provides a programming interface for modern HTTP applications", Url = "https://www.nuget.org/packages/System.Net.Http", License = "Microsoft Proprietary" });
+            data.Add(new LicenseData{ Software = "Material Design Icons", Info = "1900+ Material Design Icons from the Community", Url = "https://github.com/Templarian/MaterialDesign", License = "OFL"});
 
             return data;
         }

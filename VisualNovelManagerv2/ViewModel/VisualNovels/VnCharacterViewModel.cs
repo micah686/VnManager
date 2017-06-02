@@ -15,6 +15,7 @@ using System.IO;
 using System.Net;
 using System.Windows;
 using System.Windows.Media.Imaging;
+using VisualNovelManagerv2.Converters;
 using VisualNovelManagerv2.CustomClasses;
 
 namespace VisualNovelManagerv2.ViewModel.VisualNovels
@@ -227,12 +228,16 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
             var characterInfo = dataSet.Tables[0].Rows[0].ItemArray;
             VnCharacterModel.Name = characterInfo[3].ToString();
+            VnCharacterModel.OriginalName = characterInfo[4].ToString();
 
-        }
+            VnCharacterModel.BloodType = characterInfo[6].ToString();
 
-        private void sample()
-        {
-            VnCharacterModel.Name = "changed";
+            
+            VnCharacterModel.Description = ConvertRichTextDocument.ConvertToFlowDocument(characterInfo[9].ToString());
+            string path = string.Format(@"{0}\Data\images\characters\{1}\{2}", Globals.DirectoryPath, Globals.VnId, Path.GetFileName(characterInfo[10].ToString()));
+            BitmapImage bImage = new BitmapImage(new Uri(path));
+            VnCharacterModel.Image = bImage;
+
         }
     }
 }

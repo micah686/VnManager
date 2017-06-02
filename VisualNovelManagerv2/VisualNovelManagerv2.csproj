@@ -138,6 +138,9 @@
     <Compile Include="Pages\Links\About\LicenseText\MicrosoftProprietary.xaml.cs">
       <DependentUpon>MicrosoftProprietary.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Links\About\LicenseText\OFL.xaml.cs">
+      <DependentUpon>OFL.xaml</DependentUpon>
+    </Compile>
     <Compile Include="StartupValidate.cs" />
     <Compile Include="ViewModel\VisualNovels\AddVnViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
@@ -178,6 +181,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\Links\About\LicenseText\MS-PL.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Links\About\LicenseText\OFL.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
