@@ -127,6 +127,7 @@
     <Compile Include="Converters\NullImageConverter.cs" />
     <Compile Include="CustomClasses\RequestOptions.cs" />
     <Compile Include="CustomClasses\TextBoxService.cs" />
+    <Compile Include="Design\VisualNovel\VnCharacterModel.cs" />
     <Compile Include="Design\VisualNovel\VnMainModel.cs" />
     <Compile Include="Design\VisualNovel\VnScreenshotModel.cs" />
     <Compile Include="Globals.cs" />

@@ -17,7 +17,7 @@ namespace VisualNovelManagerv2
         {
             Directory.CreateDirectory(Globals.DirectoryPath + @"\Data\config");
             Directory.CreateDirectory(Globals.DirectoryPath + @"\Data\Database");
-            Directory.CreateDirectory(Globals.DirectoryPath + @"\Data\images\character");
+            Directory.CreateDirectory(Globals.DirectoryPath + @"\Data\images\characters");
             Directory.CreateDirectory(Globals.DirectoryPath + @"\Data\images\cover");
             Directory.CreateDirectory(Globals.DirectoryPath + @"\Data\images\screenshots");
             Directory.CreateDirectory(Globals.DirectoryPath + @"\Data\images\thumbs");

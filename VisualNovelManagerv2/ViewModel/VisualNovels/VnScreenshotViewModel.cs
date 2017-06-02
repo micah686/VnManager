@@ -34,7 +34,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             LoadLargeScreenshotCommand = new RelayCommand(LoadLargeScreenshot);
             
             ScreenshotCollection = new ObservableCollection<ScreenshotViewModelCollection>();
-            Globals.VnId = 21001;
+            //Globals.VnId = 21001;
             LoadScreenshotList();
             DownloadScreenshots();
         }

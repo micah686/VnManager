@@ -82,7 +82,8 @@ namespace VisualNovelManagerv2.Pages
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            VnMainViewModel.LoadBindVnDataCommand.Execute(null);
+            VnCharacterViewModel vm = new VnCharacterViewModel();
+            vm.LoadCharacterCommand.Execute(null);
         }
     }
 }

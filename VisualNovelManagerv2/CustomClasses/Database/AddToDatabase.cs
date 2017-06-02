@@ -394,7 +394,7 @@ namespace VisualNovelManagerv2.CustomClasses.Database
 
                         #region VnCharacterTraits
 
-                        if (character.Traits.Count > 0) continue;
+                        if (character.Traits.Count < 1) break;
                         var traitMatches = GetDetailsFromTraitDump(traitDump, character.Traits);
                         int count = 0;
                         foreach (TraitMetadata trait in character.Traits)

@@ -5,7 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:VisualNovelManagerv2.Pages"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="300"
+             DataContext="{Binding VnCharacter, Source={StaticResource Locator}}">
     <Grid Margin="{StaticResource RootMargin}">
         <Grid x:Name="CharacterControl" Margin="10,10,10,35">
             <Grid.ColumnDefinitions>
@@ -21,7 +22,8 @@
                         <RowDefinition Height="5.5*"/>
                         <RowDefinition Height="4.5*"/>
                     </Grid.RowDefinitions>
-                    <ListBox Grid.Row="0"  Name="NoteList" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Visible" ItemsSource="{x:Static Fonts.SystemFontFamilies}" Margin="0,0,5,5"/>
+                    <ListBox Grid.Row="0"  Name="NoteList" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Visible" 
+                             ItemsSource="{Binding VnCharacterCollection, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,5,5"/>
                     <Grid Grid.Row="1" ShowGridLines="True" Margin="0,5,5,5">
                         <Image HorizontalAlignment="Left"   VerticalAlignment="Top" Stretch="Uniform" 
                    Source="D:\Documents\Visual Studio 2017\Projects\Testing Projects\Visual-Novel-Manager-v2\VisualNovelManagerv2\Resources\character.jpg"/>
@@ -70,7 +72,7 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Label Grid.Column="0" Content="Name:"/>
-                            <Label Grid.Column="1" Content="XXXXXX" Width="150" Margin="15,0,0,0"/>
+                            <Label Grid.Column="1" Content="{Binding VnCharacterModel.Name}" Width="150" Margin="15,0,0,0"/>
                         </Grid>
                     </Grid>
 
@@ -214,6 +216,6 @@
                 </Grid>
             </ScrollViewer>
         </Grid>
-        <local:BottomStatusBar></local:BottomStatusBar>
+        <!--<local:BottomStatusBar></local:BottomStatusBar>-->
     </Grid>
 </UserControl>
