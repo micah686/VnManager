@@ -11,7 +11,7 @@ namespace VisualNovelManagerv2.CustomClasses
     {
         public static void WriteDebugLog(Exception ex)
         {
-            string strPath = string.Format(@"{0}\Debug.log", Globals.DirectoryPath);
+            string strPath = $@"{Globals.DirectoryPath}\Debug.log";
             if (!File.Exists(strPath))
             {
                 File.Create(strPath).Dispose();

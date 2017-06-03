@@ -301,21 +301,21 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                     #region SQLite Transaction
                     using (SQLiteTransaction transaction = connection.BeginTransaction())
                     {
-                        var cmd = new SQLiteCommand("SELECT * FROM VnInfo WHERE PK_Id= @PK_Id", connection, transaction);
+                        SQLiteCommand cmd = new SQLiteCommand("SELECT * FROM VnInfo WHERE PK_Id= @PK_Id", connection, transaction);
                         cmd.Parameters.AddWithValue("@PK_Id", SelectedListItemIndex + 1);
-                        var cmd1 = new SQLiteCommand("SELECT * FROM VnInfoTags WHERE VnId=@VnId", connection, transaction);
+                        SQLiteCommand cmd1 = new SQLiteCommand("SELECT * FROM VnInfoTags WHERE VnId=@VnId", connection, transaction);
                         cmd1.Parameters.AddWithValue("@VnId", Globals.VnId);
-                        var cmd2 = new SQLiteCommand("SELECT * FROM VnInfoRelations WHERE VnId=@VnId", connection, transaction);
+                        SQLiteCommand cmd2 = new SQLiteCommand("SELECT * FROM VnInfoRelations WHERE VnId=@VnId", connection, transaction);
                         cmd2.Parameters.AddWithValue("@VnId", Globals.VnId);
-                        var cmd3 = new SQLiteCommand("SELECT * FROM VnInfoAnime WHERE VnId=@VnId", connection, transaction);
+                        SQLiteCommand cmd3 = new SQLiteCommand("SELECT * FROM VnInfoAnime WHERE VnId=@VnId", connection, transaction);
                         cmd3.Parameters.AddWithValue("@VnId", Globals.VnId);
-                        var cmd4 = new SQLiteCommand("SELECT * FROM VnInfoLinks WHERE VnId=@VnId", connection, transaction);
+                        SQLiteCommand cmd4 = new SQLiteCommand("SELECT * FROM VnInfoLinks WHERE VnId=@VnId", connection, transaction);
                         cmd4.Parameters.AddWithValue("@VnId", Globals.VnId);
-                        var cmd5 = new SQLiteCommand("SELECT * FROM VnInfoStaff WHERE VnId=@VnId", connection, transaction);
+                        SQLiteCommand cmd5 = new SQLiteCommand("SELECT * FROM VnInfoStaff WHERE VnId=@VnId", connection, transaction);
                         cmd5.Parameters.AddWithValue("@VnId", Globals.VnId);
-                        var cmd6 = new SQLiteCommand("SELECT * FROM VnInfoScreens WHERE VnId=@VnId", connection, transaction);
+                        SQLiteCommand cmd6 = new SQLiteCommand("SELECT * FROM VnInfoScreens WHERE VnId=@VnId", connection, transaction);
                         cmd6.Parameters.AddWithValue("@VnId", Globals.VnId);
-                        var cmd7 = new SQLiteCommand("SELECT * FROM VnUserData WHERE VnId=@VnId", connection, transaction);
+                        SQLiteCommand cmd7 = new SQLiteCommand("SELECT * FROM VnUserData WHERE VnId=@VnId", connection, transaction);
                         cmd7.Parameters.AddWithValue("@VnId", Globals.VnId);
 
                         dataSet.Tables.Add("VnInfo");
@@ -366,7 +366,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         {
             try
             {
-                var vninfo = dataSet.Tables[0].Rows[0].ItemArray;
+                object[] vninfo = dataSet.Tables[0].Rows[0].ItemArray;
 
                 DataTable dataTable = new DataTable();
                 dataTable = dataSet.Tables["VnInfoRelations"];
@@ -384,8 +384,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 dataTable = dataSet.Tables["VnInfoAnime"];
                 foreach (DataRow row in dataTable.Rows)
                 {
-                    var row2 = row.ItemArray[2];
-                    var row3 = row.ItemArray[3];
+                    object row2 = row.ItemArray[2];
+                    object row3 = row.ItemArray[3];
                     string anidb = null;
                     string ann = null;
                     if (row2 != null)
@@ -416,8 +416,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 {
                     _languageCollection.Add(new LanguagesCollection { VnMainModel = new VnMainModel { Languages = new BitmapImage(new Uri(language)) } });
                 }
-                IEnumerable<string> orig_languages = GetLangauges(vninfo[6].ToString());
-                foreach (string language in orig_languages)
+                IEnumerable<string> origLanguages = GetLangauges(vninfo[6].ToString());
+                foreach (string language in origLanguages)
                 {
                     _originalLanguagesCollection.Add(new OriginalLanguagesCollection { VnMainModel = new VnMainModel { OriginalLanguages = new BitmapImage(new Uri(language)) } });
                 }
@@ -431,7 +431,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
                 #region UserData Bind
                 dataTable = dataSet.Tables["VnUserData"];
-                var vnuserdata = dataSet.Tables[7].Rows[0].ItemArray;
+                object[] vnuserdata = dataSet.Tables[7].Rows[0].ItemArray;
 
                 if (vnuserdata[4].ToString() == "")
                 {
@@ -460,7 +460,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                     }
                 }
 
-                var splitPlayTime = vnuserdata[5].ToString().Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                string[] splitPlayTime = vnuserdata[5].ToString().Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
                 List<int> timeList = new List<int>(4);
                 foreach (string time in splitPlayTime)
                 {
@@ -581,8 +581,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
         private void DownloadCoverImage(string url, bool nsfw)
         {
-            string pathNoExt = string.Format(@"{0}\Data\images\cover\{1}", Globals.DirectoryPath, Globals.VnId);
-            string path = string.Format(@"{0}\Data\images\cover\{1}.jpg", Globals.DirectoryPath, Globals.VnId);
+            string pathNoExt = $@"{Globals.DirectoryPath}\Data\images\cover\{Globals.VnId}";
+            string path = $@"{Globals.DirectoryPath}\Data\images\cover\{Globals.VnId}.jpg";
 
             try
             {
@@ -593,9 +593,9 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                         WebClient client = new WebClient();
                         using (MemoryStream stream = new MemoryStream(client.DownloadData(new Uri(url))))
                         {
-                            string base64img =
+                            string base64Img =
                                 Base64Converter.ImageToBase64(Image.FromStream(stream), ImageFormat.Jpeg);
-                            File.WriteAllText(pathNoExt, base64img);
+                            File.WriteAllText(pathNoExt, base64Img);
                         }
                     }
                 }
@@ -619,8 +619,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
         private void BindCoverImage(string url, bool? nsfw)
         {
-            string pathNoExt = string.Format(@"{0}\Data\images\cover\{1}", Globals.DirectoryPath, Globals.VnId);
-            string path = string.Format(@"{0}\Data\images\cover\{1}.jpg", Globals.DirectoryPath, Globals.VnId);
+            string pathNoExt = $@"{Globals.DirectoryPath}\Data\images\cover\{Globals.VnId}";
+            string path = $@"{Globals.DirectoryPath}\Data\images\cover\{Globals.VnId}.jpg";
 
             try
             {

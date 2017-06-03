@@ -33,7 +33,7 @@ namespace VisualNovelManagerv2.Pages.Links.About
 
         private ObservableCollection<LicenseData> GetData()
         {
-            var data = new ObservableCollection<LicenseData>();
+            ObservableCollection<LicenseData> data = new ObservableCollection<LicenseData>();
             data.Add(new LicenseData{ Software = "VndbSharp", Info = "A C# Vndb API", Url = "https://github.com/Nikey646/VndbSharp" ,License = "MIT"});
             data.Add(new LicenseData { Software = "MVVMLight", Info = "Toolkit for MVVM in WPF", Url = "https://mvvmlight.codeplex.com", License = "MIT"  });
             data.Add(new LicenseData { Software = "MUI", Info = "ModernUI for WPF(MUI)", Url = "https://github.com/firstfloorsoftware/mui", License = "MS-PL"  });

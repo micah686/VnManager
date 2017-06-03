@@ -127,7 +127,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
         public void DownloadScreenshots()
         {
-            foreach (var screenshot in ScreenshotList)
+            foreach (Screenshot screenshot in ScreenshotList)
             {
                 if(ScreenshotList.Count < 1) return;
                 if (!Directory.Exists(string.Format(@"{0}\Data\images\screenshots\{1}", Globals.DirectoryPath,Globals.VnId)))
@@ -136,7 +136,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 }
 
 
-                var image = screenshot.Url;
+                string image = screenshot.Url;
                 string filename = Path.GetFileNameWithoutExtension(image);
                 string pathNoExt = string.Format(@"{0}\Data\images\screenshots\{1}\{2}", Globals.DirectoryPath, Globals.VnId, filename);
                 string path = string.Format(@"{0}\Data\images\screenshots\{1}\{2}", Globals.DirectoryPath, Globals.VnId, Path.GetFileName(image));
@@ -180,13 +180,13 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
         private void BindScreenshots()
         {
-            foreach (var screenshot in ScreenshotList)
+            foreach (Screenshot screenshot in ScreenshotList)
             {
                 if (ScreenshotList.Count < 1) return;
-                var image = screenshot.Url;
+                string image = screenshot.Url;
                 string filename = Path.GetFileNameWithoutExtension(image);
-                string pathNoExt = string.Format(@"{0}\Data\images\screenshots\{1}\{2}", Globals.DirectoryPath, Globals.VnId, filename);
-                string path = string.Format(@"{0}\Data\images\screenshots\{1}\{2}", Globals.DirectoryPath, Globals.VnId, Path.GetFileName(image));
+                string pathNoExt = $@"{Globals.DirectoryPath}\Data\images\screenshots\{Globals.VnId}\{filename}";
+                string path = $@"{Globals.DirectoryPath}\Data\images\screenshots\{Globals.VnId}\{Path.GetFileName(image)}";
 
                 if (screenshot.IsNsfw == true)
                 {
@@ -215,13 +215,15 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             if (ScreenshotList[SelectedScreenIndex].IsNsfw == true)
             {
                 string filename = Path.GetFileNameWithoutExtension(ScreenshotList[SelectedScreenIndex].Url);
-                string pathNoExt = string.Format(@"{0}\Data\images\screenshots\{1}\{2}", Globals.DirectoryPath, Globals.VnId, filename);
+                string pathNoExt = $@"{Globals.DirectoryPath}\Data\images\screenshots\{Globals.VnId}\{filename}";
                 BitmapImage bImage = Base64Converter.GetBitmapImageFromBytes(File.ReadAllText(pathNoExt));
                 MainImage = bImage;
             }
             if (ScreenshotList[SelectedScreenIndex].IsNsfw == false)
             {
-                string path = string.Format(@"{0}\Data\images\screenshots\{1}\{2}", Globals.DirectoryPath, Globals.VnId, Path.GetFileName(ScreenshotList[SelectedScreenIndex].Url));
+                string path = $@"{Globals.DirectoryPath}\Data\images\screenshots\{Globals.VnId}\{
+                        Path.GetFileName(ScreenshotList[SelectedScreenIndex].Url)
+                    }";
                 BitmapImage bImage = new BitmapImage(new Uri(path));
                 MainImage = bImage;;
             }

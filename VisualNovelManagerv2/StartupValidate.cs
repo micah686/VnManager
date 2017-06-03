@@ -56,7 +56,7 @@ namespace VisualNovelManagerv2
                 try
                 {
                     db.Open();
-                    using (var transaction = db.BeginTransaction())
+                    using (SQLiteTransaction transaction = db.BeginTransaction())
                     {
                         transaction.Rollback();
                     }
@@ -488,7 +488,7 @@ namespace VisualNovelManagerv2
         {
             if (File.Exists(@"D:\Visual Novels\file.exe"))
             {
-                var twobytes = new byte[2];
+                byte[] twobytes = new byte[2];
                 using (FileStream filestream = File.Open(@"D:\Visual Novels\file.exe", FileMode.Open))
                 {
                     filestream.Read(twobytes, 0, 2);

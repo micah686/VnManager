@@ -272,7 +272,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         private void ValidateExe()
         {
             if (!File.Exists(FileName)) return;
-            var twoBytes = new byte[2];
+            byte[] twoBytes = new byte[2];
             using (FileStream fileStream = File.Open(FileName, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 fileStream.Read(twoBytes, 0, 2);
@@ -354,7 +354,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
         private async Task ValidateAsync()
         {
-            var result = await Validator.ValidateAllAsync();
+            ValidationResult result = await Validator.ValidateAllAsync();
 
             UpdateValidationSummary(result);
         }

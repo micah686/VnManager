@@ -363,7 +363,7 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                     #region Character
 
                     IEnumerable<Trait> traitDump = await VndbUtils.GetTraitsDumpAsync();
-                    foreach (var character in characters)
+                    foreach (Character character in characters)
                     {
                         #region VnCharacter
 
@@ -394,7 +394,7 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                         #region VnCharacterTraits
 
                         if (character.Traits.Count < 1) break;
-                        var traitMatches = GetDetailsFromTraitDump(traitDump, character.Traits);
+                        IEnumerable<Trait> traitMatches = GetDetailsFromTraitDump(traitDump, character.Traits);
                         int count = 0;
                         foreach (TraitMetadata trait in character.Traits)
                         {
@@ -463,7 +463,6 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                     cmd.Parameters.AddWithValue("@IconPath", CheckForDbNull(_iconpath));
                     cmd.Parameters.AddWithValue("@LastPlayed", "");
                     cmd.Parameters.AddWithValue("@PlayTime", "0,0,0,0");
-                    //TODO: add the rest of these values
 
                     cmd.ExecuteNonQuery();
 
@@ -534,10 +533,7 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                 }
                 finally
                 {
-                    if (transaction != null)
-                    {
-                        transaction.Dispose();
-                    }
+                    transaction?.Dispose();
                 }
                 connection.Close();
             }
@@ -569,27 +565,11 @@ namespace VisualNovelManagerv2.CustomClasses.Database
         private string ConvertBirthday(SimpleDate birthday)
         {
             string formatted = string.Empty;
-            if (birthday == null)
-            {
-                return formatted;
-            }
-            else
-            {
-                if (birthday.Month != null)
-                {
-                    var month = CurrentCulture.DateTimeFormat.GetMonthName(Convert.ToInt32(birthday.Month));
-                    formatted = $"{month} {birthday.Day}";
-                    return formatted;
-                }
-                if (birthday.Month == null)
-                {
-                    return birthday.Day.ToString();
-                }
-                else//shouldn't ever trigger, but here in case
-                {
-                    return string.Empty;
-                }
-            }            
+            if (birthday == null) return formatted;
+            if (birthday.Month == null) return birthday.Month == null ? birthday.Day.ToString() : string.Empty;
+            string month = CurrentCulture.DateTimeFormat.GetMonthName(Convert.ToInt32(birthday.Month));
+            formatted = $"{month} {birthday.Day}";
+            return formatted;
         }
 
         string ConvertToCsv(ReadOnlyCollection<string> input)
@@ -631,8 +611,8 @@ namespace VisualNovelManagerv2.CustomClasses.Database
             }
             else if (error is ThrottledError throttled)
             {
-                var minSeconds = (DateTime.Now - throttled.MinimumWait).TotalSeconds; // Not sure if this is correct
-                var fullSeconds = (DateTime.Now - throttled.FullWait).TotalSeconds; // Not sure if this is correct
+                double minSeconds = (DateTime.Now - throttled.MinimumWait).TotalSeconds; // Not sure if this is correct
+                double fullSeconds = (DateTime.Now - throttled.FullWait).TotalSeconds; // Not sure if this is correct
                 Console.WriteLine(
                     $"A Throttled Error occured, you need to wait at minimum \"{minSeconds}\" seconds, " +
                     $"and preferably \"{fullSeconds}\" before issuing commands.");

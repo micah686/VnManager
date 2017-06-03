@@ -47,7 +47,7 @@ namespace VisualNovelManagerv2.Pages
             byte mon = 3;
             byte day = 7;
             sd.Month = 3;
-            var test = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(13);
+            string test = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(13);
             Console.WriteLine(CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(mon));
 
             sd.Month = null;

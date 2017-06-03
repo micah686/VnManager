@@ -26,10 +26,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
     public class VnCharacterViewModel: ViewModelBase
     {
 
-        public ICommand LoadCharacterCommand
-        {
-            get { return new GalaSoft.MvvmLight.CommandWpf.RelayCommand(LoadCharacterUrlList); }            
-        }
+        public ICommand LoadCharacterCommand => new GalaSoft.MvvmLight.CommandWpf.RelayCommand(LoadCharacterUrlList);
 
         #region ObservableCollections
 
@@ -189,12 +186,11 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             foreach (string character in characterList)
             {
                 if(characterList.Count <1)return;
-                if (!Directory.Exists(string.Format(@"{0}\Data\images\characters\{1}", Globals.DirectoryPath, Globals.VnId)))
+                if (!Directory.Exists($@"{Globals.DirectoryPath}\Data\images\characters\{Globals.VnId}"))
                 {
-                    Directory.CreateDirectory(string.Format(@"{0}\Data\images\characters\{1}", Globals.DirectoryPath, Globals.VnId));
+                    Directory.CreateDirectory($@"{Globals.DirectoryPath}\Data\images\characters\{Globals.VnId}");
                 }
-                string filename = Path.GetFileNameWithoutExtension(character);
-                string path = string.Format(@"{0}\Data\images\characters\{1}\{2}", Globals.DirectoryPath, Globals.VnId, Path.GetFileName(character));
+                string path =$@"{Globals.DirectoryPath}\Data\images\characters\{Globals.VnId}\{Path.GetFileName(character)}";
 
                 try
                 {
@@ -236,7 +232,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                         while (reader.Read())
                         {
                             string name = reader["Name"].ToString();
-                            BitmapImage bitmap = new BitmapImage();
                             CharacterNameCollection.Add(name);
                         }
                     }
@@ -269,11 +264,11 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             }
             //TraitDescription.Blocks.Clear();
             DataSet dataSet = new DataSet();
-            int characterId = 0;
+            int characterId;
             using (SQLiteConnection connection = new SQLiteConnection(Globals.ConnectionString))
             {
                 connection.Open();
-                var cmd = new SQLiteCommand("SELECT CharacterId FROM VnCharacter WHERE Name= @Name AND VnId=@VnId", connection);
+                SQLiteCommand cmd = new SQLiteCommand("SELECT CharacterId FROM VnCharacter WHERE Name= @Name AND VnId=@VnId", connection);
                 cmd.Parameters.AddWithValue("@Name", SelectedCharacter);
                 cmd.Parameters.AddWithValue("@VnId", Globals.VnId);
                 characterId = Convert.ToInt32(cmd.ExecuteScalar());
@@ -283,58 +278,54 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             using (SQLiteConnection connection = new SQLiteConnection(Globals.ConnectionString))
             {
                 connection.Open();
-                var cmd = new SQLiteCommand("SELECT * FROM VnCharacter WHERE Name= @Name AND VnId=@VnId", connection);
+                SQLiteCommand cmd = new SQLiteCommand("SELECT * FROM VnCharacter WHERE Name= @Name AND VnId=@VnId", connection);
                 cmd.Parameters.AddWithValue("@Name", SelectedCharacter);
                 cmd.Parameters.AddWithValue("@VnId", Globals.VnId);
                 SQLiteDataAdapter adapter = new SQLiteDataAdapter(cmd);
                 adapter.Fill(dataSet);
                 connection.Close();
             }
-
-            var characterInfo = dataSet.Tables[0].Rows[0].ItemArray;
-            VnCharacterModel.Name = characterInfo[3].ToString();
-            VnCharacterModel.OriginalName = characterInfo[4].ToString();
-            VnCharacterModel.Gender = GetGenderIcon(characterInfo[5].ToString());
-            VnCharacterModel.BloodType = characterInfo[6].ToString();
-            VnCharacterModel.Birthday = characterInfo[7].ToString();
-
-            if (!string.IsNullOrEmpty(characterInfo[8].ToString()))
+            if (dataSet.Tables[0].Rows.Count < 1) return;
             {
-                if (characterInfo[8].ToString().Contains(","))
-                {
-                    VnCharacterModel.Aliases = characterInfo[8].ToString().Replace(",", ", ");
-                }
-                else
-                {
-                    VnCharacterModel.Aliases = characterInfo[8].ToString();
-                }
-            }            
-            VnCharacterModel.Description = ConvertRichTextDocument.ConvertToFlowDocument(characterInfo[9].ToString());
-            string path = string.Format(@"{0}\Data\images\characters\{1}\{2}", Globals.DirectoryPath, Globals.VnId, Path.GetFileName(characterInfo[10].ToString()));
-            BitmapImage bImage = new BitmapImage(new Uri(path));
-            VnCharacterModel.Image = bImage;
+                object[] characterInfo = dataSet.Tables[0].Rows[0].ItemArray;
+                VnCharacterModel.Name = characterInfo[3].ToString();
+                VnCharacterModel.OriginalName = characterInfo[4].ToString();
+                VnCharacterModel.Gender = GetGenderIcon(characterInfo[5].ToString());
+                VnCharacterModel.BloodType = characterInfo[6].ToString();
+                VnCharacterModel.Birthday = characterInfo[7].ToString();
 
-            VnCharacterModel.Bust = characterInfo[11].ToString();
-            VnCharacterModel.Waist = characterInfo[12].ToString();
-            VnCharacterModel.Hip = characterInfo[13].ToString();
-            VnCharacterModel.Height = characterInfo[14].ToString();
-            VnCharacterModel.Weight = characterInfo[15].ToString();
-
-            
-            using (SQLiteConnection connection = new SQLiteConnection(Globals.ConnectionString))
-            {
-                connection.Open();
-                var cmd = new SQLiteCommand("SELECT * FROM VnCharacterTraits WHERE CharacterId=@CharacterId", connection);
-                cmd.Parameters.AddWithValue("@CharacterId", characterId);
-                SQLiteDataReader reader = cmd.ExecuteReader();
-                while (reader.Read())
+                if (!string.IsNullOrEmpty(characterInfo[8].ToString()))
                 {
-                    _traitsCollection.Add(reader["TraitName"].ToString());
+                    VnCharacterModel.Aliases = characterInfo[8].ToString().Contains(",") ? characterInfo[8].ToString().Replace(",", ", ") : characterInfo[8].ToString();
                 }
-                connection.Close();
+                VnCharacterModel.Description = ConvertRichTextDocument.ConvertToFlowDocument(characterInfo[9].ToString());
+                string path =
+                    $@"{Globals.DirectoryPath}\Data\images\characters\{Globals.VnId}\{
+                            Path.GetFileName(characterInfo[10].ToString())
+                        }";
+                BitmapImage bImage = new BitmapImage(new Uri(path));
+                VnCharacterModel.Image = bImage;
+
+                VnCharacterModel.Bust = characterInfo[11].ToString();
+                VnCharacterModel.Waist = characterInfo[12].ToString();
+                VnCharacterModel.Hip = characterInfo[13].ToString();
+                VnCharacterModel.Height = characterInfo[14].ToString();
+                VnCharacterModel.Weight = characterInfo[15].ToString();
+
+
+                using (SQLiteConnection connection = new SQLiteConnection(Globals.ConnectionString))
+                {
+                    connection.Open();
+                    SQLiteCommand cmd = new SQLiteCommand("SELECT * FROM VnCharacterTraits WHERE CharacterId=@CharacterId", connection);
+                    cmd.Parameters.AddWithValue("@CharacterId", characterId);
+                    SQLiteDataReader reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        _traitsCollection.Add(reader["TraitName"].ToString());
+                    }
+                    connection.Close();
+                }
             }
-
-            
         }
 
         private void BindTraitDescription()
@@ -364,8 +355,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                     DebugLogging.WriteDebugLog(ex);
                     throw;
                 }
-            else
-                return;
         }
 
         private BitmapImage GetGenderIcon(string gender)
