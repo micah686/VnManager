@@ -38,15 +38,15 @@ namespace VisualNovelManagerv2.Design.VisualNovel
 
 
 
-        public string Gender
+        public BitmapImage Gender
         {
-            get { return (string)GetValue(GenderProperty); }
+            get { return (BitmapImage)GetValue(GenderProperty); }
             set { SetValue(GenderProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for Gender.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty GenderProperty =
-            DependencyProperty.Register("Gender", typeof(string), typeof(VnCharacterModel), new PropertyMetadata(null));
+            DependencyProperty.Register("Gender", typeof(BitmapImage), typeof(VnCharacterModel), new PropertyMetadata(null));
 
 
 
@@ -171,15 +171,15 @@ namespace VisualNovelManagerv2.Design.VisualNovel
 
 
 
-        public string Weigh
+        public string Weight
         {
-            get { return (string)GetValue(WeighProperty); }
-            set { SetValue(WeighProperty, value); }
+            get { return (string)GetValue(WeightProperty); }
+            set { SetValue(WeightProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for Weigh.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty WeighProperty =
-            DependencyProperty.Register("Weigh", typeof(string), typeof(VnCharacterModel), new PropertyMetadata(null));
+        public static readonly DependencyProperty WeightProperty =
+            DependencyProperty.Register("Weight", typeof(string), typeof(VnCharacterModel), new PropertyMetadata(null));
 
 
 

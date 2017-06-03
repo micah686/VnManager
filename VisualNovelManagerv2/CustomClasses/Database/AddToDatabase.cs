@@ -13,11 +13,13 @@ using VndbSharp;
 using VndbSharp.Interfaces;
 using VndbSharp.Models;
 using VndbSharp.Models.Character;
+using VndbSharp.Models.Common;
 using VndbSharp.Models.Dumps;
 using VndbSharp.Models.Errors;
 using VndbSharp.Models.Producer;
 using VndbSharp.Models.Release;
 using VndbSharp.Models.VisualNovel;
+using static System.Globalization.CultureInfo;
 using VisualNovelMetadata = VndbSharp.Models.Release.VisualNovelMetadata;
 
 namespace VisualNovelManagerv2.CustomClasses.Database
@@ -374,12 +376,9 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                         cmd.Parameters.AddWithValue("@CharacterId", CheckForDbNull(character.Id));
                         cmd.Parameters.AddWithValue("@Name", CheckForDbNull(character.Name));
                         cmd.Parameters.AddWithValue("@Original", CheckForDbNull(character.OriginalName));
-                        cmd.Parameters.AddWithValue("@Gender",
-                            CheckForDbNull(character.Gender?.ToString() ?? null));
-                        cmd.Parameters.AddWithValue("@BloodType",
-                            CheckForDbNull(character.BloodType?.ToString() ?? null));
-                        cmd.Parameters.AddWithValue("@Birthday",
-                            CheckForDbNull(character.Birthday?.ToString() ?? null));
+                        cmd.Parameters.AddWithValue("@Gender", CheckForDbNull(character.Gender?.ToString() ?? null));
+                        cmd.Parameters.AddWithValue("@BloodType", CheckForDbNull(character.BloodType?.ToString() ?? null));
+                        cmd.Parameters.AddWithValue("@Birthday", CheckForDbNull(ConvertBirthday(character.Birthday)));                        
                         cmd.Parameters.AddWithValue("@Aliases", CheckForDbNull(ConvertToCsv(character.Aliases)));
                         cmd.Parameters.AddWithValue("@Description", CheckForDbNull(character.Description));
                         cmd.Parameters.AddWithValue("@ImageLink", CheckForDbNull(character.Image));
@@ -548,6 +547,32 @@ namespace VisualNovelManagerv2.CustomClasses.Database
             return matches;
         }
 
+        private string ConvertBirthday(SimpleDate birthday)
+        {
+            string formatted = string.Empty;
+            if (birthday == null)
+            {
+                return formatted;
+            }
+            else
+            {
+                if (birthday.Month != null)
+                {
+                    var month = CurrentCulture.DateTimeFormat.GetMonthName(Convert.ToInt32(birthday.Month));
+                    formatted = $"{month} {birthday.Day}";
+                    return formatted;
+                }
+                if (birthday.Month == null)
+                {
+                    return birthday.Day.ToString();
+                }
+                else//shouldn't ever trigger, but here in case
+                {
+                    return string.Empty;
+                }
+            }            
+        }
+
         string ConvertToCsv(ReadOnlyCollection<string> input)
         {
             return input != null ? string.Join(",", input) : null;
@@ -566,6 +591,7 @@ namespace VisualNovelManagerv2.CustomClasses.Database
             }
             return true;
         }
+
 
 
         //this forces entries that are null to work in the database

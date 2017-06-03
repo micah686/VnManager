@@ -313,6 +313,9 @@
     <Content Include="Resources\flags\Unknown.png" />
     <Content Include="Resources\flags\vi.png" />
     <Content Include="Resources\flags\zh.png" />
+    <Content Include="Resources\gender\both.png" />
+    <Content Include="Resources\gender\female.png" />
+    <Content Include="Resources\gender\male.png" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\..\Visual Studio 2015\Projects\VndbSharp\VndbSharp\VndbSharp.csproj">
@@ -336,6 +339,7 @@ DEL *.dll *.pdb *.xml
 
 
 ROBOCOPY "$(TargetDir)..\..\Resources\Flags " "$(TargetDir)Data\res\country_flags " *.png 
+ROBOCOPY "$(TargetDir)..\..\Resources\Gender " "$(TargetDir)Data\res\icons\gender " *.png 
 
 if errorlevel 1 exit 0 else exit %25errorlevel%25</PostBuildEvent>
   </PropertyGroup>

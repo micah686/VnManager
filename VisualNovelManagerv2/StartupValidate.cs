@@ -25,6 +25,7 @@ namespace VisualNovelManagerv2
             Directory.CreateDirectory(Globals.DirectoryPath + @"\Data\libs\");
             Directory.CreateDirectory(Globals.DirectoryPath + @"\Data\res\country_flags");
             Directory.CreateDirectory(Globals.DirectoryPath + @"\Data\res\icons");
+            Directory.CreateDirectory(Globals.DirectoryPath + @"\Data\res\icons\gender");
         }
 
         public void CheckForDatabase()

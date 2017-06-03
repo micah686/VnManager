@@ -74,7 +74,7 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Label Grid.Column="0" Content="Name:"/>
-                            <Label Grid.Column="1" Content="{Binding VnCharacterModel.Name}" Width="150" Margin="15,0,0,0"/>
+                            <Label Grid.Column="1" Content="{Binding VnCharacterModel.Name}" Width="150" Margin="10,0,0,0"/>
                         </Grid>
                     </Grid>
 
@@ -85,7 +85,7 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Label Grid.Column="0" Content="Original Name:"/>
-                            <Label Grid.Column="1" Content="{Binding VnCharacterModel.OriginalName}" Width="150" Margin="15,0,0,0"/>
+                            <Label Grid.Column="1" Content="{Binding VnCharacterModel.OriginalName}" Width="150" Margin="10,0,0,0"/>
                         </Grid>
                     </Grid>
 
@@ -96,7 +96,7 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Label Grid.Column="0" Content="Aliases:"/>
-                            <Label Grid.Column="1" Content="XXXXXX" Width="150" Margin="15,0,0,0"/>
+                            <Label Grid.Column="1" Content="{Binding VnCharacterModel.Aliases}"  Margin="10,0,0,0"/>
                         </Grid>
                     </Grid>
 
@@ -107,7 +107,7 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Label Grid.Column="0" Content="Gender:"/>
-                            <Label Grid.Column="1" Content="XXXXXX" Width="150" Margin="15,0,0,0"/>
+                            <Image Grid.Column="1" Source="{Binding VnCharacterModel.Gender}"  Margin="10,0,0,0" Stretch="UniformToFill"  Height="20" Width="20" />
                         </Grid>
                     </Grid>
 
@@ -118,7 +118,7 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Label Grid.Column="0" Content="Blood Type:"/>
-                            <Label Grid.Column="1" Content="{Binding VnCharacterModel.BloodType}" Width="150" Margin="15,0,0,0"/>
+                            <Label Grid.Column="1" Content="{Binding VnCharacterModel.BloodType}" Width="150" Margin="10,0,0,0"/>
                         </Grid>
                     </Grid>
 
@@ -129,7 +129,7 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Label Grid.Column="0" Content="Birthday:"/>
-                            <Label Grid.Column="1" Content="XXXXXX" Width="150" Margin="15,0,0,0"/>
+                            <Label Grid.Column="1" Content="{Binding VnCharacterModel.Birthday}" Width="150" Margin="10,0,0,0"/>
                         </Grid>
                     </Grid>
 
@@ -140,7 +140,7 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Label Grid.Column="0" Content="Height:"/>
-                            <Label Grid.Column="1" Content="XXXXXX" Width="150" Margin="15,0,0,0"/>
+                            <Label Grid.Column="1" Content="{Binding VnCharacterModel.Height}" Width="150" Margin="10,0,0,0"/>
                         </Grid>
                     </Grid>
 
@@ -151,7 +151,7 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Label Grid.Column="0" Content="Weight:"/>
-                            <Label Grid.Column="1" Content="XXXXXX" Width="150" Margin="15,0,0,0"/>
+                            <Label Grid.Column="1" Content="{Binding VnCharacterModel.Weight}" Width="150" Margin="10,0,0,0"/>
                         </Grid>
                     </Grid>
 
@@ -162,7 +162,7 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Label Grid.Column="0" Content="Bust:"/>
-                            <Label Grid.Column="1" Content="XXXXXX" Width="150" Margin="15,0,0,0"/>
+                            <Label Grid.Column="1" Content="{Binding VnCharacterModel.Bust}" Width="150" Margin="10,0,0,0"/>
                         </Grid>
                     </Grid>
 
@@ -173,7 +173,7 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Label Grid.Column="0" Content="Hip:"/>
-                            <Label Grid.Column="1" Content="XXXXXX" Width="150" Margin="15,0,0,0"/>
+                            <Label Grid.Column="1" Content="{Binding VnCharacterModel.Hip}" Width="150" Margin="10,0,0,0"/>
                         </Grid>
                     </Grid>
 
@@ -184,7 +184,7 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Label Grid.Column="0" Content="Waist:"/>
-                            <Label Grid.Column="1" Content="XXXXXX" Width="150" Margin="15,0,0,0"/>
+                            <Label Grid.Column="1" Content="{Binding VnCharacterModel.Waist}" Width="150" Margin="10,0,0,0"/>
                         </Grid>
                     </Grid>
 

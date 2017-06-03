@@ -17,6 +17,7 @@ using System.Windows;
 using System.Windows.Media.Imaging;
 using VisualNovelManagerv2.Converters;
 using VisualNovelManagerv2.CustomClasses;
+using VndbSharp.Models.Common;
 
 namespace VisualNovelManagerv2.ViewModel.VisualNovels
 {
@@ -229,15 +230,49 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             var characterInfo = dataSet.Tables[0].Rows[0].ItemArray;
             VnCharacterModel.Name = characterInfo[3].ToString();
             VnCharacterModel.OriginalName = characterInfo[4].ToString();
-
+            VnCharacterModel.Gender = GetGenderIcon(characterInfo[5].ToString());
             VnCharacterModel.BloodType = characterInfo[6].ToString();
+            VnCharacterModel.Birthday = characterInfo[7].ToString();
 
-            
+            if (!string.IsNullOrEmpty(characterInfo[8].ToString()))
+            {
+                if (characterInfo[8].ToString().Contains(","))
+                {
+                    VnCharacterModel.Aliases = characterInfo[8].ToString().Replace(",", ", ");
+                }
+                else
+                {
+                    VnCharacterModel.Aliases = characterInfo[8].ToString();
+                }
+            }            
             VnCharacterModel.Description = ConvertRichTextDocument.ConvertToFlowDocument(characterInfo[9].ToString());
             string path = string.Format(@"{0}\Data\images\characters\{1}\{2}", Globals.DirectoryPath, Globals.VnId, Path.GetFileName(characterInfo[10].ToString()));
             BitmapImage bImage = new BitmapImage(new Uri(path));
             VnCharacterModel.Image = bImage;
 
+            VnCharacterModel.Bust = characterInfo[11].ToString();
+            VnCharacterModel.Waist = characterInfo[12].ToString();
+            VnCharacterModel.Hip = characterInfo[13].ToString();
+            VnCharacterModel.Height = characterInfo[14].ToString();
+            VnCharacterModel.Weight = characterInfo[15].ToString();
+
         }
+
+        private BitmapImage GetGenderIcon(string gender)
+        {
+            switch (gender)
+            {
+                case "Female":
+                    return new BitmapImage(new Uri($@"{Globals.DirectoryPath}\Data\res\icons\gender\female.png"));
+                case "Male":
+                    return new BitmapImage(new Uri($@"{Globals.DirectoryPath}\Data\res\icons\gender\male.png"));
+                case "Both":
+                    return new BitmapImage(new Uri($@"{Globals.DirectoryPath}\Data\res\icons\gender\both.png"));
+                default:
+                    return null;
+            }            
+        }
+
+
     }
 }
