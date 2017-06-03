@@ -185,6 +185,18 @@ namespace VisualNovelManagerv2.Design.VisualNovel
 
 
 
+        public FlowDocument TraitDescription
+        {
+            get { return (FlowDocument)GetValue(TraitDescriptionProperty); }
+            set { SetValue(TraitDescriptionProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for TraitDescription.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty TraitDescriptionProperty =
+            DependencyProperty.Register("TraitDescription", typeof(FlowDocument), typeof(VnCharacterModel), new PropertyMetadata(null));
+
+
+
 
 
 

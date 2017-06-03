@@ -226,8 +226,9 @@
                                 <ColumnDefinition Width="7*"/>
                             </Grid.ColumnDefinitions>
                             <!--change listbox to use max width of largest string, so it doesn't dynamically adjust -->
-                            <ListBox Grid.Column="0"   ItemsSource="{x:Static Fonts.SystemFontFamilies}" Height="250"/>
-                            <TextBox Grid.Column="1" MinWidth="250" MinHeight="70" IsReadOnly="True" Margin="15,0,15,0"/>
+                            <ListBox Grid.Column="0"   ItemsSource="{Binding TraitsCollection}" Height="250" SelectedIndex="{Binding SelectedTraitIndex}" SelectedItem="{Binding SelectedTrait}"/>
+                            <custom:BindableRichTextBox Grid.Column="1" MinWidth="250" MinHeight="70" IsReadOnly="True" Margin="15,0,15,0" IsReadOnlyCaretVisible="True" Focusable="False" IsDocumentEnabled="True" Background="#333" BorderThickness="0"
+                              Foreground="#DCDCDC" Document="{Binding VnCharacterModel.TraitDescription}"/>
                         </Grid>
                     </Grid>
 

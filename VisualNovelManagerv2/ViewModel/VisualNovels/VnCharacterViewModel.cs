@@ -14,6 +14,7 @@ using System.Data.SQLite;
 using System.IO;
 using System.Net;
 using System.Windows;
+using System.Windows.Documents;
 using System.Windows.Media.Imaging;
 using VisualNovelManagerv2.Converters;
 using VisualNovelManagerv2.CustomClasses;
@@ -39,6 +40,17 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             {
                 _characterNameCollection = value;
                 RaisePropertyChanged(nameof(CharacterNameCollection));
+            }
+        }
+
+        private static ObservableCollection<string> _traitsCollection = new ObservableCollection<string>();
+        public ObservableCollection<string> TraitsCollection
+        {
+            get { return _traitsCollection; }
+            set
+            {
+                _traitsCollection = value;
+                RaisePropertyChanged(nameof(TraitsCollection));
             }
         }
 
@@ -88,7 +100,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         }
 
         private string _selectedCharacter;
-
         public string SelectedCharacter
         {
             get { return _selectedCharacter; }
@@ -97,6 +108,31 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 _selectedCharacter = value;
                 RaisePropertyChanged(nameof(SelectedCharacter));
                 LoadCharacterData();
+            }
+        }
+
+
+        private int _selectedTraitIndex;
+        public int SelectedTraitIndex
+        {
+            get { return _selectedTraitIndex; }
+            set
+            {
+                _selectedTraitIndex = value;
+                RaisePropertyChanged(nameof(SelectedTraitIndex));
+            }
+        }
+
+        private string _selectedTrait;
+        public string SelectedTrait
+        {
+            get { return _selectedTrait; }
+            set
+            {
+                _selectedTrait = value;
+                BindTraitDescription();
+                RaisePropertyChanged(nameof(SelectedTrait));
+                
             }
         }
 
@@ -214,8 +250,19 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
         private void LoadCharacterData()
         {
-            
+            TraitsCollection.Clear();
             DataSet dataSet = new DataSet();
+            int characterId = 0;
+            using (SQLiteConnection connection = new SQLiteConnection(Globals.ConnectionString))
+            {
+                connection.Open();
+                var cmd = new SQLiteCommand("SELECT CharacterId FROM VnCharacter WHERE Name= @Name AND VnId=@VnId", connection);
+                cmd.Parameters.AddWithValue("@Name", SelectedCharacter);
+                cmd.Parameters.AddWithValue("@VnId", Globals.VnId);
+                characterId = Convert.ToInt32(cmd.ExecuteScalar());
+                connection.Close();
+            }
+
             using (SQLiteConnection connection = new SQLiteConnection(Globals.ConnectionString))
             {
                 connection.Open();
@@ -256,6 +303,57 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             VnCharacterModel.Height = characterInfo[14].ToString();
             VnCharacterModel.Weight = characterInfo[15].ToString();
 
+            
+            using (SQLiteConnection connection = new SQLiteConnection(Globals.ConnectionString))
+            {
+                connection.Open();
+                var cmd = new SQLiteCommand("SELECT * FROM VnCharacterTraits WHERE CharacterId=@CharacterId", connection);
+                cmd.Parameters.AddWithValue("@CharacterId", characterId);
+                SQLiteDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    _traitsCollection.Add(reader["TraitName"].ToString());
+                }
+                connection.Close();
+            }
+           
+
+        }
+
+        private void BindTraitDescription()
+        {
+            //TODO: try to make traitdescripion use a property, not a dependencyproperty
+            if (SelectedTraitIndex < 0)
+            {
+                return;
+            }
+            else
+            {
+                try
+                {
+                    using (SQLiteConnection connection = new SQLiteConnection(Globals.ConnectionString))
+                    {
+                        connection.Open();
+                        using (SQLiteCommand cmd = connection.CreateCommand())
+                        {
+                            cmd.CommandText = "SELECT Description FROM VnTraitData WHERE Name= @Name";
+                            cmd.Parameters.AddWithValue("@Name", SelectedTrait);
+
+                            VnCharacterModel.TraitDescription = ConvertRichTextDocument.ConvertToFlowDocument(cmd.ExecuteScalar().ToString());
+                        }
+                    }
+                }
+                catch (SQLiteException ex)
+                {
+                    DebugLogging.WriteDebugLog(ex);
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    DebugLogging.WriteDebugLog(ex);
+                    throw;
+                }
+            }
         }
 
         private BitmapImage GetGenderIcon(string gender)

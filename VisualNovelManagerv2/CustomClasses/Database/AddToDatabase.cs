@@ -414,6 +414,25 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                         }
                         #endregion
 
+                        if (traitMatches != null)
+                        {
+                            foreach (Trait trait in traitMatches)
+                            {
+                                sql = "INSERT OR REPLACE INTO VnTraitData VALUES(@PK_Id, @TraitId, @Name, @Description, @Meta, @Chars, @Aliases, @Parents);";
+                                cmd = new SQLiteCommand(sql, connection, transaction);
+                                cmd.Parameters.AddWithValue("@PK_Id", null);
+                                cmd.Parameters.AddWithValue("@TraitId", CheckForDbNull(trait.Id));
+                                cmd.Parameters.AddWithValue("@Name", CheckForDbNull(trait.Name));
+                                cmd.Parameters.AddWithValue("@Description", CheckForDbNull(trait.Description));
+                                cmd.Parameters.AddWithValue("@Meta", CheckForDbNull(trait.IsMeta.ToString()));
+                                cmd.Parameters.AddWithValue("@Chars", CheckForDbNull(trait.Characters));
+                                cmd.Parameters.AddWithValue("@Aliases", CheckForDbNull(ConvertToCsv(trait.Aliases)));
+                                string parents = string.Join(",", trait.Parents);
+                                cmd.Parameters.AddWithValue("@Parents", CheckForDbNull(parents));
+                                cmd.ExecuteNonQuery();
+                            }
+                        }
+
                         #region VnCharacterVns
 
                         foreach (VndbSharp.Models.Character.VisualNovelMetadata vn in character.VisualNovels)
