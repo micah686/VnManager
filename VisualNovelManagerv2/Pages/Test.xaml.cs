@@ -24,6 +24,7 @@ using Brushes = System.Windows.Media.Brushes;
 using FontFamily = System.Drawing.FontFamily;
 using Size = System.Drawing.Size;
 using System.IO.Compression;
+using VndbSharp.Models.Common;
 using VndbSharp.Models.Dumps;
 using VndbSharp.Models.VisualNovel;
 
@@ -42,41 +43,16 @@ namespace VisualNovelManagerv2.Pages
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
 
-            //test1();
-            Vndb vndb = new Vndb(true);
-            var vn = await vndb.GetVisualNovelAsync(VndbFilters.Id.Equals(4), VndbFlags.Tags);
-            IEnumerable<Tag> tagDump = await VndbUtils.GetTagsDumpAsync();
-            Console.WriteLine("====list of tags to match===\n");
-            var tags = vn.Items[0].Tags;
-            foreach (var td in tagDump)
-            {
-                if (td.Id==2638)
-                {
-                    Thread.Sleep(0);
-                }
-            }
+            VndbSharp.Models.Common.SimpleDate sd = new SimpleDate();
+            byte mon = 3;
+            byte day = 7;
+            sd.Month = 3;
+            var test = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(13);
+            Console.WriteLine(CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(mon));
 
-            foreach (var tagMetadata in tags)
-            {
-                Console.WriteLine(tagMetadata.Id);
-            }
-
-
-            Console.WriteLine("\n\n====list of tags ids===\n");
-            foreach (var tag in tags)
-            {
-                foreach (var tgTag in tagDump)
-                {
-                    if (tgTag.Id == tag.Id)
-                    {
-                        Console.WriteLine(tgTag.Id);
-
-                    }
-                }
-            }
-
-
-            Thread.Sleep(0);
+            sd.Month = null;
+            sd.Day = day;
+            Console.WriteLine(sd.ToString());
         }
 
 

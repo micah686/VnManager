@@ -19,6 +19,7 @@ using System.Windows.Media.Imaging;
 using VisualNovelManagerv2.Converters;
 using VisualNovelManagerv2.CustomClasses;
 using VndbSharp.Models.Common;
+// ReSharper disable ExplicitCallerInfoArgument
 
 namespace VisualNovelManagerv2.ViewModel.VisualNovels
 {
@@ -32,7 +33,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
         #region ObservableCollections
 
-        private static ObservableCollection<string> _characterNameCollection = new ObservableCollection<string>();
+        private ObservableCollection<string> _characterNameCollection = new ObservableCollection<string>();
         public ObservableCollection<string> CharacterNameCollection
         {
             get { return _characterNameCollection; }
@@ -133,6 +134,17 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 BindTraitDescription();
                 RaisePropertyChanged(nameof(SelectedTrait));
                 
+            }
+        }
+
+        private FlowDocument _traitDescription;
+        public FlowDocument TraitDescription
+        {
+            get { return _traitDescription; }
+            set
+            {
+                _traitDescription = value;
+                RaisePropertyChanged(nameof(TraitDescription));
             }
         }
 
@@ -251,6 +263,11 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         private void LoadCharacterData()
         {
             TraitsCollection.Clear();
+            if (SelectedTraitIndex < 0 && _traitDescription.Blocks.Count >= 1)
+            {
+                TraitDescription.Blocks.Clear();
+            }
+            //TraitDescription.Blocks.Clear();
             DataSet dataSet = new DataSet();
             int characterId = 0;
             using (SQLiteConnection connection = new SQLiteConnection(Globals.ConnectionString))
@@ -316,19 +333,13 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 }
                 connection.Close();
             }
-           
 
+            
         }
 
         private void BindTraitDescription()
         {
-            //TODO: try to make traitdescripion use a property, not a dependencyproperty
-            if (SelectedTraitIndex < 0)
-            {
-                return;
-            }
-            else
-            {
+            if (SelectedTraitIndex >= 0)
                 try
                 {
                     using (SQLiteConnection connection = new SQLiteConnection(Globals.ConnectionString))
@@ -339,7 +350,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                             cmd.CommandText = "SELECT Description FROM VnTraitData WHERE Name= @Name";
                             cmd.Parameters.AddWithValue("@Name", SelectedTrait);
 
-                            VnCharacterModel.TraitDescription = ConvertRichTextDocument.ConvertToFlowDocument(cmd.ExecuteScalar().ToString());
+                            TraitDescription = ConvertRichTextDocument.ConvertToFlowDocument(cmd.ExecuteScalar().ToString());
                         }
                     }
                 }
@@ -353,7 +364,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                     DebugLogging.WriteDebugLog(ex);
                     throw;
                 }
-            }
+            else
+                return;
         }
 
         private BitmapImage GetGenderIcon(string gender)
