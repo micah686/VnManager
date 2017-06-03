@@ -411,12 +411,12 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 VnMainModel.Original = vninfo[3].ToString();
                 VnMainModel.Released = vninfo[4].ToString();
 
-                List<string> languages = GetLangauges(vninfo[5].ToString());
+                IEnumerable<string> languages = GetLangauges(vninfo[5].ToString());
                 foreach (string language in languages)
                 {
                     _languageCollection.Add(new LanguagesCollection { VnMainModel = new VnMainModel { Languages = new BitmapImage(new Uri(language)) } });
                 }
-                List<string> orig_languages = GetLangauges(vninfo[6].ToString());
+                IEnumerable<string> orig_languages = GetLangauges(vninfo[6].ToString());
                 foreach (string language in orig_languages)
                 {
                     _originalLanguagesCollection.Add(new OriginalLanguagesCollection { VnMainModel = new VnMainModel { OriginalLanguages = new BitmapImage(new Uri(language)) } });
@@ -520,111 +520,13 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             }
         }
         
-        private List<string> GetLangauges(string csv)
+        private static IEnumerable<string> GetLangauges(string csv)
         {
-            List<string>filenames = new List<string>();
-            var list = csv.Split(',');
-            foreach (var lang in list)
-            {
-                switch (lang)
-                {
-                    case "ar":
-                        filenames.Add($@"{Globals.DirectoryPath}\Data\res\country_flags\{lang}.png");
-                        break;
-                    case "ca":
-                        filenames.Add($@"{Globals.DirectoryPath}\Data\res\country_flags\{lang}.png");
-                        break;
-                    case "cs":
-                        filenames.Add($@"{Globals.DirectoryPath}\Data\res\country_flags\{lang}.png");
-                        break;
-                    case "da":
-                        filenames.Add($@"{Globals.DirectoryPath}\Data\res\country_flags\{lang}.png");
-                        break;
-                    case "de":
-                        filenames.Add($@"{Globals.DirectoryPath}\Data\res\country_flags\{lang}.png");
-                        break;
-                    case "en":
-                        filenames.Add($@"{Globals.DirectoryPath}\Data\res\country_flags\{lang}.png");
-                        break;
-                    case "es":
-                        filenames.Add($@"{Globals.DirectoryPath}\Data\res\country_flags\{lang}.png");
-                        break;
-                    case "fi":
-                        filenames.Add($@"{Globals.DirectoryPath}\Data\res\country_flags\{lang}.png");
-                        break;
-                    case "fr":
-                        filenames.Add($@"{Globals.DirectoryPath}\Data\res\country_flags\{lang}.png");
-                        break;
-                    case "he":
-                        filenames.Add($@"{Globals.DirectoryPath}\Data\res\country_flags\{lang}.png");
-                        break;
-                    case "hr":
-                        filenames.Add($@"{Globals.DirectoryPath}\Data\res\country_flags\{lang}.png");
-                        break;
-                    case "hu":
-                        filenames.Add($@"{Globals.DirectoryPath}\Data\res\country_flags\{lang}.png");
-                        break;
-                    case "id":
-                        filenames.Add($@"{Globals.DirectoryPath}\Data\res\country_flags\{lang}.png");
-                        break;
-                    case "it":
-                        filenames.Add($@"{Globals.DirectoryPath}\Data\res\country_flags\{lang}.png");
-                        break;
-                    case "ja":
-                        filenames.Add($@"{Globals.DirectoryPath}\Data\res\country_flags\{lang}.png");
-                        break;
-                    case "ko":
-                        filenames.Add($@"{Globals.DirectoryPath}\Data\res\country_flags\{lang}.png");
-                        break;
-                    case "nl":
-                        filenames.Add($@"{Globals.DirectoryPath}\Data\res\country_flags\{lang}.png");
-                        break;
-                    case "pl":
-                        filenames.Add($@"{Globals.DirectoryPath}\Data\res\country_flags\{lang}.png");
-                        break;
-                    case "pt-br":
-                        filenames.Add($@"{Globals.DirectoryPath}\Data\res\country_flags\{lang}.png");
-                        break;
-                    case "pt-pt":
-                        filenames.Add($@"{Globals.DirectoryPath}\Data\res\country_flags\{lang}.png");
-                        break;
-                    case "ro":
-                        filenames.Add($@"{Globals.DirectoryPath}\Data\res\country_flags\{lang}.png");
-                        break;
-                    case "ru":
-                        filenames.Add($@"{Globals.DirectoryPath}\Data\res\country_flags\{lang}.png");
-                        break;
-                    case "sk":
-                        filenames.Add($@"{Globals.DirectoryPath}\Data\res\country_flags\{lang}.png");
-                        break;
-                    case "sv":
-                        filenames.Add($@"{Globals.DirectoryPath}\Data\res\country_flags\{lang}.png");
-                        break;
-                    case "ta":
-                        filenames.Add($@"{Globals.DirectoryPath}\Data\res\country_flags\{lang}.png");
-                        break;
-                    case "th":
-                        filenames.Add($@"{Globals.DirectoryPath}\Data\res\country_flags\{lang}.png");
-                        break;
-                    case "tr":
-                        filenames.Add($@"{Globals.DirectoryPath}\Data\res\country_flags\{lang}.png");
-                        break;
-                    case "uk":
-                        filenames.Add($@"{Globals.DirectoryPath}\Data\res\country_flags\{lang}.png");
-                        break;
-                    case "vi":
-                        filenames.Add($@"{Globals.DirectoryPath}\Data\res\country_flags\{lang}.png");
-                        break;
-                    case "zh":
-                        filenames.Add($@"{Globals.DirectoryPath}\Data\res\country_flags\{lang}.png");
-                        break;
-                    default:
-                        filenames.Add($@"{Globals.DirectoryPath}\Data\res\country_flags\Unknown.png");
-                        break;
-                }
-            }
-
-            return filenames;
+            string[] list = csv.Split(',');
+            return list.Select(lang => File.Exists($@"{Globals.DirectoryPath}\Data\res\country_flags\{lang}.png")
+                    ? $@"{Globals.DirectoryPath}\Data\res\country_flags\{lang}.png"
+                    : $@"{Globals.DirectoryPath}\Data\res\country_flags\Unknown.png")
+                .ToList();
         }
 
         private BitmapSource LoadIcon()
