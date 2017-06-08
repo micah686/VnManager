@@ -4,8 +4,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:VisualNovelManagerv2.Pages"
+             xmlns:custom="clr-namespace:VisualNovelManagerv2.CustomClasses"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300"
+             d:DesignHeight="900" d:DesignWidth="300"
              DataContext="{Binding VnRelease, Source={StaticResource Locator}}">
     <Grid Margin="{StaticResource RootMargin}">
         <Grid x:Name="ReleasesGrid" Margin="10,10,10,35">
@@ -89,7 +90,7 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Label Grid.Column="0" Content="Released:"/>
-                            <Label Grid.Column="1" Content="XXXXXX" Width="150" Margin="15,0,0,0"/>
+                            <Label Grid.Column="1" Content="{Binding VnReleaseModel.Released}"  Margin="15,0,0,0"/>
                         </Grid>
                     </Grid>
 
@@ -100,7 +101,7 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Label Grid.Column="0" Content="Website:"/>
-                            <Label Grid.Column="1" Content="XXXXXX" Width="150" Margin="15,0,0,0"/>
+                            <Label Grid.Column="1" Content="{Binding VnReleaseModel.Website}"  Margin="15,0,0,0"/>
                         </Grid>
                     </Grid>
 
@@ -133,7 +134,7 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Label Grid.Column="0" Content="Type:"/>
-                            <Label Grid.Column="1" Content="XXXXXX" Width="150" Margin="15,0,0,0"/>
+                            <Label Grid.Column="1" Content="{Binding VnReleaseModel.ReleaseType}"  Margin="15,0,0,0"/>
                         </Grid>
                     </Grid>
 
@@ -155,7 +156,7 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Label Grid.Column="0" Content="Catalog Number:"/>
-                            <Label Grid.Column="1" Content="XXXXXX" Width="150" Margin="15,0,0,0"/>
+                            <Label Grid.Column="1" Content="{Binding VnReleaseModel.Catalog}"  Margin="15,0,0,0"/>
                         </Grid>
                     </Grid>
 
@@ -166,7 +167,7 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Label Grid.Column="0" Content="GTIN:"/>
-                            <Label Grid.Column="1" Content="XXXXXX" Width="150" Margin="15,0,0,0"/>
+                            <Label Grid.Column="1" Content="{Binding VnReleaseModel.Gtin}"  Margin="15,0,0,0"/>
                         </Grid>
                     </Grid>
 
@@ -177,7 +178,7 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Label Grid.Column="0" Content="Patch:"/>
-                            <Label Grid.Column="1" Content="XXXXXX" Width="150" Margin="15,0,0,0"/>
+                            <Label Grid.Column="1" Content="{Binding VnReleaseModel.Patch}"  Margin="15,0,0,0"/>
                         </Grid>
                     </Grid>
 
@@ -188,7 +189,7 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Label Grid.Column="0" Content="Freeware:"/>
-                            <Label Grid.Column="1" Content="XXXXXX" Width="150" Margin="15,0,0,0"/>
+                            <Label Grid.Column="1" Content="{Binding VnReleaseModel.Freeware}" Width="150" Margin="15,0,0,0"/>
                         </Grid>
                     </Grid>
 
@@ -199,7 +200,7 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Label Grid.Column="0" Content="Doujin:"/>
-                            <Label Grid.Column="1" Content="XXXXXX" Width="150" Margin="15,0,0,0"/>
+                            <Label Grid.Column="1" Content="{Binding VnReleaseModel.Doujin}"  Margin="15,0,0,0"/>
                         </Grid>
                     </Grid>
 
@@ -215,7 +216,8 @@
                     </Grid>
 
                     <Grid Grid.Row="15" Margin="10,10,10,0">
-                        <TextBox IsReadOnly="False" MinWidth="250" MinHeight="70"/>
+                        <custom:BindableRichTextBox  MinWidth="250" MinHeight="70" IsReadOnly="True" Margin="15,0,15,0" IsReadOnlyCaretVisible="True" Focusable="False" IsDocumentEnabled="True" Background="#333" BorderThickness="0"
+                           Foreground="#DCDCDC" Document="{Binding VnReleaseModel.Notes}"/>
                     </Grid>
 
                     <Grid Grid.Row="16" Margin="10,30,0,0">

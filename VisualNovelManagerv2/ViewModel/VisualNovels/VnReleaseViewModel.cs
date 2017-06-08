@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using GalaSoft.MvvmLight;
+using VisualNovelManagerv2.Converters;
 using VisualNovelManagerv2.CustomClasses;
 using VisualNovelManagerv2.Design.VisualNovel;
 
@@ -129,6 +130,21 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             object[] releaseData = dataSet.Tables[0].Rows[SelectedReleaseIndex].ItemArray;
             VnReleaseModel.Title = releaseData[3].ToString();
             VnReleaseModel.OriginalTitle = releaseData[4].ToString();
+            VnReleaseModel.Released = releaseData[5].ToString();
+            VnReleaseModel.ReleaseType = releaseData[6].ToString();
+            VnReleaseModel.Patch = releaseData[7].ToString();
+            VnReleaseModel.Freeware = releaseData[8].ToString();
+            VnReleaseModel.Doujin = releaseData[9].ToString();
+            
+            VnReleaseModel.Website = releaseData[11].ToString();
+            VnReleaseModel.Notes = ConvertRichTextDocument.ConvertToFlowDocument(releaseData[12].ToString());
+            VnReleaseModel.MinAge = Convert.ToInt32(releaseData[13]);
+            if (releaseData[14] != DBNull.Value)
+            {
+                VnReleaseModel.Gtin = Convert.ToUInt64(releaseData[14]);
+            }
+            
+            VnReleaseModel.Catalog = releaseData[15].ToString();
         }
     }
 }

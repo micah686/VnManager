@@ -132,15 +132,15 @@ namespace VisualNovelManagerv2.Design.VisualNovel
 
 
 
-        public int Gtin
+        public UInt64? Gtin
         {
-            get { return (int)GetValue(GtinProperty); }
+            get { return (UInt64?)GetValue(GtinProperty); }
             set { SetValue(GtinProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for Gtin.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty GtinProperty =
-            DependencyProperty.Register("Gtin", typeof(int), typeof(VnReleaseModel), new PropertyMetadata(0));
+            DependencyProperty.Register("Gtin", typeof(UInt64?), typeof(VnReleaseModel), new PropertyMetadata(null));
 
 
 
