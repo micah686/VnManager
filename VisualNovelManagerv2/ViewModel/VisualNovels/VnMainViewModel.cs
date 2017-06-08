@@ -118,6 +118,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
         #endregion
 
+        public static readonly VnCharacterViewModel VnCharacterViewModel = new VnCharacterViewModel();
+
 
 
         public static ICommand LoadBindVnDataCommand { get; set; }

@@ -30,7 +30,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
         #region ObservableCollections
 
-        private ObservableCollection<string> _characterNameCollection = new ObservableCollection<string>();
+        private static ObservableCollection<string> _characterNameCollection = new ObservableCollection<string>();
         public ObservableCollection<string> CharacterNameCollection
         {
             get { return _characterNameCollection; }
@@ -56,15 +56,13 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         #endregion
 
         public VnCharacterViewModel()
-        {
-            _vnCharacterModel = new VnCharacterModel();
-            
+        {            
             LoadCharacterUrlList();
         }
 
         #region Properties
 
-        private static VnCharacterModel _vnCharacterModel;
+        private static VnCharacterModel _vnCharacterModel = new VnCharacterModel();
         public VnCharacterModel VnCharacterModel
         {
             get { return _vnCharacterModel; }
@@ -232,7 +230,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                         while (reader.Read())
                         {
                             string name = reader["Name"].ToString();
-                            CharacterNameCollection.Add(name);
+                            _characterNameCollection.Add(name);
                         }
                     }
                     connection.Close();
