@@ -47,7 +47,7 @@ namespace VisualNovelManagerv2.Converters
                             //matches vndb local url, like /c##, /v##,...
                             Regex localRegex = new Regex(@"(\/[a-z][0-9]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
                             string localRegexmatch = localRegex.Match(segment).ToString();
-                            if (localRegexmatch != "" && !websiteList.Contains("http://vndb.org" + localRegexmatch))
+                            if (!string.IsNullOrEmpty(localRegexmatch) )
                             {
                                 websiteList.Add("http://vndb.org" + localRegexmatch);
                             }

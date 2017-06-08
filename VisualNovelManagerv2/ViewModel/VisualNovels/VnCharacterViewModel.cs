@@ -175,7 +175,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 DebugLogging.WriteDebugLog(ex);
                 throw;
             }
-
+            SetMaxWidth();
             DownloadCharacters(characterUrlList);
         }
 
