@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Documents;
+using System.Windows.Media.Imaging;
 
 namespace VisualNovelManagerv2.Design.VisualNovel
 {
@@ -90,6 +91,18 @@ namespace VisualNovelManagerv2.Design.VisualNovel
         // Using a DependencyProperty as the backing store for Doujin.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty DoujinProperty =
             DependencyProperty.Register("Doujin", typeof(string), typeof(VnReleaseModel), new PropertyMetadata(null));
+
+
+
+        public BitmapImage Languages
+        {
+            get { return (BitmapImage)GetValue(LanguagesProperty); }
+            set { SetValue(LanguagesProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for MyProperty.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty LanguagesProperty =
+            DependencyProperty.Register("Languages", typeof(BitmapImage), typeof(VnReleaseModel), new PropertyMetadata(null));
 
 
 

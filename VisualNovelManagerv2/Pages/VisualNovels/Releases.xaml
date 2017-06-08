@@ -8,6 +8,12 @@
              mc:Ignorable="d" 
              d:DesignHeight="900" d:DesignWidth="300"
              DataContext="{Binding VnRelease, Source={StaticResource Locator}}">
+    <UserControl.Resources>
+        <DataTemplate x:Key="LanguageDataTemplate">
+            <Image Source="{Binding VnReleaseModel.Languages}" Stretch="UniformToFill"  Height="16" Width="16" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+        </DataTemplate>
+    </UserControl.Resources>
+    
     <Grid Margin="{StaticResource RootMargin}">
         <Grid x:Name="ReleasesGrid" Margin="10,10,10,35">
             <Grid.ColumnDefinitions>
@@ -123,7 +129,13 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Label Grid.Column="0" Content="Languages:"/>
-                            <Label Grid.Column="1" Content="XXXXXX" Width="150" Margin="15,0,0,0"/>
+                            <ListBox Grid.Column="1" ItemsSource="{Binding ReleaseLanguages}"  Margin="15,0,0,0" ItemTemplate="{StaticResource LanguageDataTemplate}" IsEnabled="False">
+                                <ListBox.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Horizontal"/>
+                                    </ItemsPanelTemplate>
+                                </ListBox.ItemsPanel>
+                            </ListBox>
                         </Grid>
                     </Grid>
 

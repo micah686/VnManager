@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Data.SQLite;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
 using GalaSoft.MvvmLight;
 using VisualNovelManagerv2.Converters;
 using VisualNovelManagerv2.CustomClasses;
@@ -73,6 +75,16 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             }
         }
 
+        private ObservableCollection<ReleaseLanguagesCollection> _releaseLanguages = new ObservableCollection<ReleaseLanguagesCollection>();
+        public ObservableCollection<ReleaseLanguagesCollection> ReleaseLanguages
+        {
+            get { return _releaseLanguages; }
+            set
+            {
+                _releaseLanguages = value;
+                RaisePropertyChanged(nameof(ReleaseLanguages));
+            }
+        }
 
         #endregion
 
@@ -115,6 +127,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         private void LoadReleaseData()
         {
             if (SelectedReleaseIndex < 0) return;
+            _releaseLanguages.Clear();
             DataSet dataSet = new DataSet();
             int releaseId;
             using (SQLiteConnection connection = new SQLiteConnection(Globals.ConnectionString))
@@ -135,7 +148,13 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             VnReleaseModel.Patch = releaseData[7].ToString();
             VnReleaseModel.Freeware = releaseData[8].ToString();
             VnReleaseModel.Doujin = releaseData[9].ToString();
-            
+
+            IEnumerable<string> languages = GetLangauges(releaseData[10].ToString());
+            foreach (string language in languages)
+            {
+                _releaseLanguages.Add(new ReleaseLanguagesCollection{VnReleaseModel = new VnReleaseModel{Languages = new BitmapImage(new Uri(language))}});
+            }
+
             VnReleaseModel.Website = releaseData[11].ToString();
             VnReleaseModel.Notes = ConvertRichTextDocument.ConvertToFlowDocument(releaseData[12].ToString());
             VnReleaseModel.MinAge = Convert.ToInt32(releaseData[13]);
@@ -146,5 +165,19 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             
             VnReleaseModel.Catalog = releaseData[15].ToString();
         }
+
+        private static IEnumerable<string> GetLangauges(string csv)
+        {
+            string[] list = csv.Split(',');
+            return list.Select(lang => File.Exists($@"{Globals.DirectoryPath}\Data\res\country_flags\{lang}.png")
+                    ? $@"{Globals.DirectoryPath}\Data\res\country_flags\{lang}.png"
+                    : $@"{Globals.DirectoryPath}\Data\res\country_flags\Unknown.png")
+                .ToList();
+        }
+    }
+
+    public class ReleaseLanguagesCollection
+    {
+        public VnReleaseModel VnReleaseModel { get; set; }
     }
 }
