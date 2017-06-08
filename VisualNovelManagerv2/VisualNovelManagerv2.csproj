@@ -129,6 +129,7 @@
     <Compile Include="CustomClasses\TextBoxService.cs" />
     <Compile Include="Design\VisualNovel\VnCharacterModel.cs" />
     <Compile Include="Design\VisualNovel\VnMainModel.cs" />
+    <Compile Include="Design\VisualNovel\VnReleaseModel.cs" />
     <Compile Include="Design\VisualNovel\VnScreenshotModel.cs" />
     <Compile Include="Globals.cs" />
     <Compile Include="Infrastructure\ValidatableViewModelBase.cs" />
@@ -146,6 +147,7 @@
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Compile Include="ViewModel\VisualNovels\VnCharacterViewModel.cs" />
     <Compile Include="ViewModel\VisualNovels\VnMainViewModel.cs" />
+    <Compile Include="ViewModel\VisualNovels\VnReleaseViewModel.cs" />
     <Compile Include="ViewModel\VisualNovels\VnScreenshotViewModel.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

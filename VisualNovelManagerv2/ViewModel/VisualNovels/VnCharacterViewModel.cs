@@ -272,7 +272,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 characterId = Convert.ToInt32(cmd.ExecuteScalar());
                 connection.Close();
             }
-
             using (SQLiteConnection connection = new SQLiteConnection(Globals.ConnectionString))
             {
                 connection.Open();

@@ -497,6 +497,9 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             VnScreenshotViewModel vm = new VnScreenshotViewModel();
             vm.DownloadScreenshots();
 
+            VnReleaseViewModel vmrel = new VnReleaseViewModel();
+            vmrel.LoadReleaseCommand.Execute(null);
+
             VnCharacterViewModel vmchar = new VnCharacterViewModel();
             vmchar.LoadCharacterCommand.Execute(null);
         }

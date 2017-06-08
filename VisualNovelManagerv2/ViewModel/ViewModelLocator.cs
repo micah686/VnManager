@@ -32,27 +32,18 @@ namespace VisualNovelManagerv2.ViewModel
             SimpleIoc.Default.Register<VnMainViewModel>();
             SimpleIoc.Default.Register<VnScreenshotViewModel>();
             SimpleIoc.Default.Register<VnCharacterViewModel>();
+            SimpleIoc.Default.Register<VnReleaseViewModel>();
         }
 
-        public AddVnViewModel AddVn
-        {
-            get { return ServiceLocator.Current.GetInstance<AddVnViewModel>(); }
-        }
+        public AddVnViewModel AddVn => ServiceLocator.Current.GetInstance<AddVnViewModel>();
 
-        public VnMainViewModel VnMain
-        {
-            get { return ServiceLocator.Current.GetInstance<VnMainViewModel>(); }
-        }
+        public VnMainViewModel VnMain => ServiceLocator.Current.GetInstance<VnMainViewModel>();
 
-        public VnScreenshotViewModel VnScreenshot
-        {
-            get { return ServiceLocator.Current.GetInstance<VnScreenshotViewModel>(); }
-        }
+        public VnScreenshotViewModel VnScreenshot => ServiceLocator.Current.GetInstance<VnScreenshotViewModel>();
 
-        public VnCharacterViewModel VnCharacter
-        {
-            get { return ServiceLocator.Current.GetInstance<VnCharacterViewModel>(); }
-        }
+        public VnCharacterViewModel VnCharacter => ServiceLocator.Current.GetInstance<VnCharacterViewModel>();
+
+        public VnReleaseViewModel VnRelease => ServiceLocator.Current.GetInstance<VnReleaseViewModel>();
 
         public static void Cleanup()
         { }
