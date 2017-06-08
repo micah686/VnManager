@@ -57,7 +57,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
         public VnCharacterViewModel()
         {            
-            LoadCharacterUrlList();
+            LoadCharacterNameList();
         }
 
         #region Properties
