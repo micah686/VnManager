@@ -205,8 +205,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         #endregion
 
         #region SelectedTagIndex
-        private int _selectedTagIndex;
-        public int SelectedTagIndex
+        private int? _selectedTagIndex;
+        public int? SelectedTagIndex
         {
             get { return _selectedTagIndex; }
             set
@@ -285,6 +285,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 VnInfoRelation.Clear();
                 VnInfoTagCollection.Clear();
                 VnInfoAnimeCollection.Clear();
+                _tagDescription?.Blocks.Clear();
                 DataSet dataSet = new DataSet();
                 SQLiteDataAdapter adapter = new SQLiteDataAdapter();
                 using (SQLiteConnection connection = new SQLiteConnection(Globals.ConnectionString))
@@ -369,7 +370,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             try
             {
                 object[] vninfo = dataSet.Tables[0].Rows[0].ItemArray;
-
                 DataTable dataTable = new DataTable();
                 dataTable = dataSet.Tables["VnInfoRelations"];
                 foreach (DataRow row in dataTable.Rows)
@@ -464,10 +464,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
                 string[] splitPlayTime = vnuserdata[5].ToString().Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
                 List<int> timeList = new List<int>(4);
-                foreach (string time in splitPlayTime)
-                {
-                    timeList.Add(Convert.ToInt32(time));
-                }
+                timeList.AddRange(splitPlayTime.Select(time => Convert.ToInt32(time)));
                 TimeSpan timeSpan = new TimeSpan(timeList[0], timeList[1], timeList[2], timeList[3]);
 
                 if (timeSpan < new TimeSpan(0, 0, 0, 1))
@@ -480,10 +477,9 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 }
                 else
                 {
-                    string formatted = string.Format("{0}{1}{2}",
-                        timeSpan.Duration().Days > 0 ? string.Format("{0:0} day{1}, ", timeSpan.Days, timeSpan.Days == 1 ? String.Empty : "s") : string.Empty,
-                        timeSpan.Duration().Hours > 0 ? string.Format("{0:0} hour{1}, ", timeSpan.Hours, timeSpan.Hours == 1 ? String.Empty : "s") : string.Empty,
-                        timeSpan.Duration().Minutes > 0 ? string.Format("{0:0} minute{1} ", timeSpan.Minutes, timeSpan.Minutes == 1 ? String.Empty : "s") : string.Empty);
+                    string formatted = $"{(timeSpan.Duration().Days > 0 ? $"{timeSpan.Days:0} day{(timeSpan.Days == 1 ? string.Empty : "s")}, " : string.Empty)}" +
+                                       $"{(timeSpan.Duration().Hours > 0 ? $"{timeSpan.Hours:0} hour{(timeSpan.Hours == 1 ? string.Empty : "s")}, " : string.Empty)}" +
+                                       $"{(timeSpan.Duration().Minutes > 0 ? $"{timeSpan.Minutes:0} minute{(timeSpan.Minutes == 1 ? string.Empty : "s")} " : string.Empty)}";
                     VnMainModel.PlayTime = formatted;
                 }
                 #endregion
@@ -508,10 +504,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
         private void BindTagDescription()
         {
-            if (SelectedTagIndex < 0)
-            {
-                return;
-            }
+            if (!(_selectedTagIndex >= 0)) return;
             using (SQLiteConnection connection = new SQLiteConnection(Globals.ConnectionString))
             {
                 connection.Open();
@@ -568,20 +561,18 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
         private BitmapSource CreateIcon(string path)
         {
-            if (path != null)
+            if (path == null)
             {
-                Icon sysicon = System.Drawing.Icon.ExtractAssociatedIcon(path);
-                if (sysicon == null)
-                    return BitmapSource.Create(1, 1, 96, 96, PixelFormats.Bgra32, null, new byte[] {0, 0, 0, 0}, 4);
-                BitmapSource bmpSrc = System.Windows.Interop.Imaging.CreateBitmapSourceFromHIcon(
-                    sysicon.Handle,System.Windows.Int32Rect.Empty,System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
-                sysicon.Dispose();
-                return bmpSrc;
+                return BitmapSource.Create(1, 1, 96, 96, PixelFormats.Bgra32, null, new byte[] {0, 0, 0, 0}, 4);
             }
-            else
-            {
-                return BitmapSource.Create(1, 1, 96, 96, PixelFormats.Bgra32, null, new byte[] { 0, 0, 0, 0 }, 4);
-            }
+            Icon sysicon = System.Drawing.Icon.ExtractAssociatedIcon(path);
+            if (sysicon == null)
+                return BitmapSource.Create(1, 1, 96, 96, PixelFormats.Bgra32, null, new byte[] {0, 0, 0, 0}, 4);
+            BitmapSource bmpSrc = System.Windows.Interop.Imaging.CreateBitmapSourceFromHIcon(
+                sysicon.Handle, System.Windows.Int32Rect.Empty,
+                System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
+            sysicon.Dispose();
+            return bmpSrc;
         }
 
         private void DownloadCoverImage(string url, bool nsfw)

@@ -89,7 +89,7 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
 
-                            <Button Grid.Column="0" Margin="10,5,0,0" Width="100" Height="40" Content="Play" Command="{Binding LoadBindVnDataCommand}"/>
+                            <Button Grid.Column="0" Margin="10,5,0,0" Width="100" Height="40" Content="Play"/>
 
                             <Grid Margin="10,5,0,0" Grid.Column="1">
                                 <Grid>
