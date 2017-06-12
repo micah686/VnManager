@@ -52,6 +52,18 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             }
         }
 
+        private VnReleaseProducerModel _vnReleaseProducerModel = new VnReleaseProducerModel();
+        public VnReleaseProducerModel VnReleaseProducerModel
+        {
+            get { return _vnReleaseProducerModel; }
+            set
+            {
+                _vnReleaseProducerModel = value;
+                RaisePropertyChanged(nameof(VnReleaseProducerModel));
+            }
+        }
+
+
         private int _selectedReleaseIndex;
         public int SelectedReleaseIndex
         {
@@ -126,44 +138,121 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
         private void LoadReleaseData()
         {
-            if (SelectedReleaseIndex < 0) return;
-            _releaseLanguages.Clear();
             DataSet dataSet = new DataSet();
-            int releaseId;
-            using (SQLiteConnection connection = new SQLiteConnection(Globals.ConnectionString))
+            try
             {
-                connection.Open();
-                SQLiteCommand cmd = new SQLiteCommand("SELECT * FROM VnRelease WHERE VnId=@VnId", connection);
-                cmd.Parameters.AddWithValue("@VnId", Globals.VnId);
-                SQLiteDataAdapter adapter = new SQLiteDataAdapter(cmd);
-                adapter.Fill(dataSet);
-                connection.Close();
-            }
-            releaseId = Convert.ToInt32(dataSet.Tables[0].Rows[SelectedReleaseIndex].ItemArray[2]);
-            object[] releaseData = dataSet.Tables[0].Rows[SelectedReleaseIndex].ItemArray;
-            VnReleaseModel.Title = releaseData[3].ToString();
-            VnReleaseModel.OriginalTitle = releaseData[4].ToString();
-            VnReleaseModel.Released = releaseData[5].ToString();
-            VnReleaseModel.ReleaseType = releaseData[6].ToString();
-            VnReleaseModel.Patch = releaseData[7].ToString();
-            VnReleaseModel.Freeware = releaseData[8].ToString();
-            VnReleaseModel.Doujin = releaseData[9].ToString();
+                if (SelectedReleaseIndex < 0) return;
+                _releaseLanguages.Clear();
+                
+                using (SQLiteConnection connection = new SQLiteConnection(Globals.ConnectionString))
+                {
+                    connection.Open();
+                    SQLiteCommand cmd = new SQLiteCommand("SELECT * FROM VnRelease WHERE VnId=@VnId", connection);
+                    cmd.Parameters.AddWithValue("@VnId", Globals.VnId);
+                    SQLiteDataAdapter adapter = new SQLiteDataAdapter(cmd);
+                    adapter.Fill(dataSet);
+                    connection.Close();
+                }
+                if (dataSet.Tables[0].Rows.Count <= 0) return;
+                object[] releaseData = dataSet.Tables[0].Rows[SelectedReleaseIndex].ItemArray;
 
-            IEnumerable<string> languages = GetLangauges(releaseData[10].ToString());
-            foreach (string language in languages)
-            {
-                _releaseLanguages.Add(new ReleaseLanguagesCollection{VnReleaseModel = new VnReleaseModel{Languages = new BitmapImage(new Uri(language))}});
-            }
+                VnReleaseModel.Title = releaseData[3].ToString();
+                VnReleaseModel.OriginalTitle = releaseData[4].ToString();
+                VnReleaseModel.Released = releaseData[5].ToString();
+                VnReleaseModel.ReleaseType = releaseData[6].ToString();
+                VnReleaseModel.Patch = releaseData[7].ToString();
+                VnReleaseModel.Freeware = releaseData[8].ToString();
+                VnReleaseModel.Doujin = releaseData[9].ToString();
 
-            VnReleaseModel.Website = releaseData[11].ToString();
-            VnReleaseModel.Notes = ConvertRichTextDocument.ConvertToFlowDocument(releaseData[12].ToString());
-            VnReleaseModel.MinAge = Convert.ToInt32(releaseData[13]);
-            if (releaseData[14] != DBNull.Value)
+                IEnumerable<string> languages = GetLangauges(releaseData[10].ToString());
+                foreach (string language in languages)
+                {
+                    _releaseLanguages.Add(new ReleaseLanguagesCollection { VnReleaseModel = new VnReleaseModel { Languages = new BitmapImage(new Uri(language)) } });
+                }
+
+                VnReleaseModel.Website = releaseData[11].ToString();
+                VnReleaseModel.Notes = ConvertRichTextDocument.ConvertToFlowDocument(releaseData[12].ToString());
+                VnReleaseModel.MinAge = Convert.ToInt32(releaseData[13]);
+                if (releaseData[14] != DBNull.Value)
+                {
+                    VnReleaseModel.Gtin = Convert.ToUInt64(releaseData[14]);
+                }
+                VnReleaseModel.Catalog = releaseData[15].ToString();
+            }
+            catch (SQLiteException ex)
             {
-                VnReleaseModel.Gtin = Convert.ToUInt64(releaseData[14]);
+                DebugLogging.WriteDebugLog(ex);
+                throw;
+            }
+            catch (System.IndexOutOfRangeException ex)
+            {
+                DebugLogging.WriteDebugLog(ex);
+                throw;
+            }
+            catch (Exception ex)
+            {
+                DebugLogging.WriteDebugLog(ex);
+                throw;
             }
             
-            VnReleaseModel.Catalog = releaseData[15].ToString();
+            LoadReleaseProducerData(Convert.ToInt32(dataSet.Tables[0].Rows[SelectedReleaseIndex].ItemArray[2]));            
+        }
+
+        private void LoadReleaseProducerData(int releaseId)
+        {
+            try
+            {
+                DataSet dataSet = new DataSet();
+                using (SQLiteConnection connection = new SQLiteConnection(Globals.ConnectionString))
+                {
+                    connection.Open();
+                    SQLiteCommand cmd = new SQLiteCommand("SELECT * FROM VnReleaseProducers WHERE ReleaseId=@ReleaseId",
+                        connection);
+                    cmd.Parameters.AddWithValue("@ReleaseId", releaseId);
+                    SQLiteDataAdapter adapter = new SQLiteDataAdapter(cmd);
+                    adapter.Fill(dataSet);
+                    connection.Close();
+                }
+                if (dataSet.Tables[0].Rows.Count <= 0) return;
+                object[] releaseProducerData = dataSet.Tables[0].Rows[0].ItemArray;
+                VnReleaseProducerModel.IsDeveloper = releaseProducerData[3].ToString();
+                VnReleaseProducerModel.IsPublisher = releaseProducerData[4].ToString();
+                VnReleaseProducerModel.Name = releaseProducerData[5].ToString();
+                VnReleaseProducerModel.OriginalName = releaseProducerData[6].ToString();
+
+                string type = releaseProducerData[7].ToString();
+                switch (type)
+                {
+                    case "co":
+                        VnReleaseProducerModel.Type = "Company";
+                        break;
+                    case "in":
+                        VnReleaseProducerModel.Type = "Individual";
+                        break;
+                    case "ng":
+                        VnReleaseProducerModel.Type = "Amateur group";
+                        break;
+                    default:
+                        VnReleaseProducerModel.Type = type;
+                        break;
+                }
+            }
+            catch (SQLiteException ex)
+            {
+                DebugLogging.WriteDebugLog(ex);
+                throw;
+            }
+            catch (IndexOutOfRangeException ex)
+            {
+                DebugLogging.WriteDebugLog(ex);
+                throw;
+            }
+            catch (Exception ex)
+            {
+                DebugLogging.WriteDebugLog(ex);
+                throw;
+            }
+            
         }
 
         private static IEnumerable<string> GetLangauges(string csv)

@@ -156,8 +156,8 @@
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
-                            <Label Grid.Column="0" Content="Media:"/>
-                            <Label Grid.Column="1" Content="XXXXXX" Width="150" Margin="15,0,0,0"/>
+                            <Label Grid.Column="0" Content="Minimum Age:"/>
+                            <Label Grid.Column="1" Content="{Binding VnReleaseModel.MinAge}"  Margin="15,0,0,0"/>
                         </Grid>
                     </Grid>
 
@@ -243,7 +243,7 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Label Grid.Column="0" Content="Name:"/>
-                            <Label Grid.Column="1" Content="XXXXXX" Width="150" Margin="15,0,0,0"/>
+                            <Label Grid.Column="1" Content="{Binding VnReleaseProducerModel.Name}"  Margin="15,0,0,0"/>
                         </Grid>
                     </Grid>
 
@@ -254,7 +254,7 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Label Grid.Column="0" Content="Original:"/>
-                            <Label Grid.Column="1" Content="XXXXXX" Width="150" Margin="15,0,0,0"/>
+                            <Label Grid.Column="1" Content="{Binding VnReleaseProducerModel.OriginalName}"  Margin="15,0,0,0"/>
                         </Grid>
                     </Grid>
 
@@ -265,7 +265,7 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Label Grid.Column="0" Content="Developer:"/>
-                            <Label Grid.Column="1" Content="XXXXXX" Width="150" Margin="15,0,0,0"/>
+                            <Label Grid.Column="1" Content="{Binding VnReleaseProducerModel.IsDeveloper}"  Margin="15,0,0,0"/>
                         </Grid>
                     </Grid>
 
@@ -276,7 +276,7 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Label Grid.Column="0" Content="Publisher:"/>
-                            <Label Grid.Column="1" Content="XXXXXX" Width="150" Margin="15,0,0,0"/>
+                            <Label Grid.Column="1" Content="{Binding VnReleaseProducerModel.IsPublisher}"  Margin="15,0,0,0"/>
                         </Grid>
                     </Grid>
 
@@ -287,7 +287,7 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Label Grid.Column="0" Content="Type:"/>
-                            <Label Grid.Column="1" Content="XXXXXX" Width="150" Margin="15,0,0,0"/>
+                            <Label Grid.Column="1" Content="{Binding VnReleaseProducerModel.Type}"  Margin="15,0,0,0"/>
                         </Grid>
                     </Grid>
                 </Grid>

@@ -133,15 +133,15 @@ namespace VisualNovelManagerv2.Design.VisualNovel
 
 
 
-        public int MinAge
+        public int? MinAge
         {
-            get { return (int)GetValue(MinAgeProperty); }
+            get { return (int?)GetValue(MinAgeProperty); }
             set { SetValue(MinAgeProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for MinAge.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty MinAgeProperty =
-            DependencyProperty.Register("MinAge", typeof(int), typeof(VnReleaseModel), new PropertyMetadata(0));
+            DependencyProperty.Register("MinAge", typeof(int?), typeof(VnReleaseModel), new PropertyMetadata(null));
 
 
 
@@ -170,6 +170,72 @@ namespace VisualNovelManagerv2.Design.VisualNovel
 
 
 
+
+
+
+    }
+
+    public class VnReleaseProducerModel : DependencyObject
+    {
+
+
+        public string IsDeveloper
+        {
+            get { return (string)GetValue(IsDeveloperProperty); }
+            set { SetValue(IsDeveloperProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for IsDeveloper.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty IsDeveloperProperty =
+            DependencyProperty.Register("IsDeveloper", typeof(string), typeof(VnReleaseProducerModel), new PropertyMetadata(null));
+
+
+
+        public string IsPublisher
+        {
+            get { return (string)GetValue(IsPublisherProperty); }
+            set { SetValue(IsPublisherProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for IsPublisher.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty IsPublisherProperty =
+            DependencyProperty.Register("IsPublisher", typeof(string), typeof(VnReleaseProducerModel), new PropertyMetadata(null));
+
+
+
+        public string Name
+        {
+            get { return (string)GetValue(NameProperty); }
+            set { SetValue(NameProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Name.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty NameProperty =
+            DependencyProperty.Register("Name", typeof(string), typeof(VnReleaseProducerModel), new PropertyMetadata(null));
+
+
+
+        public string OriginalName
+        {
+            get { return (string)GetValue(OriginalNameProperty); }
+            set { SetValue(OriginalNameProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for OriginalName.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty OriginalNameProperty =
+            DependencyProperty.Register("OriginalName", typeof(string), typeof(VnReleaseProducerModel), new PropertyMetadata(null));
+
+
+
+        public string Type
+        {
+            get { return (string)GetValue(TypeProperty); }
+            set { SetValue(TypeProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Type.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty TypeProperty =
+            DependencyProperty.Register("Type", typeof(string), typeof(VnReleaseProducerModel), new PropertyMetadata(null));
 
 
 
