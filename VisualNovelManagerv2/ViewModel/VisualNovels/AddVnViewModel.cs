@@ -67,6 +67,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             {
                 _vnId = value;
                 RaisePropertyChanged(nameof(VnId));
+                if (VnId == null) return;
                 Validator.ValidateAsync(VnId);
             }
         }
@@ -110,6 +111,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             {
                 _vnName = value;
                 RaisePropertyChanged(nameof(VnName));
+                if (VnName == null) return;
                 Validator.ValidateAsync(VnName);
             }
         }
@@ -123,6 +125,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             set
             {
                 _isNameChecked = value;
+                VnName = null;
+                VnId = null;
                 RaisePropertyChanged(nameof(IsNameChecked));
             }
         }
