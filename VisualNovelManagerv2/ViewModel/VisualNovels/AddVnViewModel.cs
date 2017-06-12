@@ -58,6 +58,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
         #region Static Properties
 
+        #region VnId
         private int? _vnId;
         public int? VnId
         {
@@ -69,7 +70,9 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 Validator.ValidateAsync(VnId);
             }
         }
+        #endregion
 
+        #region FileName
         private string _fileName;
         public string FileName
         {
@@ -82,7 +85,9 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
             }
         }
+        #endregion
 
+        #region IconName
         private string _iconName;
         public string IconName
         {
@@ -94,7 +99,9 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 Validator.ValidateAsync(IconName);
             }
         }
+        #endregion
 
+        #region VnName
         private string _vnName;
         public string VnName
         {
@@ -106,7 +113,9 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 Validator.ValidateAsync(VnName);
             }
         }
+        #endregion
 
+        #region IsNameChecked
         private bool _isNameChecked;
         public bool IsNameChecked
         {
@@ -114,10 +123,12 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             set
             {
                 _isNameChecked = value;
-                RaisePropertyChanged(nameof(IsNameChecked));                                
+                RaisePropertyChanged(nameof(IsNameChecked));
             }
         }
+        #endregion
 
+        #region IsChecked
         private bool _isChecked;
         public bool IsChecked
         {
@@ -128,7 +139,9 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 RaisePropertyChanged(nameof(IsChecked));
             }
         }
+        #endregion
 
+        #region IsRunning
         private bool _isRunning;
         public bool IsRunning
         {
@@ -139,7 +152,9 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 RaisePropertyChanged(nameof(IsRunning));
             }
         }
+        #endregion
 
+        #region IsDropDownOpen
         private bool _isDropDownOpen;
         public bool IsDropDownOpen
         {
@@ -150,7 +165,9 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 RaisePropertyChanged(nameof(IsDropDownOpen));
             }
         }
+        #endregion
 
+        #region SourceIndes
         private int _sourceIndex;
         public int SourceIndex
         {
@@ -161,7 +178,9 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 RaisePropertyChanged(nameof(SourceIndex));
             }
         }
+        #endregion
 
+        #region IsIconEnabled
         private bool _isIconEnabled;
         public bool IsIconEnabled
         {
@@ -172,7 +191,9 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 RaisePropertyChanged(nameof(IsIconEnabled));
             }
         }
+        #endregion
 
+        #region IsValid
         private bool? _isValid;
         public bool? IsValid
         {
@@ -183,7 +204,9 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 RaisePropertyChanged(nameof(IsValid));
             }
         }
+        #endregion
 
+        #region ValidationErrorsString
         private string _validationErrorsString;
         public string ValidationErrorsString
         {
@@ -194,6 +217,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 RaisePropertyChanged(nameof(ValidationErrorsString));
             }
         }
+        #endregion
+
         #endregion
         private void FilePicked()
         {
