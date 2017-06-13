@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Data.SQLite;
 using System.Diagnostics;
 using System.Linq;
@@ -8,6 +10,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Documents;
+using System.Windows.Input;
+using GalaSoft.MvvmLight.CommandWpf;
 using VisualNovelManagerv2.ViewModel.VisualNovels;
 using VndbSharp;
 using VndbSharp.Interfaces;
@@ -45,12 +49,41 @@ namespace VisualNovelManagerv2.CustomClasses.Database
         {            
 
             using (Vndb client = new Vndb(true).WithClientDetails(Globals.ClientInfo[0], Globals.ClientInfo[1]))
-            {                
+            {
+                bool HasMore = true;
+                RequestOptions ro = new RequestOptions();
+                int count = 1;
                 VndbResponse<VisualNovel> visualNovels = await client.GetVisualNovelAsync(VndbFilters.Id.Equals(_uvnid), VndbFlags.FullVisualNovel);
-                VndbResponse<Release> releases = await client.GetReleaseAsync(VndbFilters.VisualNovel.Equals(_vnid), VndbFlags.FullRelease);
+
+                Collection<Release> releases = new BindingList<Release>();
+                while (HasMore)
+                {
+                    ro.Page = count;                    
+                    VndbResponse<Release> releaseList = await client.GetReleaseAsync(VndbFilters.VisualNovel.Equals(_vnid), VndbFlags.FullRelease, ro);
+                    HasMore = releaseList.HasMore;
+                    foreach (Release release in releaseList)
+                    {
+                        releases.Add(release);
+                    }
+                    count++;
+                }
+
+                HasMore = true;
+                count = 1;
                 //VndbResponse<Producer> producers = await client.GetProducerAsync(VndbFilters.Id.Equals(9), VndbFlags.FullProducer);
-                VndbResponse<Character> characters = await client.GetCharacterAsync(VndbFilters.VisualNovel.Equals(_vnid), VndbFlags.FullCharacter);
-                AddDataToDb(visualNovels, releases, characters, null);
+                Collection<Character> characters = new BindingList<Character>();                
+                while (HasMore)
+                {
+                    ro.Page = count;
+                    var characterList = await client.GetCharacterAsync(VndbFilters.VisualNovel.Equals(_vnid), VndbFlags.FullCharacter, ro);
+                    HasMore = characterList.HasMore;
+                    foreach (Character character in characterList)
+                    {
+                        characters.Add(character);
+                    }
+                    count++;
+                }
+                AddDataToDb(visualNovels, null, null, null);
                 //Console.WriteLine();
                 Thread.Sleep(0);
 

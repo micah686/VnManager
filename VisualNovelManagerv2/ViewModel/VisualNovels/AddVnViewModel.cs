@@ -309,7 +309,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             }
             catch (Exception ex)
             {
-                Console.WriteLine(e);
+                DebugLogging.WriteDebugLog(ex);
                 throw;
             }            
         }
