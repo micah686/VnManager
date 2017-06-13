@@ -271,76 +271,108 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
         private async Task<uint> IsAboveMaxId()
         {
-            using (Vndb client = new Vndb(true).WithClientDetails("VisualNovelManagerv2", "0.0.0"))
+            try
             {
-                RequestOptions ro = new RequestOptions
+                using (Vndb client = new Vndb(true).WithClientDetails("VisualNovelManagerv2", "0.0.0"))
                 {
-                    Reverse = true,
-                    Sort = "id",
-                    Count = 1
-                };
-                VndbResponse<VisualNovel> response = await client.GetVisualNovelAsync(VndbFilters.Id.GreaterThan(1), VndbFlags.Basic, ro);
-                _maxVnId = response.Items[0].Id;
-                client.Logout();
-                return _maxVnId;
+                    RequestOptions ro = new RequestOptions
+                    {
+                        Reverse = true,
+                        Sort = "id",
+                        Count = 1
+                    };
+                    VndbResponse<VisualNovel> response = await client.GetVisualNovelAsync(VndbFilters.Id.GreaterThan(1), VndbFlags.Basic, ro);
+                    _maxVnId = response.Items[0].Id;
+                    client.Logout();
+                    return _maxVnId;
+                }
             }
+            catch (Exception ex)
+            {
+                DebugLogging.WriteDebugLog(ex);
+                throw;
+            }            
         }
 
         private async Task<bool> IsDeletedVn()
         {
-            using (Vndb client = new Vndb(true).WithClientDetails("VisualNovelManagerv2", "0.0.0"))
+            try
             {
-                uint vnid = Convert.ToUInt32(VnId);
-                VndbResponse<VisualNovel> response = await client.GetVisualNovelAsync(VndbFilters.Id.Equals(vnid));
-                
-                client.Logout();
-                return response.Count < 1;
+                using (Vndb client = new Vndb(true).WithClientDetails("VisualNovelManagerv2", "0.0.0"))
+                {
+                    uint vnid = Convert.ToUInt32(VnId);
+                    VndbResponse<VisualNovel> response = await client.GetVisualNovelAsync(VndbFilters.Id.Equals(vnid));
+
+                    client.Logout();
+                    return response.Count < 1;
+                }
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine(e);
+                throw;
+            }            
         }
 
         private void ValidateExe()
         {
-            if (!File.Exists(FileName)) return;
-            byte[] twoBytes = new byte[2];
-            using (FileStream fileStream = File.Open(FileName, FileMode.Open, FileAccess.Read, FileShare.Read))
+            try
             {
-                fileStream.Read(twoBytes, 0, 2);
+                if (!File.Exists(FileName)) return;
+                byte[] twoBytes = new byte[2];
+                using (FileStream fileStream = File.Open(FileName, FileMode.Open, FileAccess.Read, FileShare.Read))
+                {
+                    fileStream.Read(twoBytes, 0, 2);
+                }
+                switch (Encoding.UTF8.GetString(twoBytes))
+                {
+                    case "MZ":
+                        break;
+                    case "ZM":
+                        break;
+                    default:
+                        Validator.AddRule(nameof(FileName),
+                            () => RuleResult.Invalid("This application is invalid"));
+                        break;
+                }
             }
-            switch (Encoding.UTF8.GetString(twoBytes))
+            catch (Exception ex)
             {
-                case "MZ":
-                    break;
-                case "ZM":
-                    break;
-                default:
-                    Validator.AddRule(nameof(FileName),
-                        () => RuleResult.Invalid("This application is invalid"));
-                    break;
-            }
+                DebugLogging.WriteDebugLog(ex);
+                throw;
+            }            
         }
 
         public async void SearchName()
         {
-            if(VnName == null || VnName.Length <= 2)return;
-            if(IsRunning != false)return;
-            IsRunning = true;
-            using (Vndb client= new Vndb(true))
+            try
             {
-                SuggestedNamesCollection.Clear();
-                _vnNameList = null;
-                _vnNameList = await client.GetVisualNovelAsync(VndbFilters.Search.Fuzzy(VnName));
-                //namelist gets a  list of english names if text input was english, or japanese names if input was japanese
-                List<string> nameList = IsJapaneseText(VnName) == true ? _vnNameList.Select(item => item.OriginalName).ToList() : _vnNameList.Select(item => item.Name).ToList();
-                foreach (string name in nameList)
+                if (VnName == null || VnName.Length <= 2) return;
+                if (IsRunning != false) return;
+                IsRunning = true;
+                using (Vndb client = new Vndb(true))
                 {
-                    if (!string.IsNullOrEmpty(name))
+                    SuggestedNamesCollection.Clear();
+                    _vnNameList = null;
+                    _vnNameList = await client.GetVisualNovelAsync(VndbFilters.Search.Fuzzy(VnName));
+                    //namelist gets a  list of english names if text input was english, or japanese names if input was japanese
+                    List<string> nameList = IsJapaneseText(VnName) == true ? _vnNameList.Select(item => item.OriginalName).ToList() : _vnNameList.Select(item => item.Name).ToList();
+                    foreach (string name in nameList)
                     {
-                        SuggestedNamesCollection.Add(name);
-                    }                    
+                        if (!string.IsNullOrEmpty(name))
+                        {
+                            SuggestedNamesCollection.Add(name);
+                        }
+                    }
+                    IsDropDownOpen = true;
+                    IsRunning = false;
                 }
-                IsDropDownOpen = true;
-                IsRunning = false;
             }
+            catch (Exception ex)
+            {
+                DebugLogging.WriteDebugLog(ex);
+                throw;
+            }            
         }
 
         private bool IsJapaneseText(string text)
@@ -352,33 +384,39 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         #region Validation Methods
         private async void Validate()
         {
-            ValidateExe();
-            //set validation rules here, so they are are checked on submit
-            ConfigureValidationRules();
-            Validator.ResultChanged += OnValidationResultChanged;
-            await ValidateAsync();
-            if (IsValid == true)
+            try
             {
-                if (VnName != null)
+                ValidateExe();
+                //set validation rules here, so they are are checked on submit
+                ConfigureValidationRules();
+                Validator.ResultChanged += OnValidationResultChanged;
+                await ValidateAsync();
+                if (IsValid == true)
                 {
-                    _selectedVnId = _vnNameList.Items[SourceIndex].Id;
-                    AddToDatabase atd = new AddToDatabase();
-                    atd.GetId(Convert.ToInt32(_selectedVnId), FileName, IconName);
-                    FileName = String.Empty;
-                    VnId = 0;
-                    VnName = string.Empty;
-                    _selectedVnId = 0;
+                    if (VnName != null)
+                    {
+                        _selectedVnId = _vnNameList.Items[SourceIndex].Id;
+                        AddToDatabase atd = new AddToDatabase();
+                        atd.GetId(Convert.ToInt32(_selectedVnId), FileName, IconName);
+                        FileName = String.Empty;
+                        VnId = 0;
+                        VnName = string.Empty;
+                        _selectedVnId = 0;
+                    }
+                    else
+                    {
+                        AddToDatabase atd = new AddToDatabase();
+                        atd.GetId(Convert.ToInt32(VnId), FileName, IconName);
+                        FileName = String.Empty;
+                        VnId = 0;
+                    }
                 }
-                else
-                {
-                    AddToDatabase atd = new AddToDatabase();
-                    atd.GetId(Convert.ToInt32(VnId), FileName, IconName);
-                    FileName = String.Empty;
-                    VnId = 0;
-                }
-                
             }
-            
+            catch (Exception ex)
+            {
+                DebugLogging.WriteDebugLog(ex);
+                throw;
+            }                        
         }
 
         private async Task ValidateAsync()

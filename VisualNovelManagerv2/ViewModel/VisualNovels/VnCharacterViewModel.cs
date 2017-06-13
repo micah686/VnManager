@@ -181,34 +181,35 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
         private void DownloadCharacters(List<string> characterList)
         {
-            foreach (string character in characterList)
+            try
             {
-                if(characterList.Count <1)return;
-                if (!Directory.Exists($@"{Globals.DirectoryPath}\Data\images\characters\{Globals.VnId}"))
+                foreach (string character in characterList)
                 {
-                    Directory.CreateDirectory($@"{Globals.DirectoryPath}\Data\images\characters\{Globals.VnId}");
-                }
-                string path =$@"{Globals.DirectoryPath}\Data\images\characters\{Globals.VnId}\{Path.GetFileName(character)}";
+                    if (characterList.Count < 1) return;
+                    if (!Directory.Exists($@"{Globals.DirectoryPath}\Data\images\characters\{Globals.VnId}"))
+                    {
+                        Directory.CreateDirectory($@"{Globals.DirectoryPath}\Data\images\characters\{Globals.VnId}");
+                    }
+                    string path = $@"{Globals.DirectoryPath}\Data\images\characters\{Globals.VnId}\{Path.GetFileName(character)}";
 
-                try
-                {
                     if (!File.Exists(path))
                     {
                         WebClient client = new WebClient();
-                        client.DownloadFile(new Uri(character),path );
+                        client.DownloadFile(new Uri(character), path);
                     }
                 }
-                catch (System.Net.WebException ex)
-                {
-                    DebugLogging.WriteDebugLog(ex);
-                    throw;
-                }
-                catch (Exception ex)
-                {
-                    DebugLogging.WriteDebugLog(ex);
-                }
-
+                
             }
+            catch (System.Net.WebException ex)
+            {
+                DebugLogging.WriteDebugLog(ex);
+                throw;
+            }
+            catch (Exception ex)
+            {
+                DebugLogging.WriteDebugLog(ex);
+            }
+            
             LoadCharacterNameList();
         }
 
@@ -241,6 +242,11 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 DebugLogging.WriteDebugLog(ex);
                 throw;
             }
+            catch (Exception ex)
+            {
+                DebugLogging.WriteDebugLog(ex);
+                throw;
+            }
             SetMaxWidth();
         }
 
@@ -255,74 +261,82 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
         private void LoadCharacterData()
         {
-            TraitsCollection.Clear();
-            if (SelectedTraitIndex < 0 && _traitDescription.Blocks.Count >= 1)
+            try
             {
-                TraitDescription.Blocks.Clear();
-            }
-            //TraitDescription.Blocks.Clear();
-            DataSet dataSet = new DataSet();
-            int characterId;
-            using (SQLiteConnection connection = new SQLiteConnection(Globals.ConnectionString))
-            {
-                connection.Open();
-                SQLiteCommand cmd = new SQLiteCommand("SELECT CharacterId FROM VnCharacter WHERE Name= @Name AND VnId=@VnId", connection);
-                cmd.Parameters.AddWithValue("@Name", SelectedCharacter);
-                cmd.Parameters.AddWithValue("@VnId", Globals.VnId);
-                characterId = Convert.ToInt32(cmd.ExecuteScalar());
-                connection.Close();
-            }
-            using (SQLiteConnection connection = new SQLiteConnection(Globals.ConnectionString))
-            {
-                connection.Open();
-                SQLiteCommand cmd = new SQLiteCommand("SELECT * FROM VnCharacter WHERE Name= @Name AND VnId=@VnId", connection);
-                cmd.Parameters.AddWithValue("@Name", SelectedCharacter);
-                cmd.Parameters.AddWithValue("@VnId", Globals.VnId);
-                SQLiteDataAdapter adapter = new SQLiteDataAdapter(cmd);
-                adapter.Fill(dataSet);
-                connection.Close();
-            }
-            if (dataSet.Tables[0].Rows.Count < 1) return;
-            {
-                object[] characterInfo = dataSet.Tables[0].Rows[0].ItemArray;
-                VnCharacterModel.Name = characterInfo[3].ToString();
-                VnCharacterModel.OriginalName = characterInfo[4].ToString();
-                VnCharacterModel.Gender = GetGenderIcon(characterInfo[5].ToString());
-                VnCharacterModel.BloodType = characterInfo[6].ToString();
-                VnCharacterModel.Birthday = characterInfo[7].ToString();
-
-                if (!string.IsNullOrEmpty(characterInfo[8].ToString()))
+                TraitsCollection.Clear();
+                if (SelectedTraitIndex < 0 && _traitDescription.Blocks.Count >= 1)
                 {
-                    VnCharacterModel.Aliases = characterInfo[8].ToString().Contains(",") ? characterInfo[8].ToString().Replace(",", ", ") : characterInfo[8].ToString();
+                    TraitDescription.Blocks.Clear();
                 }
-                VnCharacterModel.Description = ConvertRichTextDocument.ConvertToFlowDocument(characterInfo[9].ToString());
-                string path =
-                    $@"{Globals.DirectoryPath}\Data\images\characters\{Globals.VnId}\{
-                            Path.GetFileName(characterInfo[10].ToString())
-                        }";
-                BitmapImage bImage = new BitmapImage(new Uri(path));
-                VnCharacterModel.Image = bImage;
-
-                VnCharacterModel.Bust = characterInfo[11].ToString();
-                VnCharacterModel.Waist = characterInfo[12].ToString();
-                VnCharacterModel.Hip = characterInfo[13].ToString();
-                VnCharacterModel.Height = characterInfo[14].ToString();
-                VnCharacterModel.Weight = characterInfo[15].ToString();
-
-
+                //TraitDescription.Blocks.Clear();
+                DataSet dataSet = new DataSet();
+                int characterId;
                 using (SQLiteConnection connection = new SQLiteConnection(Globals.ConnectionString))
                 {
                     connection.Open();
-                    SQLiteCommand cmd = new SQLiteCommand("SELECT * FROM VnCharacterTraits WHERE CharacterId=@CharacterId", connection);
-                    cmd.Parameters.AddWithValue("@CharacterId", characterId);
-                    SQLiteDataReader reader = cmd.ExecuteReader();
-                    while (reader.Read())
-                    {
-                        _traitsCollection.Add(reader["TraitName"].ToString());
-                    }
+                    SQLiteCommand cmd = new SQLiteCommand("SELECT CharacterId FROM VnCharacter WHERE Name= @Name AND VnId=@VnId", connection);
+                    cmd.Parameters.AddWithValue("@Name", SelectedCharacter);
+                    cmd.Parameters.AddWithValue("@VnId", Globals.VnId);
+                    characterId = Convert.ToInt32(cmd.ExecuteScalar());
                     connection.Close();
                 }
+                using (SQLiteConnection connection = new SQLiteConnection(Globals.ConnectionString))
+                {
+                    connection.Open();
+                    SQLiteCommand cmd = new SQLiteCommand("SELECT * FROM VnCharacter WHERE Name= @Name AND VnId=@VnId", connection);
+                    cmd.Parameters.AddWithValue("@Name", SelectedCharacter);
+                    cmd.Parameters.AddWithValue("@VnId", Globals.VnId);
+                    SQLiteDataAdapter adapter = new SQLiteDataAdapter(cmd);
+                    adapter.Fill(dataSet);
+                    connection.Close();
+                }
+                if (dataSet.Tables[0].Rows.Count < 1) return;
+                {
+                    object[] characterInfo = dataSet.Tables[0].Rows[0].ItemArray;
+                    VnCharacterModel.Name = characterInfo[3].ToString();
+                    VnCharacterModel.OriginalName = characterInfo[4].ToString();
+                    VnCharacterModel.Gender = GetGenderIcon(characterInfo[5].ToString());
+                    VnCharacterModel.BloodType = characterInfo[6].ToString();
+                    VnCharacterModel.Birthday = characterInfo[7].ToString();
+
+                    if (!string.IsNullOrEmpty(characterInfo[8].ToString()))
+                    {
+                        VnCharacterModel.Aliases = characterInfo[8].ToString().Contains(",") ? characterInfo[8].ToString().Replace(",", ", ") : characterInfo[8].ToString();
+                    }
+                    VnCharacterModel.Description = ConvertRichTextDocument.ConvertToFlowDocument(characterInfo[9].ToString());
+                    string path =
+                        $@"{Globals.DirectoryPath}\Data\images\characters\{Globals.VnId}\{
+                                Path.GetFileName(characterInfo[10].ToString())
+                            }";
+                    BitmapImage bImage = new BitmapImage(new Uri(path));
+                    VnCharacterModel.Image = bImage;
+
+                    VnCharacterModel.Bust = characterInfo[11].ToString();
+                    VnCharacterModel.Waist = characterInfo[12].ToString();
+                    VnCharacterModel.Hip = characterInfo[13].ToString();
+                    VnCharacterModel.Height = characterInfo[14].ToString();
+                    VnCharacterModel.Weight = characterInfo[15].ToString();
+
+
+                    using (SQLiteConnection connection = new SQLiteConnection(Globals.ConnectionString))
+                    {
+                        connection.Open();
+                        SQLiteCommand cmd = new SQLiteCommand("SELECT * FROM VnCharacterTraits WHERE CharacterId=@CharacterId", connection);
+                        cmd.Parameters.AddWithValue("@CharacterId", characterId);
+                        SQLiteDataReader reader = cmd.ExecuteReader();
+                        while (reader.Read())
+                        {
+                            _traitsCollection.Add(reader["TraitName"].ToString());
+                        }
+                        connection.Close();
+                    }
+                }
             }
+            catch (Exception exception)
+            {
+                DebugLogging.WriteDebugLog(exception);
+                throw;
+            }            
         }
 
         private void BindTraitDescription()

@@ -244,10 +244,12 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
         private void LoadVnNameCollection()
         {
-            ObservableCollection<string> nameList = new ObservableCollection<string>();
-            using (SQLiteConnection connection = new SQLiteConnection(Globals.ConnectionString))
+            try
             {
-                connection.Open();
+                ObservableCollection<string> nameList = new ObservableCollection<string>();
+                using (SQLiteConnection connection = new SQLiteConnection(Globals.ConnectionString))
+                {
+                    connection.Open();
 
                     using (SQLiteCommand cmd = connection.CreateCommand())
                     {
@@ -259,21 +261,29 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                         }
                     }
 
-                connection.Close();
+                    connection.Close();
+                }
+                VnNameCollection = nameList;
+                SetMaxWidth();
             }
-            VnNameCollection = nameList;
-            SetMaxWidth();
+            catch (SQLiteException ex)
+            {
+                DebugLogging.WriteDebugLog(ex);
+                throw;
+            }
+            catch (Exception ex)
+            {
+                DebugLogging.WriteDebugLog(ex);
+                throw;
+            }            
         }
 
         public void SetMaxWidth()
         {
-            if (VnNameCollection.Count > 0)
-            {
-                string longestString = VnNameCollection.OrderByDescending(s => s.Length).First();
-                MaxListWidth = MeasureStringSize.GetMaxStringWidth(longestString);
-                Thread.Sleep(0);
-            }
-            
+            if (VnNameCollection.Count <= 0) return;
+            string longestString = VnNameCollection.OrderByDescending(s => s.Length).First();
+            MaxListWidth = MeasureStringSize.GetMaxStringWidth(longestString);
+            Thread.Sleep(0);
         }
 
         private void GetVnData()
@@ -360,9 +370,11 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 DebugLogging.WriteDebugLog(ex);
                 throw;
             }
-           
-
-                      
+            catch (Exception ex)
+            {
+                DebugLogging.WriteDebugLog(ex);
+                throw;
+            }
         }
 
         private void BindVnData(DataSet dataSet)
@@ -504,17 +516,30 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
         private void BindTagDescription()
         {
-            if (!(_selectedTagIndex >= 0)) return;
-            using (SQLiteConnection connection = new SQLiteConnection(Globals.ConnectionString))
+            try
             {
-                connection.Open();
-                using (SQLiteCommand cmd = connection.CreateCommand())
+                if (!(_selectedTagIndex >= 0)) return;
+                using (SQLiteConnection connection = new SQLiteConnection(Globals.ConnectionString))
                 {
-                    cmd.CommandText = "SELECT Description FROM VnTagData WHERE Name= @Name";
-                    cmd.Parameters.AddWithValue("@Name", SelectedTag);
+                    connection.Open();
+                    using (SQLiteCommand cmd = connection.CreateCommand())
+                    {
+                        cmd.CommandText = "SELECT Description FROM VnTagData WHERE Name= @Name";
+                        cmd.Parameters.AddWithValue("@Name", SelectedTag);
 
-                    TagDescription = ConvertRichTextDocument.ConvertToFlowDocument(cmd.ExecuteScalar().ToString());
+                        TagDescription = ConvertRichTextDocument.ConvertToFlowDocument(cmd.ExecuteScalar().ToString());
+                    }
                 }
+            }
+            catch (SQLiteException ex)
+            {
+                DebugLogging.WriteDebugLog(ex);
+                throw;
+            }
+            catch (Exception ex)
+            {
+                DebugLogging.WriteDebugLog(ex);
+                throw;
             }
         }
         
@@ -529,50 +554,67 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
         private BitmapSource LoadIcon()
         {
-            using (SQLiteConnection connection = new SQLiteConnection(Globals.ConnectionString))
+            try
             {
-                connection.Open();
-                using (SQLiteCommand cmd = connection.CreateCommand())
+                using (SQLiteConnection connection = new SQLiteConnection(Globals.ConnectionString))
                 {
-                    cmd.CommandText = "SELECT * FROM VnUserData WHERE VnId=@VnId";
-                    cmd.Parameters.AddWithValue("@VnId", Globals.VnId);
-                    SQLiteDataReader reader = cmd.ExecuteReader();
-                    while (reader.Read())
+                    connection.Open();
+                    using (SQLiteCommand cmd = connection.CreateCommand())
                     {
-                        if (!reader.IsDBNull(reader.GetOrdinal("IconPath")))
+                        cmd.CommandText = "SELECT * FROM VnUserData WHERE VnId=@VnId";
+                        cmd.Parameters.AddWithValue("@VnId", Globals.VnId);
+                        SQLiteDataReader reader = cmd.ExecuteReader();
+                        while (reader.Read())
                         {
-                            string iconpath = (string)reader["IconPath"];
-                            return CreateIcon(iconpath);
-                        }
-                        else if(reader.IsDBNull(reader.GetOrdinal("IconPath")))
-                        {
-                            string exepath = (string)reader["ExePath"];
-                            return CreateIcon(exepath);
-                        }
-                        else
-                        {
-                            return CreateIcon(null);
+                            if (!reader.IsDBNull(reader.GetOrdinal("IconPath")))
+                            {
+                                string iconpath = (string)reader["IconPath"];
+                                return CreateIcon(iconpath);
+                            }
+                            else if (reader.IsDBNull(reader.GetOrdinal("IconPath")))
+                            {
+                                string exepath = (string)reader["ExePath"];
+                                return CreateIcon(exepath);
+                            }
+                            else
+                            {
+                                return CreateIcon(null);
+                            }
                         }
                     }
-                }                
+                }
+                return null;
             }
-            return null;
+            catch (Exception ex)
+            {
+                DebugLogging.WriteDebugLog(ex);
+                throw;
+            }            
         }
 
         private BitmapSource CreateIcon(string path)
         {
-            if (path == null)
+            try
             {
-                return BitmapSource.Create(1, 1, 96, 96, PixelFormats.Bgra32, null, new byte[] {0, 0, 0, 0}, 4);
+                if (path == null)
+                {
+                    return BitmapSource.Create(1, 1, 96, 96, PixelFormats.Bgra32, null, new byte[] { 0, 0, 0, 0 }, 4);
+                }
+                Icon sysicon = System.Drawing.Icon.ExtractAssociatedIcon(path);
+                if (sysicon == null)
+                    return BitmapSource.Create(1, 1, 96, 96, PixelFormats.Bgra32, null, new byte[] { 0, 0, 0, 0 }, 4);
+                BitmapSource bmpSrc = System.Windows.Interop.Imaging.CreateBitmapSourceFromHIcon(
+                    sysicon.Handle, System.Windows.Int32Rect.Empty,
+                    System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
+                sysicon.Dispose();
+                return bmpSrc;
             }
-            Icon sysicon = System.Drawing.Icon.ExtractAssociatedIcon(path);
-            if (sysicon == null)
-                return BitmapSource.Create(1, 1, 96, 96, PixelFormats.Bgra32, null, new byte[] {0, 0, 0, 0}, 4);
-            BitmapSource bmpSrc = System.Windows.Interop.Imaging.CreateBitmapSourceFromHIcon(
-                sysicon.Handle, System.Windows.Int32Rect.Empty,
-                System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
-            sysicon.Dispose();
-            return bmpSrc;
+            catch (Exception ex)
+            {
+                DebugLogging.WriteDebugLog(ex);
+                throw;
+            }
+            
         }
 
         private void DownloadCoverImage(string url, bool nsfw)
@@ -610,7 +652,12 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             {
                 DebugLogging.WriteDebugLog(ex);
                 throw;
-            }            
+            }
+            catch (Exception ex)
+            {
+                DebugLogging.WriteDebugLog(ex);
+                throw;
+            }
         }
 
         private void BindCoverImage(string url, bool? nsfw)
