@@ -299,10 +299,12 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                     VnCharacterModel.BloodType = characterInfo[6].ToString();
                     VnCharacterModel.Birthday = characterInfo[7].ToString();
 
-                    if (!string.IsNullOrEmpty(characterInfo[8].ToString()))
-                    {
-                        VnCharacterModel.Aliases = characterInfo[8].ToString().Contains(",") ? characterInfo[8].ToString().Replace(",", ", ") : characterInfo[8].ToString();
-                    }
+                    if (string.IsNullOrEmpty(characterInfo[8].ToString()))
+                        VnCharacterModel.Aliases = string.Empty;
+                    else
+                        VnCharacterModel.Aliases = characterInfo[8].ToString().Contains(",")
+                            ? characterInfo[8].ToString().Replace(",", ", ")
+                            : characterInfo[8].ToString();
                     VnCharacterModel.Description = ConvertRichTextDocument.ConvertToFlowDocument(characterInfo[9].ToString());
                     string path =
                         $@"{Globals.DirectoryPath}\Data\images\characters\{Globals.VnId}\{

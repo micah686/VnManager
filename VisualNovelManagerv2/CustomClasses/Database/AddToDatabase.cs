@@ -83,7 +83,7 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                     }
                     count++;
                 }
-                AddDataToDb(visualNovels, null, null, null);
+                AddDataToDb(visualNovels, releases, characters, null);
                 //Console.WriteLine();
                 Thread.Sleep(0);
 
@@ -91,7 +91,7 @@ namespace VisualNovelManagerv2.CustomClasses.Database
 
         }
 
-        async void AddDataToDb(VndbResponse<VisualNovel> visualNovels, VndbResponse<Release> releases, VndbResponse<Character> characters, VndbResponse<Producer> producers)
+        async void AddDataToDb(VndbResponse<VisualNovel> visualNovels, Collection<Release> releases, Collection<Character> characters, VndbResponse<Producer> producers)
         {
             using (SQLiteConnection connection = new SQLiteConnection(Globals.ConnectionString))
             {
