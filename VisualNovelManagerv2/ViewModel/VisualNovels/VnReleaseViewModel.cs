@@ -258,9 +258,9 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         private static IEnumerable<string> GetLangauges(string csv)
         {
             string[] list = csv.Split(',');
-            return list.Select(lang => File.Exists($@"{Globals.DirectoryPath}\Data\res\country_flags\{lang}.png")
-                    ? $@"{Globals.DirectoryPath}\Data\res\country_flags\{lang}.png"
-                    : $@"{Globals.DirectoryPath}\Data\res\country_flags\Unknown.png")
+            return list.Select(lang => File.Exists($@"{Globals.DirectoryPath}\Data\res\icons\country_flags\{lang}.png")
+                    ? $@"{Globals.DirectoryPath}\Data\res\icons\country_flags\{lang}.png"
+                    : $@"{Globals.DirectoryPath}\Data\res\icons\country_flags\Unknown.png")
                 .ToList();
         }
     }

@@ -38,20 +38,28 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <Label Content="{Binding Path=IsNameChecked, Converter={StaticResource BoolToStringConverter}}" Width="120" />
-                        <TextBox x:Name="TextVnId" Grid.Column="1" Width="150" MaxLength="10" custom:TextBoxService.IsNumericOnly="True" Height="25"
-                            Text="{Binding VnId, Mode=TwoWay, ValidatesOnDataErrors=True}" Visibility="{Binding IsChecked, ElementName=VnIdRadio, Converter={StaticResource ConvVisibility}}"/>
+                        <TextBox x:Name="TextVnId" Grid.Column="1" Width="150" MaxLength="9" custom:TextBoxService.IsNumericOnly="True" Height="25"
+                            Text="{Binding VnId, Mode=TwoWay, ValidatesOnDataErrors=True}" Visibility="{Binding IsChecked, ElementName=VnIdRadio, Converter={StaticResource ConvVisibility}}" />
 
                         <ComboBox x:Name="ComboVnName" Grid.Column="1" Width="150"  IsEditable="True"
                             Text="{Binding VnName, Mode=TwoWay, ValidatesOnDataErrors=True}" Visibility="{Binding IsChecked, ElementName=VnNameRadio, Converter={StaticResource ConvVisibility}}"
-                                  ItemsSource="{Binding SuggestedNamesCollection}" IsDropDownOpen="{Binding IsDropDownOpen}" SelectedIndex="{Binding SourceIndex}">
+                                  ItemsSource="{Binding SuggestedNamesCollection}" IsDropDownOpen="{Binding IsDropDownOpen}" SelectedIndex="{Binding DropdownIndex}">
                             <i:Interaction.Triggers>
-                                <i:EventTrigger EventName="KeyUp">
+                                <ei:KeyTrigger Key="Enter">
                                     <ei:CallMethodAction TargetObject="{Binding}" MethodName="SearchName"/>
-                                </i:EventTrigger>
+                                </ei:KeyTrigger>
                             </i:Interaction.Triggers>
                         </ComboBox>
+                        <Button Grid.Column="2" Margin="5,0,0,0" Command="{Binding SearchNamesCommand}">
+                            <Button.Template>
+                                <ControlTemplate>
+                                    <Image Source="{Binding SearchImage}" Width="18" Height="18"/>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
                     </Grid>
 
                     <Grid Grid.Row="3" Margin="0,10,0,0">

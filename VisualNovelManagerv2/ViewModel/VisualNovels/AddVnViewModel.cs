@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -11,6 +12,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
@@ -38,6 +40,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         public RelayCommand GetFile { get; private set; }
         public RelayCommand GetIcon { get; private set; }
         public ICommand ValidateCommand { get; private set; }
+        public ICommand SearchNamesCommand => new GalaSoft.MvvmLight.CommandWpf.RelayCommand(SearchName);
         public ObservableCollection<string> SuggestedNamesCollection { get; set; }
         public static uint _maxVnId;
         public static uint _selectedVnId;
@@ -53,7 +56,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             //for mvvmValidation
             ValidateCommand = new RelayCommand(Validate);
             this.SuggestedNamesCollection = new ObservableCollection<string>();
-            SourceIndex = 0;
+            DropdownIndex = 0;
         }
 
         #region Static Properties
@@ -117,6 +120,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         }
         #endregion
 
+        public BitmapImage SearchImage => new BitmapImage(new Uri($@"{Globals.DirectoryPath}\Data\res\icons\assorted\search.png"));
+
         #region IsNameChecked
         private bool _isNameChecked;
         public bool IsNameChecked
@@ -171,15 +176,15 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         }
         #endregion
 
-        #region SourceIndes
-        private int _sourceIndex;
-        public int SourceIndex
+        #region DropdownIndex
+        private int _dropdownIndex;
+        public int DropdownIndex
         {
-            get { return _sourceIndex; }
+            get { return _dropdownIndex; }
             set
             {
-                _sourceIndex = value;
-                RaisePropertyChanged(nameof(SourceIndex));
+                _dropdownIndex = value;
+                RaisePropertyChanged(nameof(DropdownIndex));
             }
         }
         #endregion
@@ -395,7 +400,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 {
                     if (VnName != null)
                     {
-                        _selectedVnId = _vnNameList.Items[SourceIndex].Id;
+                        _selectedVnId = _vnNameList.Items[DropdownIndex].Id;
                         AddToDatabase atd = new AddToDatabase();
                         atd.GetId(Convert.ToInt32(_selectedVnId), FileName, IconName);
                         FileName = String.Empty;

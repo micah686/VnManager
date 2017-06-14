@@ -23,9 +23,10 @@ namespace VisualNovelManagerv2
             Directory.CreateDirectory(Globals.DirectoryPath + @"\Data\images\thumbs");
             Directory.CreateDirectory(Globals.DirectoryPath + @"\Data\images\vnlist");
             Directory.CreateDirectory(Globals.DirectoryPath + @"\Data\libs\");
-            Directory.CreateDirectory(Globals.DirectoryPath + @"\Data\res\country_flags");
             Directory.CreateDirectory(Globals.DirectoryPath + @"\Data\res\icons");
+            Directory.CreateDirectory(Globals.DirectoryPath + @"\Data\res\icons\country_flags");
             Directory.CreateDirectory(Globals.DirectoryPath + @"\Data\res\icons\gender");
+            Directory.CreateDirectory(Globals.DirectoryPath + @"\Data\res\icons\assorted");
         }
 
         public void CheckForDatabase()
