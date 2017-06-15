@@ -127,6 +127,7 @@
     <Compile Include="Converters\NullImageConverter.cs" />
     <Compile Include="CustomClasses\RequestOptions.cs" />
     <Compile Include="CustomClasses\TextBoxService.cs" />
+    <Compile Include="Design\Global\StatusBarModel.cs" />
     <Compile Include="Design\VisualNovel\VnCharacterModel.cs" />
     <Compile Include="Design\VisualNovel\VnMainModel.cs" />
     <Compile Include="Design\VisualNovel\VnReleaseModel.cs" />
@@ -143,6 +144,7 @@
       <DependentUpon>OFL.xaml</DependentUpon>
     </Compile>
     <Compile Include="StartupValidate.cs" />
+    <Compile Include="ViewModel\Global\StatusBarViewModel.cs" />
     <Compile Include="ViewModel\VisualNovels\AddVnViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Compile Include="ViewModel\VisualNovels\VnCharacterViewModel.cs" />
@@ -283,7 +285,11 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\assorted\github.png" />
+    <Content Include="Resources\assorted\language-csharp.png" />
     <Content Include="Resources\assorted\search.png" />
+    <Content Include="Resources\assorted\visualstudio.png" />
+    <Content Include="Resources\assorted\xaml.png" />
     <Content Include="Resources\flags\ar.png" />
     <Content Include="Resources\flags\ca.png" />
     <Content Include="Resources\flags\cs.png" />
@@ -319,6 +325,12 @@
     <Content Include="Resources\gender\both.png" />
     <Content Include="Resources\gender\female.png" />
     <Content Include="Resources\gender\male.png" />
+    <Content Include="Resources\statusbar\alert.png" />
+    <Content Include="Resources\statusbar\close-network.png" />
+    <Content Include="Resources\statusbar\database.png" />
+    <Content Include="Resources\statusbar\error.png" />
+    <Content Include="Resources\statusbar\key-variant.png" />
+    <Content Include="Resources\statusbar\ok.png" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\..\Visual Studio 2015\Projects\VndbSharp\VndbSharp\VndbSharp.csproj">
@@ -326,9 +338,7 @@
       <Name>VndbSharp</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Resources\statusbar\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\System.Data.SQLite.Core.1.0.105.0\build\net46\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.105.0\build\net46\System.Data.SQLite.Core.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
@@ -347,6 +357,7 @@ DEL *.dll *.pdb *.xml
 ROBOCOPY "$(TargetDir)..\..\Resources\Flags " "$(TargetDir)Data\res\icons\country_flags " *.png 
 ROBOCOPY "$(TargetDir)..\..\Resources\Gender " "$(TargetDir)Data\res\icons\gender " *.png 
 ROBOCOPY "$(TargetDir)..\..\Resources\Assorted " "$(TargetDir)Data\res\icons\assorted " *.png
+ROBOCOPY "$(TargetDir)..\..\Resources\StatusBar " "$(TargetDir)Data\res\icons\statusbar " *.png
 
 if errorlevel 1 exit 0 else exit %25errorlevel%25</PostBuildEvent>
   </PropertyGroup>

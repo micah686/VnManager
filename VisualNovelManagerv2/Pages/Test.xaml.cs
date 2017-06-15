@@ -24,6 +24,8 @@ using Brushes = System.Windows.Media.Brushes;
 using FontFamily = System.Drawing.FontFamily;
 using Size = System.Drawing.Size;
 using System.IO.Compression;
+using VisualNovelManagerv2.ViewModel;
+using VisualNovelManagerv2.ViewModel.Global;
 using VndbSharp.Models.Common;
 using VndbSharp.Models.Dumps;
 using VndbSharp.Models.VisualNovel;
@@ -58,8 +60,12 @@ namespace VisualNovelManagerv2.Pages
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            VnCharacterViewModel vm = new VnCharacterViewModel();
-            vm.LoadCharacterCommand.Execute(null);
+            
+            BitmapImage bi = new BitmapImage(new Uri($@"{Globals.DirectoryPath}\Data\res\icons\statusbar\error.png"));
+            var vm1 = (new ViewModelLocator()).StatusBar;
+            vm1.IsDbProcessing = true;
+            //Globals.StatusBarViewModel.ProgressStatus = bi;
+
         }
     }
 }
