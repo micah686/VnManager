@@ -64,6 +64,10 @@ namespace VisualNovelManagerv2.Pages
             BitmapImage bi = new BitmapImage(new Uri($@"{Globals.DirectoryPath}\Data\res\icons\statusbar\error.png"));
             var vm1 = (new ViewModelLocator()).StatusBar;
             vm1.IsDbProcessing = true;
+            vm1.IsWorkProcessing = true;
+            vm1.ProgressStatus = bi;
+
+            vm1.ProgressPercentage = string.Empty;
             //Globals.StatusBarViewModel.ProgressStatus = bi;
 
         }
