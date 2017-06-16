@@ -61,14 +61,14 @@ namespace VisualNovelManagerv2.Pages
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
             
-            BitmapImage bi = new BitmapImage(new Uri($@"{Globals.DirectoryPath}\Data\res\icons\statusbar\error.png"));
-            var vm1 = (new ViewModelLocator()).StatusBar;
-            vm1.IsDbProcessing = true;
-            vm1.IsWorkProcessing = true;
-            vm1.ProgressStatus = bi;
-            vm1.ProgressBarStatus = 83.5;
+            //BitmapImage bi = new BitmapImage(new Uri($@"{Globals.DirectoryPath}\Data\res\icons\statusbar\error.png"));
+            //StatusBarViewModel vm1 = (new ViewModelLocator()).StatusBar;
+            //vm1.IsDbProcessing = true;
+            //vm1.IsWorkProcessing = true;
+            //vm1.ProgressStatus = bi;
+            //vm1.ProgressBarStatus = 83.5;
 
-            vm1.ProgressPercentage = 55.3.ToString();
+            //vm1.ProgressPercentage = 55.3.ToString();
             //Globals.StatusBarViewModel.ProgressStatus = bi;
 
         }

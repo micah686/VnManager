@@ -14,6 +14,8 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using FirstFloor.ModernUI.Presentation;
 using GalaSoft.MvvmLight.CommandWpf;
+using VisualNovelManagerv2.ViewModel;
+using VisualNovelManagerv2.ViewModel.Global;
 using VisualNovelManagerv2.ViewModel.VisualNovels;
 using VndbSharp;
 using VndbSharp.Interfaces;
@@ -36,6 +38,7 @@ namespace VisualNovelManagerv2.CustomClasses.Database
         private uint _uvnid;
         private string _exepath;
         private string _iconpath;
+        private const double _progressIncrement = 4.545454545454545;
 
         public async void GetId(int id, string exe, string icon)
         {
@@ -44,11 +47,11 @@ namespace VisualNovelManagerv2.CustomClasses.Database
             _exepath = exe;
             _iconpath = icon;
             await GetData();
+            
         }
 
         async Task GetData()
-        {            
-            
+        {
             using (Vndb client = new Vndb(true).WithClientDetails(Globals.ClientInfo[0], Globals.ClientInfo[1]))
             {
                 bool hasMore = true;
