@@ -6,11 +6,13 @@ using System.ComponentModel;
 using System.Data.SQLite;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Documents;
 using System.Windows.Input;
+using FirstFloor.ModernUI.Presentation;
 using GalaSoft.MvvmLight.CommandWpf;
 using VisualNovelManagerv2.ViewModel.VisualNovels;
 using VndbSharp;
@@ -34,7 +36,6 @@ namespace VisualNovelManagerv2.CustomClasses.Database
         private uint _uvnid;
         private string _exepath;
         private string _iconpath;
-        private readonly SemaphoreSlim semaphoreSlim = new SemaphoreSlim(initialCount:1);
 
         public async void GetId(int id, string exe, string icon)
         {
@@ -47,51 +48,53 @@ namespace VisualNovelManagerv2.CustomClasses.Database
 
         async Task GetData()
         {            
-
+            
             using (Vndb client = new Vndb(true).WithClientDetails(Globals.ClientInfo[0], Globals.ClientInfo[1]))
             {
-                bool HasMore = true;
+                bool hasMore = true;
                 RequestOptions ro = new RequestOptions();
                 int count = 1;
                 VndbResponse<VisualNovel> visualNovels = await client.GetVisualNovelAsync(VndbFilters.Id.Equals(_uvnid), VndbFlags.FullVisualNovel);
 
+                #region Releases
                 Collection<Release> releases = new BindingList<Release>();
-                while (HasMore)
+                while (hasMore)
                 {
-                    ro.Page = count;                    
+                    ro.Page = count;
                     VndbResponse<Release> releaseList = await client.GetReleaseAsync(VndbFilters.VisualNovel.Equals(_vnid), VndbFlags.FullRelease, ro);
-                    HasMore = releaseList.HasMore;
+                    hasMore = releaseList.HasMore;
                     foreach (Release release in releaseList)
                     {
                         releases.Add(release);
                     }
                     count++;
                 }
+                #endregion
 
-                HasMore = true;
+                hasMore = true;
                 count = 1;
-                //VndbResponse<Producer> producers = await client.GetProducerAsync(VndbFilters.Id.Equals(9), VndbFlags.FullProducer);
-                Collection<Character> characters = new BindingList<Character>();                
-                while (HasMore)
+
+                #region Characters
+                Collection<Character> characters = new BindingList<Character>();
+                while (hasMore)
                 {
                     ro.Page = count;
                     var characterList = await client.GetCharacterAsync(VndbFilters.VisualNovel.Equals(_vnid), VndbFlags.FullCharacter, ro);
-                    HasMore = characterList.HasMore;
+                    hasMore = characterList.HasMore;
                     foreach (Character character in characterList)
                     {
                         characters.Add(character);
                     }
                     count++;
                 }
-                AddDataToDb(visualNovels, releases, characters, null);
-                //Console.WriteLine();
+                #endregion
+
+                AddDataToDb(visualNovels, releases, characters);
                 Thread.Sleep(0);
-
             }
-
         }
 
-        async void AddDataToDb(VndbResponse<VisualNovel> visualNovels, Collection<Release> releases, Collection<Character> characters, VndbResponse<Producer> producers)
+        async void AddDataToDb(VndbResponse<VisualNovel> visualNovels, Collection<Release> releases, Collection<Character> characters)
         {
             using (SQLiteConnection connection = new SQLiteConnection(Globals.ConnectionString))
             {
@@ -498,58 +501,6 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                     cmd.Parameters.AddWithValue("@PlayTime", "0,0,0,0");
 
                     cmd.ExecuteNonQuery();
-
-                    #endregion
-
-                    #region VnProducer
-
-                    //foreach (Producer producer in producers)
-                    //{
-                    //    #region VnProducer
-
-                    //    //sql = "INSERT OR REPLACE INTO VnProducer VALUES(@PK_Id, @ProducerId, @Name, @Original, @ProducerType, @Language, @Aliases, @Description)";
-                    //    //cmd = new SQLiteCommand(sql, connection, transaction);
-                    //    //cmd.Parameters.AddWithValue("@PK_Id", null);
-                    //    //cmd.Parameters.AddWithValue("@ProducerId", CheckForDbNull(producer.Id));
-                    //    //cmd.Parameters.AddWithValue("@Name", CheckForDbNull(producer.Name));
-                    //    //cmd.Parameters.AddWithValue("@Original", CheckForDbNull(producer.OriginalName));
-                    //    //cmd.Parameters.AddWithValue("@ProducerType", CheckForDbNull(producer.ProducerType));
-                    //    //cmd.Parameters.AddWithValue("@Language", CheckForDbNull(producer.Language));
-                    //    //cmd.Parameters.AddWithValue("@Aliases", CheckForDbNull(ConvertToCsv(producer.Aliases)));
-                    //    //cmd.Parameters.AddWithValue("@Description", CheckForDbNull(producer.Description));
-                    //    //cmd.ExecuteNonQuery();
-
-                    //    #endregion
-
-                    //    #region VnProducerLinks
-                    //    //sql = "INSERT OR REPLACE INTO VnProducerLinks VALUES(@PK_Id, @ProducerId, @Homepage, @Wikipedia)";
-                    //    //cmd = new SQLiteCommand(sql, connection, transaction);
-                    //    //cmd.Parameters.AddWithValue("@PK_Id", null);
-                    //    //cmd.Parameters.AddWithValue("@ProducerId", CheckForDbNull(producer.Id));
-                    //    //cmd.Parameters.AddWithValue("@Homepage", CheckForDbNull(producer.Links.Homepage));
-                    //    //cmd.Parameters.AddWithValue("@Wikipedia", CheckForDbNull(producer.Links.Wikipedia));
-                    //    //cmd.ExecuteNonQuery();
-
-
-                    //    #endregion
-
-                    //    #region VnProducerRelations
-                    //    //foreach (Relationship relation in producer.Relations)
-                    //    //{
-                    //    //    sql = "INSERT OR REPLACE INTO VnProducerRelations VALUES(@PK_Id, @RelationId, @ProducerId, @Relation, @Name, @Original)";
-                    //    //    cmd = new SQLiteCommand(sql, connection, transaction);
-                    //    //    cmd.Parameters.AddWithValue("@PK_Id", null);
-                    //    //    cmd.Parameters.AddWithValue("@RelationId", CheckForDbNull(relation.Id));
-                    //    //    cmd.Parameters.AddWithValue("@ProducerId", CheckForDbNull(producer.Id));
-                    //    //    cmd.Parameters.AddWithValue("@Relation", CheckForDbNull(relation.Relation));
-                    //    //    cmd.Parameters.AddWithValue("@Name", CheckForDbNull(relation.Name));
-                    //    //    cmd.Parameters.AddWithValue("@Original", CheckForDbNull(relation.OriginalName));
-
-                    //    //    cmd.ExecuteNonQuery();
-                    //    //}
-                    //    #endregion
-                    //}
-
 
                     #endregion
 
