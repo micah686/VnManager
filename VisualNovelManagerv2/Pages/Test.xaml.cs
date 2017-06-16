@@ -66,8 +66,9 @@ namespace VisualNovelManagerv2.Pages
             vm1.IsDbProcessing = true;
             vm1.IsWorkProcessing = true;
             vm1.ProgressStatus = bi;
+            vm1.ProgressBarStatus = 83.5;
 
-            vm1.ProgressPercentage = string.Empty;
+            vm1.ProgressPercentage = 55.3.ToString();
             //Globals.StatusBarViewModel.ProgressStatus = bi;
 
         }
