@@ -38,7 +38,8 @@ namespace VisualNovelManagerv2.CustomClasses.Database
         private uint _uvnid;
         private string _exepath;
         private string _iconpath;
-        private const double _progressIncrement = 4.545454545454545;
+        private double ProgressIncrement = 0;
+        readonly StatusBarViewModel _statusBar = (new ViewModelLocator()).StatusBar;
 
         public async void GetId(int id, string exe, string icon)
         {
@@ -52,13 +53,26 @@ namespace VisualNovelManagerv2.CustomClasses.Database
 
         async Task GetData()
         {
+            _statusBar.ProgressPercentage = 0;
+            _statusBar.IsDbProcessing = true;
+            _statusBar.IsWorkProcessing = true;
             using (Vndb client = new Vndb(true).WithClientDetails(Globals.ClientInfo[0], Globals.ClientInfo[1]))
             {
+                VndbResponse<VisualNovel> vns = await client.GetVisualNovelAsync(VndbFilters.Id.Equals(_uvnid));
+                VndbResponse<Release> rel = await client.GetReleaseAsync(VndbFilters.VisualNovel.Equals(_vnid));
+                VndbResponse<Character> chartr = await client.GetCharacterAsync(VndbFilters.VisualNovel.Equals(_vnid));
+                //TODO: Check for nulls in these
+
+                double statusCount = (13 + (4 * rel.Count) + (5 * chartr.Count));
+                ProgressIncrement = 100 / statusCount;
+
+
                 bool hasMore = true;
                 RequestOptions ro = new RequestOptions();
                 int count = 1;
                 VndbResponse<VisualNovel> visualNovels = await client.GetVisualNovelAsync(VndbFilters.Id.Equals(_uvnid), VndbFlags.FullVisualNovel);
-
+                if (_statusBar.ProgressPercentage != null)
+                    _statusBar.ProgressPercentage = Math.Round((double)_statusBar.ProgressPercentage + ProgressIncrement, 1);
                 #region Releases
                 Collection<Release> releases = new BindingList<Release>();
                 while (hasMore)
@@ -73,7 +87,8 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                     count++;
                 }
                 #endregion
-
+                if (_statusBar.ProgressPercentage != null)
+                    _statusBar.ProgressPercentage = Math.Round((double)_statusBar.ProgressPercentage + ProgressIncrement, 1);
                 hasMore = true;
                 count = 1;
 
@@ -91,13 +106,13 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                     count++;
                 }
                 #endregion
-
+                if (_statusBar.ProgressPercentage != null)
+                    _statusBar.ProgressPercentage = Math.Round((double)_statusBar.ProgressPercentage + ProgressIncrement, 1);
                 AddDataToDb(visualNovels, releases, characters);
-                Thread.Sleep(0);
             }
         }
 
-        async void AddDataToDb(VndbResponse<VisualNovel> visualNovels, Collection<Release> releases, Collection<Character> characters)
+        async Task AddDataToDb(VndbResponse<VisualNovel> visualNovels, Collection<Release> releases, Collection<Character> characters)
         {
             using (SQLiteConnection connection = new SQLiteConnection(Globals.ConnectionString))
             {
@@ -142,7 +157,8 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                         cmd.ExecuteNonQuery();
 
                         #endregion
-
+                        if (_statusBar.ProgressPercentage != null)
+                            _statusBar.ProgressPercentage = Math.Round((double)_statusBar.ProgressPercentage + ProgressIncrement, 1);
                         #region VnInfoLinks
 
                         sql =
@@ -157,7 +173,8 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                         cmd.ExecuteNonQuery();
 
                         #endregion
-
+                        if (_statusBar.ProgressPercentage != null)
+                            _statusBar.ProgressPercentage = Math.Round((double)_statusBar.ProgressPercentage + ProgressIncrement, 1);
                         #region VnAnime
 
                         if (visualNovel.Anime.Count > 0)
@@ -183,7 +200,8 @@ namespace VisualNovelManagerv2.CustomClasses.Database
 
 
                         #endregion
-
+                        if (_statusBar.ProgressPercentage != null)
+                            _statusBar.ProgressPercentage = Math.Round((double)_statusBar.ProgressPercentage + ProgressIncrement, 1);
                         #region VnTags
 
                         IEnumerable<Tag> tagMatches = null;
@@ -213,7 +231,8 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                         }
 
                         #endregion
-
+                        if (_statusBar.ProgressPercentage != null)
+                            _statusBar.ProgressPercentage = Math.Round((double)_statusBar.ProgressPercentage + ProgressIncrement, 1);
                         #region TagData
 
                         if (tagMatches != null)
@@ -236,7 +255,8 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                             }
                         }
                         #endregion
-
+                        if (_statusBar.ProgressPercentage != null)
+                            _statusBar.ProgressPercentage = Math.Round((double)_statusBar.ProgressPercentage + ProgressIncrement, 1);
                         #region VnScreens
 
                         if (visualNovel.Screenshots.Count > 0)
@@ -258,7 +278,8 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                         }
 
                         #endregion
-
+                        if (_statusBar.ProgressPercentage != null)
+                            _statusBar.ProgressPercentage = Math.Round((double)_statusBar.ProgressPercentage + ProgressIncrement, 1);
                         #region VnInfoRelations
 
                         if (visualNovel.Relations.Count > 0)
@@ -281,7 +302,8 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                         }
 
                         #endregion
-
+                        if (_statusBar.ProgressPercentage != null)
+                            _statusBar.ProgressPercentage = Math.Round((double)_statusBar.ProgressPercentage + ProgressIncrement, 1);
                         #region VnInfoStaff
 
                         if (visualNovel.Staff.Count> 0)
@@ -305,11 +327,10 @@ namespace VisualNovelManagerv2.CustomClasses.Database
 
 
                         #endregion
-
+                        if (_statusBar.ProgressPercentage != null)
+                            _statusBar.ProgressPercentage = Math.Round((double)_statusBar.ProgressPercentage + ProgressIncrement, 1);
                     }
-
                     #endregion
-
                     #region VnRelease
 
                     foreach (Release release in releases)
@@ -340,7 +361,8 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                         cmd.ExecuteNonQuery();
 
                         #endregion
-
+                        if (_statusBar.ProgressPercentage != null)
+                            _statusBar.ProgressPercentage = Math.Round((double)_statusBar.ProgressPercentage + ProgressIncrement, 1);
                         #region VnReleaseMedia
 
                         if (release.Media.Count <= 0) continue;
@@ -356,7 +378,8 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                         }
 
                         #endregion
-
+                        if (_statusBar.ProgressPercentage != null)
+                            _statusBar.ProgressPercentage = Math.Round((double)_statusBar.ProgressPercentage + ProgressIncrement, 1);
                         #region VnReleaseVn
 
                         if (release.VisualNovels.Count <= 0) continue;
@@ -374,7 +397,8 @@ namespace VisualNovelManagerv2.CustomClasses.Database
 
 
                         #endregion
-
+                        if (_statusBar.ProgressPercentage != null)
+                            _statusBar.ProgressPercentage = Math.Round((double)_statusBar.ProgressPercentage + ProgressIncrement, 1);
                         #region VnReleaseProducers
 
                         if (release.Producers.Count <= 0) continue;
@@ -394,7 +418,8 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                         }
 
                         #endregion
-
+                        if (_statusBar.ProgressPercentage != null)
+                            _statusBar.ProgressPercentage = Math.Round((double)_statusBar.ProgressPercentage + ProgressIncrement, 1);
                     }
 
                     #endregion
@@ -429,7 +454,8 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                         cmd.ExecuteNonQuery();
 
                         #endregion
-
+                        if (_statusBar.ProgressPercentage != null)
+                            _statusBar.ProgressPercentage = Math.Round((double)_statusBar.ProgressPercentage + ProgressIncrement, 1);
                         #region VnCharacterTraits
 
                         if (character.Traits.Count < 1) break;
@@ -452,7 +478,9 @@ namespace VisualNovelManagerv2.CustomClasses.Database
 
                         }
                         #endregion
-
+                        if (_statusBar.ProgressPercentage != null)
+                            _statusBar.ProgressPercentage = Math.Round((double)_statusBar.ProgressPercentage + ProgressIncrement, 1);
+                        #region TraitMatches
                         if (traitMatches != null)
                         {
                             foreach (Trait trait in traitMatches)
@@ -471,7 +499,9 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                                 cmd.ExecuteNonQuery();
                             }
                         }
-
+                        #endregion
+                        if (_statusBar.ProgressPercentage != null)
+                            _statusBar.ProgressPercentage = Math.Round((double)_statusBar.ProgressPercentage + ProgressIncrement, 1);
                         #region VnCharacterVns
 
                         foreach (VndbSharp.Models.Character.VisualNovelMetadata vn in character.VisualNovels)
@@ -487,6 +517,8 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                             cmd.ExecuteNonQuery();
                         }
                         #endregion
+                        if (_statusBar.ProgressPercentage != null)
+                            _statusBar.ProgressPercentage = Math.Round((double)_statusBar.ProgressPercentage + ProgressIncrement, 1);
                     }
 
 
@@ -506,6 +538,8 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                     cmd.ExecuteNonQuery();
 
                     #endregion
+                    if (_statusBar.ProgressPercentage != null)
+                        _statusBar.ProgressPercentage = Math.Round((double)_statusBar.ProgressPercentage + ProgressIncrement, 1);
 
                     transaction.Commit();
 
@@ -521,13 +555,19 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                 finally
                 {
                     transaction?.Dispose();
+                    if (_statusBar.ProgressPercentage != null)
+                        _statusBar.ProgressPercentage = 100;
+                    await Task.Delay(1500);
+                    _statusBar.ProgressPercentage = null;
+                    _statusBar.IsDbProcessing = false;
+                    _statusBar.IsWorkProcessing = false;
+                    VnMainViewModel.ClearCollectionsCommand.Execute(null);
+                    VnMainViewModel.LoadBindVnDataCommand.Execute(null);
                 }
                 connection.Close();
             }
 
-            Console.WriteLine("done");
-            VnMainViewModel.ClearCollectionsCommand.Execute(null);
-            VnMainViewModel.LoadBindVnDataCommand.Execute(null);
+            
         }
 
         private async Task<IEnumerable<Tag>> GetDetailsFromTagDump(ReadOnlyCollection<TagMetadata> tags)
@@ -536,6 +576,8 @@ namespace VisualNovelManagerv2.CustomClasses.Database
             IEnumerable<Tag> matches = from tagMetadata in tags from tTag in tagDump where tTag.Id == tagMetadata.Id select tTag;
             //the above does these foreach loops, only a LOT faster
             //foreach (var tag in tags){ foreach (var tgTag in tagDump){ if (tgTag.Id == tag.Id){ } } };
+            if (_statusBar.ProgressPercentage != null)
+                _statusBar.ProgressPercentage = Math.Round((double)_statusBar.ProgressPercentage + ProgressIncrement, 1);
             return matches;
         }
 
@@ -546,6 +588,8 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                                          from tTrait in traitDump
                                          where tTrait.Id == traitMetadata.Id
                                          select tTrait;
+            if (_statusBar.ProgressPercentage != null)
+                _statusBar.ProgressPercentage = Math.Round((double)_statusBar.ProgressPercentage + ProgressIncrement, 1);
             return matches;
         }
 

@@ -62,35 +62,27 @@ namespace VisualNovelManagerv2.ViewModel.Global
         #endregion
 
         #region ProgressBarStatus
-        private double _progresssBarStatus;
-        public double ProgressBarStatus
-        {
-            get { return _progresssBarStatus; }
-            set
-            {
-                _progresssBarStatus = value;
-                RaisePropertyChanged(nameof(ProgressBarStatus));
-            }
-        }
+        //private double _progresssBarStatus;
+        //public double ProgressBarStatus
+        //{
+        //    get { return _progresssBarStatus; }
+        //    set
+        //    {
+        //        _progresssBarStatus = value;
+        //        RaisePropertyChanged(nameof(ProgressBarStatus));
+        //    }
+        //}
         #endregion
 
         #region ProgressPercentage
-        private string _progressPercentage;
-        public string ProgressPercentage
+        private double? _progressPercentage;
+        public double? ProgressPercentage
         {
             get { return _progressPercentage; }
             set
             {
-                if (!string.IsNullOrEmpty(value))
-                {
-                    _progressPercentage = $"{value} %";
-                    RaisePropertyChanged(nameof(ProgressPercentage));
-                }
-                else
-                {
-                    _progressPercentage = value;
-                    RaisePropertyChanged(nameof(ProgressPercentage));
-                }
+                _progressPercentage = value;
+                RaisePropertyChanged(nameof(ProgressPercentage));
             }
         }
         #endregion
