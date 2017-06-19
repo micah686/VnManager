@@ -26,7 +26,7 @@
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Column="0" Margin="0,5,0,0">Processing</TextBlock>
                     <Image x:Name="key" Grid.Column="1" MaxHeight="17" MaxWidth="19" Source="D:\Documents\Visual Studio 2017\Projects\Testing Projects\Visual-Novel-Manager-v2\VisualNovelManagerv2\Resources\appbar.key.png"></Image>
-                    <Image Grid.Column="2" x:Name="SqlImg" Source="{Binding DatabaseImage}" MaxHeight="17" MaxWidth="19" Margin="10,0,10,0" Visibility="{Binding IsDbProcessing, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Image Grid.Column="2" x:Name="DatabaseImage" Source="{Binding DatabaseImage}" Width="17" MaxHeight="17" MaxWidth="19" Margin="10,0,10,0" Visibility="{Binding IsDbProcessing, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <Image.Style>
                             <Style>
                                 <Style.Triggers>
@@ -44,11 +44,8 @@
                             </Style>
                         </Image.Style>
                     </Image>
-                    <Image Grid.Column="3" MaxHeight="18" MaxWidth="18" Source="{Binding ProgressStatus}" Margin="10,0,10,0"/>
-                    <Grid Grid.Column="4" Margin="10,0,10,0">
-                        <!--<ProgressBar x:Name="ProgStatus" Width="125" Height="17" Minimum="0" Maximum="1" Value="{Binding ProgressBarStatus}" IsIndeterminate="False" />-->
-                        <Label  Content="{Binding Path=ProgressPercentage}" HorizontalAlignment="Center" VerticalAlignment="Center" ContentStringFormat="{}{0}%"/>
-                    </Grid>
+                    <Image x:Name="ProgressStatus" Grid.Column="3" MaxHeight="18" MaxWidth="18" Source="{Binding ProgressStatus}" Margin="10,0,10,0"/>
+                    <Label x:Name="ProgressPercent" Grid.Column="4" Margin="10,0,10,0" Content="{Binding Path=ProgressPercentage}" HorizontalAlignment="Center" VerticalAlignment="Center" ContentStringFormat="{}{0}%" Width="45"/>
                     <mui:ModernProgressRing Grid.Column="6" IsActive="{Binding IsWorkProcessing}" />
 
 

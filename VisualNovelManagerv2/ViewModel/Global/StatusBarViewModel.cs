@@ -36,7 +36,8 @@ namespace VisualNovelManagerv2.ViewModel.Global
         #endregion
 
         #region ProgressStatus
-        private static BitmapImage _progressStatus = new BitmapImage(new Uri($@"{Globals.DirectoryPath}\Data\res\icons\statusbar\ok.png"));
+
+        private static BitmapImage _progressStatus;
         public BitmapImage ProgressStatus
         {
             get { return _progressStatus; }
@@ -61,19 +62,6 @@ namespace VisualNovelManagerv2.ViewModel.Global
         }
         #endregion
 
-        #region ProgressBarStatus
-        //private double _progresssBarStatus;
-        //public double ProgressBarStatus
-        //{
-        //    get { return _progresssBarStatus; }
-        //    set
-        //    {
-        //        _progresssBarStatus = value;
-        //        RaisePropertyChanged(nameof(ProgressBarStatus));
-        //    }
-        //}
-        #endregion
-
         #region ProgressPercentage
         private double? _progressPercentage;
         public double? ProgressPercentage
@@ -81,8 +69,17 @@ namespace VisualNovelManagerv2.ViewModel.Global
             get { return _progressPercentage; }
             set
             {
-                _progressPercentage = value;
-                RaisePropertyChanged(nameof(ProgressPercentage));
+                if (value != null)
+                {
+                    value = Math.Round((double)value, 0);
+                    _progressPercentage = value;
+                    RaisePropertyChanged(nameof(ProgressPercentage));
+                }
+                else
+                {
+                    _progressPercentage = null;
+                    RaisePropertyChanged(nameof(ProgressPercentage));
+                }                                
             }
         }
         #endregion

@@ -70,6 +70,7 @@ namespace VisualNovelManagerv2.Pages
             vm1.ProgressPercentage = 55.3;
             var test = vm1.ProgressPercentage;
 
+            var test2 = MeasureStringSize.GetMaxStringWidth("100%");
 
         }
     }
