@@ -84,6 +84,19 @@ namespace VisualNovelManagerv2.ViewModel.Global
         }
         #endregion
 
+        #region ProgressText
+        private string _progressText;
+        public string ProgressText
+        {
+            get { return _progressText; }
+            set
+            {
+                _progressText = value;
+                RaisePropertyChanged(nameof(ProgressText));
+            }
+        }
+        #endregion
+
         #region Message
         private string _message;
         public string Message

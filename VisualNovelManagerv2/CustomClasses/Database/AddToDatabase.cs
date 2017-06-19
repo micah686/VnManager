@@ -57,6 +57,7 @@ namespace VisualNovelManagerv2.CustomClasses.Database
             _statusBar.ProgressPercentage = 0;
             _statusBar.IsDbProcessing = true;
             _statusBar.IsWorkProcessing = true;
+            _statusBar.ProgressText = "Processing";
             using (Vndb client = new Vndb(true).WithClientDetails(Globals.ClientInfo[0], Globals.ClientInfo[1]))
             {
                 try
@@ -145,8 +146,9 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                 }
                 catch (Exception ex)
                 {
-                    _statusBar.ProgressStatus = new BitmapImage(new Uri($@"{Globals.DirectoryPath}\Data\res\icons\statusbar\error.png"));
                     DebugLogging.WriteDebugLog(ex);
+                    _statusBar.ProgressStatus = new BitmapImage(new Uri($@"{Globals.DirectoryPath}\Data\res\icons\statusbar\error.png"));
+                    _statusBar.ProgressText = "An Error Occured! Check log for details";                    
                     throw;
                 }
                 finally
@@ -154,11 +156,13 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                     if (_statusBar.ProgressPercentage != null)
                         _statusBar.ProgressPercentage = 100;
                     _statusBar.ProgressStatus = new BitmapImage(new Uri($@"{Globals.DirectoryPath}\Data\res\icons\statusbar\ok.png"));
+                    _statusBar.ProgressText = "Done";
                     await Task.Delay(1500);
                     _statusBar.ProgressStatus = null;
                     _statusBar.ProgressPercentage = null;
                     _statusBar.IsDbProcessing = false;
                     _statusBar.IsWorkProcessing = false;
+                    _statusBar.ProgressText = string.Empty;
                     VnMainViewModel.ClearCollectionsCommand.Execute(null);
                     VnMainViewModel.LoadBindVnDataCommand.Execute(null);
                 }

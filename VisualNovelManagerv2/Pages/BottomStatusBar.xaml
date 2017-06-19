@@ -24,9 +24,10 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" Margin="0,5,0,0">Processing</TextBlock>
+                    <TextBlock Grid.Column="0" Margin="0,5,0,0" Text="{Binding Message}"/>
                     <Image x:Name="key" Grid.Column="1" MaxHeight="17" MaxWidth="19" Source="D:\Documents\Visual Studio 2017\Projects\Testing Projects\Visual-Novel-Manager-v2\VisualNovelManagerv2\Resources\appbar.key.png"></Image>
-                    <Image Grid.Column="2" x:Name="DatabaseImage" Source="{Binding DatabaseImage}" Width="17" MaxHeight="17" MaxWidth="19" Margin="10,0,10,0" Visibility="{Binding IsDbProcessing, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Label x:Name="CurrentStatusText" Grid.Column="2" Margin="10,0,10,0" Content="{Binding ProgressText}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <Image Grid.Column="3" x:Name="DatabaseImage" Source="{Binding DatabaseImage}" Width="17" MaxHeight="17" MaxWidth="19" Margin="10,0,10,0" Visibility="{Binding IsDbProcessing, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <Image.Style>
                             <Style>
                                 <Style.Triggers>
@@ -44,8 +45,8 @@
                             </Style>
                         </Image.Style>
                     </Image>
-                    <Image x:Name="ProgressStatus" Grid.Column="3" MaxHeight="18" MaxWidth="18" Source="{Binding ProgressStatus}" Margin="10,0,10,0"/>
-                    <Label x:Name="ProgressPercent" Grid.Column="4" Margin="10,0,10,0" Content="{Binding Path=ProgressPercentage}" HorizontalAlignment="Center" VerticalAlignment="Center" ContentStringFormat="{}{0}%" Width="45"/>
+                    <Image x:Name="ProgressStatus" Grid.Column="4" MaxHeight="18" MaxWidth="18" Source="{Binding ProgressStatus}" Margin="10,0,10,0"/>
+                    <Label x:Name="ProgressPercent" Grid.Column="5" Margin="10,0,10,0" Content="{Binding Path=ProgressPercentage}" HorizontalAlignment="Center" VerticalAlignment="Center" ContentStringFormat="{}{0}%" Width="45"/>
                     <mui:ModernProgressRing Grid.Column="6" IsActive="{Binding IsWorkProcessing}" />
 
 

@@ -44,23 +44,6 @@ namespace VisualNovelManagerv2.Pages
 
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
-
-            VndbSharp.Models.Common.SimpleDate sd = new SimpleDate();
-            byte mon = 3;
-            byte day = 7;
-            sd.Month = 3;
-            string test = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(13);
-            Console.WriteLine(CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(mon));
-
-            sd.Month = null;
-            sd.Day = day;
-            Console.WriteLine(sd.ToString());
-        }
-
-
-        private void Button_Click_1(object sender, RoutedEventArgs e)
-        {
-
             BitmapImage bi = new BitmapImage(new Uri($@"{Globals.DirectoryPath}\Data\res\icons\statusbar\error.png"));
             StatusBarViewModel vm1 = (new ViewModelLocator()).StatusBar;
             vm1.IsDbProcessing = true;
@@ -71,7 +54,15 @@ namespace VisualNovelManagerv2.Pages
             var test = vm1.ProgressPercentage;
 
             var test2 = MeasureStringSize.GetMaxStringWidth("100%");
+            vm1.ProgressText = "Processing";
 
+        }
+
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+
+            
         }
     }
 }
