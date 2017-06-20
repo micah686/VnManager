@@ -55,6 +55,8 @@ namespace VisualNovelManagerv2.Pages
 
             var test2 = MeasureStringSize.GetMaxStringWidth("100%");
             vm1.ProgressText = "Processing";
+            vm1.IsDownloading = true;
+            vm1.IsUploading = true;
 
         }
 

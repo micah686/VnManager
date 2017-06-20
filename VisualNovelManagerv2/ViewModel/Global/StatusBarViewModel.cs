@@ -18,8 +18,10 @@ namespace VisualNovelManagerv2.ViewModel.Global
     {
         public StatusBarViewModel() { }
 
-        #region DatabaseImage
+        #region StaticImages
         public BitmapImage DatabaseImage => new BitmapImage(new Uri($@"{Globals.DirectoryPath}\Data\res\icons\statusbar\database.png"));
+        public BitmapImage DownloadingImage => new BitmapImage(new Uri($@"{Globals.DirectoryPath}\Data\res\icons\statusbar\download.png"));
+        public BitmapImage UploadingImage => new BitmapImage(new Uri($@"{Globals.DirectoryPath}\Data\res\icons\statusbar\upload.png"));
         #endregion
 
         #region IsDatabaseProcessing
@@ -31,6 +33,32 @@ namespace VisualNovelManagerv2.ViewModel.Global
             {
                 _isDbProcessing = value;
                 RaisePropertyChanged(nameof(IsDbProcessing));
+            }
+        }
+        #endregion
+
+        #region IsUploading
+        private bool _isUploading;
+        public bool IsUploading
+        {
+            get { return _isUploading; }
+            set
+            {
+                _isUploading = value;
+                RaisePropertyChanged(nameof(IsUploading));
+            }
+        }
+        #endregion
+
+        #region IsDownloading
+        private bool _isDownloading;
+        public bool IsDownloading
+        {
+            get { return _isDownloading; }
+            set
+            {
+                _isDownloading = value;
+                RaisePropertyChanged(nameof(IsDownloading));
             }
         }
         #endregion
