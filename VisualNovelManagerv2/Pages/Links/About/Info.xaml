@@ -12,6 +12,20 @@
             <Label Content="Author: Micah King"/>
             <Label Content="Copyright 2017"/>
             <Label Content="Licensed under MIT License"/>
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                <Image x:Name="Github" Margin="0,0,10,0" Height="18" Width="18"/>
+                <TextBlock>
+                    <Hyperlink NavigateUri="https://github.com/micah686/Visual-Novel-Manager-v2" RequestNavigate="Hyperlink_OnRequestNavigate">https://github.com/micah686/Visual-Novel-Manager-v2</Hyperlink>
+                </TextBlock>
+            </StackPanel>
+            
+            <StackPanel Orientation="Horizontal">
+                <Image x:Name="CSharp" Margin="0,0,5,0" Height="18" Width="18"/>
+                <Image x:Name="Xaml" Margin="0,0,5,0" Height="18" Width="18"/>
+                <Image x:Name="VisualStudio" Margin="0,0,5,0" Height="18" Width="18"/>
+            </StackPanel>
+            
+            
         </StackPanel>
     </Grid>
 </UserControl>

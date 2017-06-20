@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,6 +24,16 @@ namespace VisualNovelManagerv2.Pages.Links.About
         public Info()
         {
             InitializeComponent();
+            Github.Source = new BitmapImage(new Uri($@"{Globals.DirectoryPath}\Data\res\icons\assorted\github.png"));
+            CSharp.Source = new BitmapImage(new Uri($@"{Globals.DirectoryPath}\Data\res\icons\assorted\csharp.png"));
+            Xaml.Source = new BitmapImage(new Uri($@"{Globals.DirectoryPath}\Data\res\icons\assorted\xaml.png"));
+            VisualStudio.Source = new BitmapImage(new Uri($@"{Globals.DirectoryPath}\Data\res\icons\assorted\visualstudio.png"));
+        }
+
+        private void Hyperlink_OnRequestNavigate(object sender, RequestNavigateEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
+            e.Handled = true;
         }
     }
 }
