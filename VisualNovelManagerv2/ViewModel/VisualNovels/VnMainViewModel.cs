@@ -565,15 +565,16 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
         private async Task TESTME(DataSet dataSet)
         {
+
+            double ProgressIncrement = 11.11111111111111;
+            _statusBar.ProgressPercentage = 0;
+            _statusBar.IsWorkProcessing = true;
+            _statusBar.ProgressText = "Loading Main Data";
             try
             {
-                double ProgressIncrement = 12.5;
-                _statusBar.ProgressPercentage = 0;
-                _statusBar.IsWorkProcessing = true;
-                _statusBar.ProgressText = "Loading Main Data";
-
-                #region Working
                 object[] vninfo = dataSet.Tables[0].Rows[0].ItemArray;
+
+                #region Collections
                 DataTable dataTable = new DataTable();
                 dataTable = dataSet.Tables["VnInfoRelations"];
                 foreach (DataRow row in dataTable.Rows)
@@ -628,43 +629,51 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 if (_statusBar.ProgressPercentage != null)
                     _statusBar.ProgressPercentage = (double)_statusBar.ProgressPercentage + ProgressIncrement;
 
-                await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Name = vninfo[2].ToString())));
-                await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.VnIcon = LoadIcon())));
-                if (_statusBar.ProgressPercentage != null)
-                    _statusBar.ProgressPercentage = (double)_statusBar.ProgressPercentage + ProgressIncrement;
-
-                await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Original = vninfo[3].ToString())));
-                await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Released = vninfo[4].ToString())));
                 IEnumerable<string> languages = GetLangauges(vninfo[5].ToString());
                 foreach (string language in languages)
                 {
-                    await Application.Current.Dispatcher.BeginInvoke(new Action(() => LanguageCollection.Add(new LanguagesCollection { VnMainModel = new VnMainModel { Languages = new BitmapImage(new Uri(language)) } })));
+                    await Application.Current.Dispatcher.BeginInvoke(new Action(() => LanguageCollection.Add(new LanguagesCollection
+                        { VnMainModel = new VnMainModel { Languages = new BitmapImage(new Uri(language)) } })));
                 }
                 if (_statusBar.ProgressPercentage != null)
                     _statusBar.ProgressPercentage = (double)_statusBar.ProgressPercentage + ProgressIncrement;
-
 
                 IEnumerable<string> origLanguages = GetLangauges(vninfo[6].ToString());
                 foreach (string language in origLanguages)
                 {
-                    await Application.Current.Dispatcher.BeginInvoke(new Action(() => OriginalLanguagesCollection.Add(new OriginalLanguagesCollection { VnMainModel = new VnMainModel { OriginalLanguages = new BitmapImage(new Uri(language)) } })));
+                    await Application.Current.Dispatcher.BeginInvoke(new Action(() => OriginalLanguagesCollection.Add(new OriginalLanguagesCollection
+                        { VnMainModel = new VnMainModel { OriginalLanguages = new BitmapImage(new Uri(language)) } })));
                 }
                 if (_statusBar.ProgressPercentage != null)
                     _statusBar.ProgressPercentage = (double)_statusBar.ProgressPercentage + ProgressIncrement;
 
-                await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Platforms = vninfo[7].ToString())));
-                await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Aliases = vninfo[8].ToString())));
-                await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Length = vninfo[9].ToString())));
+                #endregion
+                
+                #region ComplexBinding
+                await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.VnIcon = LoadIcon())));
+                if (_statusBar.ProgressPercentage != null)
+                    _statusBar.ProgressPercentage = (double)_statusBar.ProgressPercentage + ProgressIncrement;
+
                 await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Description = ConvertRichTextDocument.ConvertToFlowDocument(vninfo[10].ToString()))));
                 if (_statusBar.ProgressPercentage != null)
                     _statusBar.ProgressPercentage = (double)_statusBar.ProgressPercentage + ProgressIncrement;
 
-                await Application.Current.Dispatcher.BeginInvoke(new Action((() => DownloadCoverImage(vninfo[11].ToString(), Convert.ToBoolean(vninfo[12])))));
+                //await Application.Current.Dispatcher.BeginInvoke(new Action((() => DownloadCoverImage(vninfo[11].ToString(), Convert.ToBoolean(vninfo[12])))));
+                DownloadCoverImage(vninfo[11].ToString(), Convert.ToBoolean(vninfo[12]));
+                #endregion
+
+                #region TextBinding
+                await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Name = vninfo[2].ToString())));
+                await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Original = vninfo[3].ToString())));
+                await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Released = vninfo[4].ToString())));
+                await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Platforms = vninfo[7].ToString())));
+                await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Aliases = vninfo[8].ToString())));
+                await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Length = vninfo[9].ToString())));
                 await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Popularity = Math.Round(Convert.ToDouble(vninfo[13]), 2))));
                 await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Rating = Convert.ToInt32(vninfo[14]))));
+                #endregion
 
                 #region UserData Bind
-                dataTable = dataSet.Tables["VnUserData"];
                 object[] vnuserdata = dataSet.Tables[7].Rows[0].ItemArray;
 
                 if (vnuserdata[4].ToString() == "")
@@ -717,9 +726,9 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 #endregion
                 if (_statusBar.ProgressPercentage != null)
                     _statusBar.ProgressPercentage = (double)_statusBar.ProgressPercentage + ProgressIncrement;
-                #endregion
 
 
+                
 
 
                 //await Application.Current.Dispatcher.BeginInvoke(new Action((() => )));
