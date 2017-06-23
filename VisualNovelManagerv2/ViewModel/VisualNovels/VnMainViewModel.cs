@@ -366,7 +366,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                     connection.Close();
                 }
                 //BindVnData(dataSet);
-                await Task.Run((() => BindVnData(dataSet)));
+                await Task.Run((() => TESTME(dataSet)));
             }
             catch (SQLiteException ex)
             {
@@ -565,23 +565,191 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
         private async Task TESTME(DataSet dataSet)
         {
-            object[] vninfo = dataSet.Tables[0].Rows[0].ItemArray;
-            _statusBar.ProgressPercentage = 0;
-            _statusBar.IsDbProcessing = true;
-            _statusBar.IsWorkProcessing = true;
-            double ProgressIncrement = 2.465646;
-            DataTable dataTable = new DataTable();
-            dataTable = dataSet.Tables["VnInfoRelations"];
-            foreach (DataRow row in dataTable.Rows)
+            try
             {
-                Application.Current.Dispatcher.BeginInvoke(new Action(() => this.VnInfoRelation.Add(new VnInfoRelation { Title = row["Title"].ToString(), Original = row["Original"].ToString(), Relation = row["Relation"].ToString(), Official = row["Official"].ToString() })));
-                //_vnInfoRelation.Add(new VnInfoRelation { Title = row["Title"].ToString(), Original = row["Original"].ToString(), Relation = row["Relation"].ToString(), Official = row["Official"].ToString() });
+                double ProgressIncrement = 12.5;
+                _statusBar.ProgressPercentage = 0;
+                _statusBar.IsWorkProcessing = true;
+                _statusBar.ProgressText = "Loading Main Data";
+
+                #region Working
+                object[] vninfo = dataSet.Tables[0].Rows[0].ItemArray;
+                DataTable dataTable = new DataTable();
+                dataTable = dataSet.Tables["VnInfoRelations"];
+                foreach (DataRow row in dataTable.Rows)
+                {
+                    await Application.Current.Dispatcher.BeginInvoke(new Action(() => this.VnInfoRelation.Add(
+                        new VnInfoRelation
+                        {
+                            Title = row["Title"].ToString(),
+                            Original = row["Original"].ToString(),
+                            Relation = row["Relation"].ToString(),
+                            Official = row["Official"].ToString()
+                        })));
+                }
                 if (_statusBar.ProgressPercentage != null)
                     _statusBar.ProgressPercentage = (double)_statusBar.ProgressPercentage + ProgressIncrement;
-                Thread.Sleep(500);
+
+                dataTable = dataSet.Tables["VnInfoTags"];
+                foreach (DataRow row in dataTable.Rows)
+                {
+                    await Application.Current.Dispatcher.BeginInvoke(
+                        new Action(() => VnInfoTagCollection.Add(row["TagName"].ToString())));
+                }
+                if (_statusBar.ProgressPercentage != null)
+                    _statusBar.ProgressPercentage = (double)_statusBar.ProgressPercentage + ProgressIncrement;
+
+                dataTable = dataSet.Tables["VnInfoAnime"];
+                foreach (DataRow row in dataTable.Rows)
+                {
+                    object row2 = row.ItemArray[2];
+                    object row3 = row.ItemArray[3];
+                    string anidb = null;
+                    string ann = null;
+                    if (row2 != null)
+                    {
+                        anidb = $"anidb.net/a{row.ItemArray[2].ToString()}";
+                    }
+                    if (row3 != null)
+                    {
+                        ann = $"animenewsnetwork.com/encyclopedia/anime.php?id={row.ItemArray[2].ToString()}";
+                    }
+                    //TODO: AnimeNFo not added because of inconsistant url naming scheme
+                    await Application.Current.Dispatcher.BeginInvoke(new Action(() => VnInfoAnimeCollection.Add(new VnInfoAnime
+                    {
+                        Title = row["TitleEng"].ToString(),
+                        OriginalName = row["TitleJpn"].ToString(),
+                        Year = row["Year"].ToString(),
+                        AnimeType = row["AnimeType"].ToString(),
+                        AniDb = anidb,
+                        Ann = ann
+                    })));
+                }
+                if (_statusBar.ProgressPercentage != null)
+                    _statusBar.ProgressPercentage = (double)_statusBar.ProgressPercentage + ProgressIncrement;
+
+                await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Name = vninfo[2].ToString())));
+                await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.VnIcon = LoadIcon())));
+                if (_statusBar.ProgressPercentage != null)
+                    _statusBar.ProgressPercentage = (double)_statusBar.ProgressPercentage + ProgressIncrement;
+
+                await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Original = vninfo[3].ToString())));
+                await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Released = vninfo[4].ToString())));
+                IEnumerable<string> languages = GetLangauges(vninfo[5].ToString());
+                foreach (string language in languages)
+                {
+                    await Application.Current.Dispatcher.BeginInvoke(new Action(() => LanguageCollection.Add(new LanguagesCollection { VnMainModel = new VnMainModel { Languages = new BitmapImage(new Uri(language)) } })));
+                }
+                if (_statusBar.ProgressPercentage != null)
+                    _statusBar.ProgressPercentage = (double)_statusBar.ProgressPercentage + ProgressIncrement;
+
+
+                IEnumerable<string> origLanguages = GetLangauges(vninfo[6].ToString());
+                foreach (string language in origLanguages)
+                {
+                    await Application.Current.Dispatcher.BeginInvoke(new Action(() => OriginalLanguagesCollection.Add(new OriginalLanguagesCollection { VnMainModel = new VnMainModel { OriginalLanguages = new BitmapImage(new Uri(language)) } })));
+                }
+                if (_statusBar.ProgressPercentage != null)
+                    _statusBar.ProgressPercentage = (double)_statusBar.ProgressPercentage + ProgressIncrement;
+
+                await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Platforms = vninfo[7].ToString())));
+                await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Aliases = vninfo[8].ToString())));
+                await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Length = vninfo[9].ToString())));
+                await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Description = ConvertRichTextDocument.ConvertToFlowDocument(vninfo[10].ToString()))));
+                if (_statusBar.ProgressPercentage != null)
+                    _statusBar.ProgressPercentage = (double)_statusBar.ProgressPercentage + ProgressIncrement;
+
+                await Application.Current.Dispatcher.BeginInvoke(new Action((() => DownloadCoverImage(vninfo[11].ToString(), Convert.ToBoolean(vninfo[12])))));
+                await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Popularity = Math.Round(Convert.ToDouble(vninfo[13]), 2))));
+                await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Rating = Convert.ToInt32(vninfo[14]))));
+
+                #region UserData Bind
+                dataTable = dataSet.Tables["VnUserData"];
+                object[] vnuserdata = dataSet.Tables[7].Rows[0].ItemArray;
+
+                if (vnuserdata[4].ToString() == "")
+                {
+                    await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.LastPlayed = "Never")));
+                }
+                else
+                {
+                    if ((Convert.ToDateTime(vnuserdata[4]) - DateTime.Today).Days > -7)//need to set to negative, for the difference in days
+                    {
+                        if (Convert.ToDateTime(vnuserdata[4]) == DateTime.Today)
+                        {
+                            await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.LastPlayed = "Today")));
+                        }
+                        else if ((Convert.ToDateTime(vnuserdata[4]) - DateTime.Today).Days > -2 && (Convert.ToDateTime(vnuserdata[4]) - DateTime.Today).Days < 0)
+                        {
+                            await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.LastPlayed = "Yesterday")));
+                        }
+                        else
+                        {
+                            await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.LastPlayed = Convert.ToDateTime(vnuserdata[4]).DayOfWeek.ToString())));
+                        }
+                    }
+                    else
+                    {
+                        await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.LastPlayed = vnuserdata[4].ToString())));
+                    }
+                }
+
+                string[] splitPlayTime = vnuserdata[5].ToString().Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                List<int> timeList = new List<int>(4);
+                timeList.AddRange(splitPlayTime.Select(time => Convert.ToInt32(time)));
+                TimeSpan timeSpan = new TimeSpan(timeList[0], timeList[1], timeList[2], timeList[3]);
+
+                if (timeSpan < new TimeSpan(0, 0, 0, 1))
+                {
+                    await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.PlayTime = "Never")));
+                }
+                if (timeSpan < new TimeSpan(0, 0, 0, 60))
+                {
+                    await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.PlayTime = "Less than 1 minute")));
+                }
+                else
+                {
+                    string formatted = $"{(timeSpan.Duration().Days > 0 ? $"{timeSpan.Days:0} day{(timeSpan.Days == 1 ? string.Empty : "s")}, " : string.Empty)}" +
+                                       $"{(timeSpan.Duration().Hours > 0 ? $"{timeSpan.Hours:0} hour{(timeSpan.Hours == 1 ? string.Empty : "s")}, " : string.Empty)}" +
+                                       $"{(timeSpan.Duration().Minutes > 0 ? $"{timeSpan.Minutes:0} minute{(timeSpan.Minutes == 1 ? string.Empty : "s")} " : string.Empty)}";
+                    await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.PlayTime = formatted)));
+                }
+                #endregion
+                if (_statusBar.ProgressPercentage != null)
+                    _statusBar.ProgressPercentage = (double)_statusBar.ProgressPercentage + ProgressIncrement;
+                #endregion
+
+
+
+
+                //await Application.Current.Dispatcher.BeginInvoke(new Action((() => )));
+
+
+
+
+
+
             }
-            //_vnInfoRelation.Add(new VnInfoRelation { Title = row["Title"].ToString(), Original = row["Original"].ToString(), Relation = row["Relation"].ToString(), Official = row["Official"].ToString() });
-            Console.WriteLine("Done");
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+            finally
+            {
+                if (_statusBar.ProgressPercentage != null)
+                    _statusBar.ProgressPercentage = 100;
+                await Application.Current.Dispatcher.BeginInvoke(new Action((() => _statusBar.ProgressStatus =
+                    new BitmapImage(new Uri($@"{Globals.DirectoryPath}\Data\res\icons\statusbar\ok.png")))));
+                _statusBar.ProgressText = "Done";
+                await Task.Delay(1500);
+                _statusBar.ProgressStatus = null;
+                _statusBar.ProgressPercentage = null;
+                _statusBar.IsDbProcessing = false;
+                _statusBar.IsWorkProcessing = false;
+                _statusBar.ProgressText = string.Empty;
+            }
+
             
         }
 
