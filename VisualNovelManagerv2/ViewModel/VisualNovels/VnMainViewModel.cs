@@ -382,28 +382,36 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
         private async Task BindVnData(DataSet dataSet)
         {
+            double ProgressIncrement = 11.11111111111111;
+            _statusBar.ProgressPercentage = 0;
+            _statusBar.IsWorkProcessing = true;
+            _statusBar.ProgressText = "Loading Main Data";
             try
             {
-                double ProgressIncrement = 12.5;
-                _statusBar.ProgressPercentage = 0;
-                _statusBar.IsWorkProcessing = true;
-                _statusBar.ProgressText = "Loading Main Data";
                 object[] vninfo = dataSet.Tables[0].Rows[0].ItemArray;
+
+                #region Collections
                 DataTable dataTable = new DataTable();
                 dataTable = dataSet.Tables["VnInfoRelations"];
                 foreach (DataRow row in dataTable.Rows)
                 {
-                    await Application.Current.Dispatcher.BeginInvoke(new Action(() => VnInfoRelation.Add(new VnInfoRelation
-                    { Title = row["Title"].ToString(), Original = row["Original"].ToString(), Relation = row["Relation"].ToString(), Official = row["Official"].ToString() })));
-                    
+                    await Application.Current.Dispatcher.BeginInvoke(new Action(() => this.VnInfoRelation.Add(
+                        new VnInfoRelation
+                        {
+                            Title = row["Title"].ToString(),
+                            Original = row["Original"].ToString(),
+                            Relation = row["Relation"].ToString(),
+                            Official = row["Official"].ToString()
+                        })));
                 }
                 if (_statusBar.ProgressPercentage != null)
                     _statusBar.ProgressPercentage = (double)_statusBar.ProgressPercentage + ProgressIncrement;
-                
+
                 dataTable = dataSet.Tables["VnInfoTags"];
                 foreach (DataRow row in dataTable.Rows)
                 {
-                    await Application.Current.Dispatcher.BeginInvoke(new Action(() => VnInfoTagCollection.Add(row["TagName"].ToString())));
+                    await Application.Current.Dispatcher.BeginInvoke(
+                        new Action(() => VnInfoTagCollection.Add(row["TagName"].ToString())));
                 }
                 if (_statusBar.ProgressPercentage != null)
                     _statusBar.ProgressPercentage = (double)_statusBar.ProgressPercentage + ProgressIncrement;
@@ -423,6 +431,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                     {
                         ann = $"animenewsnetwork.com/encyclopedia/anime.php?id={row.ItemArray[2].ToString()}";
                     }
+                    //TODO: AnimeNFo not added because of inconsistant url naming scheme
                     await Application.Current.Dispatcher.BeginInvoke(new Action(() => VnInfoAnimeCollection.Add(new VnInfoAnime
                     {
                         Title = row["TitleEng"].ToString(),
@@ -432,32 +441,15 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                         AniDb = anidb,
                         Ann = ann
                     })));
-                    //_vnAnimeCollection.Add(new VnInfoAnime
-                    //{
-                    //    Title = row["TitleEng"].ToString(),
-                    //    OriginalName = row["TitleJpn"].ToString(),
-                    //    Year = row["Year"].ToString(),
-                    //    AnimeType = row["AnimeType"].ToString(),
-                    //    AniDb = anidb,
-                    //    Ann = ann
-                    //});
                 }
                 if (_statusBar.ProgressPercentage != null)
                     _statusBar.ProgressPercentage = (double)_statusBar.ProgressPercentage + ProgressIncrement;
-                
-                VnMainModel.Name = vninfo[2].ToString();
-                //VnMainModel.VnIcon = LoadIcon();
-                if (_statusBar.ProgressPercentage != null)
-                    _statusBar.ProgressPercentage = (double)_statusBar.ProgressPercentage + ProgressIncrement;
 
-                VnMainModel.Original = vninfo[3].ToString();
-                VnMainModel.Released = vninfo[4].ToString();
-                
                 IEnumerable<string> languages = GetLangauges(vninfo[5].ToString());
                 foreach (string language in languages)
                 {
-                    await Application.Current.Dispatcher.BeginInvoke(new Action(() => LanguageCollection.Add(new LanguagesCollection { VnMainModel = new VnMainModel { Languages = new BitmapImage(new Uri(language)) } })));
-                    //_languageCollection.Add(new LanguagesCollection { VnMainModel = new VnMainModel { Languages = new BitmapImage(new Uri(language)) } });
+                    await Application.Current.Dispatcher.BeginInvoke(new Action(() => LanguageCollection.Add(new LanguagesCollection
+                        { VnMainModel = new VnMainModel { Languages = new BitmapImage(new Uri(language)) } })));
                 }
                 if (_statusBar.ProgressPercentage != null)
                     _statusBar.ProgressPercentage = (double)_statusBar.ProgressPercentage + ProgressIncrement;
@@ -465,30 +457,44 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 IEnumerable<string> origLanguages = GetLangauges(vninfo[6].ToString());
                 foreach (string language in origLanguages)
                 {
-                    await Application.Current.Dispatcher.BeginInvoke(new Action(() => OriginalLanguagesCollection.Add(new OriginalLanguagesCollection { VnMainModel = new VnMainModel { OriginalLanguages = new BitmapImage(new Uri(language)) } })));
-                    //_originalLanguagesCollection.Add(new OriginalLanguagesCollection { VnMainModel = new VnMainModel { OriginalLanguages = new BitmapImage(new Uri(language)) } });
+                    await Application.Current.Dispatcher.BeginInvoke(new Action(() => OriginalLanguagesCollection.Add(new OriginalLanguagesCollection
+                        { VnMainModel = new VnMainModel { OriginalLanguages = new BitmapImage(new Uri(language)) } })));
                 }
                 if (_statusBar.ProgressPercentage != null)
                     _statusBar.ProgressPercentage = (double)_statusBar.ProgressPercentage + ProgressIncrement;
 
-                VnMainModel.Platforms = vninfo[7].ToString();
-                VnMainModel.Aliases = vninfo[8].ToString();
-                VnMainModel.Length = vninfo[9].ToString();
-                VnMainModel.Description = ConvertRichTextDocument.ConvertToFlowDocument(vninfo[10].ToString());
+                #endregion
+
+                #region ComplexBinding
+                await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.VnIcon = LoadIcon())));
                 if (_statusBar.ProgressPercentage != null)
                     _statusBar.ProgressPercentage = (double)_statusBar.ProgressPercentage + ProgressIncrement;
 
-                DownloadCoverImage(vninfo[11].ToString(), Convert.ToBoolean(vninfo[12]));
-                VnMainModel.Popularity = Math.Round(Convert.ToDouble(vninfo[13]), 2);
-                VnMainModel.Rating = Convert.ToInt32(vninfo[14]);
+                await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Description = ConvertRichTextDocument.ConvertToFlowDocument(vninfo[10].ToString()))));
+                if (_statusBar.ProgressPercentage != null)
+                    _statusBar.ProgressPercentage = (double)_statusBar.ProgressPercentage + ProgressIncrement;
+
+                await Application.Current.Dispatcher.BeginInvoke(new Action((() => DownloadCoverImage(vninfo[11].ToString(), Convert.ToBoolean(vninfo[12])))));
+                //DownloadCoverImage(vninfo[11].ToString(), Convert.ToBoolean(vninfo[12]));
+                #endregion
+
+                #region TextBinding
+                await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Name = vninfo[2].ToString())));
+                await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Original = vninfo[3].ToString())));
+                await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Released = vninfo[4].ToString())));
+                await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Platforms = vninfo[7].ToString())));
+                await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Aliases = vninfo[8].ToString())));
+                await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Length = vninfo[9].ToString())));
+                await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Popularity = Math.Round(Convert.ToDouble(vninfo[13]), 2))));
+                await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Rating = Convert.ToInt32(vninfo[14]))));
+                #endregion
 
                 #region UserData Bind
-                dataTable = dataSet.Tables["VnUserData"];
                 object[] vnuserdata = dataSet.Tables[7].Rows[0].ItemArray;
 
                 if (vnuserdata[4].ToString() == "")
                 {
-                    VnMainModel.LastPlayed = "Never";
+                    await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.LastPlayed = "Never")));
                 }
                 else
                 {
@@ -496,20 +502,20 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                     {
                         if (Convert.ToDateTime(vnuserdata[4]) == DateTime.Today)
                         {
-                            VnMainModel.LastPlayed = "Today";
+                            await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.LastPlayed = "Today")));
                         }
                         else if ((Convert.ToDateTime(vnuserdata[4]) - DateTime.Today).Days > -2 && (Convert.ToDateTime(vnuserdata[4]) - DateTime.Today).Days < 0)
                         {
-                            VnMainModel.LastPlayed = "Yesterday";
+                            await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.LastPlayed = "Yesterday")));
                         }
                         else
                         {
-                            VnMainModel.LastPlayed = Convert.ToDateTime(vnuserdata[4]).DayOfWeek.ToString();
+                            await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.LastPlayed = Convert.ToDateTime(vnuserdata[4]).DayOfWeek.ToString())));
                         }
                     }
                     else
                     {
-                        VnMainModel.LastPlayed = vnuserdata[4].ToString();
+                        await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.LastPlayed = vnuserdata[4].ToString())));
                     }
                 }
 
@@ -520,39 +526,46 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
                 if (timeSpan < new TimeSpan(0, 0, 0, 1))
                 {
-                    VnMainModel.PlayTime = "Never";
+                    await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.PlayTime = "Never")));
                 }
                 if (timeSpan < new TimeSpan(0, 0, 0, 60))
                 {
-                    VnMainModel.PlayTime = "Less than 1 minute";
+                    await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.PlayTime = "Less than 1 minute")));
                 }
                 else
                 {
                     string formatted = $"{(timeSpan.Duration().Days > 0 ? $"{timeSpan.Days:0} day{(timeSpan.Days == 1 ? string.Empty : "s")}, " : string.Empty)}" +
                                        $"{(timeSpan.Duration().Hours > 0 ? $"{timeSpan.Hours:0} hour{(timeSpan.Hours == 1 ? string.Empty : "s")}, " : string.Empty)}" +
                                        $"{(timeSpan.Duration().Minutes > 0 ? $"{timeSpan.Minutes:0} minute{(timeSpan.Minutes == 1 ? string.Empty : "s")} " : string.Empty)}";
-                    VnMainModel.PlayTime = formatted;
+                    await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.PlayTime = formatted)));
                 }
                 #endregion
                 if (_statusBar.ProgressPercentage != null)
                     _statusBar.ProgressPercentage = (double)_statusBar.ProgressPercentage + ProgressIncrement;
 
-                if (_statusBar.ProgressPercentage != null)
-                    _statusBar.ProgressPercentage = 100;
-                _statusBar.ProgressStatus = new BitmapImage(new Uri($@"{Globals.DirectoryPath}\Data\res\icons\statusbar\ok.png"));
-                _statusBar.ProgressText = "Done";
-                await Task.Delay(1500);
-                _statusBar.ProgressStatus = null;
-                _statusBar.ProgressPercentage = null;
-                _statusBar.IsWorkProcessing = false;
-                _statusBar.ProgressText = string.Empty;
+                //await Application.Current.Dispatcher.BeginInvoke(new Action((() => )));
+
             }
             catch (Exception ex)
             {
                 DebugLogging.WriteDebugLog(ex);
                 throw;
             }
-            
+            finally
+            {
+                if (_statusBar.ProgressPercentage != null)
+                    _statusBar.ProgressPercentage = 100;
+                await Application.Current.Dispatcher.BeginInvoke(new Action((() => _statusBar.ProgressStatus =
+                    new BitmapImage(new Uri($@"{Globals.DirectoryPath}\Data\res\icons\statusbar\ok.png")))));
+                _statusBar.ProgressText = "Done";
+                await Task.Delay(1500);
+                _statusBar.ProgressStatus = null;
+                _statusBar.ProgressPercentage = null;
+                _statusBar.IsDbProcessing = false;
+                _statusBar.IsWorkProcessing = false;
+                _statusBar.ProgressText = string.Empty;
+            }
+
             VnScreenshotViewModel vm = new VnScreenshotViewModel();
             vm.DownloadScreenshots();
 
@@ -565,7 +578,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
         private async Task TESTME(DataSet dataSet)
         {
-
             double ProgressIncrement = 11.11111111111111;
             _statusBar.ProgressPercentage = 0;
             _statusBar.IsWorkProcessing = true;
@@ -658,8 +670,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 if (_statusBar.ProgressPercentage != null)
                     _statusBar.ProgressPercentage = (double)_statusBar.ProgressPercentage + ProgressIncrement;
 
-                //await Application.Current.Dispatcher.BeginInvoke(new Action((() => DownloadCoverImage(vninfo[11].ToString(), Convert.ToBoolean(vninfo[12])))));
-                DownloadCoverImage(vninfo[11].ToString(), Convert.ToBoolean(vninfo[12]));
+                await Application.Current.Dispatcher.BeginInvoke(new Action((() => DownloadCoverImage(vninfo[11].ToString(), Convert.ToBoolean(vninfo[12])))));
+                //DownloadCoverImage(vninfo[11].ToString(), Convert.ToBoolean(vninfo[12]));
                 #endregion
 
                 #region TextBinding
@@ -726,22 +738,13 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 #endregion
                 if (_statusBar.ProgressPercentage != null)
                     _statusBar.ProgressPercentage = (double)_statusBar.ProgressPercentage + ProgressIncrement;
-
-
-                
-
-
+               
                 //await Application.Current.Dispatcher.BeginInvoke(new Action((() => )));
-
-
-
-
-
 
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
+                DebugLogging.WriteDebugLog(ex);
                 throw;
             }
             finally
@@ -876,6 +879,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 {
                     if (!File.Exists(pathNoExt))
                     {
+                        _statusBar.IsDownloading = true;
                         WebClient client = new WebClient();
                         using (MemoryStream stream = new MemoryStream(client.DownloadData(new Uri(url))))
                         {
@@ -889,11 +893,13 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 {
                     if (!File.Exists(path))
                     {
+                        _statusBar.IsDownloading = true;
                         WebClient client = new WebClient();
                         client.DownloadFile(new Uri(url), path);
                     }
                     
                 }
+                _statusBar.IsDownloading = false;
                 BindCoverImage(url, nsfw);
             }
             catch (WebException ex)
@@ -908,7 +914,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             }
         }
 
-        private void BindCoverImage(string url, bool? nsfw)
+        private async void BindCoverImage(string url, bool? nsfw)
         {
             string pathNoExt = $@"{Globals.DirectoryPath}\Data\images\cover\{Globals.VnId}";
             string path = $@"{Globals.DirectoryPath}\Data\images\cover\{Globals.VnId}.jpg";
@@ -917,13 +923,13 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             {
                 if (nsfw == true)
                 {
-                    BitmapImage bImage = Base64Converter.GetBitmapImageFromBytes(File.ReadAllText(pathNoExt));
-                    VnMainModel.Image = bImage;
+                    BitmapImage bImage = Base64Converter.GetBitmapImageFromBytes(File.ReadAllText(pathNoExt));                    
+                    //VnMainModel.Image = bImage;
                 }
                 if (nsfw == false)
                 {
                     BitmapImage bImage = new BitmapImage(new Uri(path));
-                    VnMainModel.Image = bImage;
+                    //VnMainModel.Image = bImage;
                 }
             }
             catch (Exception ex)
