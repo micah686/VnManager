@@ -15,6 +15,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -26,6 +27,7 @@ using VisualNovelManagerv2.Design.VisualNovel;
 using static System.Windows.FontStyles;
 using Brushes = System.Windows.Media.Brushes;
 using VisualNovelManagerv2.CustomClasses;
+using VisualNovelManagerv2.ViewModel.Global;
 using VndbSharp;
 using VndbSharp.Models.Dumps;
 
@@ -119,7 +121,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         #endregion
 
         public static readonly VnCharacterViewModel VnCharacterViewModel = new VnCharacterViewModel();
-
+        readonly StatusBarViewModel _statusBar = (new ViewModelLocator()).StatusBar;
 
 
         public static ICommand LoadBindVnDataCommand { get; set; }
@@ -286,7 +288,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             Thread.Sleep(0);
         }
 
-        private void GetVnData()
+        private async void GetVnData()
         {
             try
             {
@@ -363,7 +365,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
                     connection.Close();
                 }
-                BindVnData(dataSet);
+                //BindVnData(dataSet);
+                await Task.Run((() => BindVnData(dataSet)));
             }
             catch (SQLiteException ex)
             {
@@ -377,23 +380,33 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             }
         }
 
-        private void BindVnData(DataSet dataSet)
+        private async Task BindVnData(DataSet dataSet)
         {
             try
             {
+                double ProgressIncrement = 12.5;
+                _statusBar.ProgressPercentage = 0;
+                _statusBar.IsWorkProcessing = true;
+                _statusBar.ProgressText = "Loading Main Data";
                 object[] vninfo = dataSet.Tables[0].Rows[0].ItemArray;
                 DataTable dataTable = new DataTable();
                 dataTable = dataSet.Tables["VnInfoRelations"];
                 foreach (DataRow row in dataTable.Rows)
                 {
-                    _vnInfoRelation.Add(new VnInfoRelation { Title = row["Title"].ToString(), Original = row["Original"].ToString(), Relation = row["Relation"].ToString(), Official = row["Official"].ToString() });
+                    await Application.Current.Dispatcher.BeginInvoke(new Action(() => VnInfoRelation.Add(new VnInfoRelation
+                    { Title = row["Title"].ToString(), Original = row["Original"].ToString(), Relation = row["Relation"].ToString(), Official = row["Official"].ToString() })));
+                    
                 }
-
+                if (_statusBar.ProgressPercentage != null)
+                    _statusBar.ProgressPercentage = (double)_statusBar.ProgressPercentage + ProgressIncrement;
+                
                 dataTable = dataSet.Tables["VnInfoTags"];
                 foreach (DataRow row in dataTable.Rows)
                 {
-                    _vnInfoTagCollection.Add(row["TagName"].ToString());
+                    await Application.Current.Dispatcher.BeginInvoke(new Action(() => VnInfoTagCollection.Add(row["TagName"].ToString())));
                 }
+                if (_statusBar.ProgressPercentage != null)
+                    _statusBar.ProgressPercentage = (double)_statusBar.ProgressPercentage + ProgressIncrement;
 
                 dataTable = dataSet.Tables["VnInfoAnime"];
                 foreach (DataRow row in dataTable.Rows)
@@ -410,7 +423,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                     {
                         ann = $"animenewsnetwork.com/encyclopedia/anime.php?id={row.ItemArray[2].ToString()}";
                     }
-                    _vnAnimeCollection.Add(new VnInfoAnime
+                    await Application.Current.Dispatcher.BeginInvoke(new Action(() => VnInfoAnimeCollection.Add(new VnInfoAnime
                     {
                         Title = row["TitleEng"].ToString(),
                         OriginalName = row["TitleJpn"].ToString(),
@@ -418,27 +431,53 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                         AnimeType = row["AnimeType"].ToString(),
                         AniDb = anidb,
                         Ann = ann
-                    });
+                    })));
+                    //_vnAnimeCollection.Add(new VnInfoAnime
+                    //{
+                    //    Title = row["TitleEng"].ToString(),
+                    //    OriginalName = row["TitleJpn"].ToString(),
+                    //    Year = row["Year"].ToString(),
+                    //    AnimeType = row["AnimeType"].ToString(),
+                    //    AniDb = anidb,
+                    //    Ann = ann
+                    //});
                 }
+                if (_statusBar.ProgressPercentage != null)
+                    _statusBar.ProgressPercentage = (double)_statusBar.ProgressPercentage + ProgressIncrement;
+                
                 VnMainModel.Name = vninfo[2].ToString();
-                VnMainModel.VnIcon = LoadIcon();
+                //VnMainModel.VnIcon = LoadIcon();
+                if (_statusBar.ProgressPercentage != null)
+                    _statusBar.ProgressPercentage = (double)_statusBar.ProgressPercentage + ProgressIncrement;
+
                 VnMainModel.Original = vninfo[3].ToString();
                 VnMainModel.Released = vninfo[4].ToString();
-
+                
                 IEnumerable<string> languages = GetLangauges(vninfo[5].ToString());
                 foreach (string language in languages)
                 {
-                    _languageCollection.Add(new LanguagesCollection { VnMainModel = new VnMainModel { Languages = new BitmapImage(new Uri(language)) } });
+                    await Application.Current.Dispatcher.BeginInvoke(new Action(() => LanguageCollection.Add(new LanguagesCollection { VnMainModel = new VnMainModel { Languages = new BitmapImage(new Uri(language)) } })));
+                    //_languageCollection.Add(new LanguagesCollection { VnMainModel = new VnMainModel { Languages = new BitmapImage(new Uri(language)) } });
                 }
+                if (_statusBar.ProgressPercentage != null)
+                    _statusBar.ProgressPercentage = (double)_statusBar.ProgressPercentage + ProgressIncrement;
+
                 IEnumerable<string> origLanguages = GetLangauges(vninfo[6].ToString());
                 foreach (string language in origLanguages)
                 {
-                    _originalLanguagesCollection.Add(new OriginalLanguagesCollection { VnMainModel = new VnMainModel { OriginalLanguages = new BitmapImage(new Uri(language)) } });
+                    await Application.Current.Dispatcher.BeginInvoke(new Action(() => OriginalLanguagesCollection.Add(new OriginalLanguagesCollection { VnMainModel = new VnMainModel { OriginalLanguages = new BitmapImage(new Uri(language)) } })));
+                    //_originalLanguagesCollection.Add(new OriginalLanguagesCollection { VnMainModel = new VnMainModel { OriginalLanguages = new BitmapImage(new Uri(language)) } });
                 }
+                if (_statusBar.ProgressPercentage != null)
+                    _statusBar.ProgressPercentage = (double)_statusBar.ProgressPercentage + ProgressIncrement;
+
                 VnMainModel.Platforms = vninfo[7].ToString();
                 VnMainModel.Aliases = vninfo[8].ToString();
                 VnMainModel.Length = vninfo[9].ToString();
                 VnMainModel.Description = ConvertRichTextDocument.ConvertToFlowDocument(vninfo[10].ToString());
+                if (_statusBar.ProgressPercentage != null)
+                    _statusBar.ProgressPercentage = (double)_statusBar.ProgressPercentage + ProgressIncrement;
+
                 DownloadCoverImage(vninfo[11].ToString(), Convert.ToBoolean(vninfo[12]));
                 VnMainModel.Popularity = Math.Round(Convert.ToDouble(vninfo[13]), 2);
                 VnMainModel.Rating = Convert.ToInt32(vninfo[14]);
@@ -495,6 +534,18 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                     VnMainModel.PlayTime = formatted;
                 }
                 #endregion
+                if (_statusBar.ProgressPercentage != null)
+                    _statusBar.ProgressPercentage = (double)_statusBar.ProgressPercentage + ProgressIncrement;
+
+                if (_statusBar.ProgressPercentage != null)
+                    _statusBar.ProgressPercentage = 100;
+                _statusBar.ProgressStatus = new BitmapImage(new Uri($@"{Globals.DirectoryPath}\Data\res\icons\statusbar\ok.png"));
+                _statusBar.ProgressText = "Done";
+                await Task.Delay(1500);
+                _statusBar.ProgressStatus = null;
+                _statusBar.ProgressPercentage = null;
+                _statusBar.IsWorkProcessing = false;
+                _statusBar.ProgressText = string.Empty;
             }
             catch (Exception ex)
             {
@@ -512,7 +563,27 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             vmchar.LoadCharacterCommand.Execute(null);
         }
 
-
+        private async Task TESTME(DataSet dataSet)
+        {
+            object[] vninfo = dataSet.Tables[0].Rows[0].ItemArray;
+            _statusBar.ProgressPercentage = 0;
+            _statusBar.IsDbProcessing = true;
+            _statusBar.IsWorkProcessing = true;
+            double ProgressIncrement = 2.465646;
+            DataTable dataTable = new DataTable();
+            dataTable = dataSet.Tables["VnInfoRelations"];
+            foreach (DataRow row in dataTable.Rows)
+            {
+                Application.Current.Dispatcher.BeginInvoke(new Action(() => this.VnInfoRelation.Add(new VnInfoRelation { Title = row["Title"].ToString(), Original = row["Original"].ToString(), Relation = row["Relation"].ToString(), Official = row["Official"].ToString() })));
+                //_vnInfoRelation.Add(new VnInfoRelation { Title = row["Title"].ToString(), Original = row["Original"].ToString(), Relation = row["Relation"].ToString(), Official = row["Official"].ToString() });
+                if (_statusBar.ProgressPercentage != null)
+                    _statusBar.ProgressPercentage = (double)_statusBar.ProgressPercentage + ProgressIncrement;
+                Thread.Sleep(500);
+            }
+            //_vnInfoRelation.Add(new VnInfoRelation { Title = row["Title"].ToString(), Original = row["Original"].ToString(), Relation = row["Relation"].ToString(), Official = row["Official"].ToString() });
+            Console.WriteLine("Done");
+            
+        }
 
         private void BindTagDescription()
         {
