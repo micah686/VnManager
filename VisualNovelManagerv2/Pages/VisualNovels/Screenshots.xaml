@@ -32,11 +32,11 @@
             <Grid Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0,5,0,0">
                 <ListBox x:Name="ListThumbs"  HorizontalAlignment="Center"  Height="100"  VerticalAlignment="Top" ScrollViewer.HorizontalScrollBarVisibility="Auto" Margin="2"
                          ItemsSource="{Binding ScreenshotCollection, UpdateSourceTrigger=PropertyChanged}" ItemTemplate="{StaticResource ImageDataTemplate}" SelectedIndex="{Binding SelectedScreenIndex}">
-                    <i:Interaction.Triggers>
+                    <!--<i:Interaction.Triggers>
                         <i:EventTrigger EventName="SelectionChanged">
                             <i:InvokeCommandAction Command="{Binding LoadLargeScreenshotCommand}"/>
                         </i:EventTrigger>
-                    </i:Interaction.Triggers>
+                    </i:Interaction.Triggers>-->
                     <ListBox.ItemsPanel>
                         <ItemsPanelTemplate>
                             <StackPanel Orientation="Horizontal"/>

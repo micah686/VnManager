@@ -122,6 +122,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
         public static readonly VnCharacterViewModel VnCharacterViewModel = new VnCharacterViewModel();
         readonly StatusBarViewModel _statusBar = (new ViewModelLocator()).StatusBar;
+        public static bool IsDownloading = false;
 
 
         public static ICommand LoadBindVnDataCommand { get; set; }
@@ -290,95 +291,104 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
         private async void GetVnData()
         {
-            try
+            while (IsDownloading== true)
             {
-                LanguageCollection.Clear();
-                OriginalLanguagesCollection.Clear();
-                VnInfoRelation.Clear();
-                VnInfoTagCollection.Clear();
-                VnInfoAnimeCollection.Clear();
-                _tagDescription?.Blocks.Clear();
-                DataSet dataSet = new DataSet();
-                SQLiteDataAdapter adapter = new SQLiteDataAdapter();
-                using (SQLiteConnection connection = new SQLiteConnection(Globals.ConnectionString))
+                await Task.Delay(100);
+            }
+            if (IsDownloading == false)
+            {
+                try
                 {
-                    connection.Open();
-
-                    #region GetVnId
-                    using (SQLiteCommand cmd = connection.CreateCommand())
+                    LanguageCollection.Clear();
+                    OriginalLanguagesCollection.Clear();
+                    VnInfoRelation.Clear();
+                    VnInfoTagCollection.Clear();
+                    VnInfoAnimeCollection.Clear();
+                    _tagDescription?.Blocks.Clear();
+                    DataSet dataSet = new DataSet();
+                    SQLiteDataAdapter adapter = new SQLiteDataAdapter();
+                    using (SQLiteConnection connection = new SQLiteConnection(Globals.ConnectionString))
                     {
-                        cmd.CommandText = "SELECT VnId FROM VnInfo WHERE PK_Id= @PK_Id";
-                        cmd.Parameters.AddWithValue("@PK_Id", SelectedListItemIndex + 1);
-                        Globals.VnId = Convert.ToInt32(cmd.ExecuteScalar());
+                        connection.Open();
+
+                        #region GetVnId
+                        using (SQLiteCommand cmd = connection.CreateCommand())
+                        {
+                            cmd.CommandText = "SELECT VnId FROM VnInfo WHERE PK_Id= @PK_Id";
+                            cmd.Parameters.AddWithValue("@PK_Id", SelectedListItemIndex + 1);
+                            Globals.VnId = Convert.ToInt32(cmd.ExecuteScalar());
+                        }
+                        #endregion
+
+                        #region SQLite Transaction
+                        using (SQLiteTransaction transaction = connection.BeginTransaction())
+                        {
+                            SQLiteCommand cmd = new SQLiteCommand("SELECT * FROM VnInfo WHERE PK_Id= @PK_Id", connection, transaction);
+                            cmd.Parameters.AddWithValue("@PK_Id", SelectedListItemIndex + 1);
+                            SQLiteCommand cmd1 = new SQLiteCommand("SELECT * FROM VnInfoTags WHERE VnId=@VnId", connection, transaction);
+                            cmd1.Parameters.AddWithValue("@VnId", Globals.VnId);
+                            SQLiteCommand cmd2 = new SQLiteCommand("SELECT * FROM VnInfoRelations WHERE VnId=@VnId", connection, transaction);
+                            cmd2.Parameters.AddWithValue("@VnId", Globals.VnId);
+                            SQLiteCommand cmd3 = new SQLiteCommand("SELECT * FROM VnInfoAnime WHERE VnId=@VnId", connection, transaction);
+                            cmd3.Parameters.AddWithValue("@VnId", Globals.VnId);
+                            SQLiteCommand cmd4 = new SQLiteCommand("SELECT * FROM VnInfoLinks WHERE VnId=@VnId", connection, transaction);
+                            cmd4.Parameters.AddWithValue("@VnId", Globals.VnId);
+                            SQLiteCommand cmd5 = new SQLiteCommand("SELECT * FROM VnInfoStaff WHERE VnId=@VnId", connection, transaction);
+                            cmd5.Parameters.AddWithValue("@VnId", Globals.VnId);
+                            SQLiteCommand cmd6 = new SQLiteCommand("SELECT * FROM VnInfoScreens WHERE VnId=@VnId", connection, transaction);
+                            cmd6.Parameters.AddWithValue("@VnId", Globals.VnId);
+                            SQLiteCommand cmd7 = new SQLiteCommand("SELECT * FROM VnUserData WHERE VnId=@VnId", connection, transaction);
+                            cmd7.Parameters.AddWithValue("@VnId", Globals.VnId);
+
+                            dataSet.Tables.Add("VnInfo");
+                            dataSet.Tables.Add("VnInfoTags");
+                            dataSet.Tables.Add("VnInfoRelations");
+                            dataSet.Tables.Add("VnInfoAnime");
+                            dataSet.Tables.Add("VnInfoLinks");
+                            dataSet.Tables.Add("VnInfoStaff");
+                            dataSet.Tables.Add("VnInfoScreens");
+                            dataSet.Tables.Add("VnUserData");
+
+                            adapter.SelectCommand = cmd;
+                            adapter.Fill(dataSet.Tables["VnInfo"]);
+                            adapter.SelectCommand = cmd1;
+                            adapter.Fill(dataSet.Tables["VnInfoTags"]);
+                            adapter.SelectCommand = cmd2;
+                            adapter.Fill(dataSet.Tables["VnInfoRelations"]);
+                            adapter.SelectCommand = cmd3;
+                            adapter.Fill(dataSet.Tables["VnInfoAnime"]);
+                            adapter.SelectCommand = cmd4;
+                            adapter.Fill(dataSet.Tables["VnInfoLinks"]);
+                            adapter.SelectCommand = cmd5;
+                            adapter.Fill(dataSet.Tables["VnInfoStaff"]);
+                            adapter.SelectCommand = cmd6;
+                            adapter.Fill(dataSet.Tables["VnInfoScreens"]);
+                            adapter.SelectCommand = cmd7;
+                            adapter.Fill(dataSet.Tables["VnUserData"]);
+
+                            transaction.Commit();
+                        }
+                        #endregion
+
+                        connection.Close();
                     }
-                    #endregion
-
-                    #region SQLite Transaction
-                    using (SQLiteTransaction transaction = connection.BeginTransaction())
-                    {
-                        SQLiteCommand cmd = new SQLiteCommand("SELECT * FROM VnInfo WHERE PK_Id= @PK_Id", connection, transaction);
-                        cmd.Parameters.AddWithValue("@PK_Id", SelectedListItemIndex + 1);
-                        SQLiteCommand cmd1 = new SQLiteCommand("SELECT * FROM VnInfoTags WHERE VnId=@VnId", connection, transaction);
-                        cmd1.Parameters.AddWithValue("@VnId", Globals.VnId);
-                        SQLiteCommand cmd2 = new SQLiteCommand("SELECT * FROM VnInfoRelations WHERE VnId=@VnId", connection, transaction);
-                        cmd2.Parameters.AddWithValue("@VnId", Globals.VnId);
-                        SQLiteCommand cmd3 = new SQLiteCommand("SELECT * FROM VnInfoAnime WHERE VnId=@VnId", connection, transaction);
-                        cmd3.Parameters.AddWithValue("@VnId", Globals.VnId);
-                        SQLiteCommand cmd4 = new SQLiteCommand("SELECT * FROM VnInfoLinks WHERE VnId=@VnId", connection, transaction);
-                        cmd4.Parameters.AddWithValue("@VnId", Globals.VnId);
-                        SQLiteCommand cmd5 = new SQLiteCommand("SELECT * FROM VnInfoStaff WHERE VnId=@VnId", connection, transaction);
-                        cmd5.Parameters.AddWithValue("@VnId", Globals.VnId);
-                        SQLiteCommand cmd6 = new SQLiteCommand("SELECT * FROM VnInfoScreens WHERE VnId=@VnId", connection, transaction);
-                        cmd6.Parameters.AddWithValue("@VnId", Globals.VnId);
-                        SQLiteCommand cmd7 = new SQLiteCommand("SELECT * FROM VnUserData WHERE VnId=@VnId", connection, transaction);
-                        cmd7.Parameters.AddWithValue("@VnId", Globals.VnId);
-
-                        dataSet.Tables.Add("VnInfo");
-                        dataSet.Tables.Add("VnInfoTags");
-                        dataSet.Tables.Add("VnInfoRelations");
-                        dataSet.Tables.Add("VnInfoAnime");
-                        dataSet.Tables.Add("VnInfoLinks");
-                        dataSet.Tables.Add("VnInfoStaff");
-                        dataSet.Tables.Add("VnInfoScreens");
-                        dataSet.Tables.Add("VnUserData");
-
-                        adapter.SelectCommand = cmd;
-                        adapter.Fill(dataSet.Tables["VnInfo"]);
-                        adapter.SelectCommand = cmd1;
-                        adapter.Fill(dataSet.Tables["VnInfoTags"]);
-                        adapter.SelectCommand = cmd2;
-                        adapter.Fill(dataSet.Tables["VnInfoRelations"]);
-                        adapter.SelectCommand = cmd3;
-                        adapter.Fill(dataSet.Tables["VnInfoAnime"]);
-                        adapter.SelectCommand = cmd4;
-                        adapter.Fill(dataSet.Tables["VnInfoLinks"]);
-                        adapter.SelectCommand = cmd5;
-                        adapter.Fill(dataSet.Tables["VnInfoStaff"]);
-                        adapter.SelectCommand = cmd6;
-                        adapter.Fill(dataSet.Tables["VnInfoScreens"]);
-                        adapter.SelectCommand = cmd7;
-                        adapter.Fill(dataSet.Tables["VnUserData"]);
-
-                        transaction.Commit();
-                    }
-                    #endregion
-
-                    connection.Close();
+                    //BindVnData(dataSet);
+                    await Task.Run((() => BindVnData(dataSet)));
+                    await Task.Run((() => VnScreenshotViewModel.DownloadScreenshots()));
+                    UpdateViews();
                 }
-                //BindVnData(dataSet);
-                await Task.Run((() => BindVnData(dataSet)));
-                UpdateViews();
+                catch (SQLiteException ex)
+                {
+                    DebugLogging.WriteDebugLog(ex);
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    DebugLogging.WriteDebugLog(ex);
+                    throw;
+                }
             }
-            catch (SQLiteException ex)
-            {
-                DebugLogging.WriteDebugLog(ex);
-                throw;
-            }
-            catch (Exception ex)
-            {
-                DebugLogging.WriteDebugLog(ex);
-                throw;
-            }
+            
         }
 
         private async Task BindVnData(DataSet dataSet)
