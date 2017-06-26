@@ -91,11 +91,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
         #endregion
 
-        public  void ClearCollections()
-        {
-            ScreenshotCollection.Clear();
-        }
-
         private static List<Screenshot> LoadScreenshotList()
         {
             try

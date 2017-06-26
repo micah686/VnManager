@@ -367,6 +367,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 }
                 //BindVnData(dataSet);
                 await Task.Run((() => BindVnData(dataSet)));
+                UpdateViews();
             }
             catch (SQLiteException ex)
             {
@@ -565,11 +566,9 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 _statusBar.ProgressText = string.Empty;
             }
             
-            VnScreenshotViewModel vm = new VnScreenshotViewModel();
-            //vm.ClearCollections();
+            
 
-            await Application.Current.Dispatcher.BeginInvoke(
-                new Action((VnScreenshotViewModel.DownloadScreenshots)));
+           // await Application.Current.Dispatcher.BeginInvoke(new Action((VnScreenshotViewModel.DownloadScreenshots)));
 
 
             //VnReleaseViewModel vmrel = new VnReleaseViewModel();
@@ -577,6 +576,11 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
             //VnCharacterViewModel vmchar = new VnCharacterViewModel();
             //vmchar.LoadCharacterCommand.Execute(null);
+        }
+
+        private void UpdateViews()
+        {
+            VnScreenshotViewModel vm = new VnScreenshotViewModel();
         }
 
         private void BindTagDescription()
