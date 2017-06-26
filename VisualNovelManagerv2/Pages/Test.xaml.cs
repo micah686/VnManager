@@ -63,8 +63,13 @@ namespace VisualNovelManagerv2.Pages
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
+            Tasktest();
 
-            
+        }
+
+        public static Task Tasktest()
+        {
+            return null;
         }
     }
 }

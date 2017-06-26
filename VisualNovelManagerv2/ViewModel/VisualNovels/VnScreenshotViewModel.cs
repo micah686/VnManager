@@ -21,26 +21,19 @@ using VisualNovelManagerv2.Design.VisualNovel;
 namespace VisualNovelManagerv2.ViewModel.VisualNovels
 {
     public class VnScreenshotViewModel: ViewModelBase
-    {
-        public ICommand GetScreenshotData { get; private set; }
-        public ICommand LoadLargeScreenshotCommand { get; private set; }
-        public static List<Screenshot> ScreenshotList = new List<Screenshot>();
-        
-
+    {       
         public VnScreenshotViewModel()
         {
             _screenshotModel = new VnScreenshotModel();
-            GetScreenshotData = new RelayCommand(DownloadScreenshots);
-            LoadLargeScreenshotCommand = new RelayCommand(LoadLargeScreenshot);
             
-            ScreenshotCollection = new ObservableCollection<ScreenshotViewModelCollection>();
-            //Globals.VnId = 21001;
-            LoadScreenshotList();
-            DownloadScreenshots();
+            //ScreenshotCollection = new ObservableCollection<ScreenshotViewModelCollection>();
+            BindScreenshots();
         }
 
         #region StaticProperties
-        private ObservableCollection<ScreenshotViewModelCollection> _screenshotCollection;
+
+        #region ScreenshotCollection
+        private static ObservableCollection<ScreenshotViewModelCollection> _screenshotCollection = new ObservableCollection<ScreenshotViewModelCollection>();
         public ObservableCollection<ScreenshotViewModelCollection> ScreenshotCollection
         {
             get { return _screenshotCollection; }
@@ -50,7 +43,9 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 RaisePropertyChanged(nameof(ScreenshotCollection));
             }
         }
+        #endregion
 
+        #region ScreenshotModel
         private VnScreenshotModel _screenshotModel;
         public VnScreenshotModel ScreenshotModel
         {
@@ -61,26 +56,28 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 RaisePropertyChanged(nameof(ScreenshotModel));
             }
         }
+        #endregion
 
+        #region SelectedScreenIndex
         private int _selectedScreenIndex = -1;
-
         public int SelectedScreenIndex
         {
             get { return _selectedScreenIndex; }
             set
             {
-                //if (value < 0)
-                //{
-                //    value = 0;
-                //}
+                if (value < 0)
+                {
+                    value = 0;
+                }
                 _selectedScreenIndex = value;
+                LoadLargeScreenshot();
                 RaisePropertyChanged(nameof(SelectedScreenIndex));
             }
         }
+        #endregion
 
-
+        #region MainImage
         private BitmapImage _mainImage;
-
         public BitmapImage MainImage
         {
             get { return _mainImage; }
@@ -92,13 +89,18 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         }
         #endregion
 
+        #endregion
 
-        private void LoadScreenshotList()
+        public  void ClearCollections()
         {
-            ScreenshotList.Clear();
             ScreenshotCollection.Clear();
+        }
+
+        private static List<Screenshot> LoadScreenshotList()
+        {
             try
             {
+                List<Screenshot> screenshotList = new List<Screenshot>();
                 using (SQLiteConnection connection = new SQLiteConnection(Globals.ConnectionString))
                 {
                     connection.Open();
@@ -111,30 +113,109 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
                         while (reader.Read())
                         {
-                            ScreenshotList.Add(new Screenshot { Url = (string)reader["ImageUrl"], IsNsfw = Convert.ToBoolean(reader["Nsfw"]) });
+                            screenshotList.Add(new Screenshot
+                            {
+                                Url = (string) reader["ImageUrl"],
+                                IsNsfw = Convert.ToBoolean(reader["Nsfw"])
+                            });
                         }
                     }
                     connection.Close();
                 }
+                return screenshotList;
             }
             catch (System.Data.SQLite.SQLiteException ex)
             {
                 DebugLogging.WriteDebugLog(ex);
                 throw;
             }
+            catch (Exception ex)
+            {
+                DebugLogging.WriteDebugLog(ex);
+                throw;
+            }
             
         }
-
-        public void DownloadScreenshots()
+        
+        private void BindScreenshots()
         {
-            foreach (Screenshot screenshot in ScreenshotList)
+            ScreenshotCollection.Clear();
+            try
             {
-                if(ScreenshotList.Count < 1) return;
+                List<Screenshot> screenshotList = LoadScreenshotList();
+                foreach (Screenshot screenshot in screenshotList)
+                {
+                    if (screenshotList.Count < 1) return;
+                    string image = screenshot.Url;
+                    string filename = Path.GetFileNameWithoutExtension(image);
+                    string pathNoExt = $@"{Globals.DirectoryPath}\Data\images\screenshots\{Globals.VnId}\{filename}";
+                    string path = $@"{Globals.DirectoryPath}\Data\images\screenshots\{Globals.VnId}\{Path.GetFileName(image)}";
+
+                    if (screenshot.IsNsfw == true)
+                    {
+                        BitmapImage bImage = Base64Converter.GetBitmapImageFromBytes(File.ReadAllText(pathNoExt));
+
+                        _screenshotCollection.Add(new ScreenshotViewModelCollection
+                        {
+                            ScreenshotModel = new VnScreenshotModel { Screenshot = bImage }
+                        });
+                    }
+                    if (screenshot.IsNsfw == false)
+                    {
+                        BitmapImage bImage = new BitmapImage(new Uri(path));
+                        _screenshotCollection.Add(new ScreenshotViewModelCollection
+                        {
+                            ScreenshotModel = new VnScreenshotModel { Screenshot = bImage }
+                        });
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                DebugLogging.WriteDebugLog(ex);
+                throw;
+            }            
+        }
+
+        private void LoadLargeScreenshot()
+        {
+            try
+            {
+                List<Screenshot> screenshotList = LoadScreenshotList();
+                if (screenshotList[SelectedScreenIndex].IsNsfw == true)
+                {
+                    string filename = Path.GetFileNameWithoutExtension(screenshotList[SelectedScreenIndex].Url);
+                    string pathNoExt = $@"{Globals.DirectoryPath}\Data\images\screenshots\{Globals.VnId}\{filename}";
+                    BitmapImage bImage = Base64Converter.GetBitmapImageFromBytes(File.ReadAllText(pathNoExt));
+                    MainImage = bImage;
+                }
+                if (screenshotList[SelectedScreenIndex].IsNsfw == false)
+                {
+                    string path = $@"{Globals.DirectoryPath}\Data\images\screenshots\{Globals.VnId}\{
+                            Path.GetFileName(screenshotList[SelectedScreenIndex].Url)
+                        }";
+                    BitmapImage bImage = new BitmapImage(new Uri(path));
+                    MainImage = bImage; ;
+                }
+            }
+            catch (Exception ex)
+            {
+                DebugLogging.WriteDebugLog(ex);
+                throw;
+            }            
+        }
+
+        public static void DownloadScreenshots()
+        {
+            List<Screenshot> screenshotList = LoadScreenshotList();
+            foreach (Screenshot screenshot in screenshotList)
+            {
+                if (screenshotList.Count < 1) return;
                 if (!Directory.Exists($@"{Globals.DirectoryPath}\Data\images\screenshots\{Globals.VnId}"))
                 {
                     Directory.CreateDirectory($@"{Globals.DirectoryPath}\Data\images\screenshots\{Globals.VnId}");
                 }
-
 
                 string image = screenshot.Url;
                 string filename = Path.GetFileNameWithoutExtension(image);
@@ -173,75 +254,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 {
                     DebugLogging.WriteDebugLog(ex);
                 }
-                
             }
-            BindScreenshots();
-        }
-
-        private void BindScreenshots()
-        {
-            try
-            {
-                foreach (Screenshot screenshot in ScreenshotList)
-                {
-                    if (ScreenshotList.Count < 1) return;
-                    string image = screenshot.Url;
-                    string filename = Path.GetFileNameWithoutExtension(image);
-                    string pathNoExt = $@"{Globals.DirectoryPath}\Data\images\screenshots\{Globals.VnId}\{filename}";
-                    string path = $@"{Globals.DirectoryPath}\Data\images\screenshots\{Globals.VnId}\{Path.GetFileName(image)}";
-
-                    if (screenshot.IsNsfw == true)
-                    {
-                        BitmapImage bImage = Base64Converter.GetBitmapImageFromBytes(File.ReadAllText(pathNoExt));
-
-                        _screenshotCollection.Add(new ScreenshotViewModelCollection
-                        {
-                            ScreenshotModel = new VnScreenshotModel { Screenshot = bImage }
-                        });
-                    }
-                    if (screenshot.IsNsfw == false)
-                    {
-                        BitmapImage bImage = new BitmapImage(new Uri(path));
-                        _screenshotCollection.Add(new ScreenshotViewModelCollection
-                        {
-                            ScreenshotModel = new VnScreenshotModel { Screenshot = bImage }
-                        });
-                    }
-
-                }
-            }
-            catch (Exception ex)
-            {
-                DebugLogging.WriteDebugLog(ex);
-                throw;
-            }            
-        }
-
-        private void LoadLargeScreenshot()
-        {
-            try
-            {
-                if (ScreenshotList[SelectedScreenIndex].IsNsfw == true)
-                {
-                    string filename = Path.GetFileNameWithoutExtension(ScreenshotList[SelectedScreenIndex].Url);
-                    string pathNoExt = $@"{Globals.DirectoryPath}\Data\images\screenshots\{Globals.VnId}\{filename}";
-                    BitmapImage bImage = Base64Converter.GetBitmapImageFromBytes(File.ReadAllText(pathNoExt));
-                    MainImage = bImage;
-                }
-                if (ScreenshotList[SelectedScreenIndex].IsNsfw == false)
-                {
-                    string path = $@"{Globals.DirectoryPath}\Data\images\screenshots\{Globals.VnId}\{
-                            Path.GetFileName(ScreenshotList[SelectedScreenIndex].Url)
-                        }";
-                    BitmapImage bImage = new BitmapImage(new Uri(path));
-                    MainImage = bImage; ;
-                }
-            }
-            catch (Exception ex)
-            {
-                DebugLogging.WriteDebugLog(ex);
-                throw;
-            }            
         }
 
     }

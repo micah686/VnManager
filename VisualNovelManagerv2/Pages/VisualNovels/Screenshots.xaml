@@ -30,7 +30,7 @@
 
 
             <Grid Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0,5,0,0">
-                <ListBox x:Name="ListThumbs"  HorizontalAlignment="Stretch" Height="100"  VerticalAlignment="Top" ScrollViewer.HorizontalScrollBarVisibility="Auto" Margin="2"
+                <ListBox x:Name="ListThumbs"  HorizontalAlignment="Center"  Height="100"  VerticalAlignment="Top" ScrollViewer.HorizontalScrollBarVisibility="Auto" Margin="2"
                          ItemsSource="{Binding ScreenshotCollection, UpdateSourceTrigger=PropertyChanged}" ItemTemplate="{StaticResource ImageDataTemplate}" SelectedIndex="{Binding SelectedScreenIndex}">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="SelectionChanged">

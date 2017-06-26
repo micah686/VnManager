@@ -564,15 +564,19 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 _statusBar.IsWorkProcessing = false;
                 _statusBar.ProgressText = string.Empty;
             }
-
+            
             VnScreenshotViewModel vm = new VnScreenshotViewModel();
-            vm.DownloadScreenshots();
+            //vm.ClearCollections();
 
-            VnReleaseViewModel vmrel = new VnReleaseViewModel();
-            vmrel.LoadReleaseCommand.Execute(null);
+            await Application.Current.Dispatcher.BeginInvoke(
+                new Action((VnScreenshotViewModel.DownloadScreenshots)));
 
-            VnCharacterViewModel vmchar = new VnCharacterViewModel();
-            vmchar.LoadCharacterCommand.Execute(null);
+
+            //VnReleaseViewModel vmrel = new VnReleaseViewModel();
+            //vmrel.LoadReleaseCommand.Execute(null);
+
+            //VnCharacterViewModel vmchar = new VnCharacterViewModel();
+            //vmchar.LoadCharacterCommand.Execute(null);
         }
 
         private void BindTagDescription()

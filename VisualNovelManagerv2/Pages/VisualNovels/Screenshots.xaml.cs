@@ -12,6 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using GalaSoft.MvvmLight.Ioc;
+using VisualNovelManagerv2.ViewModel;
 
 namespace VisualNovelManagerv2.Pages.VisualNovels
 {
@@ -23,6 +25,10 @@ namespace VisualNovelManagerv2.Pages.VisualNovels
         public Screenshots()
         {
             InitializeComponent();
+            this.Unloaded += (o, e) =>
+            {
+                SimpleIoc.Default.Unregister<Screenshots>();
+            };
         }
     }
 }

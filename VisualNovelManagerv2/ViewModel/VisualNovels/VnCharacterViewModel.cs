@@ -26,7 +26,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
     public class VnCharacterViewModel: ViewModelBase
     {
 
-        public ICommand LoadCharacterCommand => new GalaSoft.MvvmLight.CommandWpf.RelayCommand(LoadCharacterUrlList);
+        public ICommand LoadCharacterCommand => new GalaSoft.MvvmLight.CommandWpf.RelayCommand(LoadCharacterNameList);
 
         #region ObservableCollections
 
@@ -146,6 +146,43 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         #endregion
 
 
+        private void LoadCharacterNameList()
+        {
+            CharacterNameCollection.Clear();
+            try
+            {
+                using (SQLiteConnection connection = new SQLiteConnection(Globals.ConnectionString))
+                {
+                    connection.Open();
+
+                    using (SQLiteCommand cmd = connection.CreateCommand())
+                    {
+                        cmd.CommandText = "SELECT Name FROM VnCharacter WHERE VnId = @VnId ";
+                        cmd.Parameters.AddWithValue("@VnId", Globals.VnId);
+                        SQLiteDataReader reader = cmd.ExecuteReader();
+
+                        while (reader.Read())
+                        {
+                            string name = reader["Name"].ToString();
+                            _characterNameCollection.Add(name);
+                        }
+                    }
+                    connection.Close();
+                }
+            }
+            catch (System.Data.SQLite.SQLiteException ex)
+            {
+                DebugLogging.WriteDebugLog(ex);
+                throw;
+            }
+            catch (Exception ex)
+            {
+                DebugLogging.WriteDebugLog(ex);
+                throw;
+            }
+            SetMaxWidth();
+            LoadCharacterUrlList();
+        }
 
         private void LoadCharacterUrlList()
         {
@@ -210,45 +247,10 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 DebugLogging.WriteDebugLog(ex);
             }
             
-            LoadCharacterNameList();
+            //LoadCharacterNameList();
         }
 
-        private void LoadCharacterNameList()
-        {
-            CharacterNameCollection.Clear();
-            try
-            {
-                using (SQLiteConnection connection = new SQLiteConnection(Globals.ConnectionString))
-                {
-                    connection.Open();
-
-                    using (SQLiteCommand cmd = connection.CreateCommand())
-                    {
-                        cmd.CommandText = "SELECT Name FROM VnCharacter WHERE VnId = @VnId ";
-                        cmd.Parameters.AddWithValue("@VnId", Globals.VnId);
-                        SQLiteDataReader reader = cmd.ExecuteReader();
-
-                        while (reader.Read())
-                        {
-                            string name = reader["Name"].ToString();
-                            _characterNameCollection.Add(name);
-                        }
-                    }
-                    connection.Close();
-                }
-            }
-            catch (System.Data.SQLite.SQLiteException ex)
-            {
-                DebugLogging.WriteDebugLog(ex);
-                throw;
-            }
-            catch (Exception ex)
-            {
-                DebugLogging.WriteDebugLog(ex);
-                throw;
-            }
-            SetMaxWidth();
-        }
+        
 
         private void SetMaxWidth()
         {
