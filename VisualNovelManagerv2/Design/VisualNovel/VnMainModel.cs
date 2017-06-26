@@ -21,7 +21,7 @@ namespace VisualNovelManagerv2.Design.VisualNovel
 
         // Using a DependencyProperty as the backing store for Name.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty NameProperty =
-            DependencyProperty.Register("Name", typeof(string), typeof(VnMainModel), new PropertyMetadata("binding name"));
+            DependencyProperty.Register("Name", typeof(string), typeof(VnMainModel), new PropertyMetadata(null));
 
 
 

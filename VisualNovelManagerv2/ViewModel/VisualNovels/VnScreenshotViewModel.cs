@@ -135,6 +135,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         private void BindScreenshots()
         {
             ScreenshotCollection.Clear();
+            ViewModelLocator.CleanupScreenshotViewModel();
             try
             {
                 int vnid = Globals.VnId;

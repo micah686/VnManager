@@ -9,8 +9,10 @@
   DataContext="{Binding Source={StaticResource Locator}, Path=ViewModelName}"
 */
 
+using System;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Ioc;
+using GalaSoft.MvvmLight.Messaging;
 using Microsoft.Practices.ServiceLocation;
 using VisualNovelManagerv2.ViewModel.Global;
 using VisualNovelManagerv2.ViewModel.VisualNovels;
@@ -49,7 +51,10 @@ namespace VisualNovelManagerv2.ViewModel
 
         public StatusBarViewModel StatusBar => ServiceLocator.Current.GetInstance<StatusBarViewModel>();
 
-        public static void Cleanup()
-        { }
+        public static void CleanupScreenshotViewModel()
+        {
+            SimpleIoc.Default.Unregister<VnScreenshotViewModel>();
+            SimpleIoc.Default.Register<VnScreenshotViewModel>();
+        }
     }
 }
