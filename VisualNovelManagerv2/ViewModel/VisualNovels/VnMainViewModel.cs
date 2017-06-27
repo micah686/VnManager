@@ -121,7 +121,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         #endregion
 
         public static readonly VnCharacterViewModel VnCharacterViewModel = new VnCharacterViewModel();
-        readonly StatusBarViewModel _statusBar = (new ViewModelLocator()).StatusBar;
         public static bool IsDownloading = false;
 
 
@@ -394,9 +393,9 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         private async Task BindVnData(DataSet dataSet)
         {
             double ProgressIncrement = 11.11111111111111;
-            _statusBar.ProgressPercentage = 0;
-            _statusBar.IsWorkProcessing = true;
-            _statusBar.ProgressText = "Loading Main Data";
+            Globals.StatusBar.ProgressPercentage = 0;
+            Globals.StatusBar.IsWorkProcessing = true;
+            Globals.StatusBar.ProgressText = "Loading Main Data";
             try
             {
                 object[] vninfo = dataSet.Tables[0].Rows[0].ItemArray;
@@ -415,8 +414,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                             Official = row["Official"].ToString()
                         })));
                 }
-                if (_statusBar.ProgressPercentage != null)
-                    _statusBar.ProgressPercentage = (double)_statusBar.ProgressPercentage + ProgressIncrement;
+                if (Globals.StatusBar.ProgressPercentage != null)
+                    Globals.StatusBar.ProgressPercentage = (double)Globals.StatusBar.ProgressPercentage + ProgressIncrement;
 
                 dataTable = dataSet.Tables["VnInfoTags"];
                 foreach (DataRow row in dataTable.Rows)
@@ -424,8 +423,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                     await Application.Current.Dispatcher.BeginInvoke(
                         new Action(() => VnInfoTagCollection.Add(row["TagName"].ToString())));
                 }
-                if (_statusBar.ProgressPercentage != null)
-                    _statusBar.ProgressPercentage = (double)_statusBar.ProgressPercentage + ProgressIncrement;
+                if (Globals.StatusBar.ProgressPercentage != null)
+                    Globals.StatusBar.ProgressPercentage = (double)Globals.StatusBar.ProgressPercentage + ProgressIncrement;
 
                 dataTable = dataSet.Tables["VnInfoAnime"];
                 foreach (DataRow row in dataTable.Rows)
@@ -453,8 +452,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                         Ann = ann
                     })));
                 }
-                if (_statusBar.ProgressPercentage != null)
-                    _statusBar.ProgressPercentage = (double)_statusBar.ProgressPercentage + ProgressIncrement;
+                if (Globals.StatusBar.ProgressPercentage != null)
+                    Globals.StatusBar.ProgressPercentage = (double)Globals.StatusBar.ProgressPercentage + ProgressIncrement;
 
                 IEnumerable<string> languages = GetLangauges(vninfo[5].ToString());
                 foreach (string language in languages)
@@ -462,8 +461,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                     await Application.Current.Dispatcher.BeginInvoke(new Action(() => LanguageCollection.Add(new LanguagesCollection
                         { VnMainModel = new VnMainModel { Languages = new BitmapImage(new Uri(language)) } })));
                 }
-                if (_statusBar.ProgressPercentage != null)
-                    _statusBar.ProgressPercentage = (double)_statusBar.ProgressPercentage + ProgressIncrement;
+                if (Globals.StatusBar.ProgressPercentage != null)
+                    Globals.StatusBar.ProgressPercentage = (double)Globals.StatusBar.ProgressPercentage + ProgressIncrement;
 
                 IEnumerable<string> origLanguages = GetLangauges(vninfo[6].ToString());
                 foreach (string language in origLanguages)
@@ -471,22 +470,22 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                     await Application.Current.Dispatcher.BeginInvoke(new Action(() => OriginalLanguagesCollection.Add(new OriginalLanguagesCollection
                         { VnMainModel = new VnMainModel { OriginalLanguages = new BitmapImage(new Uri(language)) } })));
                 }
-                if (_statusBar.ProgressPercentage != null)
-                    _statusBar.ProgressPercentage = (double)_statusBar.ProgressPercentage + ProgressIncrement;
+                if (Globals.StatusBar.ProgressPercentage != null)
+                    Globals.StatusBar.ProgressPercentage = (double)Globals.StatusBar.ProgressPercentage + ProgressIncrement;
 
                 #endregion
 
                 #region ComplexBinding
                 await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.VnIcon = LoadIcon())));
-                if (_statusBar.ProgressPercentage != null)
-                    _statusBar.ProgressPercentage = (double)_statusBar.ProgressPercentage + ProgressIncrement;
+                if (Globals.StatusBar.ProgressPercentage != null)
+                    Globals.StatusBar.ProgressPercentage = (double)Globals.StatusBar.ProgressPercentage + ProgressIncrement;
 
                 await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Description = ConvertRichTextDocument.ConvertToFlowDocument(vninfo[10].ToString()))));
-                if (_statusBar.ProgressPercentage != null)
-                    _statusBar.ProgressPercentage = (double)_statusBar.ProgressPercentage + ProgressIncrement;
+                if (Globals.StatusBar.ProgressPercentage != null)
+                    Globals.StatusBar.ProgressPercentage = (double)Globals.StatusBar.ProgressPercentage + ProgressIncrement;
                 DownloadCoverImage(vninfo[11].ToString(), Convert.ToBoolean(vninfo[12]));
-                if (_statusBar.ProgressPercentage != null)
-                    _statusBar.ProgressPercentage = (double)_statusBar.ProgressPercentage + ProgressIncrement;
+                if (Globals.StatusBar.ProgressPercentage != null)
+                    Globals.StatusBar.ProgressPercentage = (double)Globals.StatusBar.ProgressPercentage + ProgressIncrement;
 
                 #endregion
 
@@ -552,8 +551,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                     await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.PlayTime = formatted)));
                 }
                 #endregion
-                if (_statusBar.ProgressPercentage != null)
-                    _statusBar.ProgressPercentage = (double)_statusBar.ProgressPercentage + ProgressIncrement;
+                if (Globals.StatusBar.ProgressPercentage != null)
+                    Globals.StatusBar.ProgressPercentage = (double)Globals.StatusBar.ProgressPercentage + ProgressIncrement;
 
             }
             catch (Exception ex)
@@ -563,17 +562,17 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             }
             finally
             {
-                if (_statusBar.ProgressPercentage != null)
-                    _statusBar.ProgressPercentage = 100;
-                await Application.Current.Dispatcher.BeginInvoke(new Action((() => _statusBar.ProgressStatus =
+                if (Globals.StatusBar.ProgressPercentage != null)
+                    Globals.StatusBar.ProgressPercentage = 100;
+                await Application.Current.Dispatcher.BeginInvoke(new Action((() => Globals.StatusBar.ProgressStatus =
                     new BitmapImage(new Uri($@"{Globals.DirectoryPath}\Data\res\icons\statusbar\ok.png")))));
-                _statusBar.ProgressText = "Done";
+                Globals.StatusBar.ProgressText = "Done";
                 await Task.Delay(1500);
-                _statusBar.ProgressStatus = null;
-                _statusBar.ProgressPercentage = null;
-                _statusBar.IsDbProcessing = false;
-                _statusBar.IsWorkProcessing = false;
-                _statusBar.ProgressText = string.Empty;
+                Globals.StatusBar.ProgressStatus = null;
+                Globals.StatusBar.ProgressPercentage = null;
+                Globals.StatusBar.IsDbProcessing = false;
+                Globals.StatusBar.IsWorkProcessing = false;
+                Globals.StatusBar.ProgressText = string.Empty;
             }
             
             
@@ -707,7 +706,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 {
                     if (!File.Exists(pathNoExt))
                     {
-                        _statusBar.IsDownloading = true;
+                        Globals.StatusBar.IsDownloading = true;
                         WebClient client = new WebClient();
                         using (MemoryStream stream = new MemoryStream(client.DownloadData(new Uri(url))))
                         {
@@ -721,14 +720,14 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 {
                     if (!File.Exists(path))
                     {
-                        _statusBar.IsDownloading = true;
+                        Globals.StatusBar.IsDownloading = true;
                         Thread.Sleep(1500);
                         WebClient client = new WebClient();
                         client.DownloadFile(new Uri(url), path);
                     }
                     
                 }
-                _statusBar.IsDownloading = false;
+                Globals.StatusBar.IsDownloading = false;
                 await Application.Current.Dispatcher.BeginInvoke(new Action((() => BindCoverImage(url, nsfw))));
                 //BindCoverImage(url, nsfw);
             }

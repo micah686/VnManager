@@ -40,7 +40,6 @@ namespace VisualNovelManagerv2.CustomClasses.Database
         private string _exepath;
         private string _iconpath;
         private double ProgressIncrement = 0;
-        readonly StatusBarViewModel _statusBar = (new ViewModelLocator()).StatusBar;
 
         public async void GetId(int id, string exe, string icon)
         {
@@ -54,10 +53,10 @@ namespace VisualNovelManagerv2.CustomClasses.Database
 
         async Task GetData()
         {
-            _statusBar.ProgressPercentage = 0;
-            _statusBar.IsDbProcessing = true;
-            _statusBar.IsWorkProcessing = true;
-            _statusBar.ProgressText = "Processing";
+            Globals.StatusBar.ProgressPercentage = 0;
+            Globals.StatusBar.IsDbProcessing = true;
+            Globals.StatusBar.IsWorkProcessing = true;
+            Globals.StatusBar.ProgressText = "Processing";
             using (Vndb client = new Vndb(true).WithClientDetails(Globals.ClientInfo[0], Globals.ClientInfo[1]))
             {
                 try
@@ -90,9 +89,9 @@ namespace VisualNovelManagerv2.CustomClasses.Database
 
                     VndbResponse<VisualNovel> visualNovels =
                         await client.GetVisualNovelAsync(VndbFilters.Id.Equals(_uvnid), VndbFlags.FullVisualNovel);
-                    if (_statusBar.ProgressPercentage != null)
-                        _statusBar.ProgressPercentage =
-                            (double) _statusBar.ProgressPercentage + ProgressIncrement;
+                    if (Globals.StatusBar.ProgressPercentage != null)
+                        Globals.StatusBar.ProgressPercentage =
+                            (double) Globals.StatusBar.ProgressPercentage + ProgressIncrement;
 
                     #endregion
 
@@ -112,9 +111,9 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                         }
                         count++;
                     }
-                    if (_statusBar.ProgressPercentage != null)
-                        _statusBar.ProgressPercentage =
-                            (double) _statusBar.ProgressPercentage + ProgressIncrement;
+                    if (Globals.StatusBar.ProgressPercentage != null)
+                        Globals.StatusBar.ProgressPercentage =
+                            (double) Globals.StatusBar.ProgressPercentage + ProgressIncrement;
 
                     #endregion
 
@@ -136,9 +135,9 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                         }
                         count++;
                     }
-                    if (_statusBar.ProgressPercentage != null)
-                        _statusBar.ProgressPercentage =
-                            (double) _statusBar.ProgressPercentage + ProgressIncrement;
+                    if (Globals.StatusBar.ProgressPercentage != null)
+                        Globals.StatusBar.ProgressPercentage =
+                            (double) Globals.StatusBar.ProgressPercentage + ProgressIncrement;
 
                     #endregion
 
@@ -147,22 +146,22 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                 catch (Exception ex)
                 {
                     DebugLogging.WriteDebugLog(ex);
-                    _statusBar.ProgressStatus = new BitmapImage(new Uri($@"{Globals.DirectoryPath}\Data\res\icons\statusbar\error.png"));
-                    _statusBar.ProgressText = "An Error Occured! Check log for details";                    
+                    Globals.StatusBar.ProgressStatus = new BitmapImage(new Uri($@"{Globals.DirectoryPath}\Data\res\icons\statusbar\error.png"));
+                    Globals.StatusBar.ProgressText = "An Error Occured! Check log for details";                    
                     throw;
                 }
                 finally
                 {
-                    if (_statusBar.ProgressPercentage != null)
-                        _statusBar.ProgressPercentage = 100;
-                    _statusBar.ProgressStatus = new BitmapImage(new Uri($@"{Globals.DirectoryPath}\Data\res\icons\statusbar\ok.png"));
-                    _statusBar.ProgressText = "Done";
+                    if (Globals.StatusBar.ProgressPercentage != null)
+                        Globals.StatusBar.ProgressPercentage = 100;
+                    Globals.StatusBar.ProgressStatus = new BitmapImage(new Uri($@"{Globals.DirectoryPath}\Data\res\icons\statusbar\ok.png"));
+                    Globals.StatusBar.ProgressText = "Done";
                     await Task.Delay(1500);
-                    _statusBar.ProgressStatus = null;
-                    _statusBar.ProgressPercentage = null;
-                    _statusBar.IsDbProcessing = false;
-                    _statusBar.IsWorkProcessing = false;
-                    _statusBar.ProgressText = string.Empty;
+                    Globals.StatusBar.ProgressStatus = null;
+                    Globals.StatusBar.ProgressPercentage = null;
+                    Globals.StatusBar.IsDbProcessing = false;
+                    Globals.StatusBar.IsWorkProcessing = false;
+                    Globals.StatusBar.ProgressText = string.Empty;
                     VnMainViewModel.ClearCollectionsCommand.Execute(null);
                     VnMainViewModel.LoadBindVnDataCommand.Execute(null);
                 }
@@ -263,8 +262,8 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                         if (visualNovel.Tags.Count > 0)
                         {
                             tagMatches = await GetDetailsFromTagDump(visualNovel.Tags);
-                            if (_statusBar.ProgressPercentage != null)
-                                _statusBar.ProgressPercentage = (double) _statusBar.ProgressPercentage + ProgressIncrement;
+                            if (Globals.StatusBar.ProgressPercentage != null)
+                                Globals.StatusBar.ProgressPercentage = (double) Globals.StatusBar.ProgressPercentage + ProgressIncrement;
 
                             int count = 0;
                             foreach (TagMetadata tag in visualNovel.Tags)
@@ -380,8 +379,8 @@ namespace VisualNovelManagerv2.CustomClasses.Database
 
                         #endregion
                     }
-                    if (_statusBar.ProgressPercentage != null)
-                        _statusBar.ProgressPercentage = (double) _statusBar.ProgressPercentage + ProgressIncrement;
+                    if (Globals.StatusBar.ProgressPercentage != null)
+                        Globals.StatusBar.ProgressPercentage = (double) Globals.StatusBar.ProgressPercentage + ProgressIncrement;
                     #endregion
 
                     #region VnRelease
@@ -469,15 +468,15 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                         #endregion
                         
                     }
-                    if (_statusBar.ProgressPercentage != null)
-                        _statusBar.ProgressPercentage = (double) _statusBar.ProgressPercentage + ProgressIncrement;
+                    if (Globals.StatusBar.ProgressPercentage != null)
+                        Globals.StatusBar.ProgressPercentage = (double) Globals.StatusBar.ProgressPercentage + ProgressIncrement;
                     #endregion
 
                     #region Character
 
                     IEnumerable<Trait> traitDump = await VndbUtils.GetTraitsDumpAsync();
-                    if (_statusBar.ProgressPercentage != null)
-                        _statusBar.ProgressPercentage = (double) _statusBar.ProgressPercentage + ProgressIncrement;
+                    if (Globals.StatusBar.ProgressPercentage != null)
+                        Globals.StatusBar.ProgressPercentage = (double) Globals.StatusBar.ProgressPercentage + ProgressIncrement;
 
                     foreach (Character character in characters)
                     {
@@ -567,8 +566,8 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                         }
                         #endregion
                     }
-                    if (_statusBar.ProgressPercentage != null)
-                        _statusBar.ProgressPercentage = (double) _statusBar.ProgressPercentage + ProgressIncrement;
+                    if (Globals.StatusBar.ProgressPercentage != null)
+                        Globals.StatusBar.ProgressPercentage = (double) Globals.StatusBar.ProgressPercentage + ProgressIncrement;
                     #endregion
 
                     #region VnUserData
@@ -584,8 +583,8 @@ namespace VisualNovelManagerv2.CustomClasses.Database
 
                     cmd.ExecuteNonQuery();
 
-                    if (_statusBar.ProgressPercentage != null)
-                        _statusBar.ProgressPercentage = (double) _statusBar.ProgressPercentage + ProgressIncrement;
+                    if (Globals.StatusBar.ProgressPercentage != null)
+                        Globals.StatusBar.ProgressPercentage = (double) Globals.StatusBar.ProgressPercentage + ProgressIncrement;
                     #endregion
 
                     transaction.Commit();
@@ -614,8 +613,8 @@ namespace VisualNovelManagerv2.CustomClasses.Database
             IEnumerable<Tag> matches = from tagMetadata in tags from tTag in tagDump where tTag.Id == tagMetadata.Id select tTag;
             //the above does these foreach loops, only a LOT faster
             //foreach (var tag in tags){ foreach (var tgTag in tagDump){ if (tgTag.Id == tag.Id){ } } };
-            if (_statusBar.ProgressPercentage != null)
-                _statusBar.ProgressPercentage = (double) _statusBar.ProgressPercentage + ProgressIncrement;
+            if (Globals.StatusBar.ProgressPercentage != null)
+                Globals.StatusBar.ProgressPercentage = (double) Globals.StatusBar.ProgressPercentage + ProgressIncrement;
             return matches;
         }
 
@@ -626,8 +625,8 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                                          from tTrait in traitDump
                                          where tTrait.Id == traitMetadata.Id
                                          select tTrait;
-            if (_statusBar.ProgressPercentage != null)
-                _statusBar.ProgressPercentage = (double) _statusBar.ProgressPercentage + ProgressIncrement;
+            if (Globals.StatusBar.ProgressPercentage != null)
+                Globals.StatusBar.ProgressPercentage = (double) Globals.StatusBar.ProgressPercentage + ProgressIncrement;
             return matches;
         }
 

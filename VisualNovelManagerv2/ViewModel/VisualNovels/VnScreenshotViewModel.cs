@@ -203,6 +203,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
         public static void DownloadScreenshots()
         {
+            Globals.StatusBar.IsWorkProcessing = true;
+            Globals.StatusBar.ProgressText = "Downloading Screenshots";
             VnMainViewModel.IsDownloading = true;
             List<Screenshot> screenshotList = LoadScreenshotList();
             int vnid = Globals.VnId;
@@ -222,6 +224,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                     {
                         if (!File.Exists(pathNoExt))
                         {
+                            Globals.StatusBar.IsDownloading = true;
                             WebClient client = new WebClient();
                             using (MemoryStream stream = new MemoryStream(client.DownloadData(new Uri(screenshot.Url))))
                             {
@@ -230,15 +233,18 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                                 File.WriteAllText(pathNoExt, base64Img);
                             }
                             client.Dispose();
+                            Globals.StatusBar.IsDownloading = false;
                         }
                     }
                     if (screenshot.IsNsfw == false)
                     {
                         if (!File.Exists(path))
                         {
+                            Globals.StatusBar.IsDownloading = true;
                             WebClient client = new WebClient();
                             client.DownloadFile(new Uri(screenshot.Url), path);
                             client.Dispose();
+                            Globals.StatusBar.IsDownloading = false;
                         }
                     }
                 }
@@ -253,6 +259,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 }
             }
             VnMainViewModel.IsDownloading = false;
+            Globals.StatusBar.IsWorkProcessing = false;
+            Globals.StatusBar.ProgressText = string.Empty;
         }
 
     }
