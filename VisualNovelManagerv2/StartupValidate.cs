@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Data.SQLite;
 using System.IO;
 using System.Linq;
@@ -8,6 +9,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Win32;
 using VisualNovelManagerv2.CustomClasses;
+using VisualNovelManagerv2.EntityFramework;
+using VisualNovelManagerv2.EntityFramework.Entity.VnInfo;
 
 namespace VisualNovelManagerv2
 {
@@ -37,7 +40,8 @@ namespace VisualNovelManagerv2
 
             if (!File.Exists(dbPath))
             {
-                CreateDatabase();
+                //CreateDatabase();
+                StartDemoUseFile();
             }
 
             if (File.Exists(dbPath))
@@ -508,5 +512,38 @@ namespace VisualNovelManagerv2
             }
         }
 
+
+        private static void StartDemoUseFile()
+        {
+            System.Console.WriteLine("Starting Demo Application (File)");
+            System.Console.WriteLine(string.Empty);
+
+            using (var context = new DatabaseContext("Database"))
+            {
+                CreateAndSeedDatabase(context);
+            }
+        }
+
+        private static void CreateAndSeedDatabase(DbContext context)
+        {
+            System.Console.WriteLine("Create and seed the database.");
+
+            if (context.Set<VnInfo>().Count() != 0)
+            {
+                return;
+            }
+
+            context.Set<VnInfo>().Add(new VnInfo
+            {
+                VnId = 32,
+                Title = "sampleEntry",
+                Popularity = 15.3
+            });
+
+            context.SaveChanges();
+
+            System.Console.WriteLine("Completed.");
+            System.Console.WriteLine();
+        }
     }
 }

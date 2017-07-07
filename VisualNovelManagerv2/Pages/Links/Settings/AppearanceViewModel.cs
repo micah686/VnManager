@@ -1,13 +1,9 @@
-﻿using FirstFloor.ModernUI.Presentation;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Media;
+using FirstFloor.ModernUI.Presentation;
 
-namespace VisualNovelManagerv2.Pages.Settings
+namespace VisualNovelManagerv2.Pages.Links.Settings
 {
     /// <summary>
     /// A simple view model for configuring theme, font and accent colors.
