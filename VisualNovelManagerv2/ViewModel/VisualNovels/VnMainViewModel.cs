@@ -27,6 +27,8 @@ using VisualNovelManagerv2.Design.VisualNovel;
 using static System.Windows.FontStyles;
 using Brushes = System.Windows.Media.Brushes;
 using VisualNovelManagerv2.CustomClasses;
+using VisualNovelManagerv2.EntityFramework;
+using VisualNovelManagerv2.EntityFramework.Entity.VnInfo;
 using VisualNovelManagerv2.ViewModel.Global;
 using VndbSharp;
 using VndbSharp.Models.Dumps;
@@ -249,29 +251,16 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             try
             {
                 ObservableCollection<string> nameList = new ObservableCollection<string>();
-                using (SQLiteConnection connection = new SQLiteConnection(Globals.ConnectionString))
+                using (var db = new DatabaseContext("Database"))
                 {
-                    connection.Open();
-
-                    using (SQLiteCommand cmd = connection.CreateCommand())
+                    foreach (VnInfo vnInfo in db.Set<VnInfo>())
                     {
-                        cmd.CommandText = "SELECT Title FROM VnInfo";
-                        SQLiteDataReader reader = cmd.ExecuteReader();
-                        while (reader.Read())
-                        {
-                            nameList.Add((string)reader["Title"]);
-                        }
+                       nameList.Add(vnInfo.Title); 
                     }
-
-                    connection.Close();
+                    db.Dispose();
                 }
                 VnNameCollection = nameList;
                 SetMaxWidth();
-            }
-            catch (SQLiteException ex)
-            {
-                DebugLogging.WriteDebugLog(ex);
-                throw;
             }
             catch (Exception ex)
             {
