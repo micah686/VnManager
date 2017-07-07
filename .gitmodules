@@ -1,0 +1,4 @@
+[submodule "VndbSharp"]
+	path = VndbSharp
+	url = https://github.com/micah686/VndbSharp.git
+	branch = CustomBuild
