@@ -871,11 +871,13 @@ namespace VisualNovelManagerv2.CustomClasses.Database
 
                 #region VnRelease
                 var vnrelease = db.Set<VnRelease>();
-
-                #region MyRegion
+                var vnreleasemedia = db.Set<VnReleaseMedia>();
+                var vnreleaseproducers = db.Set<VnReleaseProducers>();
+                var vnreleasevn = db.Set<VnReleaseVn>();
 
                 foreach (Release release in releases)
                 {
+                    #region VnRelease
                     vnrelease.Add(new VnRelease
                     {
                         VnId = _vnid,
@@ -898,10 +900,56 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                         Voiced = release.Voiced.ToString(),
                         Animation = string.Join(",", release.Animation)
                     });
-                }
-                
+                    #endregion
 
-                #endregion
+                    #region VnReleaseMedia
+                    if (release.Media.Count <= 0) continue;
+                    foreach (Media media in release.Media)
+                    {
+                        vnreleasemedia.Add(new VnReleaseMedia
+                        {
+                            ReleaseId = Convert.ToInt32(release.Id),
+                            Medium = media.Medium,
+                            Quantity = Convert.ToInt32(media.Quantity)
+                        });
+                    }
+
+
+                    #endregion
+
+                    #region VnReleaseProducers
+                    if (release.Producers.Count <= 0) continue;
+                    foreach (ProducerRelease producer in release.Producers)
+                    {
+                        vnreleaseproducers.Add(new VnReleaseProducers
+                        {
+                            ReleaseId = Convert.ToInt32(release.Id),
+                            ProducerId = Convert.ToInt32(producer.Id),
+                            Developer = producer.IsDeveloper.ToString(),
+                            Publisher = producer.IsPublisher.ToString(),
+                            Name = producer.Name,
+                            Original = producer.OriginalName,
+                            ProducerType = producer.ProducerType
+                        });
+                    }
+                    #endregion
+
+                    #region VnReleaseVn
+                    if (release.VisualNovels.Count <= 0) continue;
+                    foreach (VisualNovelMetadata vn in release.VisualNovels)
+                    {
+                        vnreleasevn.Add(new VnReleaseVn
+                        {
+                            ReleaseId = Convert.ToInt32(release.Id),
+                            VnId = _vnid,
+                            Name = vn.Name,
+                            Original = vn.OriginalName
+                        });
+                    }
+                    #endregion
+                }
+                if (Globals.StatusBar.ProgressPercentage != null)
+                    Globals.StatusBar.ProgressPercentage = (double)Globals.StatusBar.ProgressPercentage + ProgressIncrement;
 
                 #endregion
 
