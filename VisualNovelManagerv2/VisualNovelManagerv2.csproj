@@ -381,12 +381,11 @@
     <Content Include="Resources\statusbar\ok.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\Visual Studio 2015\Projects\VndbSharp\VndbSharp\VndbSharp.csproj">
-      <Project>{ee3b5ff3-a292-41e8-be6a-8f024af622b9}</Project>
+    <ProjectReference Include="..\VndbSharp\VndbSharp\VndbSharp.csproj">
+      <Project>{3e3153b8-15ba-460d-af9f-021ea1760c6e}</Project>
       <Name>VndbSharp</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>ROBOCOPY "$(TargetDir) " "$(TargetDir)Data\libs\ " *.dll *.pdb *.xml /MOVE
