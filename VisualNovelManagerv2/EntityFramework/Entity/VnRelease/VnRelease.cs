@@ -19,11 +19,11 @@ namespace VisualNovelManagerv2.EntityFramework.Entity.VnRelease
         public string Website { get; set; }
         public string Notes { get; set; }
         public int? MinAge { get; set; }
-        public int? Gtin { get; set; }
+        public string Gtin { get; set; }
         public string Catalog { get; set; }
         public string Platforms { get; set; }
         public string Resolution { get; set; }
-        public int? Voiced { get; set; }
+        public string Voiced { get; set; }
         public string Animation { get; set; }
         //using a csv for animation
 

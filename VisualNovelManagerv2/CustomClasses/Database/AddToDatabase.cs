@@ -22,6 +22,7 @@ using VndbSharp.Models.VisualNovel;
 using static System.Globalization.CultureInfo;
 using VisualNovelMetadata = VndbSharp.Models.Release.VisualNovelMetadata;
 using VisualNovelManagerv2.EntityFramework.Entity.VnOther;
+using VisualNovelManagerv2.EntityFramework.Entity.VnRelease;
 using VisualNovelManagerv2.EntityFramework.Entity.VnTagTrait;
 
 namespace VisualNovelManagerv2.CustomClasses.Database
@@ -135,7 +136,7 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                     #endregion
 
                     //await Task.Run((() => AddDataToDb(visualNovels, releases, characters)));
-                    await Task.Run((() => AddDbTest(visualNovels, characters)));
+                    await Task.Run((() => AddDbTest(visualNovels, characters, releases)));
                 }
                 catch (Exception ex)
                 {
@@ -601,7 +602,7 @@ namespace VisualNovelManagerv2.CustomClasses.Database
             }            
         }
 
-        async Task AddDbTest(VndbResponse<VisualNovel> visualNovels, Collection<Character> characters)
+        async Task AddDbTest(VndbResponse<VisualNovel> visualNovels, Collection<Character> characters, Collection<Release> releases)
         {
             
             using (var db = new DatabaseContext("name=Database"))
@@ -866,6 +867,42 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                 }
                 if (Globals.StatusBar.ProgressPercentage != null)
                     Globals.StatusBar.ProgressPercentage = (double)Globals.StatusBar.ProgressPercentage + ProgressIncrement;
+                #endregion
+
+                #region VnRelease
+                var vnrelease = db.Set<VnRelease>();
+
+                #region MyRegion
+
+                foreach (Release release in releases)
+                {
+                    vnrelease.Add(new VnRelease
+                    {
+                        VnId = _vnid,
+                        ReleaseId = Convert.ToInt32(release.Id),
+                        Title = release.Name,
+                        Original = release.OriginalName,
+                        Released = release.Released.ToString(),
+                        ReleaseType = release.Type.ToString(),
+                        Patch = release.IsPatch.ToString(),
+                        Freeware = release.IsFreeware.ToString(),
+                        Doujin = release.IsDoujin.ToString(),
+                        Languages = ConvertToCsv(release.Languages),
+                        Website = release.Website,
+                        Notes = release.Notes,
+                        MinAge = Convert.ToInt32(release.MinimumAge),
+                        Gtin = release.Gtin,
+                        Catalog = release.Catalog,
+                        Platforms = ConvertToCsv(release.Platforms),
+                        Resolution = release.Resolution,
+                        Voiced = release.Voiced.ToString(),
+                        Animation = string.Join(",", release.Animation)
+                    });
+                }
+                
+
+                #endregion
+
                 #endregion
 
 
