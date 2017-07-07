@@ -24,6 +24,9 @@ using Brushes = System.Windows.Media.Brushes;
 using FontFamily = System.Drawing.FontFamily;
 using Size = System.Drawing.Size;
 using System.IO.Compression;
+using VisualNovelManagerv2.EntityFramework;
+using VisualNovelManagerv2.EntityFramework.Entity.VnInfo;
+using VisualNovelManagerv2.EntityFramework.Entity.VnOther;
 using VisualNovelManagerv2.ViewModel;
 using VisualNovelManagerv2.ViewModel.Global;
 using VndbSharp.Models.Common;
@@ -63,13 +66,16 @@ namespace VisualNovelManagerv2.Pages
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            Tasktest();
+            using (var db = new DatabaseContext("name=Database"))
+            {
+                var customers = db.Set<Categories>();
+                customers.Add(new Categories() { Category = "test2" });
+
+                db.SaveChanges();
+            }
 
         }
 
-        public static Task Tasktest()
-        {
-            return null;
-        }
+
     }
 }

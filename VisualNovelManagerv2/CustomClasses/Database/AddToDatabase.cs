@@ -1,22 +1,13 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data.SQLite;
-using System.Diagnostics;
 using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media.Imaging;
-using FirstFloor.ModernUI.Presentation;
-using GalaSoft.MvvmLight.CommandWpf;
-using VisualNovelManagerv2.ViewModel;
-using VisualNovelManagerv2.ViewModel.Global;
+using VisualNovelManagerv2.EntityFramework;
+using VisualNovelManagerv2.EntityFramework.Entity.VnInfo;
 using VisualNovelManagerv2.ViewModel.VisualNovels;
 using VndbSharp;
 using VndbSharp.Interfaces;
@@ -25,11 +16,12 @@ using VndbSharp.Models.Character;
 using VndbSharp.Models.Common;
 using VndbSharp.Models.Dumps;
 using VndbSharp.Models.Errors;
-using VndbSharp.Models.Producer;
 using VndbSharp.Models.Release;
 using VndbSharp.Models.VisualNovel;
 using static System.Globalization.CultureInfo;
 using VisualNovelMetadata = VndbSharp.Models.Release.VisualNovelMetadata;
+using VisualNovelManagerv2.EntityFramework.Entity.VnOther;
+using VisualNovelManagerv2.EntityFramework.Entity.VnTagTrait;
 
 namespace VisualNovelManagerv2.CustomClasses.Database
 {
@@ -141,7 +133,8 @@ namespace VisualNovelManagerv2.CustomClasses.Database
 
                     #endregion
 
-                    await Task.Run((() => AddDataToDb(visualNovels, releases, characters)));
+                    //await Task.Run((() => AddDataToDb(visualNovels, releases, characters)));
+                    await Task.Run((() => AddDbTest(visualNovels)));
                 }
                 catch (Exception ex)
                 {
@@ -605,6 +598,186 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                 }
                 connection.Close();
             }            
+        }
+
+        async Task AddDbTest(VndbResponse<VisualNovel> visualNovels)
+        {
+            
+            using (var db = new DatabaseContext("name=Database"))
+            {
+                #region VnInfo
+                var vninfo = db.Set<VnInfo>();
+                var vninfoanime = db.Set<EntityFramework.Entity.VnInfo.VnInfoAnime>();
+                var vninfolinks = db.Set<VnInfoLinks>();
+                var vninfotags = db.Set<VnInfoTags>();
+                var vntagdata = db.Set<VnTagData>();
+                var vnscreens = db.Set<VnInfoScreens>();
+                var vninforelations = db.Set<VnInfoRelations>();
+                var vninfostaff = db.Set<VnInfoStaff>();
+                foreach (VisualNovel visualNovel in visualNovels)
+                {
+                    #region VnInfo
+                    vninfo.Add(new VnInfo
+                    {
+                        VnId = Convert.ToInt32(visualNovel.Id),
+                        Title = visualNovel.Name,
+                        Original = visualNovel.OriginalName,
+                        Released = visualNovel.Released?.ToString() ?? null,
+                        Languages = ConvertToCsv(visualNovel.Languages),
+                        OriginalLanguage = ConvertToCsv(visualNovel.OriginalLanguages),
+                        Platforms = ConvertToCsv(visualNovel.Platforms),
+                        Aliases = ConvertToCsv(visualNovel.Aliases),
+                        Length = visualNovel.Length?.ToString(),
+                        Description = visualNovel.Description,
+                        ImageLink = visualNovel.Image,
+                        ImageNsfw = visualNovel.IsImageNsfw.ToString(),
+                        Popularity = visualNovel.Popularity,
+                        Rating = Convert.ToInt32(visualNovel.Rating)
+                    });
+                    #endregion
+
+                    #region VnInfoAnime
+                    foreach (AnimeMetadata anime in visualNovel.Anime)
+                    {
+                        vninfoanime.Add(new EntityFramework.Entity.VnInfo.VnInfoAnime
+                        {
+                            VnId = Convert.ToInt32(visualNovel.Id),
+                            AniDbId = anime.AniDbId,
+                            AnnId = anime.AnimeNewsNetworkId,
+                            AniNfoId = anime.AnimeNfoId,
+                            TitleEng = anime.RomajiTitle,
+                            TitleJpn = anime.KanjiTitle,
+                            Year = anime.AiringYear?.ToString() ?? null,
+                            AnimeType = anime.Type
+                        });
+                    }
+                    #endregion
+
+                    #region VnInfoLinks
+                    vninfolinks.Add(new VnInfoLinks
+                    {
+                        VnId = Convert.ToInt32(visualNovel.Id),
+                        Wikipedia = visualNovel.VisualNovelLinks.Wikipedia,
+                        Encubed = visualNovel.VisualNovelLinks.Encubed,
+                        Renai = visualNovel.VisualNovelLinks.Renai
+                    });
+                    #endregion
+
+                    #region VnTags
+                    IEnumerable<Tag> tagMatches = null;
+                    if (visualNovel.Tags.Count > 0)
+                    {
+                        tagMatches = await GetDetailsFromTagDump(visualNovel.Tags);
+                        if (Globals.StatusBar.ProgressPercentage != null)
+                            Globals.StatusBar.ProgressPercentage = (double)Globals.StatusBar.ProgressPercentage + ProgressIncrement;
+                        int count = 0;
+                        foreach (TagMetadata tag in visualNovel.Tags)
+                        {
+                            //makes sure the matches contains tagid before proceeding, prevents crashing with tags waiting for approval
+                            if (tagMatches.Any(c => c.Id == tag.Id))
+                            {
+                                vninfotags.Add(new VnInfoTags
+                                {
+                                    VnId = Convert.ToInt32(visualNovel.Id),
+                                    TagId = Convert.ToInt32(tag.Id),
+                                    TagName = tagMatches.ElementAt(count).Name,
+                                    Score = tag.Score,
+                                    Spoiler = tag.SpoilerLevel.ToString()
+                                });
+                                count++;
+                            }
+                        }
+                    }
+
+
+                    #endregion
+
+                    #region VnTagData
+
+                    if (tagMatches != null)
+                    {
+                        foreach (Tag tag in tagMatches)
+                        {
+                            vntagdata.Add(new VnTagData
+                            {
+                                TagId = Convert.ToInt32(tag.Id),
+                                Name = tag.Name,
+                                Description = tag.Description,
+                                Meta = tag.IsMeta.ToString(),
+                                Vns = Convert.ToInt32(tag.VisualNovels),
+                                Cat = tag.TagCategory.ToString(),
+                                Aliases = ConvertToCsv(tag.Aliases),
+                                Parents = string.Join(",", tag.Parents)
+                            });
+                        }
+                    }
+
+
+                    #endregion
+
+                    #region VnScreens
+                    if (visualNovel.Screenshots.Count > 0)
+                    {
+                        foreach (ScreenshotMetadata screenshot in visualNovel.Screenshots)
+                        {
+                            vnscreens.Add(new VnInfoScreens
+                            {
+                                VnId = Convert.ToInt32(visualNovel.Id),
+                                ImageUrl = screenshot.Url,
+                                ReleaseId = screenshot.ReleaseId,
+                                Nsfw = screenshot.IsNsfw.ToString(),
+                                Height = screenshot.Height,
+                                Width = screenshot.Width
+                            });
+                        }
+                    }
+                    #endregion
+
+                    #region VnInfoRelations
+                    if (visualNovel.Relations.Count > 0)
+                    {
+                        foreach (VisualNovelRelation relation in visualNovel.Relations)
+                        {
+                            vninforelations.Add(new VnInfoRelations
+                            {
+                                VnId = Convert.ToInt32(visualNovel.Id),
+                                RelationId = relation.Id,
+                                Relation = relation.Type.ToString(),
+                                Title = relation.Title,
+                                Original = relation.Original,
+                                Official = relation.Official ? "Yes" : "No"
+                            });
+                        }
+                    }
+                    #endregion
+
+                    #region VnInfoStaff
+                    if (visualNovel.Staff.Count > 0)
+                    {
+                        foreach (StaffMetadata staff in visualNovel.Staff)
+                        {
+                            vninfostaff.Add(new VnInfoStaff
+                            {
+                                VnId = Convert.ToInt32(visualNovel.Id),
+                                StaffId = Convert.ToInt32(staff.StaffId),
+                                AliasId = Convert.ToInt32(staff.AliasId),
+                                Name = staff.Name,
+                                Original = staff.Kanji,
+                                Role = staff.Role,
+                                Note = staff.Note
+                            });
+                        }
+                    }
+                    #endregion
+                }
+                #endregion
+                if (Globals.StatusBar.ProgressPercentage != null)
+                    Globals.StatusBar.ProgressPercentage = (double)Globals.StatusBar.ProgressPercentage + ProgressIncrement;
+
+
+                db.SaveChanges();
+            }
+
         }
 
         private async Task<IEnumerable<Tag>> GetDetailsFromTagDump(ReadOnlyCollection<TagMetadata> tags)

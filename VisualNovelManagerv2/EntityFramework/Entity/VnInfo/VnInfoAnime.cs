@@ -12,7 +12,7 @@ namespace VisualNovelManagerv2.EntityFramework.Entity.VnInfo
         public string AniNfoId { get; set; }
         public string TitleEng { get; set; }
         public string TitleJpn { get; set; }
-        public int? Year { get; set; }
+        public string Year { get; set; }
         public string AnimeType { get; set; }
     }
 }

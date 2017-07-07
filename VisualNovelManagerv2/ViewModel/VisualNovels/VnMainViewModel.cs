@@ -313,7 +313,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                         #region GetVnId
                         using (SQLiteCommand cmd = connection.CreateCommand())
                         {
-                            cmd.CommandText = "SELECT VnId FROM VnInfo WHERE PK_Id= @PK_Id";
+                            cmd.CommandText = "SELECT VnId FROM VnInfo WHERE PkId= @PK_Id";
                             cmd.Parameters.AddWithValue("@PK_Id", SelectedListItemIndex + 1);
                             Globals.VnId = Convert.ToInt32(cmd.ExecuteScalar());
                         }
@@ -322,7 +322,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                         #region SQLite Transaction
                         using (SQLiteTransaction transaction = connection.BeginTransaction())
                         {
-                            SQLiteCommand cmd = new SQLiteCommand("SELECT * FROM VnInfo WHERE PK_Id= @PK_Id", connection, transaction);
+                            SQLiteCommand cmd = new SQLiteCommand("SELECT * FROM VnInfo WHERE PkId= @PK_Id", connection, transaction);
                             cmd.Parameters.AddWithValue("@PK_Id", SelectedListItemIndex + 1);
                             SQLiteCommand cmd1 = new SQLiteCommand("SELECT * FROM VnInfoTags WHERE VnId=@VnId", connection, transaction);
                             cmd1.Parameters.AddWithValue("@VnId", Globals.VnId);
