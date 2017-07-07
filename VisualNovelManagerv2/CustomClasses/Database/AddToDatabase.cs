@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using VisualNovelManagerv2.EntityFramework;
+using VisualNovelManagerv2.EntityFramework.Entity.VnCharacter;
 using VisualNovelManagerv2.EntityFramework.Entity.VnInfo;
 using VisualNovelManagerv2.ViewModel.VisualNovels;
 using VndbSharp;
@@ -134,7 +135,7 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                     #endregion
 
                     //await Task.Run((() => AddDataToDb(visualNovels, releases, characters)));
-                    await Task.Run((() => AddDbTest(visualNovels)));
+                    await Task.Run((() => AddDbTest(visualNovels, characters)));
                 }
                 catch (Exception ex)
                 {
@@ -175,7 +176,7 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                     string sql = string.Empty;
                     SQLiteCommand cmd = null;
 
-                    #region VnInfo
+                    #region VnInfo Entity Framework
                     foreach (VisualNovel visualNovel in visualNovels)
                     {
                         #region VnInfo
@@ -600,7 +601,7 @@ namespace VisualNovelManagerv2.CustomClasses.Database
             }            
         }
 
-        async Task AddDbTest(VndbResponse<VisualNovel> visualNovels)
+        async Task AddDbTest(VndbResponse<VisualNovel> visualNovels, Collection<Character> characters)
         {
             
             using (var db = new DatabaseContext("name=Database"))
@@ -770,9 +771,102 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                     }
                     #endregion
                 }
-                #endregion
                 if (Globals.StatusBar.ProgressPercentage != null)
                     Globals.StatusBar.ProgressPercentage = (double)Globals.StatusBar.ProgressPercentage + ProgressIncrement;
+                #endregion
+
+                #region VnCharacter
+                IEnumerable<Trait> traitDump = await VndbUtils.GetTraitsDumpAsync();
+                if (Globals.StatusBar.ProgressPercentage != null)
+                    Globals.StatusBar.ProgressPercentage = (double)Globals.StatusBar.ProgressPercentage + ProgressIncrement;
+                var vncharacter = db.Set<VnCharacter>();
+                var vncharactertraits = db.Set<VnCharacterTraits>();
+                var vntraitdata = db.Set<VnTraitData>();
+                var vncharactervns = db.Set<VnCharacterVns>();
+                foreach (Character character in characters)
+                {
+                    #region VnCharacter
+                    vncharacter.Add(new VnCharacter
+                    {
+                       VnId = _vnid,
+                       CharacterId = Convert.ToInt32(character.Id),
+                       Name = character.Name,
+                       Original = character.OriginalName,
+                       Gender = character.Gender.ToString(),
+                       BloodType = character.BloodType.ToString(),
+                       Birthday = ConvertBirthday(character.Birthday),
+                       Aliases = ConvertToCsv(character.Aliases),
+                       Description = character.Description,
+                       ImageLink = character.Image,
+                       Bust = Convert.ToInt32(character.Bust),
+                       Waist = Convert.ToInt32(character.Waist),
+                       Hip = Convert.ToInt32(character.Hip),
+                       Height = Convert.ToInt32(character.Height),
+                       Weight = Convert.ToInt32(character.Weight)
+                    });
+                    #endregion
+
+                    #region VnCharacterTraits
+
+                    if (character.Traits.Count <= 0) continue;
+                    IEnumerable<Trait> traitMatches = GetDetailsFromTraitDump(traitDump, character.Traits);
+                    int count = 0;
+                    foreach (TraitMetadata trait in character.Traits)
+                    {
+                        if (traitMatches.Any(c => c.Id == trait.Id))//prevents crashes with awaiting traits
+                        {
+                            vncharactertraits.Add(new VnCharacterTraits
+                            {
+                                CharacterId = Convert.ToInt32(character.Id),
+                                TraitId = Convert.ToInt32(trait.Id),
+                                TraitName = traitMatches.ElementAt(count).Name,
+                                SpoilerLevel = trait.SpoilerLevel.ToString() ?? null,
+                            });
+                            count++;
+                        }
+                    }
+
+                    #endregion
+
+                    #region TraitMatches
+                    if (traitMatches != null)
+                    {
+                        foreach (Trait trait in traitMatches)
+                        {
+                            vntraitdata.Add(new VnTraitData
+                            {
+                                TraitId = Convert.ToInt32(trait.Id),
+                                Name = trait.Name,
+                                Description = trait.Description,
+                                Meta = trait.IsMeta.ToString(),
+                                Chars = Convert.ToInt32(trait.Characters),
+                                Aliases = ConvertToCsv(trait.Aliases),
+                                Parents = string.Join(",", trait.Parents)
+                            });
+                        }
+                    }
+
+
+                    #endregion
+
+                    #region VnCharacterVns
+                    foreach (VndbSharp.Models.Character.VisualNovelMetadata vn in character.VisualNovels)
+                    {
+                        vncharactervns.Add(new VnCharacterVns
+                        {
+                            CharacterId = Convert.ToInt32(character.Id),
+                            VnId = Convert.ToInt32(vn.Id),
+                            ReleaseId = Convert.ToInt32(vn.ReleaseId),
+                            SpoilerLevel = vn.SpoilerLevel.ToString() ?? null,
+                            Role = vn.Role.ToString()
+                        });
+                    }
+                    #endregion
+
+                }
+                if (Globals.StatusBar.ProgressPercentage != null)
+                    Globals.StatusBar.ProgressPercentage = (double)Globals.StatusBar.ProgressPercentage + ProgressIncrement;
+                #endregion
 
 
                 db.SaveChanges();

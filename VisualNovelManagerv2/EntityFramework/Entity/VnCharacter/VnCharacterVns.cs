@@ -9,7 +9,7 @@ namespace VisualNovelManagerv2.EntityFramework.Entity.VnCharacter
         public int? CharacterId { get; set; }
         public int? VnId { get; set; }
         public int? ReleaseId { get; set; }
-        public int? SpoilerLevel { get; set; }
+        public string SpoilerLevel { get; set; }
         public string Role { get; set; }
     }
 }
