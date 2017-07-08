@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Data.Entity.Core;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -17,6 +18,8 @@ using System.Net;
 using VisualNovelManagerv2.Converters;
 using VisualNovelManagerv2.CustomClasses;
 using VisualNovelManagerv2.Design.VisualNovel;
+using VisualNovelManagerv2.EntityFramework;
+using VisualNovelManagerv2.EntityFramework.Entity.VnInfo;
 
 namespace VisualNovelManagerv2.ViewModel.VisualNovels
 {
@@ -96,33 +99,19 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             try
             {
                 List<Screenshot> screenshotList = new List<Screenshot>();
-                using (SQLiteConnection connection = new SQLiteConnection(Globals.ConnectionString))
+                using (var db = new DatabaseContext("Database"))
                 {
-                    connection.Open();
-
-                    using (SQLiteCommand cmd = connection.CreateCommand())
+                    foreach (VnInfoScreens screens in db.Set<VnInfoScreens>().Where(x=>x.VnId == Globals.VnId))
                     {
-                        cmd.CommandText = "SELECT * FROM VnInfoScreens WHERE VnId = @VnId ";
-                        cmd.Parameters.AddWithValue("@VnId", Globals.VnId);
-                        SQLiteDataReader reader = cmd.ExecuteReader();
-
-                        while (reader.Read())
+                        screenshotList.Add(new Screenshot
                         {
-                            screenshotList.Add(new Screenshot
-                            {
-                                Url = (string) reader["ImageUrl"],
-                                IsNsfw = Convert.ToBoolean(reader["Nsfw"])
-                            });
-                        }
+                            Url = screens.ImageUrl,
+                            IsNsfw = Convert.ToBoolean(screens.Nsfw)
+                        });
                     }
-                    connection.Close();
+                    db.Dispose();
                 }
                 return screenshotList;
-            }
-            catch (System.Data.SQLite.SQLiteException ex)
-            {
-                DebugLogging.WriteDebugLog(ex);
-                throw;
             }
             catch (Exception ex)
             {
