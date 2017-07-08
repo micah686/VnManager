@@ -17,6 +17,11 @@ namespace VisualNovelManagerv2.Converters
             {                                
                 List<string> websiteList = new List<string>();
 
+                if (string.IsNullOrEmpty(text) && string.IsNullOrWhiteSpace(text))
+                {
+                    return new FlowDocument();
+                }
+
                 websiteList = FindUrls(text, websiteList);
                 return CreateHyperlinks(text, websiteList);
             }
