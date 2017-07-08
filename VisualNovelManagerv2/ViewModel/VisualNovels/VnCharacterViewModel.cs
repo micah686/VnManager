@@ -18,6 +18,10 @@ using System.Windows.Documents;
 using System.Windows.Media.Imaging;
 using VisualNovelManagerv2.Converters;
 using VisualNovelManagerv2.CustomClasses;
+using VisualNovelManagerv2.EntityFramework;
+using VisualNovelManagerv2.EntityFramework.Entity.VnCharacter;
+using VisualNovelManagerv2.EntityFramework.Entity.VnRelease;
+using VisualNovelManagerv2.EntityFramework.Entity.VnTagTrait;
 using VndbSharp.Models.Common;
 // ReSharper disable ExplicitCallerInfoArgument
 
@@ -151,29 +155,14 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             CharacterNameCollection.Clear();
             try
             {
-                using (SQLiteConnection connection = new SQLiteConnection(Globals.ConnectionString))
+                using (var db = new DatabaseContext("Database"))
                 {
-                    connection.Open();
-
-                    using (SQLiteCommand cmd = connection.CreateCommand())
+                    foreach (VnCharacter character in db.Set<VnCharacter>().Where(x => x.VnId == Globals.VnId))
                     {
-                        cmd.CommandText = "SELECT Name FROM VnCharacter WHERE VnId = @VnId ";
-                        cmd.Parameters.AddWithValue("@VnId", Globals.VnId);
-                        SQLiteDataReader reader = cmd.ExecuteReader();
-
-                        while (reader.Read())
-                        {
-                            string name = reader["Name"].ToString();
-                            _characterNameCollection.Add(name);
-                        }
+                        _characterNameCollection.Add(character.Name);
                     }
-                    connection.Close();
+                    db.Dispose();
                 }
-            }
-            catch (System.Data.SQLite.SQLiteException ex)
-            {
-                DebugLogging.WriteDebugLog(ex);
-                throw;
             }
             catch (Exception ex)
             {
@@ -189,25 +178,16 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             List<string> characterUrlList = new List<string>();
             try
             {
-                using (SQLiteConnection connection = new SQLiteConnection(Globals.ConnectionString))
+                using (var db = new DatabaseContext("Database"))
                 {
-                    connection.Open();
-
-                    using (SQLiteCommand cmd = connection.CreateCommand())
+                    foreach (var character in db.Set<VnCharacter>().Where(x => x.VnId == Globals.VnId).Select(p => p.ImageLink))
                     {
-                        cmd.CommandText = "SELECT ImageLink FROM VnCharacter WHERE VnId = @VnId ";
-                        cmd.Parameters.AddWithValue("@VnId", Globals.VnId);
-                        SQLiteDataReader reader = cmd.ExecuteReader();
-
-                        while (reader.Read())
-                        {
-                            characterUrlList.Add(reader["ImageLink"].ToString());
-                        }
+                        characterUrlList.Add(character);
                     }
-                    connection.Close();
+                    db.Dispose();
                 }
             }
-            catch (System.Data.SQLite.SQLiteException ex)
+            catch (Exception ex)
             {
                 DebugLogging.WriteDebugLog(ex);
                 throw;
@@ -270,70 +250,39 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 {
                     TraitDescription.Blocks.Clear();
                 }
-                //TraitDescription.Blocks.Clear();
-                DataSet dataSet = new DataSet();
-                int characterId;
-                using (SQLiteConnection connection = new SQLiteConnection(Globals.ConnectionString))
+
+                using (var db = new DatabaseContext("Database"))
                 {
-                    connection.Open();
-                    SQLiteCommand cmd = new SQLiteCommand("SELECT CharacterId FROM VnCharacter WHERE Name= @Name AND VnId=@VnId", connection);
-                    cmd.Parameters.AddWithValue("@Name", SelectedCharacter);
-                    cmd.Parameters.AddWithValue("@VnId", Globals.VnId);
-                    characterId = Convert.ToInt32(cmd.ExecuteScalar());
-                    connection.Close();
-                }
-                using (SQLiteConnection connection = new SQLiteConnection(Globals.ConnectionString))
-                {
-                    connection.Open();
-                    SQLiteCommand cmd = new SQLiteCommand("SELECT * FROM VnCharacter WHERE Name= @Name AND VnId=@VnId", connection);
-                    cmd.Parameters.AddWithValue("@Name", SelectedCharacter);
-                    cmd.Parameters.AddWithValue("@VnId", Globals.VnId);
-                    SQLiteDataAdapter adapter = new SQLiteDataAdapter(cmd);
-                    adapter.Fill(dataSet);
-                    connection.Close();
-                }
-                if (dataSet.Tables[0].Rows.Count < 1) return;
-                {
-                    object[] characterInfo = dataSet.Tables[0].Rows[0].ItemArray;
-                    VnCharacterModel.Name = characterInfo[3].ToString();
-                    VnCharacterModel.OriginalName = characterInfo[4].ToString();
-                    VnCharacterModel.Gender = GetGenderIcon(characterInfo[5].ToString());
-                    VnCharacterModel.BloodType = characterInfo[6].ToString();
-                    VnCharacterModel.Birthday = characterInfo[7].ToString();
-
-                    if (string.IsNullOrEmpty(characterInfo[8].ToString()))
-                        VnCharacterModel.Aliases = string.Empty;
-                    else
-                        VnCharacterModel.Aliases = characterInfo[8].ToString().Contains(",")
-                            ? characterInfo[8].ToString().Replace(",", ", ")
-                            : characterInfo[8].ToString();
-                    VnCharacterModel.Description = ConvertRichTextDocument.ConvertToFlowDocument(characterInfo[9].ToString());
-                    string path =
-                        $@"{Globals.DirectoryPath}\Data\images\characters\{Globals.VnId}\{
-                                Path.GetFileName(characterInfo[10].ToString())
-                            }";
-                    BitmapImage bImage = new BitmapImage(new Uri(path));
-                    VnCharacterModel.Image = bImage;
-
-                    VnCharacterModel.Bust = characterInfo[11].ToString();
-                    VnCharacterModel.Waist = characterInfo[12].ToString();
-                    VnCharacterModel.Hip = characterInfo[13].ToString();
-                    VnCharacterModel.Height = characterInfo[14].ToString();
-                    VnCharacterModel.Weight = characterInfo[15].ToString();
-
-
-                    using (SQLiteConnection connection = new SQLiteConnection(Globals.ConnectionString))
+                    foreach (var character in db.Set<VnCharacter>().Where(n => n.Name == SelectedCharacter).Where(i => i.VnId == Globals.VnId))
                     {
-                        connection.Open();
-                        SQLiteCommand cmd = new SQLiteCommand("SELECT * FROM VnCharacterTraits WHERE CharacterId=@CharacterId", connection);
-                        cmd.Parameters.AddWithValue("@CharacterId", characterId);
-                        SQLiteDataReader reader = cmd.ExecuteReader();
-                        while (reader.Read())
+                        VnCharacterModel.Name = character.Name;
+                        VnCharacterModel.OriginalName = character.Original;
+                        VnCharacterModel.Gender = GetGenderIcon(character.Gender);
+                        VnCharacterModel.BloodType = character.BloodType;
+                        VnCharacterModel.Birthday = character.Birthday;
+                        VnCharacterModel.Description = ConvertRichTextDocument.ConvertToFlowDocument(character.Description);
+                        if (string.IsNullOrEmpty(character.Aliases))
+                            VnCharacterModel.Aliases = string.Empty;
+                        else
+                            VnCharacterModel.Aliases = character.Aliases.Contains(",")
+                                ? character.Aliases.Replace(",", ", ")
+                                : character.Aliases;
+
+                        string path = $@"{Globals.DirectoryPath}\Data\images\characters\{Globals.VnId}\{Path.GetFileName(character.ImageLink)}";
+                        VnCharacterModel.Image = new BitmapImage(new Uri(path));
+                        VnCharacterModel.Bust = character.Bust.ToString();
+                        VnCharacterModel.Waist = character.Waist.ToString();
+                        VnCharacterModel.Hip = character.Hip.ToString();
+                        VnCharacterModel.Height = character.Height.ToString();
+                        VnCharacterModel.Weight = character.Weight.ToString();
+
+                        foreach (VnCharacterTraits trait in db.Set<VnCharacterTraits>().Where(c=>c.CharacterId== character.CharacterId))
                         {
-                            _traitsCollection.Add(reader["TraitName"].ToString());
+                            _traitsCollection.Add(trait.TraitName);
                         }
-                        connection.Close();
-                    }
+                        break;
+                    }                    
+                    db.Dispose();
                 }
             }
             catch (Exception exception)
@@ -348,22 +297,15 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             if (SelectedTraitIndex >= 0)
                 try
                 {
-                    using (SQLiteConnection connection = new SQLiteConnection(Globals.ConnectionString))
+                    using (var db = new DatabaseContext("Database"))
                     {
-                        connection.Open();
-                        using (SQLiteCommand cmd = connection.CreateCommand())
+                        foreach (string trait in db.Set<VnTraitData>().Where(n => n.Name == SelectedTrait).Select(d => d.Description))
                         {
-                            cmd.CommandText = "SELECT Description FROM VnTraitData WHERE Name= @Name";
-                            cmd.Parameters.AddWithValue("@Name", SelectedTrait);
-
-                            TraitDescription = ConvertRichTextDocument.ConvertToFlowDocument(cmd.ExecuteScalar().ToString());
+                            TraitDescription = ConvertRichTextDocument.ConvertToFlowDocument(trait);
+                            break;
                         }
+                        db.Dispose();
                     }
-                }
-                catch (SQLiteException ex)
-                {
-                    DebugLogging.WriteDebugLog(ex);
-                    throw;
                 }
                 catch (Exception ex)
                 {

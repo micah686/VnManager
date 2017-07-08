@@ -115,7 +115,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                     {
                         _releaseNameCollection.Add(release.Title);
                     }
-                    db.SaveChanges();
+                    db.Dispose();
                 }
             }
 
