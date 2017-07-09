@@ -29,6 +29,8 @@ using Brushes = System.Windows.Media.Brushes;
 using VisualNovelManagerv2.CustomClasses;
 using VisualNovelManagerv2.EntityFramework;
 using VisualNovelManagerv2.EntityFramework.Entity.VnInfo;
+using VisualNovelManagerv2.EntityFramework.Entity.VnOther;
+using VisualNovelManagerv2.EntityFramework.Entity.VnTagTrait;
 using VisualNovelManagerv2.ViewModel.Global;
 using VndbSharp;
 using VndbSharp.Models.Dumps;
@@ -293,82 +295,19 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                     VnInfoTagCollection.Clear();
                     VnInfoAnimeCollection.Clear();
                     _tagDescription?.Blocks.Clear();
-                    DataSet dataSet = new DataSet();
-                    SQLiteDataAdapter adapter = new SQLiteDataAdapter();
-                    using (SQLiteConnection connection = new SQLiteConnection(Globals.ConnectionString))
+
+                    using (var db = new DatabaseContext("Database"))
                     {
-                        connection.Open();
-
-                        #region GetVnId
-                        using (SQLiteCommand cmd = connection.CreateCommand())
+                        foreach (int vnid in db.Set<VnInfo>().Where(i=>i.PkId==(SelectedListItemIndex +1)).Select(v=>v.VnId))
                         {
-                            cmd.CommandText = "SELECT VnId FROM VnInfo WHERE PkId= @PK_Id";
-                            cmd.Parameters.AddWithValue("@PK_Id", SelectedListItemIndex + 1);
-                            Globals.VnId = Convert.ToInt32(cmd.ExecuteScalar());
+                            Globals.VnId = vnid;
                         }
-                        #endregion
-
-                        #region SQLite Transaction
-                        using (SQLiteTransaction transaction = connection.BeginTransaction())
-                        {
-                            SQLiteCommand cmd = new SQLiteCommand("SELECT * FROM VnInfo WHERE PkId= @PK_Id", connection, transaction);
-                            cmd.Parameters.AddWithValue("@PK_Id", SelectedListItemIndex + 1);
-                            SQLiteCommand cmd1 = new SQLiteCommand("SELECT * FROM VnInfoTags WHERE VnId=@VnId", connection, transaction);
-                            cmd1.Parameters.AddWithValue("@VnId", Globals.VnId);
-                            SQLiteCommand cmd2 = new SQLiteCommand("SELECT * FROM VnInfoRelations WHERE VnId=@VnId", connection, transaction);
-                            cmd2.Parameters.AddWithValue("@VnId", Globals.VnId);
-                            SQLiteCommand cmd3 = new SQLiteCommand("SELECT * FROM VnInfoAnime WHERE VnId=@VnId", connection, transaction);
-                            cmd3.Parameters.AddWithValue("@VnId", Globals.VnId);
-                            SQLiteCommand cmd4 = new SQLiteCommand("SELECT * FROM VnInfoLinks WHERE VnId=@VnId", connection, transaction);
-                            cmd4.Parameters.AddWithValue("@VnId", Globals.VnId);
-                            SQLiteCommand cmd5 = new SQLiteCommand("SELECT * FROM VnInfoStaff WHERE VnId=@VnId", connection, transaction);
-                            cmd5.Parameters.AddWithValue("@VnId", Globals.VnId);
-                            SQLiteCommand cmd6 = new SQLiteCommand("SELECT * FROM VnInfoScreens WHERE VnId=@VnId", connection, transaction);
-                            cmd6.Parameters.AddWithValue("@VnId", Globals.VnId);
-                            SQLiteCommand cmd7 = new SQLiteCommand("SELECT * FROM VnUserData WHERE VnId=@VnId", connection, transaction);
-                            cmd7.Parameters.AddWithValue("@VnId", Globals.VnId);
-
-                            dataSet.Tables.Add("VnInfo");
-                            dataSet.Tables.Add("VnInfoTags");
-                            dataSet.Tables.Add("VnInfoRelations");
-                            dataSet.Tables.Add("VnInfoAnime");
-                            dataSet.Tables.Add("VnInfoLinks");
-                            dataSet.Tables.Add("VnInfoStaff");
-                            dataSet.Tables.Add("VnInfoScreens");
-                            dataSet.Tables.Add("VnUserData");
-
-                            adapter.SelectCommand = cmd;
-                            adapter.Fill(dataSet.Tables["VnInfo"]);
-                            adapter.SelectCommand = cmd1;
-                            adapter.Fill(dataSet.Tables["VnInfoTags"]);
-                            adapter.SelectCommand = cmd2;
-                            adapter.Fill(dataSet.Tables["VnInfoRelations"]);
-                            adapter.SelectCommand = cmd3;
-                            adapter.Fill(dataSet.Tables["VnInfoAnime"]);
-                            adapter.SelectCommand = cmd4;
-                            adapter.Fill(dataSet.Tables["VnInfoLinks"]);
-                            adapter.SelectCommand = cmd5;
-                            adapter.Fill(dataSet.Tables["VnInfoStaff"]);
-                            adapter.SelectCommand = cmd6;
-                            adapter.Fill(dataSet.Tables["VnInfoScreens"]);
-                            adapter.SelectCommand = cmd7;
-                            adapter.Fill(dataSet.Tables["VnUserData"]);
-
-                            transaction.Commit();
-                        }
-                        #endregion
-
-                        connection.Close();
+                        db.Dispose();
                     }
-                    //BindVnData(dataSet);
-                    await Task.Run((() => BindVnData(dataSet)));
+
+                    await Task.Run((BindVnData));
                     await Task.Run((() => VnScreenshotViewModel.DownloadScreenshots()));
                     UpdateViews();
-                }
-                catch (SQLiteException ex)
-                {
-                    DebugLogging.WriteDebugLog(ex);
-                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -379,7 +318,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             
         }
 
-        private async Task BindVnData(DataSet dataSet)
+        private async Task BindVnData()
         {
             double ProgressIncrement = 11.11111111111111;
             Globals.StatusBar.ProgressPercentage = 0;
@@ -387,166 +326,215 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             Globals.StatusBar.ProgressText = "Loading Main Data";
             try
             {
-                object[] vninfo = dataSet.Tables[0].Rows[0].ItemArray;
-
-                #region Collections
-                DataTable dataTable = new DataTable();
-                dataTable = dataSet.Tables["VnInfoRelations"];
-                foreach (DataRow row in dataTable.Rows)
+                using (var db = new DatabaseContext("Database"))
                 {
-                    await Application.Current.Dispatcher.BeginInvoke(new Action(() => this.VnInfoRelation.Add(
-                        new VnInfoRelation
+                    
+
+                    #region VnInfo
+
+                    foreach (VnInfo vnInfo in db.Set<VnInfo>().Where(i => i.PkId == (SelectedListItemIndex + 1)))
+                    {
+                        Globals.VnId = vnInfo.VnId;
+
+
+                        foreach (string language in GetLangauges(vnInfo.Languages))
                         {
-                            Title = row["Title"].ToString(),
-                            Original = row["Original"].ToString(),
-                            Relation = row["Relation"].ToString(),
-                            Official = row["Official"].ToString()
-                        })));
-                }
-                if (Globals.StatusBar.ProgressPercentage != null)
-                    Globals.StatusBar.ProgressPercentage = (double)Globals.StatusBar.ProgressPercentage + ProgressIncrement;
-
-                dataTable = dataSet.Tables["VnInfoTags"];
-                foreach (DataRow row in dataTable.Rows)
-                {
-                    await Application.Current.Dispatcher.BeginInvoke(
-                        new Action(() => VnInfoTagCollection.Add(row["TagName"].ToString())));
-                }
-                if (Globals.StatusBar.ProgressPercentage != null)
-                    Globals.StatusBar.ProgressPercentage = (double)Globals.StatusBar.ProgressPercentage + ProgressIncrement;
-
-                dataTable = dataSet.Tables["VnInfoAnime"];
-                foreach (DataRow row in dataTable.Rows)
-                {
-                    object row2 = row.ItemArray[2];
-                    object row3 = row.ItemArray[3];
-                    string anidb = null;
-                    string ann = null;
-                    if (row2 != null)
-                    {
-                        anidb = $"anidb.net/a{row.ItemArray[2].ToString()}";
-                    }
-                    if (row3 != null)
-                    {
-                        ann = $"animenewsnetwork.com/encyclopedia/anime.php?id={row.ItemArray[2].ToString()}";
-                    }
-                    //TODO: AnimeNFo not added because of inconsistant url naming scheme
-                    await Application.Current.Dispatcher.BeginInvoke(new Action(() => VnInfoAnimeCollection.Add(new VnInfoAnime
-                    {
-                        Title = row["TitleEng"].ToString(),
-                        OriginalName = row["TitleJpn"].ToString(),
-                        Year = row["Year"].ToString(),
-                        AnimeType = row["AnimeType"].ToString(),
-                        AniDb = anidb,
-                        Ann = ann
-                    })));
-                }
-                if (Globals.StatusBar.ProgressPercentage != null)
-                    Globals.StatusBar.ProgressPercentage = (double)Globals.StatusBar.ProgressPercentage + ProgressIncrement;
-
-                IEnumerable<string> languages = GetLangauges(vninfo[5].ToString());
-                foreach (string language in languages)
-                {
-                    await Application.Current.Dispatcher.BeginInvoke(new Action(() => LanguageCollection.Add(new LanguagesCollection
-                        { VnMainModel = new VnMainModel { Languages = new BitmapImage(new Uri(language)) } })));
-                }
-                if (Globals.StatusBar.ProgressPercentage != null)
-                    Globals.StatusBar.ProgressPercentage = (double)Globals.StatusBar.ProgressPercentage + ProgressIncrement;
-
-                IEnumerable<string> origLanguages = GetLangauges(vninfo[6].ToString());
-                foreach (string language in origLanguages)
-                {
-                    await Application.Current.Dispatcher.BeginInvoke(new Action(() => OriginalLanguagesCollection.Add(new OriginalLanguagesCollection
-                        { VnMainModel = new VnMainModel { OriginalLanguages = new BitmapImage(new Uri(language)) } })));
-                }
-                if (Globals.StatusBar.ProgressPercentage != null)
-                    Globals.StatusBar.ProgressPercentage = (double)Globals.StatusBar.ProgressPercentage + ProgressIncrement;
-
-                #endregion
-
-                #region ComplexBinding
-                await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.VnIcon = LoadIcon())));
-                if (Globals.StatusBar.ProgressPercentage != null)
-                    Globals.StatusBar.ProgressPercentage = (double)Globals.StatusBar.ProgressPercentage + ProgressIncrement;
-
-                await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Description = ConvertRichTextDocument.ConvertToFlowDocument(vninfo[10].ToString()))));
-                if (Globals.StatusBar.ProgressPercentage != null)
-                    Globals.StatusBar.ProgressPercentage = (double)Globals.StatusBar.ProgressPercentage + ProgressIncrement;
-                DownloadCoverImage(vninfo[11].ToString(), Convert.ToBoolean(vninfo[12]));
-                if (Globals.StatusBar.ProgressPercentage != null)
-                    Globals.StatusBar.ProgressPercentage = (double)Globals.StatusBar.ProgressPercentage + ProgressIncrement;
-
-                #endregion
-
-                #region TextBinding
-                await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Name = vninfo[2].ToString())));
-                await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Original = vninfo[3].ToString())));
-                await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Released = vninfo[4].ToString())));
-                await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Platforms = vninfo[7].ToString())));
-                await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Aliases = vninfo[8].ToString())));
-                await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Length = vninfo[9].ToString())));
-                await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Popularity = Math.Round(Convert.ToDouble(vninfo[13]), 2))));
-                await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Rating = Convert.ToInt32(vninfo[14]))));
-                #endregion
-
-                #region UserData Bind
-                object[] vnuserdata = dataSet.Tables[7].Rows[0].ItemArray;
-
-                if (vnuserdata[4].ToString() == "")
-                {
-                    await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.LastPlayed = "Never")));
-                }
-                else
-                {
-                    if ((Convert.ToDateTime(vnuserdata[4]) - DateTime.Today).Days > -7)//need to set to negative, for the difference in days
-                    {
-                        if (Convert.ToDateTime(vnuserdata[4]) == DateTime.Today)
-                        {
-                            await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.LastPlayed = "Today")));
+                            await Application.Current.Dispatcher.BeginInvoke(new Action(() => LanguageCollection.Add(
+                                new LanguagesCollection
+                                { VnMainModel = new VnMainModel { Languages = new BitmapImage(new Uri(language)) } })));
                         }
-                        else if ((Convert.ToDateTime(vnuserdata[4]) - DateTime.Today).Days > -2 && (Convert.ToDateTime(vnuserdata[4]) - DateTime.Today).Days < 0)
+                        if (Globals.StatusBar.ProgressPercentage != null)
+                            Globals.StatusBar.ProgressPercentage =
+                                (double)Globals.StatusBar.ProgressPercentage + ProgressIncrement;
+
+                        foreach (string language in GetLangauges(vnInfo.OriginalLanguage))
                         {
-                            await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.LastPlayed = "Yesterday")));
+                            await Application.Current.Dispatcher.BeginInvoke(new Action(
+                                () => OriginalLanguagesCollection.Add(new OriginalLanguagesCollection
+                                {
+                                    VnMainModel =
+                                        new VnMainModel { OriginalLanguages = new BitmapImage(new Uri(language)) }
+                                })));
+                        }
+                        if (Globals.StatusBar.ProgressPercentage != null)
+                            Globals.StatusBar.ProgressPercentage =
+                                (double)Globals.StatusBar.ProgressPercentage + ProgressIncrement;
+
+                        await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Description =
+                            ConvertRichTextDocument.ConvertToFlowDocument(vnInfo.Description))));
+                        if (Globals.StatusBar.ProgressPercentage != null)
+                            Globals.StatusBar.ProgressPercentage =
+                                (double)Globals.StatusBar.ProgressPercentage + ProgressIncrement;
+
+                        DownloadCoverImage(vnInfo.ImageLink, Convert.ToBoolean(vnInfo.ImageNsfw));
+                        if (Globals.StatusBar.ProgressPercentage != null)
+                            Globals.StatusBar.ProgressPercentage =
+                                (double)Globals.StatusBar.ProgressPercentage + ProgressIncrement;
+
+                        await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Name =
+                            vnInfo.Title)));
+                        await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Original =
+                            vnInfo.Original)));
+                        await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Released =
+                            vnInfo.Released)));
+                        await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Platforms =
+                            vnInfo.Platforms)));
+                        await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Aliases =
+                            vnInfo.Aliases)));
+                        await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Length =
+                            vnInfo.Length)));
+                        await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Popularity =
+                            Math.Round(Convert.ToDouble(vnInfo.Popularity), 2))));
+                        await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Rating =
+                            Convert.ToInt32(vnInfo.Rating))));
+                        break;
+                    }
+
+
+                    #endregion
+
+                    #region VnIcon
+                    await Application.Current.Dispatcher.BeginInvoke(
+                        new Action((() => VnMainModel.VnIcon = LoadIcon())));
+                    if (Globals.StatusBar.ProgressPercentage != null)
+                        Globals.StatusBar.ProgressPercentage =
+                            (double)Globals.StatusBar.ProgressPercentage + ProgressIncrement;
+                    #endregion
+
+                    #region VnAnime
+
+                    foreach (var anime in db.Set<EntityFramework.Entity.VnInfo.VnInfoAnime>()
+                        .Where(v => v.VnId == Globals.VnId))
+                    {
+                        await Application.Current.Dispatcher.BeginInvoke(new Action(() => VnInfoAnimeCollection.Add(
+                            new VnInfoAnime
+                            {
+                                Title = anime.TitleEng,
+                                OriginalName = anime.TitleJpn,
+                                Year = anime.Year,
+                                AnimeType = anime.AnimeType,
+                                AniDb = $"anidb.net/a{anime.AniDbId}",
+                                Ann = $"animenewsnetwork.com/encyclopedia/anime.php?id={anime.AnnId}",
+                                //TODO: AnimeNFo not added because of inconsistant url naming scheme
+                            })));
+                    }
+                    if (Globals.StatusBar.ProgressPercentage != null)
+                        Globals.StatusBar.ProgressPercentage =
+                            (double) Globals.StatusBar.ProgressPercentage + ProgressIncrement;
+
+                    #endregion
+
+                    #region VnTags
+
+                    foreach (string tag in db.Set<VnInfoTags>().Where(v => v.VnId == Globals.VnId)
+                        .Select(n => n.TagName))
+                    {
+                        await Application.Current.Dispatcher.BeginInvoke(
+                            new Action(() => VnInfoTagCollection.Add(tag)));
+                    }
+                    if (Globals.StatusBar.ProgressPercentage != null)
+                        Globals.StatusBar.ProgressPercentage =
+                            (double) Globals.StatusBar.ProgressPercentage + ProgressIncrement;
+
+                    #endregion
+
+                    #region VnRelations
+
+                    foreach (VnInfoRelations relation in db.Set<VnInfoRelations>().Where(v => v.VnId == Globals.VnId))
+                    {
+                        await Application.Current.Dispatcher.BeginInvoke(new Action((() => this.VnInfoRelation.Add(
+                            new VnInfoRelation
+                            {
+                                Title = relation.Title,
+                                Original = relation.Original,
+                                Relation = relation.Relation,
+                                Official = relation.Official
+                            }))));
+                    }
+                    if (Globals.StatusBar.ProgressPercentage != null)
+                        Globals.StatusBar.ProgressPercentage =
+                            (double) Globals.StatusBar.ProgressPercentage + ProgressIncrement;
+
+                    #endregion
+
+                    #region VnUserData
+
+                    foreach (var userData in db.Set<VnUserData>().Where(v => v.VnId == Globals.VnId))
+                    {
+                        if (string.IsNullOrEmpty(userData.LastPlayed))
+                        {
+                            await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.LastPlayed =
+                                "Never")));
                         }
                         else
                         {
-                            await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.LastPlayed = Convert.ToDateTime(vnuserdata[4]).DayOfWeek.ToString())));
+                            if ((Convert.ToDateTime(userData.LastPlayed) - DateTime.Today).Days > -7
+                            ) //need to set to negative, for the difference in days
+                            {
+                                if (Convert.ToDateTime(userData.LastPlayed) == DateTime.Today)
+                                {
+                                    await Application.Current.Dispatcher.BeginInvoke(
+                                        new Action((() => VnMainModel.LastPlayed = "Today")));
+                                }
+                                else if ((Convert.ToDateTime(userData.LastPlayed) - DateTime.Today).Days > -2 &&
+                                         (Convert.ToDateTime(userData.LastPlayed) - DateTime.Today).Days < 0)
+                                {
+                                    await Application.Current.Dispatcher.BeginInvoke(
+                                        new Action((() => VnMainModel.LastPlayed = "Yesterday")));
+                                }
+                                else
+                                {
+                                    await Application.Current.Dispatcher.BeginInvoke(new Action(
+                                        (() => VnMainModel.LastPlayed =
+                                            Convert.ToDateTime(userData.LastPlayed).DayOfWeek.ToString())));
+                                }
+                            }
+                            else
+                            {
+                                await Application.Current.Dispatcher.BeginInvoke(
+                                    new Action((() => VnMainModel.LastPlayed = userData.LastPlayed)));
+                            }
+                        }
+
+
+
+                        string[] splitPlayTime =
+                            userData.PlayTime.Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries);
+                        List<int> timeList = new List<int>(4);
+                        timeList.AddRange(splitPlayTime.Select(time => Convert.ToInt32(time)));
+                        TimeSpan timeSpan = new TimeSpan(timeList[0], timeList[1], timeList[2], timeList[3]);
+
+                        if (timeSpan < new TimeSpan(0, 0, 0, 1))
+                        {
+                            await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.PlayTime =
+                                "Never")));
+                        }
+                        if (timeSpan < new TimeSpan(0, 0, 0, 60))
+                        {
+                            await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.PlayTime =
+                                "Less than 1 minute")));
+                        }
+                        else
+                        {
+                            string formatted =
+                                $"{(timeSpan.Duration().Days > 0 ? $"{timeSpan.Days:0} day{(timeSpan.Days == 1 ? string.Empty : "s")}, " : string.Empty)}" +
+                                $"{(timeSpan.Duration().Hours > 0 ? $"{timeSpan.Hours:0} hour{(timeSpan.Hours == 1 ? string.Empty : "s")}, " : string.Empty)}" +
+                                $"{(timeSpan.Duration().Minutes > 0 ? $"{timeSpan.Minutes:0} minute{(timeSpan.Minutes == 1 ? string.Empty : "s")} " : string.Empty)}";
+                            await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.PlayTime =
+                                formatted)));
                         }
                     }
-                    else
-                    {
-                        await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.LastPlayed = vnuserdata[4].ToString())));
-                    }
-                }
+                    if (Globals.StatusBar.ProgressPercentage != null)
+                        Globals.StatusBar.ProgressPercentage =
+                            (double) Globals.StatusBar.ProgressPercentage + ProgressIncrement;
 
-                string[] splitPlayTime = vnuserdata[5].ToString().Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-                List<int> timeList = new List<int>(4);
-                timeList.AddRange(splitPlayTime.Select(time => Convert.ToInt32(time)));
-                TimeSpan timeSpan = new TimeSpan(timeList[0], timeList[1], timeList[2], timeList[3]);
-
-                if (timeSpan < new TimeSpan(0, 0, 0, 1))
-                {
-                    await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.PlayTime = "Never")));
+                    #endregion
+                    db.Dispose();
                 }
-                if (timeSpan < new TimeSpan(0, 0, 0, 60))
-                {
-                    await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.PlayTime = "Less than 1 minute")));
-                }
-                else
-                {
-                    string formatted = $"{(timeSpan.Duration().Days > 0 ? $"{timeSpan.Days:0} day{(timeSpan.Days == 1 ? string.Empty : "s")}, " : string.Empty)}" +
-                                       $"{(timeSpan.Duration().Hours > 0 ? $"{timeSpan.Hours:0} hour{(timeSpan.Hours == 1 ? string.Empty : "s")}, " : string.Empty)}" +
-                                       $"{(timeSpan.Duration().Minutes > 0 ? $"{timeSpan.Minutes:0} minute{(timeSpan.Minutes == 1 ? string.Empty : "s")} " : string.Empty)}";
-                    await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.PlayTime = formatted)));
-                }
-                #endregion
-                if (Globals.StatusBar.ProgressPercentage != null)
-                    Globals.StatusBar.ProgressPercentage = (double)Globals.StatusBar.ProgressPercentage + ProgressIncrement;
-
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                DebugLogging.WriteDebugLog(ex);
+                DebugLogging.WriteDebugLog(exception);
                 throw;
             }
             finally
@@ -563,17 +551,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 Globals.StatusBar.IsWorkProcessing = false;
                 Globals.StatusBar.ProgressText = string.Empty;
             }
-            
-            
-
-           // await Application.Current.Dispatcher.BeginInvoke(new Action((VnScreenshotViewModel.DownloadScreenshots)));
-
-
-            //VnReleaseViewModel vmrel = new VnReleaseViewModel();
-            //vmrel.LoadReleaseCommand.Execute(null);
-
-            //VnCharacterViewModel vmchar = new VnCharacterViewModel();
-            //vmchar.LoadCharacterCommand.Execute(null);
         }
 
         private void UpdateViews()
@@ -586,22 +563,15 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             try
             {
                 if (!(_selectedTagIndex >= 0)) return;
-                using (SQLiteConnection connection = new SQLiteConnection(Globals.ConnectionString))
+                using (var db = new DatabaseContext("Database"))
                 {
-                    connection.Open();
-                    using (SQLiteCommand cmd = connection.CreateCommand())
+                    foreach (string tag in db.Set<VnTagData>().Where(n=>n.Name==SelectedTag).Select(d=>d.Description))
                     {
-                        cmd.CommandText = "SELECT Description FROM VnTagData WHERE Name= @Name";
-                        cmd.Parameters.AddWithValue("@Name", SelectedTag);
-
-                        TagDescription = ConvertRichTextDocument.ConvertToFlowDocument(cmd.ExecuteScalar().ToString());
+                        TagDescription = ConvertRichTextDocument.ConvertToFlowDocument(tag);
+                        break;
                     }
+                    db.Dispose();
                 }
-            }
-            catch (SQLiteException ex)
-            {
-                DebugLogging.WriteDebugLog(ex);
-                throw;
             }
             catch (Exception ex)
             {
@@ -623,32 +593,14 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         {
             try
             {
-                using (SQLiteConnection connection = new SQLiteConnection(Globals.ConnectionString))
+                using (var db = new DatabaseContext("Database"))
                 {
-                    connection.Open();
-                    using (SQLiteCommand cmd = connection.CreateCommand())
+                    foreach (VnUserData userData in db.Set<VnUserData>().Where(v=>v.VnId == Globals.VnId))
                     {
-                        cmd.CommandText = "SELECT * FROM VnUserData WHERE VnId=@VnId";
-                        cmd.Parameters.AddWithValue("@VnId", Globals.VnId);
-                        SQLiteDataReader reader = cmd.ExecuteReader();
-                        while (reader.Read())
-                        {
-                            if (!reader.IsDBNull(reader.GetOrdinal("IconPath")))
-                            {
-                                string iconpath = (string)reader["IconPath"];
-                                return CreateIcon(iconpath);
-                            }
-                            else if (reader.IsDBNull(reader.GetOrdinal("IconPath")))
-                            {
-                                string exepath = (string)reader["ExePath"];
-                                return CreateIcon(exepath);
-                            }
-                            else
-                            {
-                                return CreateIcon(null);
-                            }
-                        }
+                        //checks for existance of Iconpath first, then ExePath. If both are null/empty, it returns a null image
+                        return !string.IsNullOrEmpty(userData.IconPath) ? CreateIcon(userData.IconPath) : CreateIcon(!string.IsNullOrEmpty(userData.ExePath) ? userData.ExePath : null);
                     }
+                    db.Dispose();
                 }
                 return null;
             }
