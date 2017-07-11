@@ -155,7 +155,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                         VnReleaseModel.Resolution = release.Resolution;
                         VnReleaseModel.Voiced = release.Voiced;
                         VnReleaseModel.Animation = release.Animation;
-                        //TODO: set up the animation, voiced,... new properties
                         foreach (string language in GetLangauges(release.Languages))
                         {
                             if (language != null)
