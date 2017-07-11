@@ -119,6 +119,43 @@ namespace VisualNovelManagerv2.Design.VisualNovel
 
 
 
+        public string Resolution
+        {
+            get { return (string)GetValue(ResolutionProperty); }
+            set { SetValue(ResolutionProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Resolution.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ResolutionProperty =
+            DependencyProperty.Register("Resolution", typeof(string), typeof(VnReleaseModel), new PropertyMetadata(null));
+
+
+
+        public string Voiced
+        {
+            get { return (string)GetValue(VoicedProperty); }
+            set { SetValue(VoicedProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Voiced.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty VoicedProperty =
+            DependencyProperty.Register("Voiced", typeof(string), typeof(VnReleaseModel), new PropertyMetadata(null));
+
+
+
+
+        public string Animation
+        {
+            get { return (string)GetValue(AnimationProperty); }
+            set { SetValue(AnimationProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Animation.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty AnimationProperty =
+            DependencyProperty.Register("Animation", typeof(string), typeof(VnReleaseModel), new PropertyMetadata(null));
+
+
+
 
         public FlowDocument Notes
         {

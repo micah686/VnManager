@@ -60,6 +60,9 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <!--#endregion-->
 
@@ -215,8 +218,41 @@
                             <Label Grid.Column="1" Content="{Binding VnReleaseModel.Doujin}"  Margin="15,0,0,0"/>
                         </Grid>
                     </Grid>
-
+                    
                     <Grid Grid.Row="14" Margin="10,10,0,0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Label Grid.Column="0" Content="Resolution:"/>
+                            <Label Grid.Column="1" Content="{Binding VnReleaseModel.Resolution}"  Margin="15,0,0,0"/>
+                        </Grid>
+                    </Grid>
+
+                    <Grid Grid.Row="15" Margin="10,10,0,0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Label Grid.Column="0" Content="Voiced:"/>
+                            <Label Grid.Column="1" Content="{Binding VnReleaseModel.Voiced}"  Margin="15,0,0,0"/>
+                        </Grid>
+                    </Grid>
+
+                    <Grid Grid.Row="16" Margin="10,10,0,0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Label Grid.Column="0" Content="Animations:"/>
+                            <Label Grid.Column="1" Content="{Binding VnReleaseModel.Animation}"  Margin="15,0,0,0"/>
+                        </Grid>
+                    </Grid>
+
+                    <Grid Grid.Row="17" Margin="10,10,0,0">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
@@ -227,16 +263,16 @@
                         </Grid>
                     </Grid>
 
-                    <Grid Grid.Row="15" Margin="10,10,10,0">
+                    <Grid Grid.Row="18" Margin="10,10,10,0">
                         <custom:BindableRichTextBox  MinWidth="250" MinHeight="70" IsReadOnly="True" Margin="15,0,15,0" IsReadOnlyCaretVisible="True" Focusable="False" IsDocumentEnabled="True" Background="#333" BorderThickness="0"
                            Foreground="#DCDCDC" Document="{Binding VnReleaseModel.Notes}"/>
                     </Grid>
 
-                    <Grid Grid.Row="16" Margin="10,30,0,0">
+                    <Grid Grid.Row="19" Margin="10,30,0,0">
                         <TextBlock Grid.Column="0" Text="Producer Information" Style="{StaticResource Heading2}"/>
                     </Grid>
 
-                    <Grid Grid.Row="17" Margin="10,10,0,0">
+                    <Grid Grid.Row="20" Margin="10,10,0,0">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
@@ -247,7 +283,7 @@
                         </Grid>
                     </Grid>
 
-                    <Grid Grid.Row="18" Margin="10,10,0,0">
+                    <Grid Grid.Row="21" Margin="10,10,0,0">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
@@ -258,7 +294,7 @@
                         </Grid>
                     </Grid>
 
-                    <Grid Grid.Row="19" Margin="10,10,0,0">
+                    <Grid Grid.Row="22" Margin="10,10,0,0">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
@@ -269,7 +305,7 @@
                         </Grid>
                     </Grid>
 
-                    <Grid Grid.Row="20" Margin="10,10,0,0">
+                    <Grid Grid.Row="23" Margin="10,10,0,0">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
@@ -280,7 +316,7 @@
                         </Grid>
                     </Grid>
 
-                    <Grid Grid.Row="21" Margin="10,10,0,0">
+                    <Grid Grid.Row="24" Margin="10,10,0,0">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
