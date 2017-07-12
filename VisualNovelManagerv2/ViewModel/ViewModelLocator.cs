@@ -37,6 +37,7 @@ namespace VisualNovelManagerv2.ViewModel
             SimpleIoc.Default.Register<VnCharacterViewModel>();
             SimpleIoc.Default.Register<VnReleaseViewModel>();
             SimpleIoc.Default.Register<StatusBarViewModel>();
+            SimpleIoc.Default.Register<VnListViewModel>();
         }
 
         public AddVnViewModel AddVn => ServiceLocator.Current.GetInstance<AddVnViewModel>();
@@ -50,6 +51,8 @@ namespace VisualNovelManagerv2.ViewModel
         public VnReleaseViewModel VnRelease => ServiceLocator.Current.GetInstance<VnReleaseViewModel>();
 
         public StatusBarViewModel StatusBar => ServiceLocator.Current.GetInstance<StatusBarViewModel>();
+
+        public VnListViewModel VnList => ServiceLocator.Current.GetInstance<VnListViewModel>();
 
         public static void CleanupScreenshotViewModel()
         {

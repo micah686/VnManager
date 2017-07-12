@@ -15,6 +15,7 @@
                 <mui:Link DisplayName="Releases" Source="Pages/VisualNovels/Releases.xaml"/>
                 <mui:Link DisplayName="Screenshots" Source="Pages/VisualNovels/Screenshots.xaml"/>
                 <mui:Link DisplayName="Add Vn" Source="Pages/VisualNovels/AddVisualNovel.xaml"/>
+                <mui:Link DisplayName="Vn List" Source="Pages/VisualNovels/VisualNovelList.xaml"/>
             </mui:LinkGroup.Links>
         </mui:LinkGroup>
         
