@@ -133,34 +133,48 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             {
                 if (SelectedReleaseIndex < 0) return;
                 _releaseLanguages.Clear();
-
+               
                 using (var db = new DatabaseContext("Database"))
                 {
-                    foreach (VnRelease release in db.Set<VnRelease>().Where(x=>x.VnId==Globals.VnId).Where(i=>i.PkId==(SelectedReleaseIndex +1)))
+                    int index = (SelectedReleaseIndex + 1);
+                    int count = 1;
+                    foreach (VnRelease release in db.Set<VnRelease>().Where(x=>x.VnId==Globals.VnId))
                     {
-                        releaseId = Convert.ToInt32(release.ReleaseId);
-
-                        VnReleaseModel.Title = release.Title;
-                        VnReleaseModel.OriginalTitle = release.Original;
-                        VnReleaseModel.Released = release.Released;
-                        VnReleaseModel.ReleaseType = release.ReleaseType;
-                        VnReleaseModel.Patch = release.Patch;
-                        VnReleaseModel.Freeware = release.Freeware;
-                        VnReleaseModel.Doujin = release.Doujin;
-                        VnReleaseModel.Website = release.Website;
-                        VnReleaseModel.Notes = ConvertRichTextDocument.ConvertToFlowDocument(release.Notes);
-                        VnReleaseModel.MinAge = release.MinAge;
-                        VnReleaseModel.Gtin = Convert.ToUInt64(release.Gtin);
-                        VnReleaseModel.Catalog = release.Catalog;
-                        VnReleaseModel.Resolution = release.Resolution;
-                        VnReleaseModel.Voiced = release.Voiced;
-                        VnReleaseModel.Animation = release.Animation;
-                        foreach (string language in GetLangauges(release.Languages))
+                        if (count != index)
                         {
-                            if (language != null)
+                            count++;
+                        }
+                        else
+                        {
+                            releaseId = Convert.ToInt32(release.ReleaseId);
+
+                            VnReleaseModel.Title = release.Title;
+                            VnReleaseModel.OriginalTitle = release.Original;
+                            VnReleaseModel.Released = release.Released;
+                            VnReleaseModel.ReleaseType = release.ReleaseType;
+                            VnReleaseModel.Patch = release.Patch;
+                            VnReleaseModel.Freeware = release.Freeware;
+                            VnReleaseModel.Doujin = release.Doujin;
+                            VnReleaseModel.Website = release.Website;
+                            VnReleaseModel.Notes = ConvertRichTextDocument.ConvertToFlowDocument(release.Notes);
+                            VnReleaseModel.MinAge = release.MinAge;
+                            if (release.Gtin != null) VnReleaseModel.Gtin = Convert.ToUInt64(release.Gtin);
+                            VnReleaseModel.Catalog = release.Catalog;
+                            VnReleaseModel.Resolution = release.Resolution;
+                            VnReleaseModel.Voiced = release.Voiced;
+                            VnReleaseModel.Animation = release.Animation;
+                            foreach (string language in GetLangauges(release.Languages))
                             {
-                                _releaseLanguages.Add(new ReleaseLanguagesCollection { VnReleaseModel = new VnReleaseModel { Languages = new BitmapImage(new Uri(language)) } });
-                            }                            
+                                if (language != null)
+                                {
+                                    _releaseLanguages.Add(new ReleaseLanguagesCollection
+                                    {
+                                        VnReleaseModel =
+                                            new VnReleaseModel {Languages = new BitmapImage(new Uri(language))}
+                                    });
+                                }
+                            }
+                            break;
                         }
                     }
                     db.Dispose();
