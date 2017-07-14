@@ -53,13 +53,8 @@
                                 </ei:KeyTrigger>
                             </i:Interaction.Triggers>
                         </ComboBox>
-                        <Button Grid.Column="2" Margin="5,0,0,0" Command="{Binding SearchNamesCommand}">
-                            <Button.Template>
-                                <ControlTemplate>
-                                    <Image Source="{Binding SearchImage}" Width="18" Height="18"/>
-                                </ControlTemplate>
-                            </Button.Template>
-                        </Button>
+                        <mui:ModernButton Grid.Column="2" Foreground="WhiteSmoke" Margin="5,0,0,0" BorderBrush="WhiteSmoke" IconWidth="16" IconHeight="16" Command="{Binding SearchNamesCommand}" Visibility="{Binding IsChecked, ElementName=VnNameRadio, Converter={StaticResource ConvVisibility}}" IsEnabled="{Binding IsChecked, ElementName=VnNameRadio, Converter={StaticResource ConvVisibility}}"
+                                          IconData="F1 M24,24z M0,0z M9.5,3C13.0899,3 16,5.91015 16,9.5 16,11.1149 15.411,12.5923 14.4362,13.7291L14.7071,14 15.5,14 20.5,19 19,20.5 14,15.5 14,14.7071 13.7291,14.4362C12.5923,15.411 11.1149,16 9.5,16 5.91015,16 3,13.0899 3,9.5 3,5.91015 5.91015,3 9.5,3z M9.5,5.00001C7.01472,5.00001 5,7.01473 5,9.50001 5,11.9853 7.01472,14 9.5,14 11.9853,14 14,11.9853 14,9.50001 14,7.01473 11.9853,5.00001 9.5,5.00001z"></mui:ModernButton>
                     </Grid>
 
                     <Grid Grid.Row="3" Margin="0,10,0,0">
