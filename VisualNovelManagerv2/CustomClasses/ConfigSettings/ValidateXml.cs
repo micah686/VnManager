@@ -11,7 +11,7 @@ namespace VisualNovelManagerv2.CustomClasses.ConfigSettings
 {
     public class ValidateXml
     {
-        public static bool IsValidXml(Stream stream)
+        public static bool IsValidXml(string input)
         {
             XmlReaderSettings settings = new XmlReaderSettings
             {
@@ -26,7 +26,7 @@ namespace VisualNovelManagerv2.CustomClasses.ConfigSettings
             };
             bool isValid;
 
-            using (XmlReader xmlReader = XmlReader.Create(stream, settings))
+            using (XmlReader xmlReader = XmlReader.Create(input, settings))
             {
                 try
                 {

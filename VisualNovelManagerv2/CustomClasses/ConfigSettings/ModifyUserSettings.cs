@@ -33,7 +33,7 @@ namespace VisualNovelManagerv2.CustomClasses.ConfigSettings
 
                 using (FileStream fileStream = new FileStream(Globals.DirectoryPath + @"/Data/config/config.xml", FileMode.Open, FileAccess.Read, FileShare.Read))
                 {
-                    bool isValid = ValidateXml.IsValidXml(fileStream);
+                    bool isValid = ValidateXml.IsValidXml(Globals.DirectoryPath + @"/Data/config/config.xml");
                     return isValid == true ? (UserSettings) mySerializer.Deserialize(fileStream) : null;
                 }
             }

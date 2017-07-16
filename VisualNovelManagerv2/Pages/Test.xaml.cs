@@ -20,10 +20,16 @@ using VndbSharp;
 using VndbSharp.Models;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using Brushes = System.Windows.Media.Brushes;
 using FontFamily = System.Drawing.FontFamily;
 using Size = System.Drawing.Size;
 using System.IO.Compression;
+using System.Xml;
+using System.Xml.Schema;
+using System.Xml.Serialization;
+using VisualNovelManagerv2.CustomClasses.ConfigSettings;
+using VisualNovelManagerv2.Design.Settings;
 using VisualNovelManagerv2.EntityFramework;
 using VisualNovelManagerv2.EntityFramework.Entity.VnInfo;
 using VisualNovelManagerv2.EntityFramework.Entity.VnOther;
@@ -47,35 +53,27 @@ namespace VisualNovelManagerv2.Pages
 
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
-            BitmapImage bi = new BitmapImage(new Uri($@"{Globals.DirectoryPath}\Data\res\icons\statusbar\error.png"));
-            StatusBarViewModel vm1 = (new ViewModelLocator()).StatusBar;
-            vm1.IsDbProcessing = true;
-            vm1.IsWorkProcessing = true;
-            vm1.ProgressStatus = bi;
+            UserSettings userSettings = new UserSettings();
+            userSettings.NsfwEnabled = false;
+            userSettings.MaxSpoilerLevel = 2;
+            //userSettings.VnSetting = new VnSetting
+            //{
+            //    Id = 11,
+            //    Spoiler = 3
+            //};
+            ModifyUserSettings.SaveUserSettings(userSettings);
 
-            vm1.ProgressPercentage = 55.3;
-            var test = vm1.ProgressPercentage;
 
-            var test2 = MeasureStringSize.GetMaxStringWidth("100%");
-            vm1.ProgressText = "Processing";
-            vm1.IsDownloading = true;
-            vm1.IsUploading = true;
+            var foo = ModifyUserSettings.LoadUserSettings();
+            var test = foo.ToString();
 
+            ModifyUserSettings.RemoveUserSettingsNode(11);
         }
 
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            using (var db = new DatabaseContext("name=Database"))
-            {
-                var customers = db.Set<Categories>();
-                customers.Add(new Categories() { Category = "test2" });
-
-                db.SaveChanges();
-            }
-
+            
         }
-
-
     }
 }

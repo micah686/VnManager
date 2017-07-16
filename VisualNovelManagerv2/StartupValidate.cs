@@ -101,10 +101,16 @@ namespace VisualNovelManagerv2
 
         public void CheckXmlConfig()
         {
+            UserSettings userSettings = new UserSettings();
+            if (!File.Exists(Globals.DirectoryPath + @"/Data/config/config.xml"))
+            {
+                userSettings.NsfwEnabled = false;
+                userSettings.MaxSpoilerLevel = 0;
+                ModifyUserSettings.SaveUserSettings(userSettings);
+            }
             UserSettings settings = ModifyUserSettings.LoadUserSettings();
             if (settings != null) return;
-            File.Delete(Globals.DirectoryPath + @"/Data/config/config.xml");
-            UserSettings userSettings = new UserSettings();
+            File.Delete(Globals.DirectoryPath + @"/Data/config/config.xml");            
             userSettings.NsfwEnabled = false;
             userSettings.MaxSpoilerLevel = 0;
             ModifyUserSettings.SaveUserSettings(userSettings);
