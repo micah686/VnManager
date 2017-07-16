@@ -409,6 +409,7 @@ ROBOCOPY "$(TargetDir)..\..\Resources\Flags " "$(TargetDir)Data\res\icons\countr
 ROBOCOPY "$(TargetDir)..\..\Resources\Gender " "$(TargetDir)Data\res\icons\gender " *.png 
 ROBOCOPY "$(TargetDir)..\..\Resources\Assorted " "$(TargetDir)Data\res\icons\assorted " *.png
 ROBOCOPY "$(TargetDir)..\..\Resources\StatusBar " "$(TargetDir)Data\res\icons\statusbar " *.png
+ROBOCOPY "$(TargetDir)..\..\Resources\Platforms " "$(TargetDir)Data\res\icons\platforms " *.png
 
 if errorlevel 1 exit 0 else exit %25errorlevel%25</PostBuildEvent>
   </PropertyGroup>

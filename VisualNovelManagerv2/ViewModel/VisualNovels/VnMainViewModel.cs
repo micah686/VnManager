@@ -96,6 +96,19 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         }
         #endregion
 
+        #region ObservablePlatformCollection
+        private ObservableCollection<PlatformCollection> _platformCollection = new ObservableCollection<PlatformCollection>();
+        public ObservableCollection<PlatformCollection> PlatformCollection
+        {
+            get { return _platformCollection; }
+            set
+            {
+                _platformCollection = value;
+                RaisePropertyChanged(nameof(PlatformCollection));
+            }
+        }
+        #endregion
+
         #region VnInfoRelation
         private ObservableCollection<VnInfoRelation> _vnInfoRelation = new ObservableCollection<VnInfoRelation>();
         public ObservableCollection<VnInfoRelation> VnInfoRelation
@@ -343,6 +356,13 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                                 new LanguagesCollection
                                 { VnMainModel = new VnMainModel { Languages = new BitmapImage(new Uri(language)) } })));
                         }
+
+                        foreach (string platform in GetPlatforms(vnInfo.Platforms))
+                        {
+                            await Application.Current.Dispatcher.BeginInvoke(new Action(() => PlatformCollection.Add(
+                                new PlatformCollection { VnMainModel = new VnMainModel { Platforms = new BitmapImage(new Uri(platform)) } })));
+                        }
+
                         if (Globals.StatusBar.ProgressPercentage != null)
                             Globals.StatusBar.ProgressPercentage =
                                 (double)Globals.StatusBar.ProgressPercentage + ProgressIncrement;
@@ -377,8 +397,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                             vnInfo.Original)));
                         await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Released =
                             vnInfo.Released)));
-                        await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Platforms =
-                            vnInfo.Platforms)));
+                        //await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Platforms =
+                        //    vnInfo.Platforms)));
                         await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Aliases =
                             vnInfo.Aliases)));
                         await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Length =
@@ -589,6 +609,15 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 .ToList();
         }
 
+        private static IEnumerable<string> GetPlatforms(string csv)
+        {
+            string[] list = csv.Split(',');
+            return list.Select(plat => File.Exists($@"{Globals.DirectoryPath}\Data\res\icons\platforms\{plat}.png")
+                    ? $@"{Globals.DirectoryPath}\Data\res\icons\platforms\{plat}.png"
+                    : $@"{Globals.DirectoryPath}\Data\res\icons\platforms\Unknown.png")
+                .ToList();
+        }
+
         private BitmapSource LoadIcon()
         {
             try
@@ -716,6 +745,11 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
     }
 
     public class OriginalLanguagesCollection
+    {
+        public VnMainModel VnMainModel { get; set; }
+    }
+
+    public class PlatformCollection
     {
         public VnMainModel VnMainModel { get; set; }
     }
