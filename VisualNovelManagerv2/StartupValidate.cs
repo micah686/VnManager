@@ -9,6 +9,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Win32;
 using VisualNovelManagerv2.CustomClasses;
+using VisualNovelManagerv2.CustomClasses.ConfigSettings;
+using VisualNovelManagerv2.Design.Settings;
 using VisualNovelManagerv2.EntityFramework;
 using VisualNovelManagerv2.EntityFramework.Entity.VnInfo;
 
@@ -95,7 +97,18 @@ namespace VisualNovelManagerv2
                 //context.SaveChanges();
                 context.Dispose();
             }
-        }        
+        }
+
+        public void CheckXmlConfig()
+        {
+            UserSettings settings = ModifyUserSettings.LoadUserSettings();
+            if (settings != null) return;
+            File.Delete(Globals.DirectoryPath + @"/Data/config/config.xml");
+            UserSettings userSettings = new UserSettings();
+            userSettings.NsfwEnabled = false;
+            userSettings.MaxSpoilerLevel = 0;
+            ModifyUserSettings.SaveUserSettings(userSettings);
+        }
 
     }
 }

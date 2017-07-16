@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
 using VisualNovelManagerv2.Design.Settings;
 
-namespace VisualNovelManagerv2.CustomClasses
+namespace VisualNovelManagerv2.CustomClasses.ConfigSettings
 {
     public class ModifyUserSettings
     {
@@ -34,8 +30,12 @@ namespace VisualNovelManagerv2.CustomClasses
             try
             {
                 XmlSerializer mySerializer = new XmlSerializer(typeof(UserSettings));
-                FileStream fileStream = new FileStream(Globals.DirectoryPath + @"/Data/config/config.xml", FileMode.Open, FileAccess.Read, FileShare.Read);
-                return (UserSettings) mySerializer.Deserialize(fileStream);
+
+                using (FileStream fileStream = new FileStream(Globals.DirectoryPath + @"/Data/config/config.xml", FileMode.Open, FileAccess.Read, FileShare.Read))
+                {
+                    bool isValid = ValidateXml.IsValidXml(fileStream);
+                    return isValid == true ? (UserSettings) mySerializer.Deserialize(fileStream) : null;
+                }
             }
             catch (Exception ex)
             {

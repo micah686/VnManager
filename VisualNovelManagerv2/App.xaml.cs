@@ -20,6 +20,7 @@ namespace VisualNovelManagerv2
             StartupValidate sv = new StartupValidate();
             sv.CreateFolders();
             sv.CheckForDatabase();
+            sv.CheckXmlConfig();
         }
     }
 
