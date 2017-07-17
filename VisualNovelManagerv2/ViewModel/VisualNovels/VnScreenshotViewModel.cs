@@ -138,7 +138,16 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
                     if (screenshot.IsNsfw == true && File.Exists(pathNoExt))
                     {
-                        BitmapImage bImage = Base64Converter.GetBitmapImageFromBytes(File.ReadAllText(pathNoExt));
+                        BitmapImage bImage = new BitmapImage();
+                        if (Globals.NsfwEnabled == true)
+                        {
+                            bImage = Base64Converter.GetBitmapImageFromBytes(File.ReadAllText(pathNoExt));
+                        }
+                        else
+                        {
+                            bImage = new BitmapImage(new Uri($@"{Globals.DirectoryPath}\Data\res\nsfw\thumb.jpg"));
+                        }
+                        
 
                         _screenshotCollection.Add(new ScreenshotViewModelCollection
                         {
@@ -170,10 +179,18 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 List<Screenshot> screenshotList = LoadScreenshotList();
                 if (screenshotList[SelectedScreenIndex].IsNsfw == true)
                 {
-                    string filename = Path.GetFileNameWithoutExtension(screenshotList[SelectedScreenIndex].Url);
-                    string pathNoExt = $@"{Globals.DirectoryPath}\Data\images\screenshots\{vnid}\{filename}";
-                    BitmapImage bImage = Base64Converter.GetBitmapImageFromBytes(File.ReadAllText(pathNoExt));
-                    MainImage = bImage;
+                    if (Globals.NsfwEnabled == true)
+                    {
+                        string filename = Path.GetFileNameWithoutExtension(screenshotList[SelectedScreenIndex].Url);
+                        string pathNoExt = $@"{Globals.DirectoryPath}\Data\images\screenshots\{vnid}\{filename}";
+                        BitmapImage bImage = Base64Converter.GetBitmapImageFromBytes(File.ReadAllText(pathNoExt));
+                        MainImage = bImage;
+                    }
+                    else
+                    {
+                        MainImage = new BitmapImage(new Uri($@"{Globals.DirectoryPath}\Data\res\nsfw\screenshot.jpg"));
+                    }
+                    
                 }
                 if (screenshotList[SelectedScreenIndex].IsNsfw == false)
                 {
