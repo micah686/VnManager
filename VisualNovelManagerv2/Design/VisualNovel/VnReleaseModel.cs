@@ -106,6 +106,18 @@ namespace VisualNovelManagerv2.Design.VisualNovel
 
 
 
+        public BitmapImage Platforms
+        {
+            get { return (BitmapImage)GetValue(PlatformsProperty); }
+            set { SetValue(PlatformsProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for PlatformsBitmapImage.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty PlatformsProperty =
+            DependencyProperty.Register("Platforms", typeof(BitmapImage), typeof(VnReleaseModel), new PropertyMetadata(null));
+
+
+
 
         public string Website
         {

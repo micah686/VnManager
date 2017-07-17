@@ -102,6 +102,18 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             }
         }
 
+        private ObservableCollection<ReleasePlatformsCollection> _releasePlatforms= new ObservableCollection<ReleasePlatformsCollection>();
+        public ObservableCollection<ReleasePlatformsCollection> ReleasePlatforms
+        {
+            get { return _releasePlatforms; }
+            set
+            {
+                _releasePlatforms = value;
+                RaisePropertyChanged(nameof(ReleasePlatforms));
+            }
+        }
+
+
         #endregion
 
         private void LoadReleaseNameList()
@@ -133,6 +145,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             {
                 if (SelectedReleaseIndex < 0) return;
                 _releaseLanguages.Clear();
+                _releasePlatforms.Clear();
                
                 using (var db = new DatabaseContext("Database"))
                 {
@@ -171,6 +184,20 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                                     {
                                         VnReleaseModel =
                                             new VnReleaseModel {Languages = new BitmapImage(new Uri(language))}
+                                    });
+                                }
+                            }
+
+                            foreach (string platform in GetPlatforms(release.Platforms))
+                            {
+                                if (platform != null)
+                                {
+                                    _releasePlatforms.Add(new ReleasePlatformsCollection
+                                    {
+                                        VnReleaseModel = new VnReleaseModel
+                                        {
+                                            Platforms = new BitmapImage(new Uri(platform))
+                                        }
                                     });
                                 }
                             }
@@ -252,9 +279,23 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                     : $@"{Globals.DirectoryPath}\Data\res\icons\country_flags\Unknown.png")
                 .ToList();
         }
+
+        private static IEnumerable<string> GetPlatforms(string csv)
+        {
+            string[] list = csv.Split(',');
+            return list.Select(plat => File.Exists($@"{Globals.DirectoryPath}\Data\res\icons\platforms\{plat}.png")
+                    ? $@"{Globals.DirectoryPath}\Data\res\icons\platforms\{plat}.png"
+                    : $@"{Globals.DirectoryPath}\Data\res\icons\platforms\Unknown.png")
+                .ToList();
+        }
     }
 
     public class ReleaseLanguagesCollection
+    {
+        public VnReleaseModel VnReleaseModel { get; set; }
+    }
+
+    public class ReleasePlatformsCollection
     {
         public VnReleaseModel VnReleaseModel { get; set; }
     }

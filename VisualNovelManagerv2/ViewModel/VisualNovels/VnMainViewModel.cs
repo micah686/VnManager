@@ -303,6 +303,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 try
                 {
                     LanguageCollection.Clear();
+                    PlatformCollection.Clear();
                     OriginalLanguagesCollection.Clear();
                     VnInfoRelation.Clear();
                     VnInfoTagCollection.Clear();

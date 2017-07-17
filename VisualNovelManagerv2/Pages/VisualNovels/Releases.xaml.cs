@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using GalaSoft.MvvmLight.Ioc;
 
 namespace VisualNovelManagerv2.Pages.VisualNovels
 {
@@ -23,6 +24,10 @@ namespace VisualNovelManagerv2.Pages.VisualNovels
         public Releases()
         {
             InitializeComponent();
+            this.Unloaded += (o, e) =>
+            {
+                SimpleIoc.Default.Unregister<Releases>();
+            };
         }
     }
 }
