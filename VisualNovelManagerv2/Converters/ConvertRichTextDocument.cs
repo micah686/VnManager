@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Documents;
 using VisualNovelManagerv2.CustomClasses;
+using VisualNovelManagerv2.CustomClasses.ConfigSettings;
 
 namespace VisualNovelManagerv2.Converters
 {
@@ -102,20 +103,50 @@ namespace VisualNovelManagerv2.Converters
             
         }
 
+        private static string FindSpoilers(string text)
+        {
+            List<string> spoilerList = new List<string>();
+            var rawText = text;
+            Regex regex = new Regex(@"\[spoiler\](.*)\[\/spoiler\]");
+            foreach (Match match in regex.Matches(text))
+            {                
+                string segment = match.Groups[1].ToString();
+                rawText= rawText.Replace(match.Groups[0].ToString(), segment);
+                spoilerList.Add(segment);
+            }
+            
+            var settings = ModifyUserSettings.LoadUserSettings();
+            if (settings.VnSetting == null)
+            {
+                rawText = spoilerList.Aggregate(rawText, (current, spoiler) => current.Replace(spoiler, "<Content hidden by spoiler setting>"));
+            }
+            else
+            {
+                if (settings.VnSetting.Id.Equals(Globals.VnId) && settings.VnSetting.Spoiler >= 2)
+                {
+                    //Do nothing
+                }
+            }
+            return rawText;
+        }
+
         private static FlowDocument CreateHyperlinks(string text, List<string> websiteList)
         {
             try
             {
                 FlowDocument flowDocument = new FlowDocument();
 
+                //find and replace spoiler blocks with generic spoiler message
+                string rawText = FindSpoilers(text);
+
                 Regex fullBBcodeRegex = new Regex(@"(\[url=.+?\].+?\[\/url\])", RegexOptions.Compiled | RegexOptions.IgnoreCase);
                 Regex centerwordBbRegex = new Regex(@"(?:\[url=.+?\])(.+?)(?:\[\/url\])", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-                List<string> matches = fullBBcodeRegex.Matches(text).Cast<Match>().Select(m => m.Value).ToList();
+                List<string> matches = fullBBcodeRegex.Matches(rawText).Cast<Match>().Select(m => m.Value).ToList();
 
                 Paragraph paragraph = new Paragraph();
                 flowDocument.Blocks.Add(paragraph);
                 int i = 0;
-                foreach (string segment in fullBBcodeRegex.Split(text))
+                foreach (string segment in fullBBcodeRegex.Split(rawText))
                 {
                     string centerword = null;
 

@@ -17,5 +17,6 @@ namespace VisualNovelManagerv2
         public static int VnId;
         public static readonly StatusBarViewModel StatusBar = (new ViewModelLocator()).StatusBar;
         public static bool NsfwEnabled = false;
+        public static int MaxSpoiler = 0;
     }
 }
