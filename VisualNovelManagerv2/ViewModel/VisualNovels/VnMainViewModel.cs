@@ -137,7 +137,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
         #endregion
 
-        public static readonly VnCharacterViewModel VnCharacterViewModel = new VnCharacterViewModel();
         public static bool IsDownloading = false;
 
 
@@ -576,7 +575,9 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
         private void UpdateViews()
         {
-            VnScreenshotViewModel vm = new VnScreenshotViewModel();
+            new VnCharacterViewModel();
+            new VnScreenshotViewModel();
+            new VnReleaseViewModel();
         }
 
         private void BindTagDescription()

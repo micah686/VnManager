@@ -24,10 +24,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 {
     public class VnReleaseViewModel: ViewModelBase
     {
-
-        public ICommand LoadReleaseCommand => new GalaSoft.MvvmLight.CommandWpf.RelayCommand(LoadReleaseNameList);
-        
-
         public VnReleaseViewModel()
         {
             LoadReleaseNameList();
