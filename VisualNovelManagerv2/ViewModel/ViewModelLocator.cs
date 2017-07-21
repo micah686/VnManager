@@ -15,6 +15,7 @@ using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Messaging;
 using Microsoft.Practices.ServiceLocation;
 using VisualNovelManagerv2.ViewModel.Global;
+using VisualNovelManagerv2.ViewModel.Settings;
 using VisualNovelManagerv2.ViewModel.VisualNovels;
 
 namespace VisualNovelManagerv2.ViewModel
@@ -38,6 +39,7 @@ namespace VisualNovelManagerv2.ViewModel
             SimpleIoc.Default.Register<VnReleaseViewModel>();
             SimpleIoc.Default.Register<StatusBarViewModel>();
             SimpleIoc.Default.Register<VnListViewModel>();
+            SimpleIoc.Default.Register<UserSettingsViewModel>();
         }
 
         public AddVnViewModel AddVn => ServiceLocator.Current.GetInstance<AddVnViewModel>();
@@ -53,6 +55,8 @@ namespace VisualNovelManagerv2.ViewModel
         public StatusBarViewModel StatusBar => ServiceLocator.Current.GetInstance<StatusBarViewModel>();
 
         public VnListViewModel VnList => ServiceLocator.Current.GetInstance<VnListViewModel>();
+
+        public UserSettingsViewModel UserSettings => ServiceLocator.Current.GetInstance<UserSettingsViewModel>();
 
         public static void CleanupScreenshotViewModel()
         {

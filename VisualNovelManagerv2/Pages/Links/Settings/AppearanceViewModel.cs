@@ -60,7 +60,8 @@ namespace VisualNovelManagerv2.Pages.Links.Settings
         {
             // add the default themes
             this.themes.Add(new Link { DisplayName = "dark", Source = AppearanceManager.DarkThemeSource });
-            this.themes.Add(new Link { DisplayName = "light", Source = AppearanceManager.LightThemeSource });
+            //TODO:Enable this as a second theme once I have things ironed out.
+            //this.themes.Add(new Link { DisplayName = "light", Source = AppearanceManager.LightThemeSource });
 
             this.SelectedFontSize = AppearanceManager.Current.FontSize == FontSize.Large ? FontLarge : FontSmall;
             SyncThemeAndColor();

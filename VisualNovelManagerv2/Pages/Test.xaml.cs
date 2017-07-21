@@ -56,11 +56,11 @@ namespace VisualNovelManagerv2.Pages
             UserSettings userSettings = new UserSettings();
             userSettings.NsfwEnabled = false;
             userSettings.MaxSpoilerLevel = 2;
-            //userSettings.VnSetting = new VnSetting
-            //{
-            //    Id = 11,
-            //    Spoiler = 3
-            //};
+            userSettings.VnSetting = new VnSetting
+            {
+                Id = 11,
+                Spoiler = 3
+            };
             ModifyUserSettings.SaveUserSettings(userSettings);
 
 
