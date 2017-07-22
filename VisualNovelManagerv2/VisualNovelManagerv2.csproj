@@ -137,6 +137,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Converters\Base64Converter.cs" />
+    <Compile Include="Converters\YesNoBoolConverter.cs" />
     <Compile Include="CustomClasses\BindableRichTextBox.cs" />
     <Compile Include="Converters\ConvertRichTextDocument.cs" />
     <Compile Include="CustomClasses\ConfigSettings\ValidateXml.cs" />

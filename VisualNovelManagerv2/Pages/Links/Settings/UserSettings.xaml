@@ -3,13 +3,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:VisualNovelManagerv2.Pages.Links.Settings"
+             xmlns:local="clr-namespace:VisualNovelManagerv2.Converters"
              xmlns:vm="clr-namespace:VisualNovelManagerv2.ViewModel.Settings"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              DataContext="{Binding UserSettings, Source={StaticResource Locator}}">
     <UserControl.Resources>
         <vm:UserSettingsViewModel x:Key="vm"/>
+        <local:YesNoBoolConverter x:Key="YesNoBoolConverter"/>
     </UserControl.Resources>
     <Grid>
         <ScrollViewer>
@@ -30,12 +31,12 @@
                     </Grid.RowDefinitions>
 
                     <TextBlock Text="Enable NSFW Content:" VerticalAlignment="Center" Margin="0,0,16,4" />
-                    <ComboBox Grid.Row="0" Grid.Column="1" DisplayMemberPath="Key" SelectedValuePath="Value" ItemsSource="{Binding NsfwEnabledList}" SelectedValue="{Binding SelectedNsfwEnabled, ValidatesOnDataErrors=True, Mode=TwoWay}"
+                    <ComboBox Grid.Row="0" Grid.Column="1" ItemsSource="{Binding NsfwEnabledCollection}" SelectedValue="{Binding SelectedNsfwEnabled, Mode=TwoWay}" SelectedIndex="0"
                               VerticalAlignment="Center" Margin="0,0,0,10"/>
                     
 
                     <TextBlock Grid.Row="1" Grid.Column="0" Text="Maximum Spoiler Level :" VerticalAlignment="Center" Margin="0,0,16,0" />
-                    <ComboBox Grid.Row="1" Grid.Column="1" DisplayMemberPath="Key" SelectedValuePath="Value" ItemsSource="{Binding SpoilerLevelList}" SelectedValue="{Binding SelectedSpoilerLevel, ValidatesOnDataErrors=True, Mode=TwoWay}" 
+                    <ComboBox Grid.Row="1" Grid.Column="1" ItemsSource="{Binding SpoilerLevelCollection}" SelectedValue="{Binding SelectedSpoilerLevel, Mode=TwoWay}" SelectedIndex="0"
                               VerticalAlignment="Center" Margin="0,0,0,10" />
 
                     <Button Grid.Row="2" Grid.Column="0" Width="100" Height="30" Content="Save" Command="{Binding SaveSettingsCommand}"/>
