@@ -146,6 +146,7 @@
     <Compile Include="CustomClasses\MeasureStringSize.cs" />
     <Compile Include="Converters\NullImageConverter.cs" />
     <Compile Include="CustomClasses\ConfigSettings\ModifyUserSettings.cs" />
+    <Compile Include="CustomClasses\PasswordBoxBindingBehavior.cs" />
     <Compile Include="CustomClasses\RequestOptions.cs" />
     <Compile Include="CustomClasses\TextBoxService.cs" />
     <Compile Include="Design\Settings\UserSettings.cs" />

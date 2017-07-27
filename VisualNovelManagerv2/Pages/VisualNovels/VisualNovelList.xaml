@@ -28,7 +28,7 @@
                         <RowDefinition Height="4.5*"/>
                     </Grid.RowDefinitions>
                     <ListBox Grid.Row="0"  Name="NoteList" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Visible" Margin="0,0,5,5"
-                             ItemsSource="{Binding CharacterNameCollection}" SelectedIndex="{Binding SelectedCharacterIndex}" MinWidth="{Binding MaxWidth}" SelectedItem="{Binding SelectedCharacter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                             ItemsSource="{Binding VotelistCollection}" SelectedIndex="{Binding SelectedCharacterIndex}"  SelectedItem="{Binding SelectedCharacter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                     </ListBox>
                     <Grid Grid.Row="1" ShowGridLines="True" Margin="0,5,5,5">
                         <Image HorizontalAlignment="Left"  VerticalAlignment="Top" Stretch="Uniform" 
@@ -55,6 +55,7 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
                     <TextBlock Grid.Row="0" Text="Visual Novel List" Style="{StaticResource Heading2}" Margin="0,0,0,8" />
@@ -69,7 +70,7 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <Label Content="User Name:" Width="80" />
-                        <TextBox Grid.Column="1" Width="150" MaxLength="9" Height="25" />
+                        <TextBox Grid.Column="1" Width="150" MaxLength="9" Height="25" Text="{Binding Username}" />
                                                
                     </Grid>
 
@@ -80,19 +81,35 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <Label Content="Password:" Width="80"/>
-                        <PasswordBox Grid.Column="1" Width="150" />
+                        <PasswordBox x:Name="PasswordBox" Grid.Column="1" Width="150" >
+                            <i:Interaction.Behaviors>
+                                <customClasses:PasswordBoxBindingBehavior Password="{Binding Password}"/>
+                            </i:Interaction.Behaviors>
+                        </PasswordBox>
                     </Grid>
-
+                    
                     <Grid Grid.Row="4" Margin="0,10,0,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <Button Width="100" Height="30" Content="Login" />
+                        <RadioButton Grid.Column="0" Content="Votelist" IsChecked="{Binding IsVotelistSelected}"/>
+                        <RadioButton Grid.Column="1" Content="VnList" Margin="10,0,0,0"/>
+                        <RadioButton Grid.Column="2" Content="Wishlist" Margin="10,0,0,0"/>
                     </Grid>
 
-                    <TextBlock Grid.Row="5" Text="Information" Style="{StaticResource Heading2}" Margin="0,0,0,8" />
-                    <Grid Grid.Row="5" Margin="10,30,0,0">
+                    <Grid Grid.Row="5" Margin="0,10,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Button Width="100" Height="30" Content="Login" Command="{Binding LoginCommand}"
+                                CommandParameter="{Binding ElementName=This}"/>
+                    </Grid>
+
+                    <TextBlock Grid.Row="6" Text="Information" Style="{StaticResource Heading2}" Margin="0,0,0,8" />
+                    <Grid Grid.Row="6" Margin="10,30,0,0">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
@@ -104,7 +121,7 @@
                         </Grid>
                     </Grid>
 
-                    <Grid Grid.Row="6" Margin="10,10,0,0">
+                    <Grid Grid.Row="7" Margin="10,10,0,0">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
@@ -115,7 +132,7 @@
                         </Grid>
                     </Grid>
 
-                    <Grid Grid.Row="7" Margin="10,10,0,0">
+                    <Grid Grid.Row="8" Margin="10,10,0,0">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
