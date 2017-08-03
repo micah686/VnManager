@@ -20,6 +20,7 @@ using MvvmValidation;
 using Newtonsoft.Json;
 using VisualNovelManagerv2.CustomClasses;
 using VisualNovelManagerv2.CustomClasses.Database;
+using VisualNovelManagerv2.CustomClasses.Vndb;
 using VisualNovelManagerv2.Design;
 using VisualNovelManagerv2.Design.VisualNovel;
 using VisualNovelManagerv2.Infrastructure;

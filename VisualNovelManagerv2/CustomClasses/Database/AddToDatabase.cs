@@ -6,6 +6,7 @@ using System.Data.SQLite;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
+using VisualNovelManagerv2.CustomClasses.Vndb;
 using VisualNovelManagerv2.EntityFramework;
 using VisualNovelManagerv2.EntityFramework.Entity.VnCharacter;
 using VisualNovelManagerv2.EntityFramework.Entity.VnInfo;
@@ -51,7 +52,7 @@ namespace VisualNovelManagerv2.CustomClasses.Database
             Globals.StatusBar.IsDbProcessing = true;
             Globals.StatusBar.IsWorkProcessing = true;
             Globals.StatusBar.ProgressText = "Processing";
-            using (Vndb client = new Vndb(true).WithClientDetails(Globals.ClientInfo[0], Globals.ClientInfo[1]))
+            using (VndbSharp.Vndb client = new VndbSharp.Vndb(true).WithClientDetails(Globals.ClientInfo[0], Globals.ClientInfo[1]))
             {
                 try
                 {

@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
-using VndbSharp.Interfaces;
+﻿using VndbSharp.Interfaces;
 
-namespace VisualNovelManagerv2.CustomClasses
+namespace VisualNovelManagerv2.CustomClasses.Vndb
 {
     public class RequestOptions: IRequestOptions
     {

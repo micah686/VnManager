@@ -28,7 +28,7 @@
                         <RowDefinition Height="4.5*"/>
                     </Grid.RowDefinitions>
                     <ListBox Grid.Row="0"  Name="NoteList" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Visible" Margin="0,0,5,5"
-                             ItemsSource="{Binding VotelistCollection}" SelectedIndex="{Binding SelectedCharacterIndex}"  SelectedItem="{Binding SelectedCharacter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                             ItemsSource="{Binding UserListCollection}" SelectedIndex="{Binding SelectedIndex}"  SelectedItem="{Binding SelectedItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                     </ListBox>
                     <Grid Grid.Row="1" ShowGridLines="True" Margin="0,5,5,5">
                         <Image HorizontalAlignment="Left"  VerticalAlignment="Top" Stretch="Uniform" 
@@ -94,9 +94,9 @@
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <RadioButton Grid.Column="0" Content="Votelist" IsChecked="{Binding IsVotelistSelected}"/>
-                        <RadioButton Grid.Column="1" Content="VnList" Margin="10,0,0,0"/>
-                        <RadioButton Grid.Column="2" Content="Wishlist" Margin="10,0,0,0"/>
+                        <RadioButton Grid.Column="0" Content="Votelist" IsChecked="{Binding IsVoteListSelected}"/>
+                        <RadioButton Grid.Column="1" Content="VnList" IsChecked="{Binding IsVnListSelected}" Margin="10,0,0,0"/>
+                        <RadioButton Grid.Column="2" Content="Wishlist" IsChecked="{Binding IsWishlistSelected}" Margin="10,0,0,0"/>
                     </Grid>
 
                     <Grid Grid.Row="5" Margin="0,10,0,0">
