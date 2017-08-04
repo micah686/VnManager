@@ -12,12 +12,10 @@ using VisualNovelManagerv2.EntityFramework.Entity.VnCharacter;
 using VisualNovelManagerv2.EntityFramework.Entity.VnInfo;
 using VisualNovelManagerv2.ViewModel.VisualNovels;
 using VndbSharp;
-using VndbSharp.Interfaces;
 using VndbSharp.Models;
 using VndbSharp.Models.Character;
 using VndbSharp.Models.Common;
 using VndbSharp.Models.Dumps;
-using VndbSharp.Models.Errors;
 using VndbSharp.Models.Release;
 using VndbSharp.Models.VisualNovel;
 using static System.Globalization.CultureInfo;
@@ -579,41 +577,6 @@ namespace VisualNovelManagerv2.CustomClasses.Database
         string ConvertToCsv(ReadOnlyCollection<string> input)
         {
             return input != null ? string.Join(",", input) : null;
-        }
-
-        private static void HandleError(IVndbError error)
-        {
-            if (error is MissingError missing)
-            {
-                Console.WriteLine($"A Missing Error occured, the field \"{missing.Field}\" was missing.");
-            }
-            else if (error is BadArgumentError badArg)
-            {
-                Console.WriteLine($"A BadArgument Error occured, the field \"{badArg.Field}\" is invalid.");
-            }
-            else if (error is ThrottledError throttled)
-            {
-                double minSeconds = (DateTime.Now - throttled.MinimumWait).TotalSeconds; // Not sure if this is correct
-                double fullSeconds = (DateTime.Now - throttled.FullWait).TotalSeconds; // Not sure if this is correct
-                Console.WriteLine(
-                    $"A Throttled Error occured, you need to wait at minimum \"{minSeconds}\" seconds, " +
-                    $"and preferably \"{fullSeconds}\" before issuing commands.");
-            }
-            else if (error is GetInfoError getInfo)
-            {
-                Console.WriteLine($"A GetInfo Error occured, the flag \"{getInfo.Flag}\" is not valid on the issued command.");
-            }
-            else if (error is InvalidFilterError invalidFilter)
-            {
-                Console.WriteLine(
-                    $"A InvalidFilter Error occured, the filter combination of \"{invalidFilter.Field}\", " +
-                    $"\"{invalidFilter.Operator}\", \"{invalidFilter.Value}\" is not a valid combination.");
-            }
-            else
-            {
-                Console.WriteLine($"A {error.Type} Error occured.");
-            }
-            Console.WriteLine($"Message: {error.Message}");
         }
     }
 }
