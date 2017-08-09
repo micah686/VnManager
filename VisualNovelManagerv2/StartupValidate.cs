@@ -26,6 +26,7 @@ namespace VisualNovelManagerv2
             Directory.CreateDirectory(Globals.DirectoryPath + @"\Data\images\cover");
             Directory.CreateDirectory(Globals.DirectoryPath + @"\Data\images\screenshots");
             Directory.CreateDirectory(Globals.DirectoryPath + @"\Data\images\vnlist");
+            Directory.CreateDirectory(Globals.DirectoryPath + @"\Data\images\userlist");
             Directory.CreateDirectory(Globals.DirectoryPath + @"\Data\libs\");
             Directory.CreateDirectory(Globals.DirectoryPath + @"\Data\res\icons");
             Directory.CreateDirectory(Globals.DirectoryPath + @"\Data\res\icons\country_flags");

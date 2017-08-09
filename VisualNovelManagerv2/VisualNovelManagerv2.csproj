@@ -152,6 +152,7 @@
     <Compile Include="CustomClasses\TextBoxService.cs" />
     <Compile Include="Design\Settings\UserSettings.cs" />
     <Compile Include="Design\VisualNovel\VnCharacterModel.cs" />
+    <Compile Include="Design\VisualNovel\VnLinksModel.cs" />
     <Compile Include="Design\VisualNovel\VnMainModel.cs" />
     <Compile Include="Design\VisualNovel\VnReleaseModel.cs" />
     <Compile Include="Design\VisualNovel\VnScreenshotModel.cs" />

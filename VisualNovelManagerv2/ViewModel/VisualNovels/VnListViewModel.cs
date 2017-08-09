@@ -1,17 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Security;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
 using FirstFloor.ModernUI.Presentation;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
 using VisualNovelManagerv2.CustomClasses;
 using VisualNovelManagerv2.CustomClasses.Vndb;
+using VisualNovelManagerv2.Design.VisualNovel;
 using VndbSharp;
 using VndbSharp.Models;
 
@@ -82,6 +86,10 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             {
                 _selectedItem = value;
                 RaisePropertyChanged(nameof(SelectedItem));
+                if (value != null)
+                {
+                    BindImage();
+                }
             }
         }
         #endregion
@@ -125,12 +133,29 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         }
         #endregion
 
+        #region VnLinksModel
+        private VnLinksModel _vnLinksModel;
+        public VnLinksModel VnLinksModel
+        {
+            get { return _vnLinksModel; }
+            set
+            {
+                _vnLinksModel = value;
+                RaisePropertyChanged(nameof(VnLinksModel));
+            }
+        }
+        #endregion
+
         private uint _userId = 0;
 
         #endregion
 
         public ICommand LoginCommand => new GalaSoft.MvvmLight.Command.RelayCommand(Login);
-        public VnListViewModel() { }
+
+        public VnListViewModel()
+        {
+            _vnLinksModel = new VnLinksModel();
+        }
 
         private async void Login()
         {
@@ -143,7 +168,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 }
             }
             _userListCollection.Clear();
-            _userId = 7887;
+            //_userId = 7887;
 
             if(IsVoteListSelected)
                 GetVoteList();
@@ -231,26 +256,32 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
         private async void GetVisualNovelList()
         {
-            if (string.IsNullOrEmpty(_username) || _password.Length <= 0) return;
-            using (Vndb client = new Vndb(Username, Password))
+            //if (string.IsNullOrEmpty(_username) || _password.Length <= 0) return;
+            using (Vndb client = new Vndb(true))
             {
                 bool hasMore = true;
                 RequestOptions ro = new RequestOptions();
                 int page = 1;
                 List<UInt32> idList = new List<uint>();
                 //get the list of all ids on the vnList
+                int errorCounter = 0;
                 while (hasMore)
                 {
                     ro.Page = page;
+                    ro.Count = 10;
                     var vnList = await client.GetVisualNovelListAsync(VndbFilters.UserId.Equals(_userId), VndbFlags.FullVisualNovelList, ro);
-                    if (vnList == null)
+                    if (vnList != null)
                     {
-                        HandleError.HandleErrors(client.GetLastError());
+                        hasMore = vnList.HasMore;
+                        idList.AddRange(vnList.Select(wish => wish.Id));
+                        page++;
                     }
-
-                    hasMore = vnList.HasMore;
-                    idList.AddRange(vnList.Select(wish => wish.Id));
-                    page++;
+                    else
+                    {
+                        HandleError.HandleErrors(client.GetLastError(), errorCounter);
+                        errorCounter++;
+                    }
+                    
                 }
                 //get names from ids on vnlist, and add them to ObservableCollection
                 hasMore = true;
@@ -270,6 +301,39 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 client.Dispose();
             }
         }
-        
+
+        private async void BindImage()
+        {
+            try
+            {
+                using (Vndb client = new Vndb())
+                {
+                    var data = await client.GetVisualNovelAsync(VndbFilters.Title.Equals(SelectedItem), VndbFlags.Details);
+                    if (data != null)
+                    {
+                        var id = data.Items[0].Id;
+                        if (!File.Exists($@"{Globals.DirectoryPath}\Data\images\userlist\{id}.jpg"))
+                        {
+                            Globals.StatusBar.IsDownloading = true;
+                            Thread.Sleep(1500);
+                            WebClient webclient = new WebClient();
+                            webclient.DownloadFile(new Uri(data.Items[0].Image), $@"{Globals.DirectoryPath}\Data\images\userlist\{id}.jpg");
+                            webclient.Dispose();
+                            VnLinksModel.Image = new BitmapImage(new Uri($@"{Globals.DirectoryPath}\Data\images\userlist\{id}.jpg"));
+                        }
+                        else if (File.Exists($@"{Globals.DirectoryPath}\Data\images\userlist\{id}.jpg"))
+                        {
+                            VnLinksModel.Image = new BitmapImage(new Uri($@"{Globals.DirectoryPath}\Data\images\userlist\{id}.jpg"));
+                        }
+                    }                    
+                    client.Dispose();
+                }
+            }
+            catch (Exception e)
+            {
+                DebugLogging.WriteDebugLog(e);
+                throw;
+            }
+        }
     }
 }
