@@ -12,7 +12,7 @@ namespace VisualNovelManagerv2.CustomClasses.Vndb
 {
     public class HandleError
     {
-        public static void HandleErrors(IVndbError error, int? counter)
+        public static async void HandleErrors(IVndbError error, int counter)
         {
             if (error is MissingError missing)
             {
@@ -24,14 +24,51 @@ namespace VisualNovelManagerv2.CustomClasses.Vndb
             }
             else if (error is ThrottledError throttled)
             {
-                var minSeconds = TimeSpan.FromSeconds((throttled.MinimumWait - DateTime.Now).TotalSeconds); // Not sure if this is correct
-                var fullSeconds = TimeSpan.FromSeconds((throttled.FullWait - DateTime.Now).TotalSeconds); // Not sure if this is correct
-                //var minSeconds = (throttled.MinimumWait -DateTime.Now).TotalSeconds; // Not sure if this is correct
-                //var fullSeconds = (throttled.FullWait - DateTime.Now).TotalSeconds; // Not sure if this is correct
-                Debug.WriteLine(
-                    $"A Throttled Error occured, you need to wait at minimum \"{minSeconds}\" seconds, " +
-                    $"and preferably \"{fullSeconds}\" before issuing commands.\n" +
-                    $"Use the overloaded HandleErrors with the counter to wait for the throttled time");                
+                try
+                {
+                    if (throttled.MinimumWait.Year < 2000)
+                    {
+                        return;
+                    }
+                    Debug.WriteLine("minsec: " + (throttled.MinimumWait - DateTime.Now).TotalSeconds);
+                    Debug.WriteLine("maxsec: " + (throttled.FullWait - DateTime.Now).TotalSeconds);
+                    var minSeconds = TimeSpan.FromSeconds((throttled.MinimumWait - DateTime.Now).TotalSeconds); // Not sure if this is correct
+                    var fullSeconds = TimeSpan.FromSeconds((throttled.FullWait - DateTime.Now).TotalSeconds); // Not sure if this is correct
+                    Debug.WriteLine(
+                        $"A Throttled Error occured, you need to wait at minimum \"{minSeconds}\" seconds, " +
+                        $"and preferably \"{fullSeconds}\" before issuing commands.");
+                    TimeSpan timeSpan = new TimeSpan();
+                    //double sleepTime = 0;
+                    //set seconds to sleep
+                    if (counter == 0)
+                    {
+                        timeSpan = TimeSpan.FromSeconds(minSeconds.TotalSeconds);
+                    }
+                    else if (counter >= 1)
+                    {
+                        timeSpan = TimeSpan.FromSeconds(minSeconds.TotalSeconds * counter);
+                    }
+                    else
+                    {
+                        timeSpan = TimeSpan.FromSeconds(5);
+                    }
+                    //make sure sleepTime doesn't go above the maximum amount of seconds needed
+                    if (timeSpan > fullSeconds)
+                    {
+                        timeSpan = TimeSpan.FromSeconds(fullSeconds.TotalSeconds);
+                    }
+
+                    if (timeSpan >= new TimeSpan(0, 0, 0, 0, 0))
+                    {
+                        Debug.WriteLine($"Please wait {timeSpan.TotalMinutes} minutes and {timeSpan.TotalSeconds} seconds");
+                        Thread.Sleep(timeSpan);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    DebugLogging.WriteDebugLog(ex);
+                    throw;
+                }
             }
             else if (error is GetInfoError getInfo)
             {
@@ -43,66 +80,17 @@ namespace VisualNovelManagerv2.CustomClasses.Vndb
                     $"A InvalidFilter Error occured, the filter combination of \"{invalidFilter.Field}\", " +
                     $"\"{invalidFilter.Operator}\", \"{invalidFilter.Value}\" is not a valid combination.");
             }
+            else if (error is BadAuthenticationError badAuthentication)
+            {
+                Debug.WriteLine(
+                    $"A BadAuthenticationError occured. This is caused by an incorrect username or pasword.\n" +
+                    $"Message: {badAuthentication.Message}");
+            }
             else
             {
                 Debug.WriteLine($"A {error.Type} Error occured.");
             }
             Debug.WriteLine($"Message: {error.Message}");
-        }
-
-        public static async void HandleErrors(IVndbError error, int counter)
-        {
-            if (error is ThrottledError throttled)
-            {
-                try
-                {
-                    if (throttled.MinimumWait.Year < 2000)
-                    {
-                        return;
-                    }
-                    Debug.WriteLine("minsec: "+(throttled.MinimumWait - DateTime.Now).TotalSeconds);
-                    Debug.WriteLine("maxsec: "+ (throttled.FullWait - DateTime.Now).TotalSeconds);
-                    var minSeconds = TimeSpan.FromSeconds((throttled.MinimumWait - DateTime.Now).TotalSeconds); // Not sure if this is correct
-                    var fullSeconds = TimeSpan.FromSeconds((throttled.FullWait - DateTime.Now).TotalSeconds); // Not sure if this is correct
-                    Debug.WriteLine(
-                        $"A Throttled Error occured, you need to wait at minimum \"{minSeconds}\" seconds, " +
-                        $"and preferably \"{fullSeconds}\" before issuing commands.");
-
-                    double sleepTime = 0;
-                    //set seconds to sleep
-                    if (counter == 0)
-                    {
-                        sleepTime = minSeconds.TotalSeconds;
-                    }
-                    else if (counter >= 1)
-                    {
-                        sleepTime = (minSeconds.TotalSeconds * counter);
-                    }
-                    else
-                    {
-                        sleepTime = 5;
-                    }
-                    //make sure sleepTime doesn't go above the maximum amount of seconds needed
-                    if (sleepTime > fullSeconds.TotalSeconds)
-                    {
-                        sleepTime = fullSeconds.TotalSeconds;
-                    }
-
-                    if (sleepTime >= 0)
-                    {
-                        int sleep = Convert.ToInt32(sleepTime);
-                        //Thread.Sleep(sleep);
-                        await Task.Delay(sleep);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex);
-                    throw;
-                }
-                
-
-            }
-        }
+        }        
     }
 }

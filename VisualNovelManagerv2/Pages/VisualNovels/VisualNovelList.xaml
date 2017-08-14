@@ -70,7 +70,7 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <Label Content="User Name:" Width="80" />
-                        <TextBox Grid.Column="1" Width="150" MaxLength="9" Height="25" Text="{Binding Username}" />
+                        <TextBox Grid.Column="1" Width="150" MaxLength="9" Height="25" Text="{Binding Username}" IsEnabled="{Binding IsUserInputEnabled}"/>
                                                
                     </Grid>
 
@@ -81,7 +81,7 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <Label Content="Password:" Width="80"/>
-                        <PasswordBox x:Name="PasswordBox" Grid.Column="1" Width="150" >
+                        <PasswordBox x:Name="PasswordBox" Grid.Column="1" Width="150" IsEnabled="{Binding IsUserInputEnabled}">
                             <i:Interaction.Behaviors>
                                 <customClasses:PasswordBoxBindingBehavior Password="{Binding Password}"/>
                             </i:Interaction.Behaviors>
@@ -94,9 +94,9 @@
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <RadioButton Grid.Column="0" Content="Votelist" IsChecked="{Binding IsVoteListSelected}"/>
-                        <RadioButton Grid.Column="1" Content="VnList" IsChecked="{Binding IsVnListSelected}" Margin="10,0,0,0"/>
-                        <RadioButton Grid.Column="2" Content="Wishlist" IsChecked="{Binding IsWishlistSelected}" Margin="10,0,0,0"/>
+                        <RadioButton Grid.Column="0" Content="Votelist" IsChecked="{Binding IsVoteListSelected}" IsEnabled="{Binding IsUserInputEnabled}"/>
+                        <RadioButton Grid.Column="1" Content="VnList" IsChecked="{Binding IsVnListSelected}" Margin="10,0,0,0" IsEnabled="{Binding IsUserInputEnabled}"/>
+                        <RadioButton Grid.Column="2" Content="Wishlist" IsChecked="{Binding IsWishlistSelected}" Margin="10,0,0,0" IsEnabled="{Binding IsUserInputEnabled}"/>
                     </Grid>
 
                     <Grid Grid.Row="5" Margin="0,10,0,0">
@@ -105,7 +105,7 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <Button Width="100" Height="30" Content="Login" Command="{Binding LoginCommand}"
-                                CommandParameter="{Binding ElementName=This}"/>
+                                CommandParameter="{Binding ElementName=This}"  IsEnabled="{Binding IsUserInputEnabled}"/>
                     </Grid>
 
                     <TextBlock Grid.Row="6" Text="Information" Style="{StaticResource Heading2}" Margin="0,0,0,8" />
