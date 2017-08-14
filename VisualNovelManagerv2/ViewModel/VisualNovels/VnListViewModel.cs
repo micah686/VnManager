@@ -8,6 +8,7 @@ using System.Security;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using FirstFloor.ModernUI.Presentation;
@@ -155,6 +156,58 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             {
                 _vnLinksModel = value;
                 RaisePropertyChanged(nameof(VnLinksModel));
+            }
+        }
+        #endregion
+
+        #region InfoStatus
+        private string _infoStatus;
+        public string InfoStatus
+        {
+            get { return _infoStatus; }
+            set
+            {
+                _infoStatus = value;
+                RaisePropertyChanged(nameof(InfoStatus));
+            }
+        }
+        #endregion
+
+        #region InfoAdded
+        private string _infoAdded;
+        public string InfoAdded
+        {
+            get { return _infoAdded; }
+            set
+            {
+                _infoAdded = value;
+                RaisePropertyChanged(nameof(InfoAdded));
+            }
+        }
+        #endregion
+
+        #region InfoVote
+        private double _infoVote;
+        public double InfoVote
+        {
+            get { return _infoVote; }
+            set
+            {
+                _infoVote = value;
+                RaisePropertyChanged(nameof(InfoVote));
+            }
+        }
+        #endregion
+
+        #region InfoNote
+        private FlowDocument _infoNote;
+        public FlowDocument InfoNote
+        {
+            get { return _infoNote; }
+            set
+            {
+                _infoNote = value;
+                RaisePropertyChanged(nameof(InfoNote));
             }
         }
         #endregion
