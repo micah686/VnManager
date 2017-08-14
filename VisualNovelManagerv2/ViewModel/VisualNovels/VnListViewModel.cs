@@ -212,6 +212,19 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         }
         #endregion
 
+        #region InfoPriority
+        private string _infoPriority;
+        public string InfoPriority
+        {
+            get { return _infoPriority; }
+            set
+            {
+                _infoPriority = value;
+                RaisePropertyChanged(nameof(InfoPriority));
+            }
+        }
+        #endregion
+
         private uint _userId = 0;
 
         #endregion
@@ -408,7 +421,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         private async void GetVisualNovelList()
         {
             if (string.IsNullOrEmpty(_username) || _password.Length <= 0) return;
-            using (Vndb client = new Vndb(true))
+            using (Vndb client = new Vndb(Username,Password))
             {
                 bool hasMore = true;
                 RequestOptions ro = new RequestOptions();
