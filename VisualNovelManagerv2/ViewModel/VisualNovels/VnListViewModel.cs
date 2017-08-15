@@ -90,13 +90,21 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 if (value != null)
                 {
                     BindImage();
+
+                    if (IsVoteListSelected)
+                        BindVoteList();
+                    else if (IsVnListSelected)
+                        return;
+                    else if (IsWishlistSelected)
+                        return;
                 }
             }
         }
         #endregion
 
         #region IsVoteListSelected
-        private bool _isVoteListSelected;
+
+        private bool _isVoteListSelected = false;
         public bool IsVoteListSelected
         {
             get { return _isVoteListSelected; }
@@ -253,6 +261,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                     didErrorOccur = true;
                     IsUserInputEnabled = true;
                 }
+                BindVoteList();
+                return;
             }
             if (didErrorOccur != true)
             {
@@ -294,7 +304,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                         if (voteList != null)
                         {
                             hasMore = voteList.HasMore;
-                            idList.AddRange(voteList.Select(wish => wish.Id));
+                            idList.AddRange(voteList.Select(wish => wish.VisualNovelId));
                             page++;
                         }
                         else
@@ -349,12 +359,12 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         {
             if (!string.IsNullOrEmpty(_username) && _password.Length > 0)
             {
-                using (Vndb client = new Vndb(Username,Password))
+                using (Vndb client = new Vndb(Username, Password))
                 {
                     bool hasMore = true;
                     RequestOptions ro = new RequestOptions();
                     int page = 1;
-                    List<UInt32> idList= new List<uint>();
+                    List<UInt32> idList = new List<uint>();
                     //get the list of all ids on the wishlist
                     int errorCounter = 0;
                     while (hasMore)
@@ -367,7 +377,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                             if (wishlist != null)
                             {
                                 hasMore = wishlist.HasMore;
-                                idList.AddRange(wishlist.Select(wish => wish.Id));
+                                idList.AddRange(wishlist.Select(wish => wish.VisualNovelId));
                                 page++;
                             }
                             else
@@ -380,7 +390,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                         {
                             DebugLogging.WriteDebugLog(ex);
                             throw;
-                        }                                                
+                        }
                     }
                     //get names from ids on wishlist, and add them to ObservableCollection
                     hasMore = true;
@@ -411,7 +421,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                         {
                             DebugLogging.WriteDebugLog(ex);
                             throw;
-                        }                                                
+                        }
                     }
                     client.Dispose();
                 }
@@ -421,7 +431,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         private async void GetVisualNovelList()
         {
             if (string.IsNullOrEmpty(_username) || _password.Length <= 0) return;
-            using (Vndb client = new Vndb(Username,Password))
+            using (Vndb client = new Vndb(Username, Password))
             {
                 bool hasMore = true;
                 RequestOptions ro = new RequestOptions();
@@ -439,7 +449,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                         if (vnList != null)
                         {
                             hasMore = vnList.HasMore;
-                            idList.AddRange(vnList.Select(wish => wish.Id));
+                            idList.AddRange(vnList.Select(wish => wish.VisualNovelId));
                             page++;
                         }
                         else
@@ -453,7 +463,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                         DebugLogging.WriteDebugLog(ex);
                         throw;
                     }
-                                        
+
                 }
                 //get names from ids on vnlist, and add them to ObservableCollection
                 hasMore = true;
@@ -484,7 +494,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                     {
                         DebugLogging.WriteDebugLog(ex);
                         throw;
-                    }                                    
+                    }
                 }
                 client.Dispose();
             }
@@ -521,6 +531,18 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             {
                 DebugLogging.WriteDebugLog(e);
                 throw;
+            }
+        }
+
+        private async void BindVoteList()
+        {
+            using (Vndb client= new Vndb(Username, Password))
+            {
+                var data = await client.GetVoteListAsync( VndbFilters.UserId.Equals(_userId)& VndbFilters.VisualNovelId.Equals(4));
+                if (data == null)
+                {
+                    HandleError.HandleErrors(client.GetLastError(), 0);
+                }
             }
         }
     }
