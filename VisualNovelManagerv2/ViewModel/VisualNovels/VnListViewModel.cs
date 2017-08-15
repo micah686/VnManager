@@ -26,7 +26,20 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
     {
         #region Properties
 
-        #region VotelistCollection
+        #region VnLinksModel
+        private VnLinksModel _vnLinksModel;
+        public VnLinksModel VnLinksModel
+        {
+            get { return _vnLinksModel; }
+            set
+            {
+                _vnLinksModel = value;
+                RaisePropertyChanged(nameof(VnLinksModel));
+            }
+        }
+        #endregion
+
+        #region UserListCollection
         private ObservableCollection<string> _userListCollection= new ObservableCollection<string>();
         public ObservableCollection<string> UserListCollection
         {
@@ -36,7 +49,46 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 _userListCollection = value;
                 RaisePropertyChanged(nameof(UserListCollection));
             }
-        }        
+        }
+        #endregion
+
+        #region VoteCollection
+        private ObservableCollection<string> _voteCollection= new ObservableCollection<string>();
+        public ObservableCollection<string> VoteCollection
+        {
+            get { return _voteCollection; }
+            set
+            {
+                _voteCollection = value;
+                RaisePropertyChanged(nameof(VoteCollection));
+            }
+        }
+        #endregion
+
+        #region VnListCollection
+        private ObservableCollection<string> _vnListCollection= new ObservableCollection<string>();
+        public ObservableCollection<string> VnListCollection
+        {
+            get { return _vnListCollection; }
+            set
+            {
+                _vnListCollection = value;
+                RaisePropertyChanged(nameof(VnListCollection));
+            }
+        }
+        #endregion
+
+        #region WishlistCollection
+        private ObservableCollection<string> _wishlistCollection= new ObservableCollection<string>();
+        public ObservableCollection<string> WishlistCollection
+        {
+            get { return _wishlistCollection; }
+            set
+            {
+                _wishlistCollection = value;
+                RaisePropertyChanged(nameof(WishlistCollection));
+            }
+        }
         #endregion
 
         #region Username
@@ -153,20 +205,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 RaisePropertyChanged(nameof(IsUserInputEnabled));
             }
         }
-        #endregion
-
-        #region VnLinksModel
-        private VnLinksModel _vnLinksModel;
-        public VnLinksModel VnLinksModel
-        {
-            get { return _vnLinksModel; }
-            set
-            {
-                _vnLinksModel = value;
-                RaisePropertyChanged(nameof(VnLinksModel));
-            }
-        }
-        #endregion
+        #endregion        
 
         #region InfoStatus
         private string _infoStatus;
@@ -242,6 +281,25 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         public VnListViewModel()
         {
             _vnLinksModel = new VnLinksModel();
+
+            VoteCollection.Add("No Change");
+            VoteCollection.Add("Clear Entry");
+            VoteCollection.Add("Add/Update Vote");
+
+            VnListCollection.Add("No Change");
+            VnListCollection.Add("Clear Entry");            
+            VnListCollection.Add("Playing");
+            VnListCollection.Add("Finished");
+            VnListCollection.Add("Stalled");
+            VnListCollection.Add("Dropped");
+            VnListCollection.Add("Unknown");
+
+            WishlistCollection.Add("No Change");
+            WishlistCollection.Add("Clear Entry");
+            WishlistCollection.Add("High");
+            WishlistCollection.Add("Medium");
+            WishlistCollection.Add("Low");
+            WishlistCollection.Add("Blacklist");
         }
 
         private async void Login()
