@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local ="clr-namespace:VisualNovelManagerv2.Pages"
              xmlns:custom="clr-namespace:VisualNovelManagerv2.CustomClasses"
+             xmlns:mui="http://firstfloorsoftware.com/ModernUI"
              mc:Ignorable="d" 
              d:DesignHeight="1200" d:DesignWidth="800"
              DataContext="{Binding VnMain, Source={StaticResource Locator}}">
@@ -251,7 +252,7 @@
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
                                         <Label Grid.Column="0" Content="Links:" />
-                                        <Label Grid.Column="1" Content="XXXXXX" Width="150" Margin="15,0,0,0"/>
+                                        <mui:BBCodeBlock Grid.Column="1" BBCode="{Binding VnMainModel.Links}" Width="150" Margin="15,0,0,0"/>
                                     </Grid>
                                 </Grid>
 

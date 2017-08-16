@@ -458,6 +458,38 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
                     #endregion
 
+                    #region VnLinks
+
+                    foreach (VnInfoLinks links in db.Set<VnInfoLinks>().Where(v =>v.VnId== Globals.VnId))
+                    {                        
+                        string wikipedia = String.Empty;
+                        string encubed = String.Empty;
+                        string renai = String.Empty;
+                        if (!string.IsNullOrEmpty(links.Wikipedia))
+                        {
+                            wikipedia = $@"[url=https://en.wikipedia.org/wiki/{links.Wikipedia}]Wikipedia[/url]";                            
+                        }                        
+                        if (!string.IsNullOrEmpty(links.Encubed))
+                        {
+                            encubed = $@"[url=http://novelnews.net/tag/{links.Encubed}]Encubed[/url]";
+                        }
+                        if (!string.IsNullOrEmpty(links.Renai))
+                        {
+                            renai = $@"[url=https://renai.us/game/{links.Renai}]Renai[/url]";
+                        }
+                        List<string> combinedList = new List<string>();
+                        combinedList.Add(wikipedia);
+                        combinedList.Add(encubed);
+                        combinedList.Add(renai);
+
+                        string combined = string.Join(", ", combinedList.Where(s=>!string.IsNullOrEmpty(s)));
+                        await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Links =
+                            combined)));
+                    }
+                    
+
+                    #endregion
+
                     #region VnRelations
 
                     foreach (VnInfoRelations relation in db.Set<VnInfoRelations>().Where(v => v.VnId == Globals.VnId))

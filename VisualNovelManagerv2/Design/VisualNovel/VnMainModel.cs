@@ -169,6 +169,17 @@ namespace VisualNovelManagerv2.Design.VisualNovel
 
 
 
+        public string Links
+        {
+            get { return (string)GetValue(LinksProperty); }
+            set { SetValue(LinksProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Links.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty LinksProperty =
+            DependencyProperty.Register("Links", typeof(string), typeof(VnMainModel), new PropertyMetadata(null));
+
+
 
 
 
