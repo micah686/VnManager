@@ -34,7 +34,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
     {
 
         public ICommand LoginCommand => new GalaSoft.MvvmLight.Command.RelayCommand(Login);
-        public ICommand UpdateCommand => new GalaSoft.MvvmLight.Command.RelayCommand(SetVnList);
+        public ICommand UpdateCommand => new GalaSoft.MvvmLight.Command.RelayCommand(SetVoteList);
 
         public VnListViewModel()
         {
@@ -331,6 +331,10 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
         private async void SetVoteList()
         {
+            SetValidationRules();
+            Validator.ResultChanged += OnValidationResultChanged;
+            await ValidateAsync();
+            return;
             bool didErrorOccur = false;
             if (VoteDropDownSelected == "No Change")
             {
@@ -896,17 +900,5 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         private uint _userId = 0;
         private uint _vnId = 15251;
 
-    }
-
-    public class VoteTextBox : TextBox
-    {
-        private static readonly Regex Regex = new Regex(@"^[0-9]|\.$");
-
-        protected override void OnPreviewTextInput(TextCompositionEventArgs e)
-        {
-            if (!Regex.IsMatch(e.Text))
-                e.Handled = true;
-            base.OnPreviewTextInput(e);
-        }
     }
 }
