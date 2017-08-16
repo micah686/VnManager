@@ -318,6 +318,19 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         }
         #endregion
 
+        #region NoteEnabled
+        private bool _noteEnabled;
+        public bool NoteEnabled
+        {
+            get { return _noteEnabled; }
+            set
+            {
+                _noteEnabled = value;
+                RaisePropertyChanged(nameof(NoteEnabled));
+            }
+        }
+        #endregion
+
         #region VnList Note
         private string _vnListNote;
         public string VnListNote
@@ -372,10 +385,10 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         private uint _userId = 0;
         private uint _vnId = 15251;
 
-        #endregion
+        #endregion Properties
 
         public ICommand LoginCommand => new GalaSoft.MvvmLight.Command.RelayCommand(Login);
-        public ICommand UpdateCommand => new GalaSoft.MvvmLight.Command.RelayCommand(SetWishlist);
+        public ICommand UpdateCommand => new GalaSoft.MvvmLight.Command.RelayCommand(SetVnList);
 
         public VnListViewModel()
         {
@@ -712,7 +725,55 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
         private async void SetVnList()
         {
-            
+            bool didErrorOccur = false;
+            if (VnListStatus == "No Change")
+            {
+                return;
+            }
+            using (Vndb client = new Vndb(Username, Password))
+            {
+                var check = await client.GetDatabaseStatsAsync();
+                if (check == null)
+                {
+                    HandleError.HandleErrors(client.GetLastError(), 0);
+                    didErrorOccur = true;
+                }
+                if (didErrorOccur == false)
+                {
+                    switch (VnListStatus)
+                    {
+                        case "Clear Entry":
+                            if (_vnId > 0 && NoteEnabled == true && string.IsNullOrEmpty(VnListNote))
+                            {
+                                await client.SetVisualNovelListAsync(_vnId, null, null);
+                            }
+                            if (_vnId > 0)
+                            {
+                                await client.SetVisualNovelListAsync(_vnId, (Status?)null);
+                            }                            
+                            break;
+                        case "Playing":
+                            await client.SetVisualNovelListAsync(_vnId, Status.Playing);
+                            break;
+                        case "Finished":
+                            await client.SetVisualNovelListAsync(_vnId, Status.Finished);
+                            break;
+                        case "Stalled":
+                            await client.SetVisualNovelListAsync(_vnId, Status.Stalled);
+                            break;
+                        case "Dropped":
+                            await client.SetVisualNovelListAsync(_vnId, Status.Dropped);
+                            break;
+                        case "Unknown":
+                            await client.SetVisualNovelListAsync(_vnId, Status.Unknown);
+                            break;
+                    }
+                    if (NoteEnabled == true && !string.IsNullOrEmpty(VnListNote))
+                    {
+                        await client.SetVisualNovelListAsync(_vnId, VnListNote);
+                    }
+                }
+            }
         }
 
         private async void SetWishlist()
