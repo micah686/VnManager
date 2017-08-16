@@ -24,6 +24,7 @@ using VisualNovelManagerv2.Design.VisualNovel;
 using VisualNovelManagerv2.Infrastructure;
 using VndbSharp;
 using VndbSharp.Models;
+using VndbSharp.Models.Common;
 using ValidationResult = MvvmValidation.ValidationResult;
 
 namespace VisualNovelManagerv2.ViewModel.VisualNovels
@@ -304,6 +305,45 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         }
         #endregion
 
+        #region VnList Status
+        private string _vnlistStatus;
+        public string VnListStatus
+        {
+            get { return _vnlistStatus; }
+            set
+            {
+                _vnlistStatus = value;
+                RaisePropertyChanged(nameof(VnListStatus));
+            }
+        }
+        #endregion
+
+        #region VnList Note
+        private string _vnListNote;
+        public string VnListNote
+        {
+            get { return _vnListNote; }
+            set
+            {
+                _vnListNote = value;
+                RaisePropertyChanged(nameof(VnListNote));
+            }
+        }
+        #endregion
+
+        #region WishlistPriority
+        private string _wishlistPriority;
+        public string WishlistPriority
+        {
+            get { return _wishlistPriority; }
+            set
+            {
+                _wishlistPriority = value;
+                RaisePropertyChanged(nameof(WishlistPriority));
+            }
+        }
+        #endregion
+
         #region ValidationErrorsString
         private string _validationErrorsString;
         public string ValidationErrorsString
@@ -335,7 +375,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         #endregion
 
         public ICommand LoginCommand => new GalaSoft.MvvmLight.Command.RelayCommand(Login);
-        public ICommand UpdateCommand => new GalaSoft.MvvmLight.Command.RelayCommand(SetVoteList);
+        public ICommand UpdateCommand => new GalaSoft.MvvmLight.Command.RelayCommand(SetWishlist);
 
         public VnListViewModel()
         {
@@ -363,8 +403,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
         private void SetValidationRules()
         {
-            var matchVoteRegex = new Regex(@"^(10|[1-9]{1,2}){1}(\.[0-9]{1,2})?$");
-
             Validator.AddRule(nameof(VotelistVote),
                 () =>
                 {
@@ -639,61 +677,88 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             {
                 return;
             }
-            else
+            using (Vndb client = new Vndb(Username, Password))
             {
-                using (Vndb client = new Vndb(Username, Password))
+                var check = await client.GetDatabaseStatsAsync();
+                if (check == null)
                 {
-                    var check = await client.GetDatabaseStatsAsync();
-                    if (check == null)
-                    {
-                        HandleError.HandleErrors(client.GetLastError(), 0);
-                        didErrorOccur = true;
-                    }
-                    if (didErrorOccur == false)
-                    {
-                        if (VoteDropDownSelected == "Clear Entry")
-                        {
-                            if (_vnId > 0)
-                            {
-                                await client.SetVoteListAsync(_vnId, null);
-                            }
-                        }
-                        if (VoteDropDownSelected == "Add/Update Vote")
-                        {
-                            SetValidationRules();
-                            Validator.ResultChanged += OnValidationResultChanged;
-                            await ValidateAsync();
-                            if (IsValid == true)
-                            {
-                                var test = Convert.ToByte(VotelistVote.Replace(".", String.Empty));
-                                await client.SetVoteListAsync(_vnId, Convert.ToByte(VotelistVote.Replace(".", String.Empty)));
-                            }
-                        }
-
-                    }
+                    HandleError.HandleErrors(client.GetLastError(), 0);
+                    didErrorOccur = true;
                 }
-                
-                //else if (VoteDropDownSelected == "Add/Update Vote")
-                //{
-                //    //using (Vndb client = new Vndb(Username, Password))
-                //    //{
-                //    //    var users = await client.GetUserAsync(VndbFilters.Username.Equals(Username));
-                //    //    if (users != null)
-                //    //    {
-                //    //        _userId = users.Items[0].Id;
-                //    //    }
-                //    //    if (users == null)
-                //    //    {
-                //    //        HandleError.HandleErrors(client.GetLastError(), 0);
-                //    //        didErrorOccur = true;
-                //    //    }
-                //    //}
-                //}
+                if (didErrorOccur == false)
+                {
+                    if (VoteDropDownSelected == "Clear Entry")
+                    {
+                        if (_vnId > 0)
+                        {
+                            await client.SetVoteListAsync(_vnId, null);
+                        }
+                    }
+                    if (VoteDropDownSelected == "Add/Update Vote")
+                    {
+                        SetValidationRules();
+                        Validator.ResultChanged += OnValidationResultChanged;
+                        await ValidateAsync();
+                        if (IsValid == true)
+                        {
+                            var test = Convert.ToByte(VotelistVote.Replace(".", String.Empty));
+                            await client.SetVoteListAsync(_vnId, Convert.ToByte(VotelistVote.Replace(".", String.Empty)));
+                        }
+                    }
+
+                }
             }
+        }
+
+        private async void SetVnList()
+        {
             
-            
-            
-            
+        }
+
+        private async void SetWishlist()
+        {
+            bool didErrorOccur = false;
+            if (WishlistPriority == "No Change")
+            {
+                return;
+            }
+            using (Vndb client = new Vndb(Username, Password))
+            {
+                var check = await client.GetDatabaseStatsAsync();
+                if (check == null)
+                {
+                    HandleError.HandleErrors(client.GetLastError(), 0);
+                    didErrorOccur = true;
+                }
+                if (didErrorOccur == false)
+                {
+                    if (WishlistPriority == "Clear Entry")
+                    {
+                        if (_vnId > 0)
+                        {
+                            await client.SetWishlistAsync(_vnId, null);
+                        }
+                    }
+                    switch (WishlistPriority)
+                    {
+                        case "Clear Entry":
+                            await client.SetWishlistAsync(_vnId, null);
+                            break;
+                        case "High":
+                            await client.SetWishlistAsync(_vnId, Priority.High);
+                            break;
+                        case "Medium":
+                            await client.SetWishlistAsync(_vnId, Priority.Medium);
+                            break;
+                        case "Low":
+                            await client.SetWishlistAsync(_vnId, Priority.Low);
+                            break;
+                        case "Blacklist":
+                            await client.SetWishlistAsync(_vnId, Priority.Blacklist);
+                            break;
+                    }                    
+                }
+            }
         }
 
         private async void BindImage()
