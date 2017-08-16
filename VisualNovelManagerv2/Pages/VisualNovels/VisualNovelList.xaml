@@ -196,7 +196,7 @@
                                 </Grid.RowDefinitions>
                                 <Label Grid.Row="0" Grid.Column="0" Content="Vote:" Margin="0,10,0,0"/>
                                 <vm:VoteTextBox Grid.Row="0" Grid.Column="1" Background="#333" BorderThickness="0" Foreground="#DCDCDC" Margin="10,10,0,0" Width="70" MaxLength="3"
-                                     Text="{Binding VotelistVote}"/>
+                                     Text="{Binding VotelistVote, ValidatesOnDataErrors=True}"/>
                             </Grid>
                         </StackPanel>
                     </Grid>
@@ -254,7 +254,7 @@
                     </Grid>
                     
                     <Grid Grid.Row="12" Margin="10,15,0,0" HorizontalAlignment="Left">
-                        <Button Content="Update Data" Width="120"></Button>
+                        <Button Content="Update Data" Width="120" Command="{Binding UpdateCommand}"></Button>
                     </Grid>
 
 

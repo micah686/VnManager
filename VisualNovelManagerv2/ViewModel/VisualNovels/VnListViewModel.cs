@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -16,12 +17,14 @@ using System.Windows.Media.Imaging;
 using FirstFloor.ModernUI.Presentation;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
+using MvvmValidation;
 using VisualNovelManagerv2.CustomClasses;
 using VisualNovelManagerv2.CustomClasses.Vndb;
 using VisualNovelManagerv2.Design.VisualNovel;
 using VisualNovelManagerv2.Infrastructure;
 using VndbSharp;
 using VndbSharp.Models;
+using ValidationResult = MvvmValidation.ValidationResult;
 
 namespace VisualNovelManagerv2.ViewModel.VisualNovels
 {
@@ -301,12 +304,38 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         }
         #endregion
 
+        #region ValidationErrorsString
+        private string _validationErrorsString;
+        public string ValidationErrorsString
+        {
+            get { return _validationErrorsString; }
+            private set
+            {
+                _validationErrorsString = value;
+                RaisePropertyChanged(nameof(ValidationErrorsString));
+            }
+        }
+        #endregion
+
+        #region IsValid
+        private bool? _isValid;
+        public bool? IsValid
+        {
+            get { return _isValid; }
+            private set
+            {
+                _isValid = value;
+                RaisePropertyChanged(nameof(IsValid));
+            }
+        }
+        #endregion
         private uint _userId = 0;
-        private uint _vnId = 0;
+        private uint _vnId = 15251;
 
         #endregion
 
         public ICommand LoginCommand => new GalaSoft.MvvmLight.Command.RelayCommand(Login);
+        public ICommand UpdateCommand => new GalaSoft.MvvmLight.Command.RelayCommand(SetVoteList);
 
         public VnListViewModel()
         {
@@ -335,6 +364,14 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         private void SetValidationRules()
         {
             var matchVoteRegex = new Regex(@"^(10|[1-9]{1,2}){1}(\.[0-9]{1,2})?$");
+
+            Validator.AddRule(nameof(VotelistVote),
+                () =>
+                {
+                    Regex regex = new Regex(@"^(10|[1-9]{1,2}){1}(\.[0-9]{1,2})?$");
+                    var result = regex.IsMatch(VotelistVote);
+                    return RuleResult.Assert(regex.IsMatch(VotelistVote), "Not a valid vote");
+                });
         }
 
         private async void Login()
@@ -621,7 +658,17 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                                 await client.SetVoteListAsync(_vnId, null);
                             }
                         }
-
+                        if (VoteDropDownSelected == "Add/Update Vote")
+                        {
+                            SetValidationRules();
+                            Validator.ResultChanged += OnValidationResultChanged;
+                            await ValidateAsync();
+                            if (IsValid == true)
+                            {
+                                var test = Convert.ToByte(VotelistVote.Replace(".", String.Empty));
+                                await client.SetVoteListAsync(_vnId, Convert.ToByte(VotelistVote.Replace(".", String.Empty)));
+                            }
+                        }
 
                     }
                 }
@@ -683,7 +730,33 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             }
         }
 
-        
+        private async void Validate()
+        {
+            SetValidationRules();
+            Validator.ResultChanged += OnValidationResultChanged;
+            await ValidateAsync();
+        }
+        private async Task ValidateAsync()
+        {
+            ValidationResult result = await Validator.ValidateAllAsync();
+
+            UpdateValidationSummary(result);
+        }
+        private void OnValidationResultChanged(object sender, ValidationResultChangedEventArgs e)
+        {
+            if (!IsValid.GetValueOrDefault(true))
+            {
+                ValidationResult validationResult = Validator.GetResult();
+                Debug.WriteLine(" validation updated: " + validationResult);
+                UpdateValidationSummary(validationResult);
+            }
+        }
+        private void UpdateValidationSummary(ValidationResult validationResult)
+        {
+            IsValid = validationResult.IsValid;
+            ValidationErrorsString = validationResult.ToString();
+        }
+
     }
 
     public class VoteTextBox : TextBox
