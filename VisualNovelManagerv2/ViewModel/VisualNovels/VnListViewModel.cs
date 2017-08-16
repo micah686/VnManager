@@ -76,8 +76,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                     didErrorOccur = true;
                     IsUserInputEnabled = true;
                 }
-                //BindVoteList();
-                return;
             }
             if (didErrorOccur != true)
             {
