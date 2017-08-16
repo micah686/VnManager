@@ -180,7 +180,7 @@
                     </Grid>
 
                     <TextBlock Grid.Row="7" Text="Update Entry" Style="{StaticResource Heading2}" Margin="0,20,0,0"/>
-                    <Grid Grid.Row="9" Margin="10,10,0,0">
+                    <Grid Grid.Row="9" Margin="10,10,0,0" Visibility="{Binding IsVoteListSelected, Converter={StaticResource ConvVisibility}}">
                         
                         <StackPanel>
                             <Grid HorizontalAlignment="Left">
@@ -202,8 +202,8 @@
                             </Grid>
                         </StackPanel>
                     </Grid>
-                    
-                    <Grid Grid.Row="10" Margin="10,30,0,0">
+
+                    <Grid Grid.Row="9" Margin="10,10,0,0" Visibility="{Binding IsVnListSelected, Converter={StaticResource ConvVisibility}}">
                         <StackPanel>
                             <Grid HorizontalAlignment="Left">
                                 <TextBlock Text="Visual Novel List" Style="{StaticResource Emphasis}"/>
@@ -237,7 +237,7 @@
                         </StackPanel>
                     </Grid>
 
-                    <Grid Grid.Row="11" Margin="10,30,0,0">
+                    <Grid Grid.Row="9" Margin="10,10,0,0" Visibility="{Binding IsWishlistSelected, Converter={StaticResource ConvVisibility}}">
                         <StackPanel>
                             <Grid HorizontalAlignment="Left">
                                 <TextBlock Text="Wishlist" Style="{StaticResource Emphasis}"/>
