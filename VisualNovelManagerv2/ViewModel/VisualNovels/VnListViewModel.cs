@@ -6,8 +6,10 @@ using System.Linq;
 using System.Net;
 using System.Security;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
@@ -17,12 +19,13 @@ using GalaSoft.MvvmLight.CommandWpf;
 using VisualNovelManagerv2.CustomClasses;
 using VisualNovelManagerv2.CustomClasses.Vndb;
 using VisualNovelManagerv2.Design.VisualNovel;
+using VisualNovelManagerv2.Infrastructure;
 using VndbSharp;
 using VndbSharp.Models;
 
 namespace VisualNovelManagerv2.ViewModel.VisualNovels
 {
-    public class VnListViewModel: ViewModelBase
+    public class VnListViewModel: ValidatableViewModelBase
     {
         #region Properties
 
@@ -91,6 +94,19 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         }
         #endregion
 
+        #region VoteDropDownSelected
+        private string _voteDropDownSelected;
+        public string VoteDropDownSelected
+        {
+            get { return _voteDropDownSelected; }
+            set
+            {
+                _voteDropDownSelected = value;
+                RaisePropertyChanged(nameof(VoteDropDownSelected));
+            }
+        }
+        #endregion
+
         #region Username
         private string _username;
         public string Username
@@ -144,7 +160,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                     BindImage();
 
                     if (IsVoteListSelected)
-                        BindVoteList();
+                        return;
                     else if (IsVnListSelected)
                         return;
                     else if (IsWishlistSelected)
@@ -272,7 +288,21 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         }
         #endregion
 
+        #region VotelistVote
+        private string _votelistVote;
+        public string VotelistVote
+        {
+            get { return _votelistVote; }
+            set
+            {
+                _votelistVote = value;
+                RaisePropertyChanged(nameof(VotelistVote));
+            }
+        }
+        #endregion
+
         private uint _userId = 0;
+        private uint _vnId = 0;
 
         #endregion
 
@@ -302,6 +332,11 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             WishlistCollection.Add("Blacklist");
         }
 
+        private void SetValidationRules()
+        {
+            var matchVoteRegex = new Regex(@"^(10|[1-9]{1,2}){1}(\.[0-9]{1,2})?$");
+        }
+
         private async void Login()
         {
             IsUserInputEnabled = false;
@@ -319,7 +354,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                     didErrorOccur = true;
                     IsUserInputEnabled = true;
                 }
-                BindVoteList();
+                //BindVoteList();
                 return;
             }
             if (didErrorOccur != true)
@@ -340,6 +375,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             }
             
         }
+
+
 
         private async void GetVoteList()
         {
@@ -558,6 +595,60 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             }
         }
 
+        private async void SetVoteList()
+        {
+            bool didErrorOccur = false;
+            if (VoteDropDownSelected == "No Change")
+            {
+                return;
+            }
+            else
+            {
+                using (Vndb client = new Vndb(Username, Password))
+                {
+                    var check = await client.GetDatabaseStatsAsync();
+                    if (check == null)
+                    {
+                        HandleError.HandleErrors(client.GetLastError(), 0);
+                        didErrorOccur = true;
+                    }
+                    if (didErrorOccur == false)
+                    {
+                        if (VoteDropDownSelected == "Clear Entry")
+                        {
+                            if (_vnId > 0)
+                            {
+                                await client.SetVoteListAsync(_vnId, null);
+                            }
+                        }
+
+
+                    }
+                }
+                
+                //else if (VoteDropDownSelected == "Add/Update Vote")
+                //{
+                //    //using (Vndb client = new Vndb(Username, Password))
+                //    //{
+                //    //    var users = await client.GetUserAsync(VndbFilters.Username.Equals(Username));
+                //    //    if (users != null)
+                //    //    {
+                //    //        _userId = users.Items[0].Id;
+                //    //    }
+                //    //    if (users == null)
+                //    //    {
+                //    //        HandleError.HandleErrors(client.GetLastError(), 0);
+                //    //        didErrorOccur = true;
+                //    //    }
+                //    //}
+                //}
+            }
+            
+            
+            
+            
+        }
+
         private async void BindImage()
         {
             try
@@ -592,16 +683,18 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             }
         }
 
-        private async void BindVoteList()
+        
+    }
+
+    public class VoteTextBox : TextBox
+    {
+        private static readonly Regex Regex = new Regex(@"^[0-9]|\.$");
+
+        protected override void OnPreviewTextInput(TextCompositionEventArgs e)
         {
-            using (Vndb client= new Vndb(Username, Password))
-            {
-                var data = await client.GetVoteListAsync( VndbFilters.UserId.Equals(_userId)& VndbFilters.VisualNovelId.Equals(4));
-                if (data == null)
-                {
-                    HandleError.HandleErrors(client.GetLastError(), 0);
-                }
-            }
+            if (!Regex.IsMatch(e.Text))
+                e.Handled = true;
+            base.OnPreviewTextInput(e);
         }
     }
 }
