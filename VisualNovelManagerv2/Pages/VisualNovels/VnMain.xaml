@@ -240,21 +240,12 @@
                                             <ColumnDefinition Width="Auto"/>
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
-                                        <Label Grid.Column="0" Content="Votes:" />
-                                        <Label Grid.Column="1" Content="XXXXXX" Width="150" Margin="15,0,0,0"/>
-                                    </Grid>
-                                </Grid>
-
-                                <Grid Margin="10,10,0,0">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
                                         <Label Grid.Column="0" Content="Links:" />
                                         <mui:BBCodeBlock Grid.Column="1" BBCode="{Binding VnMainModel.Links}" Width="150" Margin="15,0,0,0"/>
                                     </Grid>
                                 </Grid>
+
+                                
 
                             </StackPanel>
 
