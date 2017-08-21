@@ -26,8 +26,11 @@ namespace VisualNovelManagerv2.EF.Data.Context
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             string directoryPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            Directory.CreateDirectory(directoryPath + @"\Data\");
-            optionsBuilder.UseSqlite($@"Filename={directoryPath}\Data\DATABASE.db");
+            if (directoryPath != null)
+            {
+                directoryPath = Directory.GetParent(directoryPath).ToString();
+                optionsBuilder.UseSqlite($@"Filename={directoryPath}\Database\Database.db");
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

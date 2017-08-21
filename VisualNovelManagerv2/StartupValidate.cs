@@ -11,8 +11,10 @@ using Microsoft.Win32;
 using VisualNovelManagerv2.CustomClasses;
 using VisualNovelManagerv2.CustomClasses.ConfigSettings;
 using VisualNovelManagerv2.Design.Settings;
+using VisualNovelManagerv2.EF.Data.Context;
 using VisualNovelManagerv2.EntityFramework;
 using VisualNovelManagerv2.EntityFramework.Entity.VnInfo;
+using DatabaseContext = VisualNovelManagerv2.EF.Data.Context.DatabaseContext;
 
 namespace VisualNovelManagerv2
 {
@@ -86,17 +88,9 @@ namespace VisualNovelManagerv2
 
         void CreateDatabase()
         {
-            using (var context = new DatabaseContext("Database"))
-            {                
-                //context.Set<VnInfo>().Add(new VnInfo
-                //{
-                //    VnId = 32,
-                //    Title = "sampleEntry",
-                //    Popularity = 15.3
-                //});
-
-                //context.SaveChanges();
-                context.Dispose();
+            using (var db = new DatabaseContext())
+            {
+                db.Dispose();
             }
         }
 
