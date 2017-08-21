@@ -1,21 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Data;
-using System.Data.SQLite;
-using System.Diagnostics;
 using System.Drawing;
-using System.Drawing.Design;
 using System.Drawing.Imaging;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -24,16 +17,11 @@ using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using VisualNovelManagerv2.Converters;
 using VisualNovelManagerv2.Design.VisualNovel;
-using static System.Windows.FontStyles;
-using Brushes = System.Windows.Media.Brushes;
 using VisualNovelManagerv2.CustomClasses;
-using VisualNovelManagerv2.EntityFramework;
-using VisualNovelManagerv2.EntityFramework.Entity.VnInfo;
-using VisualNovelManagerv2.EntityFramework.Entity.VnOther;
-using VisualNovelManagerv2.EntityFramework.Entity.VnTagTrait;
-using VisualNovelManagerv2.ViewModel.Global;
-using VndbSharp;
-using VndbSharp.Models.Dumps;
+using VisualNovelManagerv2.EF.Context;
+using VisualNovelManagerv2.EF.Entity.VnInfo;
+using VisualNovelManagerv2.EF.Entity.VnOther;
+using VisualNovelManagerv2.EF.Entity.VnTagTrait;
 
 
 // ReSharper disable ExplicitCallerInfoArgument
@@ -265,7 +253,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             try
             {
                 ObservableCollection<string> nameList = new ObservableCollection<string>();
-                using (var db = new DatabaseContext("Database"))
+                using (var db = new DatabaseContext())
                 {
                     foreach (VnInfo vnInfo in db.Set<VnInfo>())
                     {
@@ -309,7 +297,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                     VnInfoAnimeCollection.Clear();
                     _tagDescription?.Blocks.Clear();
 
-                    using (var db = new DatabaseContext("Database"))
+                    using (var db = new DatabaseContext())
                     {
                         foreach (int vnid in db.Set<VnInfo>().Where(i=>i.PkId==(SelectedListItemIndex +1)).Select(v=>v.VnId))
                         {
@@ -339,7 +327,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             Globals.StatusBar.ProgressText = "Loading Main Data";
             try
             {
-                using (var db = new DatabaseContext("Database"))
+                using (var db = new DatabaseContext())
                 {
                     
 
@@ -423,7 +411,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
                     #region VnAnime
 
-                    foreach (var anime in db.Set<EntityFramework.Entity.VnInfo.VnInfoAnime>()
+                    foreach (var anime in db.Set<EF.Entity.VnInfo.VnInfoAnime>()
                         .Where(v => v.VnId == Globals.VnId))
                     {
                         await Application.Current.Dispatcher.BeginInvoke(new Action(() => VnInfoAnimeCollection.Add(
@@ -477,10 +465,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                         {
                             renai = $@"[url=https://renai.us/game/{links.Renai}]Renai[/url]";
                         }
-                        List<string> combinedList = new List<string>();
-                        combinedList.Add(wikipedia);
-                        combinedList.Add(encubed);
-                        combinedList.Add(renai);
+                        List<string> combinedList = new List<string> {wikipedia, encubed, renai};
 
                         string combined = string.Join(", ", combinedList.Where(s=>!string.IsNullOrEmpty(s)));
                         await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Links =
@@ -617,7 +602,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             try
             {
                 if (!(_selectedTagIndex >= 0)) return;
-                using (var db = new DatabaseContext("Database"))
+                using (var db = new DatabaseContext())
                 {
                     foreach (string tag in db.Set<VnTagData>().Where(n=>n.Name==SelectedTag).Select(d=>d.Description))
                     {
@@ -656,7 +641,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         {
             try
             {
-                using (var db = new DatabaseContext("Database"))
+                using (var db = new DatabaseContext())
                 {
                     foreach (VnUserData userData in db.Set<VnUserData>().Where(v=>v.VnId == Globals.VnId))
                     {

@@ -1,28 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Data;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using GalaSoft.MvvmLight;
 using VisualNovelManagerv2.Design.VisualNovel;
-using VisualNovelManagerv2.Pages;
-using GalaSoft.MvvmLight.Command;
-using System.Data.SQLite;
 using System.IO;
 using System.Net;
-using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media.Imaging;
 using VisualNovelManagerv2.Converters;
 using VisualNovelManagerv2.CustomClasses;
-using VisualNovelManagerv2.EntityFramework;
-using VisualNovelManagerv2.EntityFramework.Entity.VnCharacter;
-using VisualNovelManagerv2.EntityFramework.Entity.VnRelease;
-using VisualNovelManagerv2.EntityFramework.Entity.VnTagTrait;
-using VndbSharp.Models.Common;
+using VisualNovelManagerv2.EF.Context;
+using VisualNovelManagerv2.EF.Entity.VnCharacter;
+using VisualNovelManagerv2.EF.Entity.VnTagTrait;
+
 // ReSharper disable ExplicitCallerInfoArgument
 
 namespace VisualNovelManagerv2.ViewModel.VisualNovels
@@ -155,7 +147,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             CharacterNameCollection.Clear();
             try
             {
-                using (var db = new DatabaseContext("Database"))
+                using (var db = new DatabaseContext())
                 {
                     foreach (VnCharacter character in db.Set<VnCharacter>().Where(x => x.VnId == Globals.VnId))
                     {
@@ -178,7 +170,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             List<string> characterUrlList = new List<string>();
             try
             {
-                using (var db = new DatabaseContext("Database"))
+                using (var db = new DatabaseContext())
                 {
                     foreach (var character in db.Set<VnCharacter>().Where(x => x.VnId == Globals.VnId).Select(p => p.ImageLink))
                     {
@@ -251,7 +243,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                     TraitDescription.Blocks.Clear();
                 }
 
-                using (var db = new DatabaseContext("Database"))
+                using (var db = new DatabaseContext())
                 {
                     foreach (var character in db.Set<VnCharacter>().Where(n => n.Name == SelectedCharacter).Where(i => i.VnId == Globals.VnId))
                     {
@@ -297,7 +289,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             if (SelectedTraitIndex >= 0)
                 try
                 {
-                    using (var db = new DatabaseContext("Database"))
+                    using (var db = new DatabaseContext())
                     {
                         foreach (string trait in db.Set<VnTraitData>().Where(n => n.Name == SelectedTrait).Select(d => d.Description))
                         {

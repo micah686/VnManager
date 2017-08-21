@@ -5,9 +5,10 @@ using System.Windows;
 using System.Windows.Controls;
 using VisualNovelManagerv2.CustomClasses.ConfigSettings;
 using VisualNovelManagerv2.Design.Settings;
-using VisualNovelManagerv2.EF.Data;
-using VisualNovelManagerv2.EF.Data.Context;
-using VisualNovelManagerv2.EF.Data.Entity.VnOther;
+using VisualNovelManagerv2.EF.Context;
+using VisualNovelManagerv2.EF.Entity.VnInfo;
+using VisualNovelManagerv2.EF.Entity.VnOther;
+
 
 namespace VisualNovelManagerv2.Pages
 {
@@ -23,13 +24,15 @@ namespace VisualNovelManagerv2.Pages
 
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
-            UserSettings userSettings = new UserSettings();
-            userSettings.NsfwEnabled = false;
-            userSettings.MaxSpoilerLevel = 2;
-            userSettings.VnSetting = new VnSetting
+            UserSettings userSettings = new UserSettings
             {
-                Id = 11,
-                Spoiler = 3
+                NsfwEnabled = false,
+                MaxSpoilerLevel = 2,
+                VnSetting = new VnSetting
+                {
+                    Id = 11,
+                    Spoiler = 3
+                }
             };
             ModifyUserSettings.SaveUserSettings(userSettings);
 
@@ -49,21 +52,26 @@ namespace VisualNovelManagerv2.Pages
             byte test1 = Convert.ToByte(sample.Replace(".", string.Empty));
 
 
-            var test = new DatabaseContext();
+            
 
             using (var db = new DatabaseContext())
             {
-              VisualNovelManagerv2.EF.Data.Entity.VnOther.Categories categories = new Categories()
-              {
-                  Category = "testcat"
-              };
-                db.Add(categories);
-                db.SaveChanges();
-
-                foreach (var cats in db.Set<Categories>())
+                try
                 {
-                    Console.WriteLine(cats.Category);
+                    VnInfoLinks vnInfoLinks = new VnInfoLinks()
+                    {
+                        Wikipedia = "sample wiki string"
+                    };
+                    db.Add(vnInfoLinks);
+                    db.SaveChanges();
                 }
+                catch (Exception exception)
+                {
+                    Console.WriteLine(exception);
+                    throw;
+                }
+                
+
             }
         }
     }
