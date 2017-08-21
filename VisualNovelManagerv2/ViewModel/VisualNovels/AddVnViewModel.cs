@@ -44,7 +44,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             _exeService = new AddVnViewModelService {FilePicked = this.FilePicked};
             _iconService = new AddVnViewModelService { FilePicked = this.IconPicked};
             //for mvvmValidation
-            ValidateCommand = new RelayCommand(Validate);
             this.SuggestedNamesCollection = new ObservableCollection<string>();
             DropdownIndex = 0;
         }
@@ -434,14 +433,15 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         }
         #endregion ValidationErrorsString
         
-        public static VndbResponse<VisualNovel> _vnNameList;
+        private  VndbResponse<VisualNovel> _vnNameList;
         private readonly AddVnViewModelService _exeService;
         private readonly AddVnViewModelService _iconService;
-        public BitmapImage SearchImage => new BitmapImage(new Uri($@"{Globals.DirectoryPath}\Data\res\icons\assorted\search.png"));
-        public RelayCommand GetFile { get; private set; }
-        public RelayCommand GetIcon { get; private set; }
+        //TODO:Deprecated, switch to using xaml svg
+        internal BitmapImage SearchImage => new BitmapImage(new Uri($@"{Globals.DirectoryPath}\Data\res\icons\assorted\search.png"));
+        public RelayCommand GetFile { get; }
+        public RelayCommand GetIcon { get; }
         public ObservableCollection<string> SuggestedNamesCollection { get; set; }
-        public ICommand ValidateCommand { get; private set; }
+        public ICommand ValidateCommand => new GalaSoft.MvvmLight.CommandWpf.RelayCommand(Validate);
         public ICommand SearchNamesCommand => new GalaSoft.MvvmLight.CommandWpf.RelayCommand(SearchName);
 
         #endregion
