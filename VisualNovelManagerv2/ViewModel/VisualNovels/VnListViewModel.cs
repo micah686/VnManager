@@ -18,9 +18,12 @@ using FirstFloor.ModernUI.Presentation;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
 using MvvmValidation;
+using VisualNovelManagerv2.Converters;
 using VisualNovelManagerv2.CustomClasses;
 using VisualNovelManagerv2.CustomClasses.Vndb;
 using VisualNovelManagerv2.Design.VisualNovel;
+using VisualNovelManagerv2.EF.Context;
+using VisualNovelManagerv2.EF.Entity.VnUserList;
 using VisualNovelManagerv2.Infrastructure;
 using VndbSharp;
 using VndbSharp.Models;
@@ -113,6 +116,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                     ro.Count = 100;
                     try
                     {
+                        
+
                         var voteList = await client.GetVoteListAsync(VndbFilters.UserId.Equals(_userId), VndbFlags.FullVotelist, ro);
                         if (voteList != null)
                         {
@@ -345,7 +350,80 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 DebugLogging.WriteDebugLog(e);
                 throw;
             }
-        }        
+        }
+
+        private async void BindVoteData()
+        {
+            using (Vndb client = new Vndb(true))
+            {
+                //see about doing this without querying the API, perhaps using vninfo/ userlist tables?
+                var data = await client.GetVisualNovelAsync(VndbFilters.Title.Equals(SelectedItem));
+                _vnId = data.Items[0].Id;
+            }
+            using (var context = new DatabaseContext())
+            {
+                IQueryable<VnVoteList> entry = from v in context.VnVoteList
+                    where v.UserId.Equals(_userId)
+                    where v.VnId.Equals(_vnId)
+                    select v;
+                var data = entry.FirstOrDefault();
+                if (data != null)
+                {
+                    InfoVote = data.Vote;
+                    InfoAdded = data.Added;
+                }
+                
+            }
+        }
+
+        private async void BindVnList()
+        {
+            using (Vndb client = new Vndb(true))
+            {
+                //see about doing this without querying the API, perhaps using vninfo/ userlist tables?
+                var data = await client.GetVisualNovelAsync(VndbFilters.Title.Equals(SelectedItem));
+                _vnId = data.Items[0].Id;
+            }
+            using (var context = new DatabaseContext())
+            {
+                IQueryable<VnVisualNovelList> entry = from v in context.VnVisualNovelList
+                    where v.UserId.Equals(_userId)
+                    where v.VnId.Equals(_vnId)
+                    select v;
+                var data = entry.FirstOrDefault();
+                if (data != null)
+                {
+                    InfoStatus = data.Status;
+                    InfoNote = ConvertRichTextDocument.ConvertToFlowDocument(data.Notes);
+                    InfoAdded = data.Added;
+                }
+
+            }
+        }
+
+        private async void BindWishList()
+        {
+            using (Vndb client = new Vndb(true))
+            {
+                //see about doing this without querying the API, perhaps using vninfo/ userlist tables?
+                var data = await client.GetVisualNovelAsync(VndbFilters.Title.Equals(SelectedItem));
+                _vnId = data.Items[0].Id;
+            }
+            using (var context = new DatabaseContext())
+            {
+                IQueryable<VnWishList> entry = from v in context.VnWishList
+                    where v.UserId.Equals(_userId)
+                    where v.VnId.Equals(_vnId)
+                    select v;
+                var data = entry.FirstOrDefault();
+                if (data != null)
+                {
+                    InfoPriority = data.Priority;                   
+                    InfoAdded = data.Added;
+                }
+
+            }
+        }
     }
 
     //Set on Vndb Code
@@ -833,19 +911,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         }
         #endregion
 
-        #region SelectedIndex
-        private int _selectedIndex = 0;
-        public int SelectedIndex
-        {
-            get { return _selectedIndex; }
-            set
-            {
-                _selectedIndex = value;
-                RaisePropertyChanged(nameof(SelectedIndex));
-            }
-        }
-        #endregion
-
         #region SelectedItem
         private string _selectedItem;
         public string SelectedItem
@@ -860,11 +925,11 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                     BindImage();
 
                     if (IsVoteListSelected)
-                        return;
+                        BindVoteData();
                     else if (IsVnListSelected)
-                        return;
+                        BindVnList();
                     else if (IsWishlistSelected)
-                        return;
+                        BindWishList();
                 }
             }
         }

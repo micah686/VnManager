@@ -306,8 +306,8 @@ namespace VisualNovelManagerv2.Migrations
                     Added = table.Column<string>(type: "TEXT", nullable: true),
                     Notes = table.Column<string>(type: "TEXT", nullable: true),
                     Status = table.Column<string>(type: "TEXT", nullable: true),
-                    UserId = table.Column<int>(type: "INTEGER", nullable: false),
-                    VnId = table.Column<int>(type: "INTEGER", nullable: false)
+                    UserId = table.Column<uint>(type: "INTEGER", nullable: false),
+                    VnId = table.Column<uint>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -321,8 +321,8 @@ namespace VisualNovelManagerv2.Migrations
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Added = table.Column<string>(type: "TEXT", nullable: true),
-                    UserId = table.Column<int>(type: "INTEGER", nullable: false),
-                    VnId = table.Column<int>(type: "INTEGER", nullable: false),
+                    UserId = table.Column<uint>(type: "INTEGER", nullable: false),
+                    VnId = table.Column<uint>(type: "INTEGER", nullable: false),
                     Vote = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
@@ -338,8 +338,8 @@ namespace VisualNovelManagerv2.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     Added = table.Column<string>(type: "TEXT", nullable: true),
                     Priority = table.Column<string>(type: "TEXT", nullable: true),
-                    UserId = table.Column<int>(type: "INTEGER", nullable: false),
-                    VnId = table.Column<int>(type: "INTEGER", nullable: false)
+                    UserId = table.Column<uint>(type: "INTEGER", nullable: false),
+                    VnId = table.Column<uint>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {

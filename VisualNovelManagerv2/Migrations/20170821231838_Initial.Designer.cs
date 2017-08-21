@@ -10,7 +10,7 @@ using VisualNovelManagerv2.EF.Context;
 namespace VisualNovelManagerv2.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20170821205633_Initial")]
+    [Migration("20170821231838_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -676,9 +676,9 @@ namespace VisualNovelManagerv2.Migrations
 
                     b.Property<string>("Status");
 
-                    b.Property<int>("UserId");
+                    b.Property<uint>("UserId");
 
-                    b.Property<int>("VnId");
+                    b.Property<uint>("VnId");
 
                     b.HasKey("Id");
 
@@ -692,9 +692,9 @@ namespace VisualNovelManagerv2.Migrations
 
                     b.Property<string>("Added");
 
-                    b.Property<int>("UserId");
+                    b.Property<uint>("UserId");
 
-                    b.Property<int>("VnId");
+                    b.Property<uint>("VnId");
 
                     b.Property<int>("Vote");
 
@@ -712,9 +712,9 @@ namespace VisualNovelManagerv2.Migrations
 
                     b.Property<string>("Priority");
 
-                    b.Property<int>("UserId");
+                    b.Property<uint>("UserId");
 
-                    b.Property<int>("VnId");
+                    b.Property<uint>("VnId");
 
                     b.HasKey("Id");
 

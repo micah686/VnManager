@@ -675,9 +675,9 @@ namespace VisualNovelManagerv2.Migrations
 
                     b.Property<string>("Status");
 
-                    b.Property<int>("UserId");
+                    b.Property<uint>("UserId");
 
-                    b.Property<int>("VnId");
+                    b.Property<uint>("VnId");
 
                     b.HasKey("Id");
 
@@ -691,9 +691,9 @@ namespace VisualNovelManagerv2.Migrations
 
                     b.Property<string>("Added");
 
-                    b.Property<int>("UserId");
+                    b.Property<uint>("UserId");
 
-                    b.Property<int>("VnId");
+                    b.Property<uint>("VnId");
 
                     b.Property<int>("Vote");
 
@@ -711,9 +711,9 @@ namespace VisualNovelManagerv2.Migrations
 
                     b.Property<string>("Priority");
 
-                    b.Property<int>("UserId");
+                    b.Property<uint>("UserId");
 
-                    b.Property<int>("VnId");
+                    b.Property<uint>("VnId");
 
                     b.HasKey("Id");
 
