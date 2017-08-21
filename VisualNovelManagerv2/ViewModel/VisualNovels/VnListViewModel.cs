@@ -924,7 +924,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         #endregion
 
         private uint _userId = 0;
-        private uint _vnId = 15251;
+        private uint _vnId = 0;
 
     }
 }
