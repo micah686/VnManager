@@ -6,7 +6,7 @@ namespace VisualNovelManagerv2.EF.Entity.VnCharacter
     public class VnCharacter: IEntity
     {
         public int Id { get; set; }
-        public int? VnId { get; set; }
+        public uint? VnId { get; set; }
         public int? CharacterId { get; set; }
         public string Name { get; set; }
         public string Original { get; set; }

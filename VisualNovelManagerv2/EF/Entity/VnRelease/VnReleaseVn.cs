@@ -6,7 +6,7 @@ namespace VisualNovelManagerv2.EF.Entity.VnRelease
     {        
         public int Id { get; set; }
         public int? ReleaseId { get; set; }
-        public int? VnId { get; set; }
+        public uint? VnId { get; set; }
         public string Name { get; set; }
         public string Original { get; set; }
     }

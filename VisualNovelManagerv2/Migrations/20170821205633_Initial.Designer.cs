@@ -10,7 +10,7 @@ using VisualNovelManagerv2.EF.Context;
 namespace VisualNovelManagerv2.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20170821194056_Initial")]
+    [Migration("20170821205633_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -50,7 +50,7 @@ namespace VisualNovelManagerv2.Migrations
 
                     b.Property<int?>("VnCharacterVnsId");
 
-                    b.Property<int?>("VnId");
+                    b.Property<uint?>("VnId");
 
                     b.Property<int?>("VnInfoId");
 
@@ -334,7 +334,7 @@ namespace VisualNovelManagerv2.Migrations
 
                     b.Property<string>("PlayTime");
 
-                    b.Property<int?>("VnId");
+                    b.Property<uint?>("VnId");
 
                     b.HasKey("Id");
 
@@ -460,7 +460,7 @@ namespace VisualNovelManagerv2.Migrations
 
                     b.Property<string>("Title");
 
-                    b.Property<int?>("VnId");
+                    b.Property<uint?>("VnId");
 
                     b.Property<int?>("VnInfoId");
 
@@ -538,7 +538,7 @@ namespace VisualNovelManagerv2.Migrations
 
                     b.Property<int?>("ReleaseId");
 
-                    b.Property<int?>("VnId");
+                    b.Property<uint?>("VnId");
 
                     b.HasKey("Id");
 

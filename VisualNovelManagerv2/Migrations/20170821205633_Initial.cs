@@ -187,7 +187,7 @@ namespace VisualNovelManagerv2.Migrations
                     Name = table.Column<string>(type: "TEXT", nullable: true),
                     Original = table.Column<string>(type: "TEXT", nullable: true),
                     ReleaseId = table.Column<int>(type: "INTEGER", nullable: true),
-                    VnId = table.Column<int>(type: "INTEGER", nullable: true)
+                    VnId = table.Column<uint>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -276,7 +276,7 @@ namespace VisualNovelManagerv2.Migrations
                     IconPath = table.Column<string>(type: "TEXT", nullable: true),
                     LastPlayed = table.Column<string>(type: "TEXT", nullable: true),
                     PlayTime = table.Column<string>(type: "TEXT", nullable: true),
-                    VnId = table.Column<int>(type: "INTEGER", nullable: true)
+                    VnId = table.Column<uint>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -448,7 +448,7 @@ namespace VisualNovelManagerv2.Migrations
                     Name = table.Column<string>(type: "TEXT", nullable: true),
                     Original = table.Column<string>(type: "TEXT", nullable: true),
                     VnCharacterVnsId = table.Column<int>(type: "INTEGER", nullable: true),
-                    VnId = table.Column<int>(type: "INTEGER", nullable: true),
+                    VnId = table.Column<uint>(type: "INTEGER", nullable: true),
                     VnInfoId = table.Column<int>(type: "INTEGER", nullable: true),
                     Waist = table.Column<int>(type: "INTEGER", nullable: true),
                     Weight = table.Column<int>(type: "INTEGER", nullable: true)
@@ -590,7 +590,7 @@ namespace VisualNovelManagerv2.Migrations
                     Released = table.Column<string>(type: "TEXT", nullable: true),
                     Resolution = table.Column<string>(type: "TEXT", nullable: true),
                     Title = table.Column<string>(type: "TEXT", nullable: true),
-                    VnId = table.Column<int>(type: "INTEGER", nullable: true),
+                    VnId = table.Column<uint>(type: "INTEGER", nullable: true),
                     VnInfoId = table.Column<int>(type: "INTEGER", nullable: true),
                     VnReleaseMediaId = table.Column<int>(type: "INTEGER", nullable: true),
                     VnReleaseProducersId = table.Column<int>(type: "INTEGER", nullable: true),

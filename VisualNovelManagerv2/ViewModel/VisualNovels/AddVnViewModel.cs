@@ -34,19 +34,8 @@ using VndbSharp.Models.VisualNovel;
 
 namespace VisualNovelManagerv2.ViewModel.VisualNovels
 {
-    public class AddVnViewModel: ValidatableViewModelBase
-    {        
-        private readonly AddVnViewModelService _exeService;
-        private readonly AddVnViewModelService _iconService;
-        public RelayCommand GetFile { get; private set; }
-        public RelayCommand GetIcon { get; private set; }
-        public ICommand ValidateCommand { get; private set; }
-        public ICommand SearchNamesCommand => new GalaSoft.MvvmLight.CommandWpf.RelayCommand(SearchName);
-        public ObservableCollection<string> SuggestedNamesCollection { get; set; }
-        public static uint _maxVnId;
-        public static uint _selectedVnId;
-        public static VndbResponse<VisualNovel> _vnNameList;
-
+    public partial class AddVnViewModel: ValidatableViewModelBase
+    {                        
         public AddVnViewModel()
         {
             //for openFileDialog
@@ -59,177 +48,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             this.SuggestedNamesCollection = new ObservableCollection<string>();
             DropdownIndex = 0;
         }
-
-        #region Static Properties
-
-        #region VnId
-        private int? _vnId;
-        public int? VnId
-        {
-            get { return _vnId; }
-            set
-            {
-                _vnId = value;
-                RaisePropertyChanged(nameof(VnId));
-                if (VnId == null) return;
-                Validator.ValidateAsync(VnId);
-            }
-        }
-        #endregion
-
-        #region FileName
-        private string _fileName;
-        public string FileName
-        {
-            get { return _fileName; }
-            set
-            {
-                _fileName = value;
-                RaisePropertyChanged(nameof(FileName));
-                Validator.ValidateAsync(FileName);
-
-            }
-        }
-        #endregion
-
-        #region IconName
-        private string _iconName;
-        public string IconName
-        {
-            get { return _iconName; }
-            set
-            {
-                _iconName = value;
-                RaisePropertyChanged(nameof(IconName));
-                Validator.ValidateAsync(IconName);
-            }
-        }
-        #endregion
-
-        #region VnName
-        private string _vnName;
-        public string VnName
-        {
-            get { return _vnName; }
-            set
-            {
-                _vnName = value;
-                RaisePropertyChanged(nameof(VnName));
-                if (VnName == null) return;
-                Validator.ValidateAsync(VnName);
-            }
-        }
-        #endregion
-
-        public BitmapImage SearchImage => new BitmapImage(new Uri($@"{Globals.DirectoryPath}\Data\res\icons\assorted\search.png"));
-
-        #region IsNameChecked
-        private bool _isNameChecked;
-        public bool IsNameChecked
-        {
-            get { return _isNameChecked; }
-            set
-            {
-                _isNameChecked = value;
-                VnName = null;
-                VnId = null;
-                RaisePropertyChanged(nameof(IsNameChecked));
-            }
-        }
-        #endregion
-
-        #region IsChecked
-        private bool _isChecked;
-        public bool IsChecked
-        {
-            get { return _isChecked; }
-            set
-            {
-                _isChecked = value;
-                RaisePropertyChanged(nameof(IsChecked));
-            }
-        }
-        #endregion
-
-        #region IsRunning
-        private bool _isRunning;
-        public bool IsRunning
-        {
-            get { return _isRunning; }
-            set
-            {
-                _isRunning = value;
-                RaisePropertyChanged(nameof(IsRunning));
-            }
-        }
-        #endregion
-
-        #region IsDropDownOpen
-        private bool _isDropDownOpen;
-        public bool IsDropDownOpen
-        {
-            get { return _isDropDownOpen; }
-            set
-            {
-                _isDropDownOpen = value;
-                RaisePropertyChanged(nameof(IsDropDownOpen));
-            }
-        }
-        #endregion
-
-        #region DropdownIndex
-        private int _dropdownIndex;
-        public int DropdownIndex
-        {
-            get { return _dropdownIndex; }
-            set
-            {
-                _dropdownIndex = value;
-                RaisePropertyChanged(nameof(DropdownIndex));
-            }
-        }
-        #endregion
-
-        #region IsIconEnabled
-        private bool _isIconEnabled;
-        public bool IsIconEnabled
-        {
-            get { return _isIconEnabled; }
-            set
-            {
-                _isIconEnabled = value;
-                RaisePropertyChanged(nameof(IsIconEnabled));
-            }
-        }
-        #endregion
-
-        #region IsValid
-        private bool? _isValid;
-        public bool? IsValid
-        {
-            get { return _isValid; }
-            private set
-            {
-                _isValid = value;
-                RaisePropertyChanged(nameof(IsValid));
-            }
-        }
-        #endregion
-
-        #region ValidationErrorsString
-        private string _validationErrorsString;
-        public string ValidationErrorsString
-        {
-            get { return _validationErrorsString; }
-            private set
-            {
-                _validationErrorsString = value;
-                RaisePropertyChanged(nameof(ValidationErrorsString));
-            }
-        }
-        #endregion
-
-        #endregion
+        
         private void FilePicked()
         {
             this.FileName = _exeService.PickedFileName;
@@ -288,9 +107,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                         Count = 1
                     };
                     VndbResponse<VisualNovel> response = await client.GetVisualNovelAsync(VndbFilters.Id.GreaterThan(1), VndbFlags.Basic, ro);
-                    _maxVnId = response.Items[0].Id;
-                    client.Logout();
-                    return _maxVnId;
+                    return response.Items[0].Id;
                 }
             }
             catch (Exception ex)
@@ -401,18 +218,16 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 {
                     if (VnName != null)
                     {
-                        _selectedVnId = _vnNameList.Items[DropdownIndex].Id;
                         AddToDatabase atd = new AddToDatabase();
-                        atd.GetId(Convert.ToInt32(_selectedVnId), FileName, IconName);
+                        atd.GetId(_vnNameList.Items[DropdownIndex].Id, FileName, IconName);
                         FileName = String.Empty;
                         VnId = 0;
                         VnName = string.Empty;
-                        _selectedVnId = 0;
                     }
                     else
                     {
                         AddToDatabase atd = new AddToDatabase();
-                        atd.GetId(Convert.ToInt32(VnId), FileName, IconName);
+                        atd.GetId(Convert.ToUInt32(VnId), FileName, IconName);
                         FileName = String.Empty;
                         VnId = 0;
                     }
@@ -447,6 +262,188 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             IsValid = validationResult.IsValid;
             ValidationErrorsString = validationResult.ToString();
         }
+        #endregion
+    }
+
+    public partial class AddVnViewModel
+    {
+        #region Static Properties
+
+        #region VnId
+        private uint? _vnId;
+        public uint? VnId
+        {
+            get { return _vnId; }
+            set
+            {
+                _vnId = value;
+                RaisePropertyChanged(nameof(VnId));
+                if (VnId == null) return;
+                Validator.ValidateAsync(VnId);
+            }
+        }
+        #endregion VnId
+
+        #region FileName
+        private string _fileName;
+        public string FileName
+        {
+            get { return _fileName; }
+            set
+            {
+                _fileName = value;
+                RaisePropertyChanged(nameof(FileName));
+                Validator.ValidateAsync(FileName);
+
+            }
+        }
+        #endregion FileName
+
+        #region IconName
+        private string _iconName;
+        public string IconName
+        {
+            get { return _iconName; }
+            set
+            {
+                _iconName = value;
+                RaisePropertyChanged(nameof(IconName));
+                Validator.ValidateAsync(IconName);
+            }
+        }
+        #endregion IconName
+
+        #region VnName
+        private string _vnName;
+        public string VnName
+        {
+            get { return _vnName; }
+            set
+            {
+                _vnName = value;
+                RaisePropertyChanged(nameof(VnName));
+                if (VnName == null) return;
+                Validator.ValidateAsync(VnName);
+            }
+        }
+        #endregion VnName        
+
+        #region IsNameChecked
+        private bool _isNameChecked;
+        public bool IsNameChecked
+        {
+            get { return _isNameChecked; }
+            set
+            {
+                _isNameChecked = value;
+                VnName = null;
+                VnId = null;
+                RaisePropertyChanged(nameof(IsNameChecked));
+            }
+        }
+        #endregion IsNameChecked
+
+        #region IsChecked
+        private bool _isChecked;
+        public bool IsChecked
+        {
+            get { return _isChecked; }
+            set
+            {
+                _isChecked = value;
+                RaisePropertyChanged(nameof(IsChecked));
+            }
+        }
+        #endregion IsChecked
+
+        #region IsRunning
+        private bool _isRunning;
+        public bool IsRunning
+        {
+            get { return _isRunning; }
+            set
+            {
+                _isRunning = value;
+                RaisePropertyChanged(nameof(IsRunning));
+            }
+        }
+        #endregion IsRunning
+
+        #region IsDropDownOpen
+        private bool _isDropDownOpen;
+        public bool IsDropDownOpen
+        {
+            get { return _isDropDownOpen; }
+            set
+            {
+                _isDropDownOpen = value;
+                RaisePropertyChanged(nameof(IsDropDownOpen));
+            }
+        }
+        #endregion IsDropDownOpen
+
+        #region DropdownIndex
+        private int _dropdownIndex;
+        public int DropdownIndex
+        {
+            get { return _dropdownIndex; }
+            set
+            {
+                _dropdownIndex = value;
+                RaisePropertyChanged(nameof(DropdownIndex));
+            }
+        }
+        #endregion DropDownIndex
+
+        #region IsIconEnabled
+        private bool _isIconEnabled;
+        public bool IsIconEnabled
+        {
+            get { return _isIconEnabled; }
+            set
+            {
+                _isIconEnabled = value;
+                RaisePropertyChanged(nameof(IsIconEnabled));
+            }
+        }
+        #endregion IsIconEnabled
+
+        #region IsValid
+        private bool? _isValid;
+        public bool? IsValid
+        {
+            get { return _isValid; }
+            private set
+            {
+                _isValid = value;
+                RaisePropertyChanged(nameof(IsValid));
+            }
+        }
+        #endregion IsValid
+
+        #region ValidationErrorsString
+        private string _validationErrorsString;
+        public string ValidationErrorsString
+        {
+            get { return _validationErrorsString; }
+            private set
+            {
+                _validationErrorsString = value;
+                RaisePropertyChanged(nameof(ValidationErrorsString));
+            }
+        }
+        #endregion ValidationErrorsString
+        
+        public static VndbResponse<VisualNovel> _vnNameList;
+        private readonly AddVnViewModelService _exeService;
+        private readonly AddVnViewModelService _iconService;
+        public BitmapImage SearchImage => new BitmapImage(new Uri($@"{Globals.DirectoryPath}\Data\res\icons\assorted\search.png"));
+        public RelayCommand GetFile { get; private set; }
+        public RelayCommand GetIcon { get; private set; }
+        public ObservableCollection<string> SuggestedNamesCollection { get; set; }
+        public ICommand ValidateCommand { get; private set; }
+        public ICommand SearchNamesCommand => new GalaSoft.MvvmLight.CommandWpf.RelayCommand(SearchName);
+
         #endregion
     }
 
