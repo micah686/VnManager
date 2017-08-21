@@ -3,9 +3,8 @@
 namespace VisualNovelManagerv2.EF.Entity.VnUserList
 {
     public class VnVoteList: IEntity
-    {
-        [Key]
-        public int PkId { get; set; }
+    {        
+        public int Id { get; set; }
         public int UserId { get; set; }
         public int VnId { get; set; }
         public int Vote { get; set; }

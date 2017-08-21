@@ -10,7 +10,7 @@ using VisualNovelManagerv2.EF.Context;
 namespace VisualNovelManagerv2.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20170821064604_Initial")]
+    [Migration("20170821194056_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -19,9 +19,9 @@ namespace VisualNovelManagerv2.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "2.0.0-rtm-26452");
 
-            modelBuilder.Entity("VisualNovelManagerv2.EF.Data.Entity.VnCharacter.VnCharacter", b =>
+            modelBuilder.Entity("VisualNovelManagerv2.EF.Entity.VnCharacter.VnCharacter", b =>
                 {
-                    b.Property<int>("PkId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Aliases");
@@ -48,24 +48,28 @@ namespace VisualNovelManagerv2.Migrations
 
                     b.Property<string>("Original");
 
+                    b.Property<int?>("VnCharacterVnsId");
+
                     b.Property<int?>("VnId");
 
-                    b.Property<int?>("VnInfoPkId");
+                    b.Property<int?>("VnInfoId");
 
                     b.Property<int?>("Waist");
 
                     b.Property<int?>("Weight");
 
-                    b.HasKey("PkId");
+                    b.HasKey("Id");
 
-                    b.HasIndex("VnInfoPkId");
+                    b.HasIndex("VnCharacterVnsId");
+
+                    b.HasIndex("VnInfoId");
 
                     b.ToTable("VnCharacter");
                 });
 
-            modelBuilder.Entity("VisualNovelManagerv2.EF.Data.Entity.VnCharacter.VnCharacterTraits", b =>
+            modelBuilder.Entity("VisualNovelManagerv2.EF.Entity.VnCharacter.VnCharacterTraits", b =>
                 {
-                    b.Property<int>("PkId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<int?>("CharacterId");
@@ -76,18 +80,19 @@ namespace VisualNovelManagerv2.Migrations
 
                     b.Property<string>("TraitName");
 
-                    b.Property<int?>("VnCharacterPkId");
+                    b.Property<int?>("VnCharacterId");
 
-                    b.HasKey("PkId");
+                    b.HasKey("Id");
 
-                    b.HasIndex("VnCharacterPkId");
+                    b.HasIndex("VnCharacterId");
 
                     b.ToTable("VnCharacterTraits");
                 });
 
-            modelBuilder.Entity("VisualNovelManagerv2.EF.Data.Entity.VnCharacter.VnCharacterVns", b =>
+            modelBuilder.Entity("VisualNovelManagerv2.EF.Entity.VnCharacter.VnCharacterVns", b =>
                 {
-                    b.Property<int>("PkId");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
 
                     b.Property<int?>("CharacterId");
 
@@ -99,14 +104,14 @@ namespace VisualNovelManagerv2.Migrations
 
                     b.Property<int?>("VnId");
 
-                    b.HasKey("PkId");
+                    b.HasKey("Id");
 
                     b.ToTable("VnCharacterVns");
                 });
 
-            modelBuilder.Entity("VisualNovelManagerv2.EF.Data.Entity.VnInfo.VnInfo", b =>
+            modelBuilder.Entity("VisualNovelManagerv2.EF.Entity.VnInfo.VnInfo", b =>
                 {
-                    b.Property<int>("PkId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Aliases");
@@ -137,14 +142,35 @@ namespace VisualNovelManagerv2.Migrations
 
                     b.Property<int>("VnId");
 
-                    b.HasKey("PkId");
+                    b.Property<int?>("VnInfoAnimeId");
+
+                    b.Property<int?>("VnInfoLinksId");
+
+                    b.Property<int?>("VnInfoRelationsId");
+
+                    b.Property<int?>("VnInfoScreensId");
+
+                    b.Property<int?>("VnInfoStaffId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("VnInfoAnimeId");
+
+                    b.HasIndex("VnInfoLinksId");
+
+                    b.HasIndex("VnInfoRelationsId");
+
+                    b.HasIndex("VnInfoScreensId");
+
+                    b.HasIndex("VnInfoStaffId");
 
                     b.ToTable("VnInfo");
                 });
 
-            modelBuilder.Entity("VisualNovelManagerv2.EF.Data.Entity.VnInfo.VnInfoAnime", b =>
+            modelBuilder.Entity("VisualNovelManagerv2.EF.Entity.VnInfo.VnInfoAnime", b =>
                 {
-                    b.Property<int>("PkId");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
 
                     b.Property<int?>("AniDbId");
 
@@ -162,14 +188,15 @@ namespace VisualNovelManagerv2.Migrations
 
                     b.Property<string>("Year");
 
-                    b.HasKey("PkId");
+                    b.HasKey("Id");
 
                     b.ToTable("VnInfoAnime");
                 });
 
-            modelBuilder.Entity("VisualNovelManagerv2.EF.Data.Entity.VnInfo.VnInfoLinks", b =>
+            modelBuilder.Entity("VisualNovelManagerv2.EF.Entity.VnInfo.VnInfoLinks", b =>
                 {
-                    b.Property<int>("PkId");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("Encubed");
 
@@ -179,14 +206,15 @@ namespace VisualNovelManagerv2.Migrations
 
                     b.Property<string>("Wikipedia");
 
-                    b.HasKey("PkId");
+                    b.HasKey("Id");
 
                     b.ToTable("VnInfoLinks");
                 });
 
-            modelBuilder.Entity("VisualNovelManagerv2.EF.Data.Entity.VnInfo.VnInfoRelations", b =>
+            modelBuilder.Entity("VisualNovelManagerv2.EF.Entity.VnInfo.VnInfoRelations", b =>
                 {
-                    b.Property<int>("PkId");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("Official");
 
@@ -200,14 +228,14 @@ namespace VisualNovelManagerv2.Migrations
 
                     b.Property<int?>("VnId");
 
-                    b.HasKey("PkId");
+                    b.HasKey("Id");
 
                     b.ToTable("VnInfoRelations");
                 });
 
-            modelBuilder.Entity("VisualNovelManagerv2.EF.Data.Entity.VnInfo.VnInfoScreens", b =>
+            modelBuilder.Entity("VisualNovelManagerv2.EF.Entity.VnInfo.VnInfoScreens", b =>
                 {
-                    b.Property<int>("PkId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<int?>("Height");
@@ -220,25 +248,21 @@ namespace VisualNovelManagerv2.Migrations
 
                     b.Property<int?>("VnId");
 
-                    b.Property<int?>("VnInfoPkId");
-
-                    b.Property<int?>("VnInfoPkId1");
+                    b.Property<int?>("VnInfoId");
 
                     b.Property<int?>("Width");
 
-                    b.HasKey("PkId");
+                    b.HasKey("Id");
 
-                    b.HasIndex("VnInfoPkId")
-                        .IsUnique();
-
-                    b.HasIndex("VnInfoPkId1");
+                    b.HasIndex("VnInfoId");
 
                     b.ToTable("VnInfoScreens");
                 });
 
-            modelBuilder.Entity("VisualNovelManagerv2.EF.Data.Entity.VnInfo.VnInfoStaff", b =>
+            modelBuilder.Entity("VisualNovelManagerv2.EF.Entity.VnInfo.VnInfoStaff", b =>
                 {
-                    b.Property<int>("PkId");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
 
                     b.Property<int?>("AliasId");
 
@@ -254,14 +278,14 @@ namespace VisualNovelManagerv2.Migrations
 
                     b.Property<int?>("VnId");
 
-                    b.HasKey("PkId");
+                    b.HasKey("Id");
 
                     b.ToTable("VnInfoStaff");
                 });
 
-            modelBuilder.Entity("VisualNovelManagerv2.EF.Data.Entity.VnInfo.VnInfoTags", b =>
+            modelBuilder.Entity("VisualNovelManagerv2.EF.Entity.VnInfo.VnInfoTags", b =>
                 {
-                    b.Property<int>("PkId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<double>("Score");
@@ -274,32 +298,32 @@ namespace VisualNovelManagerv2.Migrations
 
                     b.Property<int?>("VnId");
 
-                    b.Property<int?>("VnInfoPkId");
+                    b.Property<int?>("VnInfoId");
 
-                    b.HasKey("PkId");
+                    b.HasKey("Id");
 
-                    b.HasIndex("VnInfoPkId");
+                    b.HasIndex("VnInfoId");
 
                     b.ToTable("VnInfoTags");
                 });
 
-            modelBuilder.Entity("VisualNovelManagerv2.EF.Data.Entity.VnOther.Categories", b =>
+            modelBuilder.Entity("VisualNovelManagerv2.EF.Entity.VnOther.Categories", b =>
                 {
-                    b.Property<int>("PkId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Category");
 
                     b.Property<string>("Created");
 
-                    b.HasKey("PkId");
+                    b.HasKey("Id");
 
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("VisualNovelManagerv2.EF.Data.Entity.VnOther.VnUserData", b =>
+            modelBuilder.Entity("VisualNovelManagerv2.EF.Entity.VnOther.VnUserData", b =>
                 {
-                    b.Property<int>("PkId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("ExePath");
@@ -312,28 +336,28 @@ namespace VisualNovelManagerv2.Migrations
 
                     b.Property<int?>("VnId");
 
-                    b.HasKey("PkId");
+                    b.HasKey("Id");
 
                     b.ToTable("VnUserData");
                 });
 
-            modelBuilder.Entity("VisualNovelManagerv2.EF.Data.Entity.VnOther.VnUserDataCategories", b =>
+            modelBuilder.Entity("VisualNovelManagerv2.EF.Entity.VnOther.VnUserDataCategories", b =>
                 {
-                    b.Property<int>("PkId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<int?>("Category");
 
                     b.Property<int?>("VnId");
 
-                    b.HasKey("PkId");
+                    b.HasKey("Id");
 
                     b.ToTable("VnUserDataCategories");
                 });
 
-            modelBuilder.Entity("VisualNovelManagerv2.EF.Data.Entity.VnProducer.VnProducer", b =>
+            modelBuilder.Entity("VisualNovelManagerv2.EF.Entity.VnProducer.VnProducer", b =>
                 {
-                    b.Property<int>("PkId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Aliases");
@@ -350,14 +374,23 @@ namespace VisualNovelManagerv2.Migrations
 
                     b.Property<string>("ProducerType");
 
-                    b.HasKey("PkId");
+                    b.Property<int?>("VnProducerLinksId");
+
+                    b.Property<int?>("VnProducerRelationsId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("VnProducerLinksId");
+
+                    b.HasIndex("VnProducerRelationsId");
 
                     b.ToTable("VnProducer");
                 });
 
-            modelBuilder.Entity("VisualNovelManagerv2.EF.Data.Entity.VnProducer.VnProducerLinks", b =>
+            modelBuilder.Entity("VisualNovelManagerv2.EF.Entity.VnProducer.VnProducerLinks", b =>
                 {
-                    b.Property<int>("PkId");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("Homepage");
 
@@ -365,14 +398,15 @@ namespace VisualNovelManagerv2.Migrations
 
                     b.Property<string>("Wikipedia");
 
-                    b.HasKey("PkId");
+                    b.HasKey("Id");
 
                     b.ToTable("VnProducerLinks");
                 });
 
-            modelBuilder.Entity("VisualNovelManagerv2.EF.Data.Entity.VnProducer.VnProducerRelations", b =>
+            modelBuilder.Entity("VisualNovelManagerv2.EF.Entity.VnProducer.VnProducerRelations", b =>
                 {
-                    b.Property<int>("PkId");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("Name");
 
@@ -384,14 +418,14 @@ namespace VisualNovelManagerv2.Migrations
 
                     b.Property<int?>("RelationId");
 
-                    b.HasKey("PkId");
+                    b.HasKey("Id");
 
                     b.ToTable("VnProducerRelations");
                 });
 
-            modelBuilder.Entity("VisualNovelManagerv2.EF.Data.Entity.VnRelease.VnRelease", b =>
+            modelBuilder.Entity("VisualNovelManagerv2.EF.Entity.VnRelease.VnRelease", b =>
                 {
-                    b.Property<int>("PkId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Animation");
@@ -428,34 +462,34 @@ namespace VisualNovelManagerv2.Migrations
 
                     b.Property<int?>("VnId");
 
-                    b.Property<int?>("VnInfoPkId");
+                    b.Property<int?>("VnInfoId");
 
-                    b.Property<int?>("VnReleaseMediaPkId");
+                    b.Property<int?>("VnReleaseMediaId");
 
-                    b.Property<int?>("VnReleaseProducersPkId");
+                    b.Property<int?>("VnReleaseProducersId");
 
-                    b.Property<int?>("VnReleaseVnPkId");
+                    b.Property<int?>("VnReleaseVnId");
 
                     b.Property<string>("Voiced");
 
                     b.Property<string>("Website");
 
-                    b.HasKey("PkId");
+                    b.HasKey("Id");
 
-                    b.HasIndex("VnInfoPkId");
+                    b.HasIndex("VnInfoId");
 
-                    b.HasIndex("VnReleaseMediaPkId");
+                    b.HasIndex("VnReleaseMediaId");
 
-                    b.HasIndex("VnReleaseProducersPkId");
+                    b.HasIndex("VnReleaseProducersId");
 
-                    b.HasIndex("VnReleaseVnPkId");
+                    b.HasIndex("VnReleaseVnId");
 
                     b.ToTable("VnRelease");
                 });
 
-            modelBuilder.Entity("VisualNovelManagerv2.EF.Data.Entity.VnRelease.VnReleaseMedia", b =>
+            modelBuilder.Entity("VisualNovelManagerv2.EF.Entity.VnRelease.VnReleaseMedia", b =>
                 {
-                    b.Property<int>("PkId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Medium");
@@ -464,14 +498,14 @@ namespace VisualNovelManagerv2.Migrations
 
                     b.Property<int?>("ReleaseId");
 
-                    b.HasKey("PkId");
+                    b.HasKey("Id");
 
                     b.ToTable("VnReleaseMedia");
                 });
 
-            modelBuilder.Entity("VisualNovelManagerv2.EF.Data.Entity.VnRelease.VnReleaseProducers", b =>
+            modelBuilder.Entity("VisualNovelManagerv2.EF.Entity.VnRelease.VnReleaseProducers", b =>
                 {
-                    b.Property<int>("PkId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Developer");
@@ -488,14 +522,14 @@ namespace VisualNovelManagerv2.Migrations
 
                     b.Property<int?>("ReleaseId");
 
-                    b.HasKey("PkId");
+                    b.HasKey("Id");
 
                     b.ToTable("VnReleaseProducers");
                 });
 
-            modelBuilder.Entity("VisualNovelManagerv2.EF.Data.Entity.VnRelease.VnReleaseVn", b =>
+            modelBuilder.Entity("VisualNovelManagerv2.EF.Entity.VnRelease.VnReleaseVn", b =>
                 {
-                    b.Property<int>("PkId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Name");
@@ -506,14 +540,14 @@ namespace VisualNovelManagerv2.Migrations
 
                     b.Property<int?>("VnId");
 
-                    b.HasKey("PkId");
+                    b.HasKey("Id");
 
                     b.ToTable("VnReleaseVn");
                 });
 
-            modelBuilder.Entity("VisualNovelManagerv2.EF.Data.Entity.VnStaff.VnStaff", b =>
+            modelBuilder.Entity("VisualNovelManagerv2.EF.Entity.VnStaff.VnStaff", b =>
                 {
-                    b.Property<int>("PkId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Description");
@@ -530,14 +564,23 @@ namespace VisualNovelManagerv2.Migrations
 
                     b.Property<int?>("StaffId");
 
-                    b.HasKey("PkId");
+                    b.Property<int?>("VnStaffAliasesId");
+
+                    b.Property<int?>("VnStaffLinksId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("VnStaffAliasesId");
+
+                    b.HasIndex("VnStaffLinksId");
 
                     b.ToTable("VnStaff");
                 });
 
-            modelBuilder.Entity("VisualNovelManagerv2.EF.Data.Entity.VnStaff.VnStaffAliases", b =>
+            modelBuilder.Entity("VisualNovelManagerv2.EF.Entity.VnStaff.VnStaffAliases", b =>
                 {
-                    b.Property<int>("PkId");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
 
                     b.Property<int?>("AliasId");
 
@@ -547,14 +590,15 @@ namespace VisualNovelManagerv2.Migrations
 
                     b.Property<int?>("StaffId");
 
-                    b.HasKey("PkId");
+                    b.HasKey("Id");
 
                     b.ToTable("VnStaffAliases");
                 });
 
-            modelBuilder.Entity("VisualNovelManagerv2.EF.Data.Entity.VnStaff.VnStaffLinks", b =>
+            modelBuilder.Entity("VisualNovelManagerv2.EF.Entity.VnStaff.VnStaffLinks", b =>
                 {
-                    b.Property<int>("PkId");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("AniDb");
 
@@ -566,14 +610,14 @@ namespace VisualNovelManagerv2.Migrations
 
                     b.Property<string>("Wikipedia");
 
-                    b.HasKey("PkId");
+                    b.HasKey("Id");
 
                     b.ToTable("VnStaffLinks");
                 });
 
-            modelBuilder.Entity("VisualNovelManagerv2.EF.Data.Entity.VnTagTrait.VnTagData", b =>
+            modelBuilder.Entity("VisualNovelManagerv2.EF.Entity.VnTagTrait.VnTagData", b =>
                 {
-                    b.Property<int>("PkId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Aliases");
@@ -592,14 +636,14 @@ namespace VisualNovelManagerv2.Migrations
 
                     b.Property<int?>("Vns");
 
-                    b.HasKey("PkId");
+                    b.HasKey("Id");
 
                     b.ToTable("VnTagData");
                 });
 
-            modelBuilder.Entity("VisualNovelManagerv2.EF.Data.Entity.VnTagTrait.VnTraitData", b =>
+            modelBuilder.Entity("VisualNovelManagerv2.EF.Entity.VnTagTrait.VnTraitData", b =>
                 {
-                    b.Property<int>("PkId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Aliases");
@@ -616,14 +660,14 @@ namespace VisualNovelManagerv2.Migrations
 
                     b.Property<int?>("TraitId");
 
-                    b.HasKey("PkId");
+                    b.HasKey("Id");
 
                     b.ToTable("VnTraitData");
                 });
 
-            modelBuilder.Entity("VisualNovelManagerv2.EF.Data.Entity.VnUserList.VnVisualNovelList", b =>
+            modelBuilder.Entity("VisualNovelManagerv2.EF.Entity.VnUserList.VnVisualNovelList", b =>
                 {
-                    b.Property<int>("PkId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Added");
@@ -636,14 +680,14 @@ namespace VisualNovelManagerv2.Migrations
 
                     b.Property<int>("VnId");
 
-                    b.HasKey("PkId");
+                    b.HasKey("Id");
 
                     b.ToTable("VnVisualNovelList");
                 });
 
-            modelBuilder.Entity("VisualNovelManagerv2.EF.Data.Entity.VnUserList.VnVoteList", b =>
+            modelBuilder.Entity("VisualNovelManagerv2.EF.Entity.VnUserList.VnVoteList", b =>
                 {
-                    b.Property<int>("PkId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Added");
@@ -654,14 +698,14 @@ namespace VisualNovelManagerv2.Migrations
 
                     b.Property<int>("Vote");
 
-                    b.HasKey("PkId");
+                    b.HasKey("Id");
 
                     b.ToTable("VnVoteList");
                 });
 
-            modelBuilder.Entity("VisualNovelManagerv2.EF.Data.Entity.VnUserList.VnWishList", b =>
+            modelBuilder.Entity("VisualNovelManagerv2.EF.Entity.VnUserList.VnWishList", b =>
                 {
-                    b.Property<int>("PkId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Added");
@@ -672,132 +716,105 @@ namespace VisualNovelManagerv2.Migrations
 
                     b.Property<int>("VnId");
 
-                    b.HasKey("PkId");
+                    b.HasKey("Id");
 
                     b.ToTable("VnWishList");
                 });
 
-            modelBuilder.Entity("VisualNovelManagerv2.EF.Data.Entity.VnCharacter.VnCharacter", b =>
+            modelBuilder.Entity("VisualNovelManagerv2.EF.Entity.VnCharacter.VnCharacter", b =>
                 {
-                    b.HasOne("VisualNovelManagerv2.EF.Data.Entity.VnInfo.VnInfo")
+                    b.HasOne("VisualNovelManagerv2.EF.Entity.VnCharacter.VnCharacterVns", "VnCharacterVns")
+                        .WithMany()
+                        .HasForeignKey("VnCharacterVnsId");
+
+                    b.HasOne("VisualNovelManagerv2.EF.Entity.VnInfo.VnInfo")
                         .WithMany("VnCharacters")
-                        .HasForeignKey("VnInfoPkId");
+                        .HasForeignKey("VnInfoId");
                 });
 
-            modelBuilder.Entity("VisualNovelManagerv2.EF.Data.Entity.VnCharacter.VnCharacterTraits", b =>
+            modelBuilder.Entity("VisualNovelManagerv2.EF.Entity.VnCharacter.VnCharacterTraits", b =>
                 {
-                    b.HasOne("VisualNovelManagerv2.EF.Data.Entity.VnCharacter.VnCharacter")
+                    b.HasOne("VisualNovelManagerv2.EF.Entity.VnCharacter.VnCharacter")
                         .WithMany("VnCharacterTraits")
-                        .HasForeignKey("VnCharacterPkId");
+                        .HasForeignKey("VnCharacterId");
                 });
 
-            modelBuilder.Entity("VisualNovelManagerv2.EF.Data.Entity.VnCharacter.VnCharacterVns", b =>
+            modelBuilder.Entity("VisualNovelManagerv2.EF.Entity.VnInfo.VnInfo", b =>
                 {
-                    b.HasOne("VisualNovelManagerv2.EF.Data.Entity.VnCharacter.VnCharacter")
-                        .WithOne("VnCharacterVns")
-                        .HasForeignKey("VisualNovelManagerv2.EF.Data.Entity.VnCharacter.VnCharacterVns", "PkId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                    b.HasOne("VisualNovelManagerv2.EF.Entity.VnInfo.VnInfoAnime", "VnInfoAnime")
+                        .WithMany()
+                        .HasForeignKey("VnInfoAnimeId");
+
+                    b.HasOne("VisualNovelManagerv2.EF.Entity.VnInfo.VnInfoLinks", "VnInfoLinks")
+                        .WithMany()
+                        .HasForeignKey("VnInfoLinksId");
+
+                    b.HasOne("VisualNovelManagerv2.EF.Entity.VnInfo.VnInfoRelations", "VnInfoRelations")
+                        .WithMany()
+                        .HasForeignKey("VnInfoRelationsId");
+
+                    b.HasOne("VisualNovelManagerv2.EF.Entity.VnInfo.VnInfoScreens", "VnInfoScreens")
+                        .WithMany()
+                        .HasForeignKey("VnInfoScreensId");
+
+                    b.HasOne("VisualNovelManagerv2.EF.Entity.VnInfo.VnInfoStaff", "VnInfoStaff")
+                        .WithMany()
+                        .HasForeignKey("VnInfoStaffId");
                 });
 
-            modelBuilder.Entity("VisualNovelManagerv2.EF.Data.Entity.VnInfo.VnInfoAnime", b =>
+            modelBuilder.Entity("VisualNovelManagerv2.EF.Entity.VnInfo.VnInfoScreens", b =>
                 {
-                    b.HasOne("VisualNovelManagerv2.EF.Data.Entity.VnInfo.VnInfo")
-                        .WithOne("VnInfoAnime")
-                        .HasForeignKey("VisualNovelManagerv2.EF.Data.Entity.VnInfo.VnInfoAnime", "PkId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("VisualNovelManagerv2.EF.Data.Entity.VnInfo.VnInfoLinks", b =>
-                {
-                    b.HasOne("VisualNovelManagerv2.EF.Data.Entity.VnInfo.VnInfo")
-                        .WithOne("VnInfoLinks")
-                        .HasForeignKey("VisualNovelManagerv2.EF.Data.Entity.VnInfo.VnInfoLinks", "PkId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("VisualNovelManagerv2.EF.Data.Entity.VnInfo.VnInfoRelations", b =>
-                {
-                    b.HasOne("VisualNovelManagerv2.EF.Data.Entity.VnInfo.VnInfo")
-                        .WithOne("VnInfoRelations")
-                        .HasForeignKey("VisualNovelManagerv2.EF.Data.Entity.VnInfo.VnInfoRelations", "PkId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("VisualNovelManagerv2.EF.Data.Entity.VnInfo.VnInfoScreens", b =>
-                {
-                    b.HasOne("VisualNovelManagerv2.EF.Data.Entity.VnInfo.VnInfo")
-                        .WithOne("VnInfoScreens")
-                        .HasForeignKey("VisualNovelManagerv2.EF.Data.Entity.VnInfo.VnInfoScreens", "VnInfoPkId");
-
-                    b.HasOne("VisualNovelManagerv2.EF.Data.Entity.VnInfo.VnInfo")
+                    b.HasOne("VisualNovelManagerv2.EF.Entity.VnInfo.VnInfo")
                         .WithMany("VnInfoScreensCollection")
-                        .HasForeignKey("VnInfoPkId1");
+                        .HasForeignKey("VnInfoId");
                 });
 
-            modelBuilder.Entity("VisualNovelManagerv2.EF.Data.Entity.VnInfo.VnInfoStaff", b =>
+            modelBuilder.Entity("VisualNovelManagerv2.EF.Entity.VnInfo.VnInfoTags", b =>
                 {
-                    b.HasOne("VisualNovelManagerv2.EF.Data.Entity.VnInfo.VnInfo")
-                        .WithOne("VnInfoStaff")
-                        .HasForeignKey("VisualNovelManagerv2.EF.Data.Entity.VnInfo.VnInfoStaff", "PkId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("VisualNovelManagerv2.EF.Data.Entity.VnInfo.VnInfoTags", b =>
-                {
-                    b.HasOne("VisualNovelManagerv2.EF.Data.Entity.VnInfo.VnInfo")
+                    b.HasOne("VisualNovelManagerv2.EF.Entity.VnInfo.VnInfo")
                         .WithMany("VnInfoTags")
-                        .HasForeignKey("VnInfoPkId");
+                        .HasForeignKey("VnInfoId");
                 });
 
-            modelBuilder.Entity("VisualNovelManagerv2.EF.Data.Entity.VnProducer.VnProducerLinks", b =>
+            modelBuilder.Entity("VisualNovelManagerv2.EF.Entity.VnProducer.VnProducer", b =>
                 {
-                    b.HasOne("VisualNovelManagerv2.EF.Data.Entity.VnProducer.VnProducer")
-                        .WithOne("VnProducerLinks")
-                        .HasForeignKey("VisualNovelManagerv2.EF.Data.Entity.VnProducer.VnProducerLinks", "PkId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                    b.HasOne("VisualNovelManagerv2.EF.Entity.VnProducer.VnProducerLinks", "VnProducerLinks")
+                        .WithMany()
+                        .HasForeignKey("VnProducerLinksId");
+
+                    b.HasOne("VisualNovelManagerv2.EF.Entity.VnProducer.VnProducerRelations", "VnProducerRelations")
+                        .WithMany()
+                        .HasForeignKey("VnProducerRelationsId");
                 });
 
-            modelBuilder.Entity("VisualNovelManagerv2.EF.Data.Entity.VnProducer.VnProducerRelations", b =>
+            modelBuilder.Entity("VisualNovelManagerv2.EF.Entity.VnRelease.VnRelease", b =>
                 {
-                    b.HasOne("VisualNovelManagerv2.EF.Data.Entity.VnProducer.VnProducer")
-                        .WithOne("VnProducerRelations")
-                        .HasForeignKey("VisualNovelManagerv2.EF.Data.Entity.VnProducer.VnProducerRelations", "PkId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("VisualNovelManagerv2.EF.Data.Entity.VnRelease.VnRelease", b =>
-                {
-                    b.HasOne("VisualNovelManagerv2.EF.Data.Entity.VnInfo.VnInfo")
+                    b.HasOne("VisualNovelManagerv2.EF.Entity.VnInfo.VnInfo")
                         .WithMany("VnReleases")
-                        .HasForeignKey("VnInfoPkId");
+                        .HasForeignKey("VnInfoId");
 
-                    b.HasOne("VisualNovelManagerv2.EF.Data.Entity.VnRelease.VnReleaseMedia", "VnReleaseMedia")
+                    b.HasOne("VisualNovelManagerv2.EF.Entity.VnRelease.VnReleaseMedia", "VnReleaseMedia")
                         .WithMany()
-                        .HasForeignKey("VnReleaseMediaPkId");
+                        .HasForeignKey("VnReleaseMediaId");
 
-                    b.HasOne("VisualNovelManagerv2.EF.Data.Entity.VnRelease.VnReleaseProducers", "VnReleaseProducers")
+                    b.HasOne("VisualNovelManagerv2.EF.Entity.VnRelease.VnReleaseProducers", "VnReleaseProducers")
                         .WithMany()
-                        .HasForeignKey("VnReleaseProducersPkId");
+                        .HasForeignKey("VnReleaseProducersId");
 
-                    b.HasOne("VisualNovelManagerv2.EF.Data.Entity.VnRelease.VnReleaseVn", "VnReleaseVn")
+                    b.HasOne("VisualNovelManagerv2.EF.Entity.VnRelease.VnReleaseVn", "VnReleaseVn")
                         .WithMany()
-                        .HasForeignKey("VnReleaseVnPkId");
+                        .HasForeignKey("VnReleaseVnId");
                 });
 
-            modelBuilder.Entity("VisualNovelManagerv2.EF.Data.Entity.VnStaff.VnStaffAliases", b =>
+            modelBuilder.Entity("VisualNovelManagerv2.EF.Entity.VnStaff.VnStaff", b =>
                 {
-                    b.HasOne("VisualNovelManagerv2.EF.Data.Entity.VnStaff.VnStaff")
-                        .WithOne("VnStaffAliases")
-                        .HasForeignKey("VisualNovelManagerv2.EF.Data.Entity.VnStaff.VnStaffAliases", "PkId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
+                    b.HasOne("VisualNovelManagerv2.EF.Entity.VnStaff.VnStaffAliases", "VnStaffAliases")
+                        .WithMany()
+                        .HasForeignKey("VnStaffAliasesId");
 
-            modelBuilder.Entity("VisualNovelManagerv2.EF.Data.Entity.VnStaff.VnStaffLinks", b =>
-                {
-                    b.HasOne("VisualNovelManagerv2.EF.Data.Entity.VnStaff.VnStaff")
-                        .WithOne("VnStaffLinks")
-                        .HasForeignKey("VisualNovelManagerv2.EF.Data.Entity.VnStaff.VnStaffLinks", "PkId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                    b.HasOne("VisualNovelManagerv2.EF.Entity.VnStaff.VnStaffLinks", "VnStaffLinks")
+                        .WithMany()
+                        .HasForeignKey("VnStaffLinksId");
                 });
 #pragma warning restore 612, 618
         }

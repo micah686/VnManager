@@ -2,10 +2,9 @@
 
 namespace VisualNovelManagerv2.EF.Entity.VnCharacter
 {
-    public class VnCharacterTraits
-    {
-        [Key]
-        public int PkId { get; set; }
+    public class VnCharacterTraits: IEntity
+    {        
+        public int Id { get; set; }
         public int? CharacterId { get; set; }
         public int? TraitId { get; set; }
         public string TraitName { get; set; }

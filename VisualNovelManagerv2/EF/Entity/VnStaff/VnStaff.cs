@@ -2,10 +2,9 @@
 
 namespace VisualNovelManagerv2.EF.Entity.VnStaff
 {
-    public class VnStaff
-    {
-        [Key]
-        public int PkId { get; set; }
+    public class VnStaff: IEntity
+    {        
+        public int Id { get; set; }
         public int? StaffId { get; set; }
         public string Name { get; set; }
         public string Original { get; set; }

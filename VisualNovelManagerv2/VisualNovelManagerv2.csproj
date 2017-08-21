@@ -213,9 +213,9 @@
     <Compile Include="EF\Entity\VnUserList\VnWishList.cs" />
     <Compile Include="Globals.cs" />
     <Compile Include="Infrastructure\ValidatableViewModelBase.cs" />
-    <Compile Include="Migrations\20170821064604_Initial.cs" />
-    <Compile Include="Migrations\20170821064604_Initial.designer.cs">
-      <DependentUpon>20170821064604_Initial.cs</DependentUpon>
+    <Compile Include="Migrations\20170821194056_Initial.cs" />
+    <Compile Include="Migrations\20170821194056_Initial.designer.cs">
+      <DependentUpon>20170821194056_Initial.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\DatabaseContextModelSnapshot.cs" />
     <Compile Include="Pages\Links\About\FullText.xaml.cs">

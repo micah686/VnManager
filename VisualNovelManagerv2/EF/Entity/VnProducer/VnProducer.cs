@@ -2,10 +2,9 @@
 
 namespace VisualNovelManagerv2.EF.Entity.VnProducer
 {
-    public class VnProducer
-    {
-        [Key]
-        public int PkId { get; set; }
+    public class VnProducer: IEntity
+    {        
+        public int Id { get; set; }
         public int? ProducerId { get; set; }
         public string Name { get; set; }
         public string Original { get; set; }

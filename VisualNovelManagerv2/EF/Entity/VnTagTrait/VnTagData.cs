@@ -2,10 +2,9 @@
 
 namespace VisualNovelManagerv2.EF.Entity.VnTagTrait
 {
-    public class VnTagData
-    {
-        [Key]
-        public int PkId { get; set; }
+    public class VnTagData:IEntity
+    {        
+        public int Id { get; set; }
         public int? TagId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }

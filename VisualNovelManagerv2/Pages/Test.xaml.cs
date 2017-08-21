@@ -58,11 +58,13 @@ namespace VisualNovelManagerv2.Pages
             {
                 try
                 {
+                    
+
                     VnInfoLinks vnInfoLinks = new VnInfoLinks()
                     {
-                        Wikipedia = "sample wiki string"
+                        Wikipedia = "wiki01"
                     };
-                    db.Add(vnInfoLinks);
+                    db.VnInfoLinks.Add(vnInfoLinks);
                     db.SaveChanges();
                 }
                 catch (Exception exception)

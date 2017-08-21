@@ -2,10 +2,9 @@
 
 namespace VisualNovelManagerv2.EF.Entity.VnStaff
 {
-    public class VnStaffLinks
-    {
-        [Key]
-        public int PkId { get; set; }
+    public class VnStaffLinks: IEntity
+    {        
+        public int Id { get; set; }
         public int? StaffId { get; set; }
         public string Homepage { get; set; }
         public string Wikipedia { get; set; }

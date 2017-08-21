@@ -2,10 +2,9 @@
 
 namespace VisualNovelManagerv2.EF.Entity.VnInfo
 {
-    public class VnInfoAnime
-    {
-        [Key]
-        public int PkId { get; set; }
+    public class VnInfoAnime: IEntity
+    {        
+        public int Id { get; set; }
         public int? VnId { get; set; }
         public int? AniDbId { get; set; }
         public int? AnnId { get; set; }

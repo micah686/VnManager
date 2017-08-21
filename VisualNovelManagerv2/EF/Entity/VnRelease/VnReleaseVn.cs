@@ -2,10 +2,9 @@
 
 namespace VisualNovelManagerv2.EF.Entity.VnRelease
 {
-    public class VnReleaseVn
-    {
-        [Key]
-        public int PkId { get; set; }
+    public class VnReleaseVn: IEntity
+    {        
+        public int Id { get; set; }
         public int? ReleaseId { get; set; }
         public int? VnId { get; set; }
         public string Name { get; set; }

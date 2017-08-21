@@ -2,6 +2,6 @@
 {
     interface IEntity
     {
-        int PkId { get; set; }
+        int Id { get; set; }
     }
 }

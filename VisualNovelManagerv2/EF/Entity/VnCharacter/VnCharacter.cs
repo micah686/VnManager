@@ -3,10 +3,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace VisualNovelManagerv2.EF.Entity.VnCharacter
 {
-    public class VnCharacter
+    public class VnCharacter: IEntity
     {
-        [Key]
-        public int PkId { get; set; }
+        public int Id { get; set; }
         public int? VnId { get; set; }
         public int? CharacterId { get; set; }
         public string Name { get; set; }
@@ -24,5 +23,6 @@ namespace VisualNovelManagerv2.EF.Entity.VnCharacter
         public int? Weight { get; set; }
         public virtual ICollection<VnCharacterTraits> VnCharacterTraits { get; set; }
         public virtual VnCharacterVns VnCharacterVns { get; set; }
+        
     }
 }
