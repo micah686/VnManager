@@ -180,6 +180,26 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         {
             if (!string.IsNullOrEmpty(_username) && _password.Length > 0)
             {
+                //List<uint> dbIdList= new List<uint>();
+                UInt32[] dbIdList = new uint[] { };
+                using (var context = new DatabaseContext())
+                {
+                    List<uint> idList= new List<uint>();
+                    IQueryable<VnWishList> idEntry = from v in context.VnWishList where v.UserId.Equals(_userId) select v;
+                    foreach (var item in idEntry)
+                    {
+                        idList.Add(item.VnId);
+                    }
+                    var entry = (from item in context.VnIdList where idList.Contains(item.VnId) select item).FirstOrDefault();
+                    if(entry != null)
+                        _userListCollection.Add(entry.Title);
+                    if (idList.Count > 0)
+                    {
+                        dbIdList = idList.ToArray();
+                    }
+                }
+                
+                List<Tuple<uint, string>> dbItemsToAdd = new List<Tuple<uint, string>>();
                 using (Vndb client = new Vndb(Username, Password))
                 {
                     bool hasMore = true;
@@ -194,18 +214,38 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                         ro.Count = 100;
                         try
                         {
-                            var wishlist = await client.GetWishlistAsync(VndbFilters.UserId.Equals(_userId), VndbFlags.FullWishlist, ro);
-                            if (wishlist != null)
+                            if (dbIdList.Length > 0)
                             {
-                                hasMore = wishlist.HasMore;
-                                idList.AddRange(wishlist.Select(wish => wish.VisualNovelId));
-                                page++;
+                                var wishlist = await client.GetWishlistAsync(VndbFilters.UserId.Equals(_userId) & VndbFilters.VisualNovel.NotEquals(dbIdList), VndbFlags.FullWishlist, ro);
+
+                                if (wishlist != null)
+                                {
+                                    hasMore = wishlist.HasMore;
+                                    idList.AddRange(wishlist.Select(wish => wish.VisualNovelId));
+                                    page++;
+                                }
+                                else
+                                {
+                                    HandleError.HandleErrors(client.GetLastError(), errorCounter);
+                                    errorCounter++;
+                                }
                             }
                             else
                             {
-                                HandleError.HandleErrors(client.GetLastError(), errorCounter);
-                                errorCounter++;
+                                var wishlist = await client.GetWishlistAsync(VndbFilters.UserId.Equals(_userId), VndbFlags.FullWishlist, ro);
+                                if (wishlist != null)
+                                {
+                                    hasMore = wishlist.HasMore;
+                                    idList.AddRange(wishlist.Select(wish => wish.VisualNovelId));
+                                    page++;
+                                }
+                                else
+                                {
+                                    HandleError.HandleErrors(client.GetLastError(), errorCounter);
+                                    errorCounter++;
+                                }
                             }
+                                                        
                         }
                         catch (Exception ex)
                         {
@@ -229,6 +269,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                                 foreach (var item in data)
                                 {
                                     _userListCollection.Add(item.Name);
+                                    dbItemsToAdd.Add(new Tuple<uint, string>(item.Id, item.Name));
                                 }
                                 page++;
                             }
@@ -246,6 +287,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                     }
                     client.Dispose();
                 }
+                AddWishlistToDb(dbItemsToAdd);
             }
         }
 
@@ -443,6 +485,21 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                     return 0;
                 }
                 return data;
+            }
+        }
+
+        private void AddWishlistToDb(List<Tuple<uint, string>> itemsToAdd)
+        {
+            using (var context = new DatabaseContext())
+            {
+                List<VnIdList> vnData = itemsToAdd.Select(item => new VnIdList()
+                    {
+                        VnId = item.Item1,
+                        Title = item.Item2
+                    }).ToList();
+
+                context.Set<VnIdList>().AddRange(vnData);
+                context.SaveChanges();
             }
         }
     }
