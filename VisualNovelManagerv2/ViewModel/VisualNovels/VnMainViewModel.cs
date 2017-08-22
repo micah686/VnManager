@@ -498,7 +498,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                     #region VnInfo
                     foreach (VnInfo vnInfo in db.Set<VnInfo>().Where(t => t.Title == (SelectedVn)))
                     {
-                        Globals.VnId = vnInfo.VnId;
+                        Globals.VnId = Convert.ToInt32(vnInfo.VnId);
+                        //TODO:Change Globals.VnId To uint
 
 
                         foreach (string language in GetLangauges(vnInfo.Languages))

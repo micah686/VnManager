@@ -23,11 +23,14 @@ using VisualNovelManagerv2.CustomClasses;
 using VisualNovelManagerv2.CustomClasses.Vndb;
 using VisualNovelManagerv2.Design.VisualNovel;
 using VisualNovelManagerv2.EF.Context;
+using VisualNovelManagerv2.EF.Entity.VnInfo;
+using VisualNovelManagerv2.EF.Entity.VnOther;
 using VisualNovelManagerv2.EF.Entity.VnUserList;
 using VisualNovelManagerv2.Infrastructure;
 using VndbSharp;
 using VndbSharp.Models;
 using VndbSharp.Models.Common;
+using VndbSharp.Models.VisualNovel;
 using ValidationResult = MvvmValidation.ValidationResult;
 // ReSharper disable ExplicitCallerInfoArgument
 
@@ -354,12 +357,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
         private async void BindVoteData()
         {
-            using (Vndb client = new Vndb(true))
-            {
-                //see about doing this without querying the API, perhaps using vninfo/ userlist tables?
-                var data = await client.GetVisualNovelAsync(VndbFilters.Title.Equals(SelectedItem));
-                _vnId = data.Items[0].Id;
-            }
+            _vnId = await GetVnId();
             using (var context = new DatabaseContext())
             {
                 IQueryable<VnVoteList> entry = from v in context.VnVoteList
@@ -378,12 +376,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
         private async void BindVnList()
         {
-            using (Vndb client = new Vndb(true))
-            {
-                //see about doing this without querying the API, perhaps using vninfo/ userlist tables?
-                var data = await client.GetVisualNovelAsync(VndbFilters.Title.Equals(SelectedItem));
-                _vnId = data.Items[0].Id;
-            }
+            _vnId = await GetVnId();
             using (var context = new DatabaseContext())
             {
                 IQueryable<VnVisualNovelList> entry = from v in context.VnVisualNovelList
@@ -403,12 +396,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
         private async void BindWishList()
         {
-            using (Vndb client = new Vndb(true))
-            {
-                //see about doing this without querying the API, perhaps using vninfo/ userlist tables?
-                var data = await client.GetVisualNovelAsync(VndbFilters.Title.Equals(SelectedItem));
-                _vnId = data.Items[0].Id;
-            }
+            _vnId = await GetVnId();
             using (var context = new DatabaseContext())
             {
                 IQueryable<VnWishList> entry = from v in context.VnWishList
@@ -422,6 +410,39 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                     InfoAdded = data.Added;
                 }
 
+            }
+        }
+
+        private async Task<uint> GetVnId()
+        {
+            using (var context = new DatabaseContext())
+            {
+                uint data = 0;
+                data = context.Set<VnInfo>().Where(v => v.Title == SelectedItem).Select(x => x.VnId).FirstOrDefault();
+                if (data != 0)
+                {
+                    return data;
+                }
+                if (data == 0)
+                {
+                    data = context.Set<VnIdList>().Where(v => v.Title == SelectedItem).Select(x => x.VnId)
+                        .FirstOrDefault();
+                }
+                if(data == 0)
+                {
+                    Vndb client = new Vndb(true);
+                    var response = await client.GetVisualNovelAsync(VndbFilters.Title.Equals(SelectedItem));
+                    VisualNovel firstOrDefault = response?.Items.FirstOrDefault();
+                    if (firstOrDefault != null)
+                        data = firstOrDefault.Id;
+                    client.Logout();
+                    client.Dispose();
+                }
+                else
+                {
+                    return 0;
+                }
+                return data;
             }
         }
     }
@@ -923,7 +944,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 if (value != null)
                 {
                     BindImage();
-
                     if (IsVoteListSelected)
                         BindVoteData();
                     else if (IsVnListSelected)

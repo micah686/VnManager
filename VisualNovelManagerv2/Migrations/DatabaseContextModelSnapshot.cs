@@ -139,7 +139,7 @@ namespace VisualNovelManagerv2.Migrations
 
                     b.Property<string>("Title");
 
-                    b.Property<int>("VnId");
+                    b.Property<uint>("VnId");
 
                     b.Property<int?>("VnInfoAnimeId");
 
@@ -318,6 +318,20 @@ namespace VisualNovelManagerv2.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("VisualNovelManagerv2.EF.Entity.VnOther.VnIdList", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Title");
+
+                    b.Property<uint>("VnId");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("VnIdList");
                 });
 
             modelBuilder.Entity("VisualNovelManagerv2.EF.Entity.VnOther.VnUserData", b =>

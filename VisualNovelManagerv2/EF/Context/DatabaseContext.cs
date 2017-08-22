@@ -63,5 +63,6 @@ namespace VisualNovelManagerv2.EF.Context
         internal DbSet<VnVoteList> VnVoteList { get; set; }
         internal DbSet<VnVisualNovelList> VnVisualNovelList { get; set; }
         internal DbSet<VnWishList> VnWishList { get; set; }
+        internal DbSet<VnIdList> VnIdList { get; set; }
     }
 }

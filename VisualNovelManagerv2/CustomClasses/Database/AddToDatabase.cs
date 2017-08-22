@@ -179,7 +179,7 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                         #region VnInfo
                         vninfo.Add(new VnInfo
                         {
-                            VnId = Convert.ToInt32(visualNovel.Id),
+                            VnId = visualNovel.Id,
                             Title = visualNovel.Name,
                             Original = visualNovel.OriginalName,
                             Released = visualNovel.Released?.ToString() ?? null,

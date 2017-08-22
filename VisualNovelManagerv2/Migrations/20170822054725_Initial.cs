@@ -40,6 +40,20 @@ namespace VisualNovelManagerv2.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "VnIdList",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Title = table.Column<string>(type: "TEXT", nullable: true),
+                    VnId = table.Column<uint>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_VnIdList", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "VnInfoAnime",
                 columns: table => new
                 {
@@ -502,7 +516,7 @@ namespace VisualNovelManagerv2.Migrations
                     Rating = table.Column<int>(type: "INTEGER", nullable: true),
                     Released = table.Column<string>(type: "TEXT", nullable: true),
                     Title = table.Column<string>(type: "TEXT", nullable: true),
-                    VnId = table.Column<int>(type: "INTEGER", nullable: false),
+                    VnId = table.Column<uint>(type: "INTEGER", nullable: false),
                     VnInfoAnimeId = table.Column<int>(type: "INTEGER", nullable: true),
                     VnInfoLinksId = table.Column<int>(type: "INTEGER", nullable: true),
                     VnInfoRelationsId = table.Column<int>(type: "INTEGER", nullable: true),
@@ -753,6 +767,9 @@ namespace VisualNovelManagerv2.Migrations
 
             migrationBuilder.DropTable(
                 name: "VnCharacterTraits");
+
+            migrationBuilder.DropTable(
+                name: "VnIdList");
 
             migrationBuilder.DropTable(
                 name: "VnInfoTags");
