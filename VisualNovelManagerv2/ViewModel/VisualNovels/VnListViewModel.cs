@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Runtime.InteropServices;
 using System.Security;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -30,6 +31,7 @@ using VisualNovelManagerv2.Infrastructure;
 using VndbSharp;
 using VndbSharp.Models;
 using VndbSharp.Models.Common;
+using VndbSharp.Models.User;
 using VndbSharp.Models.VisualNovel;
 using ValidationResult = MvvmValidation.ValidationResult;
 // ReSharper disable ExplicitCallerInfoArgument
@@ -183,16 +185,19 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 //List<uint> dbIdList= new List<uint>();
                 UInt32[] dbIdList = new uint[] { };
                 using (var context = new DatabaseContext())
-                {
-                    List<uint> idList= new List<uint>();
-                    IQueryable<VnWishList> idEntry = from v in context.VnWishList where v.UserId.Equals(_userId) select v;
-                    foreach (var item in idEntry)
-                    {
-                        idList.Add(item.VnId);
-                    }
-                    var entry = (from item in context.VnIdList where idList.Contains(item.VnId) select item).FirstOrDefault();
-                    if(entry != null)
-                        _userListCollection.Add(entry.Title);
+                {                   
+                    //gets a list of all vnids that are in the VnWishlist where the userId is the logged in user
+                    List<uint> idEntry = (from v in context.VnWishList where v.UserId.Equals(_userId) select v.VnId).ToList();
+                    List<uint> idList= idEntry.ToList();
+
+                    //gets a list of titles of all items in VnIdList which contain an id from the above vnlist,
+                    //which is any item in the wishlist table
+                    List<string> entry = (from first in context.VnIdList
+                        join second in idList on first.VnId equals second
+                        select first.Title).ToList();
+
+                    if(entry.Count >0)
+                        _userListCollection.InsertRange(entry);
                     if (idList.Count > 0)
                     {
                         dbIdList = idList.ToArray();
@@ -200,6 +205,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 }
                 
                 List<Tuple<uint, string>> dbItemsToAdd = new List<Tuple<uint, string>>();
+                List<Wishlist> dbWishlistToAdd= new List<Wishlist>();
                 using (Vndb client = new Vndb(Username, Password))
                 {
                     bool hasMore = true;
@@ -216,13 +222,14 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                         {
                             if (dbIdList.Length > 0)
                             {
-                                var wishlist = await client.GetWishlistAsync(VndbFilters.UserId.Equals(_userId) & VndbFilters.VisualNovel.NotEquals(dbIdList), VndbFlags.FullWishlist, ro);
+                                VndbResponse<Wishlist> wishlist = await client.GetWishlistAsync(VndbFilters.UserId.Equals(_userId) & VndbFilters.VisualNovel.NotEquals(dbIdList), VndbFlags.FullWishlist, ro);
 
                                 if (wishlist != null)
                                 {
                                     hasMore = wishlist.HasMore;
                                     idList.AddRange(wishlist.Select(wish => wish.VisualNovelId));
-                                    page++;
+                                    dbWishlistToAdd.AddRange(wishlist);
+                                    page++;                                    
                                 }
                                 else
                                 {
@@ -237,6 +244,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                                 {
                                     hasMore = wishlist.HasMore;
                                     idList.AddRange(wishlist.Select(wish => wish.VisualNovelId));
+                                    dbWishlistToAdd.AddRange(wishlist);
                                     page++;
                                 }
                                 else
@@ -287,7 +295,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                     }
                     client.Dispose();
                 }
-                AddWishlistToDb(dbItemsToAdd);
+                AddWishlistToDb(dbItemsToAdd, dbWishlistToAdd);
             }
         }
 
@@ -488,7 +496,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             }
         }
 
-        private void AddWishlistToDb(List<Tuple<uint, string>> itemsToAdd)
+        private void AddWishlistToDb(List<Tuple<uint, string>> itemsToAdd, List<Wishlist> wishlistItems)
         {
             using (var context = new DatabaseContext())
             {
@@ -500,6 +508,14 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
                 context.Set<VnIdList>().AddRange(vnData);
                 context.SaveChanges();
+
+
+                var test = (from first in wishlistItems
+                    join second in context.VnWishList on first.UserId equals second.UserId
+                    select first).ToList();
+
+                //TODO:NEED to find rows where UserID and VNId are the same
+
             }
         }
     }
@@ -735,8 +751,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         //groups
         #region Collections
         #region UserListCollection
-        private ObservableCollection<string> _userListCollection = new ObservableCollection<string>();
-        public ObservableCollection<string> UserListCollection
+        private RangeEnabledObservableCollection<string> _userListCollection = new RangeEnabledObservableCollection<string>();
+        public RangeEnabledObservableCollection<string> UserListCollection
         {
             get { return _userListCollection; }
             set
@@ -1069,4 +1085,5 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         private uint _vnId = 0;
 
     }
+
 }

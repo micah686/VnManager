@@ -172,6 +172,7 @@
     <Compile Include="Converters\NullImageConverter.cs" />
     <Compile Include="CustomClasses\ConfigSettings\ModifyUserSettings.cs" />
     <Compile Include="CustomClasses\PasswordBoxBindingBehavior.cs" />
+    <Compile Include="CustomClasses\RangeEnabledObservableCollection.cs" />
     <Compile Include="CustomClasses\Vndb\HandleError.cs" />
     <Compile Include="CustomClasses\Vndb\RequestOptions.cs" />
     <Compile Include="CustomClasses\TextBoxService.cs" />
