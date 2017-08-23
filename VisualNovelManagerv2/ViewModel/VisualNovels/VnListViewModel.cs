@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -182,7 +183,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         {
             if (!string.IsNullOrEmpty(_username) && _password.Length > 0)
             {
-                //List<uint> dbIdList= new List<uint>();
                 UInt32[] dbIdList = new uint[] { };
                 using (var context = new DatabaseContext())
                 {                   
@@ -206,6 +206,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 
                 List<Tuple<uint, string>> dbItemsToAdd = new List<Tuple<uint, string>>();
                 List<Wishlist> dbWishlistToAdd= new List<Wishlist>();
+                List<VnWishList> TESTME= new List<VnWishList>();
                 using (Vndb client = new Vndb(Username, Password))
                 {
                     bool hasMore = true;
@@ -228,7 +229,14 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                                 {
                                     hasMore = wishlist.HasMore;
                                     idList.AddRange(wishlist.Select(wish => wish.VisualNovelId));
-                                    dbWishlistToAdd.AddRange(wishlist);
+                                    //dbWishlistToAdd.AddRange(wishlist);
+                                    TESTME.AddRange(wishlist.Select(item => new VnWishList()
+                                    {
+                                        UserId = item.UserId,
+                                        VnId = item.VisualNovelId,
+                                        Priority = item.Priority.ToString(),
+                                        Added = item.AddedOn.ToString(CultureInfo.InvariantCulture)
+                                    }));
                                     page++;                                    
                                 }
                                 else
@@ -244,7 +252,14 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                                 {
                                     hasMore = wishlist.HasMore;
                                     idList.AddRange(wishlist.Select(wish => wish.VisualNovelId));
-                                    dbWishlistToAdd.AddRange(wishlist);
+                                    //dbWishlistToAdd.AddRange(wishlist);
+                                    TESTME.AddRange(wishlist.Select(item => new VnWishList()
+                                    {
+                                        UserId = item.UserId,
+                                        VnId = item.VisualNovelId,
+                                        Priority = item.Priority.ToString(),
+                                        Added = item.AddedOn.ToString(CultureInfo.InvariantCulture)
+                                    }));
                                     page++;
                                 }
                                 else
@@ -266,6 +281,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                     page = 1;
                     while (hasMore)
                     {
+                        break;
                         ro.Page = page;
                         ro.Count = 25;
                         try
@@ -295,7 +311,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                     }
                     client.Dispose();
                 }
-                AddWishlistToDb(dbItemsToAdd, dbWishlistToAdd);
+                AddWishlistToDb(dbItemsToAdd, TESTME);
             }
         }
 
@@ -496,26 +512,31 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             }
         }
 
-        private void AddWishlistToDb(List<Tuple<uint, string>> itemsToAdd, List<Wishlist> wishlistItems)
+        private void AddWishlistToDb(List<Tuple<uint, string>> itemsToAdd, List<VnWishList> wishlistItems)
         {
             using (var context = new DatabaseContext())
             {
-                List<VnIdList> vnData = itemsToAdd.Select(item => new VnIdList()
-                    {
-                        VnId = item.Item1,
-                        Title = item.Item2
-                    }).ToList();
+                //List<VnIdList> vnData = itemsToAdd.Select(item => new VnIdList()
+                //    {
+                //        VnId = item.Item1,
+                //        Title = item.Item2
+                //    }).ToList();
 
-                context.Set<VnIdList>().AddRange(vnData);
+                //context.Set<VnIdList>().AddRange(vnData);
+                //context.SaveChanges();
+
+
+                IQueryable<VnWishList> rtn = from temp in context.VnWishList select temp;
+                var efList = rtn.ToList();
+
+                efList.RemoveAll(x => x.UserId != _userId);
+                //gets a list of all ids from the wishlistItems
+                List<uint>vnIdList= wishlistItems.Select(item => item.VnId).ToList();
+                //prepares EF to remove any items where the EF does not contain an item from the wishlistItems
+                context.VnWishList.RemoveRange(efList.Where(item => !vnIdList.Contains(item.VnId)));
+
+                context.AddRange(wishlistItems);
                 context.SaveChanges();
-
-
-                var test = (from first in wishlistItems
-                    join second in context.VnWishList on first.UserId equals second.UserId
-                    select first).ToList();
-
-                //TODO:NEED to find rows where UserID and VNId are the same
-
             }
         }
     }
