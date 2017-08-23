@@ -7,7 +7,7 @@ namespace VisualNovelManagerv2.EF.Entity.VnUserList
         public int Id { get; set; }
         public uint UserId { get; set; }
         public uint VnId { get; set; }
-        public int Vote { get; set; }
+        public uint Vote { get; set; }
         public string Added { get; set; }
     }
 }

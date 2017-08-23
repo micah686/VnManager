@@ -109,6 +109,29 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         private async void GetVoteList()
         {
             if (string.IsNullOrEmpty(_username) || _password.Length <= 0) return;
+            UInt32[] dbIdList = { };
+            using (var context = new DatabaseContext())
+            {
+                //gets a list of all vnids that are in the VnVoteList where the userId is the logged in user
+                List<uint> idEntry = (from v in context.VnVoteList where v.UserId.Equals(_userId) select v.VnId).ToList();
+                List<uint> idList = idEntry.ToList();
+
+                //gets a list of titles of all items in VnIdList which contain an id from the above vnlist,
+                //which is any item in the votelist table
+                List<string> entry = (from first in context.VnIdList
+                    join second in idList on first.VnId equals second
+                    select first.Title).ToList();
+
+                if (entry.Count > 0)
+                    _userListCollection.InsertRange(entry);
+                if (idList.Count > 0)
+                {
+                    dbIdList = idList.ToArray();
+                }
+            }
+            List<Tuple<uint, string>> dbItemsToAdd = new List<Tuple<uint, string>>();
+            List<VnVoteList>voteListItems = new List<VnVoteList>();
+
             using (Vndb client = new Vndb(Username, Password))
             {
                 bool hasMore = true;
@@ -123,19 +146,68 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                     ro.Count = 100;
                     try
                     {
-                        
-
-                        var voteList = await client.GetVoteListAsync(VndbFilters.UserId.Equals(_userId), VndbFlags.FullVotelist, ro);
-                        if (voteList != null)
+                        if (dbIdList.Length > 0)
                         {
-                            hasMore = voteList.HasMore;
-                            idList.AddRange(voteList.Select(wish => wish.VisualNovelId));
-                            page++;
+                            var voteList = await client.GetVoteListAsync(VndbFilters.UserId.Equals(_userId) & VndbFilters.VisualNovel.NotEquals(dbIdList), VndbFlags.FullVotelist, ro);
+
+                            if (voteList != null && voteList.Count > 0)
+                            {
+                                hasMore = voteList.HasMore;
+                                idList.AddRange(voteList.Select(vote => vote.VisualNovelId));
+                                voteListItems.AddRange(voteList.Select(item => new VnVoteList()
+                                {
+                                    UserId = item.UserId,
+                                    VnId = item.VisualNovelId,
+                                    Vote = item.Vote,
+                                    Added = item.AddedOn.ToString(CultureInfo.InvariantCulture)
+                                }));
+                                page++;
+                            }
+                            if (voteList != null && voteList.Count == 0)
+                            {
+                                voteList = await client.GetVoteListAsync(VndbFilters.UserId.Equals(_userId), VndbFlags.FullVotelist, ro);
+                                if (voteList != null)
+                                {
+                                    hasMore = voteList.HasMore;
+                                    idList.AddRange(voteList.Select(vote => vote.VisualNovelId));
+                                    voteListItems.AddRange(voteList.Select(item => new VnVoteList()
+                                    {
+                                        UserId = item.UserId,
+                                        VnId = item.VisualNovelId,
+                                        Vote = item.Vote,
+                                        Added = item.AddedOn.ToString(CultureInfo.InvariantCulture)
+                                    }));
+                                    page++;
+                                }
+                            }
+                            else
+                            {
+                                HandleError.HandleErrors(client.GetLastError(), errorCounter);
+                                errorCounter++;
+                            }
                         }
                         else
                         {
-                            HandleError.HandleErrors(client.GetLastError(), errorCounter);
-                            errorCounter++;
+                            var voteList = await client.GetVoteListAsync(VndbFilters.UserId.Equals(_userId), VndbFlags.FullVotelist, ro);
+                            if (voteList != null)
+                            {
+                                hasMore = voteList.HasMore;
+                                idList.AddRange(voteList.Select(wish => wish.VisualNovelId));
+                                //dbWishlistToAdd.AddRange(votelist);
+                                voteListItems.AddRange(voteList.Select(item => new VnVoteList()
+                                {
+                                    UserId = item.UserId,
+                                    VnId = item.VisualNovelId,
+                                    Vote = item.Vote,
+                                    Added = item.AddedOn.ToString(CultureInfo.InvariantCulture)
+                                }));
+                                page++;
+                            }
+                            else
+                            {
+                                HandleError.HandleErrors(client.GetLastError(), errorCounter);
+                                errorCounter++;
+                            }
                         }
                     }
                     catch (Exception ex)
@@ -161,6 +233,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                             foreach (var item in data)
                             {
                                 _userListCollection.Add(item.Name);
+                                dbItemsToAdd.Add(new Tuple<uint, string>(item.Id, item.Name));
                             }
                             page++;
                         }
@@ -178,13 +251,14 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 }
                 client.Dispose();
             }
+            AddVotelistToDb(dbItemsToAdd, voteListItems);
         }
 
         private async void GetWishlist()
         {
             if (!string.IsNullOrEmpty(_username) && _password.Length > 0)
             {
-                UInt32[] dbIdList = new uint[] { };
+                UInt32[] dbIdList = { };
                 using (var context = new DatabaseContext())
                 {                   
                     //gets a list of all vnids that are in the VnWishlist where the userId is the logged in user
@@ -206,7 +280,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 }
                 
                 List<Tuple<uint, string>> dbItemsToAdd = new List<Tuple<uint, string>>();
-                List<Wishlist> dbWishlistToAdd= new List<Wishlist>();
                 List<VnWishList> wishListItems= new List<VnWishList>();
                 using (Vndb client = new Vndb(Username, Password))
                 {
@@ -511,6 +584,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 {
                     data = context.Set<VnIdList>().Where(v => v.Title == SelectedItem).Select(x => x.VnId)
                         .FirstOrDefault();
+                    return data;
                 }
                 if(data == 0)
                 {
@@ -521,12 +595,12 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                         data = firstOrDefault.Id;
                     client.Logout();
                     client.Dispose();
+                    return data;
                 }
                 else
                 {
                     return 0;
                 }
-                return data;
             }
         }
 
@@ -564,6 +638,44 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 context.VnWishList.RemoveRange(context.VnWishList.Where(x=>x.UserId.Equals(_userId)));
 
                 context.AddRange(wishlistItems);
+                context.SaveChanges();
+            }
+        }
+
+        private void AddVotelistToDb(List<Tuple<uint, string>> itemsToAdd, List<VnVoteList> votelistItems)
+        {
+            using (var context = new DatabaseContext())
+            {
+                //List<VnIdList> vnData = new List<VnIdList>();
+                //var idlist = context.VnIdList.Select(x => x.VnId);
+                //foreach (var item in itemsToAdd)
+                //{
+                //    if (!idlist.Contains(item.Item1))
+                //    {
+                //        vnData.Add(new VnIdList()
+                //        {
+                //            VnId = item.Item1,
+                //            Title = item.Item2
+                //        });
+                //    }
+                //}
+
+                //add items that aren't in the VnIdList to the table
+                var idlist = context.VnIdList.Select(x => x.VnId);
+                List<VnIdList> vnData = (from item in itemsToAdd
+                    where !idlist.Contains(item.Item1)
+                    select new VnIdList()
+                    {
+                        VnId = item.Item1,
+                        Title = item.Item2
+                    }).ToList();
+                context.AddRange(vnData);
+
+                //cheap way to make sure database is up to date
+#warning This is a hack, removing all items from the db, then adding them again. Maybe later, I can find out how to update records without creating aa new record
+                context.VnVoteList.RemoveRange(context.VnVoteList.Where(x => x.UserId.Equals(_userId)));
+
+                context.AddRange(votelistItems);
                 context.SaveChanges();
             }
         }
