@@ -8,6 +8,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -17,6 +18,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using Microsoft.EntityFrameworkCore;
 using VisualNovelManagerv2.Converters;
 using VisualNovelManagerv2.Design.VisualNovel;
 using VisualNovelManagerv2.CustomClasses;
@@ -479,16 +481,54 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
         private void VnOrChildProcessExited(object sender, EventArgs eventArgs)
         {
-            stopwatch.Stop();
-            using (var context = new DatabaseContext())
+            try
             {
-                var test = context.VnUserData.FirstOrDefault(x => x.VnId.Equals(Convert.ToUInt32(Globals.VnId)));
-
-                VnUserData userData = new VnUserData()
+                stopwatch.Stop();
+                VnUserData vnUserData;
+                using (var context = new DatabaseContext())
                 {
-                    //LastPlayed = DateTime.Now.ToString(CultureInfo.InvariantCulture)
-                };
+                    vnUserData = context.VnUserData.FirstOrDefault(x => x.VnId.Equals(Convert.ToUInt32(Globals.VnId)));
+                }
+
+                if (vnUserData != null)
+                {
+                    vnUserData.LastPlayed = DateTime.Now.ToString(CultureInfo.InvariantCulture);
+
+                    if (!string.IsNullOrEmpty(vnUserData.PlayTime))
+                    {
+                        //match #,#,#,# format
+                        var regex = new Regex(@"^[0-9]+\,[0-9]+\,[0-9]+\,[0-9]+$");
+                        bool isMatch = regex.IsMatch(vnUserData.PlayTime);
+                        if (isMatch)
+                        {
+                            var lastPlayTime = vnUserData.PlayTime.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                            List<int> timecount = new List<int>();
+                            for (int i = 0; i < lastPlayTime.Length; i++)
+                            {
+                                timecount.Add(new int());
+                                timecount[i] = Convert.ToInt32(lastPlayTime[i]);
+                            }
+                            TimeSpan timeSpan = new TimeSpan(timecount[0], timecount[1], timecount[2], timecount[3]);
+                            TimeSpan currentplaytime = new TimeSpan(stopwatch.Elapsed.Days, stopwatch.Elapsed.Hours, stopwatch.Elapsed.Minutes, stopwatch.Elapsed.Seconds);
+                            timeSpan = timeSpan.Add(currentplaytime);
+                            vnUserData.PlayTime = $"{timeSpan.Days},{timeSpan.Hours},{timeSpan.Minutes},{timeSpan.Seconds}";
+                        }                        
+                    }
+                }
+
+                using (var context = new DatabaseContext())
+                {
+                    if (vnUserData == null) return;
+                    context.Entry(vnUserData).State = EntityState.Modified;
+                    context.SaveChanges();
+                }
             }
+            catch (Exception ex)
+            {
+                DebugLogging.WriteDebugLog(ex);
+                throw;
+            }
+            
         }
     }
 
