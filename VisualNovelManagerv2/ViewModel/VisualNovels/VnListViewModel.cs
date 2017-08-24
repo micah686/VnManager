@@ -740,7 +740,13 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 context.SaveChanges();
             }
 
-            VnWishList vnWishList;
+            List<VnWishList> vnWishList;
+            if (efList.Count > 0)
+            {
+                //find all vnwishlist items that have been modified
+                vnWishList = (from first in wishlistItems join second in efList on first.VnId equals second.VnId select first)
+                    .Where(x => !efList.Any(y => y.Priority == x.Priority && y.Added == x.Added)).ToList();
+            }
             using (var context = new DatabaseContext())
             {
                 //get all items from eflist that have the same vnid as one from the vnwishlist
@@ -756,6 +762,10 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                     join second in wishlistItems on first.VnId equals second.VnId
                     select first).Where(x => !wishlistItems.Any(y => y.Priority == x.Priority && y.Added == x.Added))
                     .ToList();
+
+                var test03 =
+                    (from first in wishlistItems join second in efList on first.VnId equals second.VnId select first)
+                    .Where(x => !efList.Any(y => y.Priority == x.Priority && y.Added == x.Added)).ToList();
             }
         }
 
