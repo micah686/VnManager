@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -126,10 +127,11 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         #endregion
 
         public static bool IsDownloading = false;
-
+        private readonly Stopwatch stopwatch = new Stopwatch();
 
         public static ICommand LoadBindVnDataCommand { get; set; }
         public static ICommand ClearCollectionsCommand { get; private set; }
+        public ICommand StartVnCommand => new GalaSoft.MvvmLight.CommandWpf.RelayCommand(StartVn);
         public VnMainViewModel()
         {
             LoadBindVnDataCommand = new RelayCommand(LoadVnNameCollection);
@@ -430,7 +432,56 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             }
         }
 
-        
+        private void StartVn()
+        {
+            stopwatch.Reset();
+            Process process = null;
+            using (var context = new DatabaseContext())
+            {
+                VnInfo idList = context.VnInfo.FirstOrDefault(x => x.Title.Equals(SelectedVn));
+                VnUserData vnUserData = context.VnUserData.FirstOrDefault(x => x.VnId.Equals(idList.VnId));
+                if (vnUserData?.ExePath != null)
+                {
+                    string exepath = vnUserData.ExePath;
+                    string dirpath = Path.GetDirectoryName(exepath);
+                    if (dirpath != null) Directory.SetCurrentDirectory(dirpath);
+                    process = Process.Start(exepath);
+                    stopwatch.Start();
+                }
+            }
+            Directory.SetCurrentDirectory(Directory.GetCurrentDirectory());
+            List<Process> children = process.GetChildProcesses();
+            int initialChildrenCount = children.Count;
+            if (process != null)
+            {
+                process.EnableRaisingEvents = true;
+                process.Exited += delegate(object o, EventArgs args)
+                {
+                    //Only allows the HasExited event to trigger when there are no child processes
+                    if (children.Count < 1 && initialChildrenCount == 0)
+                    {
+                        stopwatch.Stop();
+                        VnOrChildProcessExited(null, null);
+                    }
+                };
+            }
+
+            //this may break if the parent spawns multiple child processes.
+            //TODO: check against programs that spawn multiple processes, like chrome
+            foreach (Process proc in children)
+            {
+                proc.EnableRaisingEvents = true;
+                stopwatch.Stop();
+                proc.Exited += VnOrChildProcessExited;
+            }
+
+        }
+
+        private void VnOrChildProcessExited(object sender, EventArgs eventArgs)
+        {
+            
+            Debug.WriteLine("process has exited");
+        }
     }
 
     //class for bindings
