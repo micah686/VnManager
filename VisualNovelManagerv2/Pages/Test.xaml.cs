@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
+using Microsoft.EntityFrameworkCore;
 using VisualNovelManagerv2.CustomClasses.ConfigSettings;
 using VisualNovelManagerv2.Design.Settings;
 using VisualNovelManagerv2.EF.Context;
@@ -48,7 +50,35 @@ namespace VisualNovelManagerv2.Pages
 
         private async void Button_Click_1(object sender, RoutedEventArgs e)
         {
+            try
+            {
+                VnUserData vnUserData;
+                using (var context = new DatabaseContext())
+                {
+                    vnUserData = context.VnUserData.FirstOrDefault(x => x.VnId.Equals(Convert.ToUInt32(92)));
+                }
 
+                if (vnUserData != null)
+                {
+                    vnUserData.LastPlayed = DateTime.Now;
+                    var test = DateTime.Now.ToString(CultureInfo.InvariantCulture);
+                    var dt = Convert.ToDateTime(test);
+                }
+
+                using (var context = new DatabaseContext())
+                {
+                    if (vnUserData != null)
+                    {
+                        context.Entry(vnUserData).State = EntityState.Modified;
+                        context.SaveChanges();
+                    }
+                }
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception);
+                throw;
+            }
         }
     }
 }

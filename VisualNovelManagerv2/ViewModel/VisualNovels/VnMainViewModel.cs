@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -471,7 +472,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             foreach (Process proc in children)
             {
                 proc.EnableRaisingEvents = true;
-                stopwatch.Stop();
                 proc.Exited += VnOrChildProcessExited;
             }
 
@@ -479,8 +479,16 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
         private void VnOrChildProcessExited(object sender, EventArgs eventArgs)
         {
-            
-            Debug.WriteLine("process has exited");
+            stopwatch.Stop();
+            using (var context = new DatabaseContext())
+            {
+                var test = context.VnUserData.FirstOrDefault(x => x.VnId.Equals(Convert.ToUInt32(Globals.VnId)));
+
+                VnUserData userData = new VnUserData()
+                {
+                    //LastPlayed = DateTime.Now.ToString(CultureInfo.InvariantCulture)
+                };
+            }
         }
     }
 
