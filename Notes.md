@@ -6,6 +6,8 @@ These are just personal reminders for me to keep track of what I need to fix/add
 - Load long lists of names into tables, to deal with lists of 1000+ entries.
 - Possibly create a custom style for screenshots to set the border from blue to red when NSFW
 - Need to work on VnListViewModel for checking edge cases
+- Check VnUserList where big images make the list look weird
+- add a bool to prevent users from adding a gaame while another is processing.
 
 
 
