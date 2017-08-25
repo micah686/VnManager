@@ -724,80 +724,68 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
         private void AddWishlistToDb(List<VnWishList> wishlistItems)
         {
-            List<VnWishList> efList;
-            //for removing items no longer on the user's wishlist
-            using (var context = new DatabaseContext())
+            try
             {
-                IQueryable<VnWishList> rtn = from temp in context.VnWishList select temp;
-                efList = rtn.ToList();
-
-                efList.RemoveAll(x => x.UserId != _userId);
-                //gets a list of all ids from the wishlistItems
-                List<uint> vnIdList = wishlistItems.Select(item => item.VnId).ToList();
-                //prepares EF to remove any items where the EF does not contain an item from the wishlistItems
-                context.VnWishList.RemoveRange(efList.Where(item => !vnIdList.Contains(item.VnId)));
-                context.SaveChanges();
-            }
-
-
-            
-
-
-            List<VnWishList> onlineWishList= new List<VnWishList>();
-            List<VnWishList> localWishList;
-
-            using (var context = new DatabaseContext())
-            {
-                localWishList = (from first in context.VnWishList
-                        join second in wishlistItems on first.VnId equals second.VnId
-                        select first).Where(x => !wishlistItems.Any(y => y.Priority == x.Priority && y.Added == x.Added))
-                    .ToList();
-            }
-
-
-            if (efList.Count > 0)
-            {
-                //find all vnwishlist items that have been modified
-                //localWishList = (from first in efList
-                //        join second in wishlistItems on first.VnId equals second.VnId
-                //        select first).Where(x => !wishlistItems.Any(y => y.Priority == x.Priority && y.Added == x.Added))
-                //    .ToList();
-
-
-                onlineWishList = (from first in wishlistItems join second in efList on first.VnId equals second.VnId select first)
-                    .Where(x => !efList.Any(y => y.Priority == x.Priority && y.Added == x.Added)).ToList();
-
-
-
-
-                //localWishList = onlineWishList;
-
-                localWishList.First().Priority = onlineWishList.First().Priority;
-            }
-
-
-            //foreach (var wish in localWishList)
-            //{
-            //    using (var context = new DatabaseContext())
-            //    {
-
-            //        context.Entry(wish).State = EntityState.Modified;
-
-
-            //    }
-            //}
-            using (var context = new DatabaseContext())
-            {
-                foreach (var wish in localWishList)
+                List<VnWishList> efList;
+                //for removing items no longer on the user's wishlist
+                using (var context = new DatabaseContext())
                 {
-                    context.Entry(wish).State = EntityState.Modified;
+                    IQueryable<VnWishList> rtn = from temp in context.VnWishList select temp;
+                    efList = rtn.ToList();
+
+                    efList.RemoveAll(x => x.UserId != _userId);
+                    //gets a list of all ids from the wishlistItems
+                    List<uint> vnIdList = wishlistItems.Select(item => item.VnId).ToList();
+                    //prepares EF to remove any items where the EF does not contain an item from the wishlistItems
+                    context.VnWishList.RemoveRange(efList.Where(item => !vnIdList.Contains(item.VnId)));
+                    context.SaveChanges();
                 }
 
-                context.SaveChanges();
+                //begin section for modifying data
+                List<VnWishList> onlineWishList = new List<VnWishList>();
+                List<VnWishList> localWishList;
 
+                using (var context = new DatabaseContext())
+                {
+                    localWishList = (from first in context.VnWishList
+                                     join second in wishlistItems on first.VnId equals second.VnId
+                                     select first).Where(x => !wishlistItems.Any(y => y.Priority == x.Priority && y.Added == x.Added))
+                        .ToList();
+                }
+
+
+                if (efList.Count > 0)
+                {
+                    //gets the modified values from online, which is the wishListItems parameter
+                    onlineWishList = (from first in wishlistItems join second in efList on first.VnId equals second.VnId select first)
+                        .Where(x => !efList.Any(y => y.Priority == x.Priority && y.Added == x.Added)).ToList();
+
+                    //sets each of the entries to the new value
+                    int counter = 0;
+                    foreach (var wish in localWishList)
+                    {
+                        wish.Priority = onlineWishList[counter].Priority;
+                        wish.Added = onlineWishList[counter].Added;
+                        counter++;
+                    }
+                }
+                //updates each of the entries
+                using (var context = new DatabaseContext())
+                {
+                    foreach (var wish in localWishList)
+                    {
+                        context.Entry(wish).State = EntityState.Modified;
+                    }
+
+                    context.SaveChanges();
+
+                }
             }
-
-            
+            catch (Exception e)
+            {
+                DebugLogging.WriteDebugLog(e);
+                throw;
+            }
 
         }
 
