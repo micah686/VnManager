@@ -736,7 +736,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 List<uint> vnIdList = wishlistItems.Select(item => item.VnId).ToList();
                 //prepares EF to remove any items where the EF does not contain an item from the wishlistItems
                 context.VnWishList.RemoveRange(efList.Where(item => !vnIdList.Contains(item.VnId)));
-
                 context.SaveChanges();
             }
 
@@ -744,29 +743,16 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             if (efList.Count > 0)
             {
                 //find all vnwishlist items that have been modified
+                List<VnWishList> data = (from first in efList
+                        join second in wishlistItems on first.VnId equals second.VnId
+                        select first).Where(x => !wishlistItems.Any(y => y.Priority == x.Priority && y.Added == x.Added))
+                    .ToList();
+
+
                 vnWishList = (from first in wishlistItems join second in efList on first.VnId equals second.VnId select first)
                     .Where(x => !efList.Any(y => y.Priority == x.Priority && y.Added == x.Added)).ToList();
             }
-            using (var context = new DatabaseContext())
-            {
-                //get all items from eflist that have the same vnid as one from the vnwishlist
-                List<VnWishList> test01 = (from first in efList
-                    join second in wishlistItems on first.VnId equals second.VnId
-                    select first).ToList();
-                //get any items where the priority or added has changed
-                var test02 = test01.Where(x => !wishlistItems.Any(y => y.Priority == x.Priority && y.Added == x.Added))
-                    .ToList();
-
-                //find all vnwishlist items that have been modified
-                List<VnWishList> data = (from first in efList
-                    join second in wishlistItems on first.VnId equals second.VnId
-                    select first).Where(x => !wishlistItems.Any(y => y.Priority == x.Priority && y.Added == x.Added))
-                    .ToList();
-
-                var test03 =
-                    (from first in wishlistItems join second in efList on first.VnId equals second.VnId select first)
-                    .Where(x => !efList.Any(y => y.Priority == x.Priority && y.Added == x.Added)).ToList();
-            }
+            
         }
 
         private void AddVotelistToDb(List<VnVoteList> votelistItems)
