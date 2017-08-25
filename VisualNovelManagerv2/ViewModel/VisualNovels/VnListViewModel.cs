@@ -739,20 +739,66 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 context.SaveChanges();
             }
 
-            List<VnWishList> vnWishList;
-            if (efList.Count > 0)
+
+            
+
+
+            List<VnWishList> onlineWishList= new List<VnWishList>();
+            List<VnWishList> localWishList;
+
+            using (var context = new DatabaseContext())
             {
-                //find all vnwishlist items that have been modified
-                List<VnWishList> data = (from first in efList
+                localWishList = (from first in context.VnWishList
                         join second in wishlistItems on first.VnId equals second.VnId
                         select first).Where(x => !wishlistItems.Any(y => y.Priority == x.Priority && y.Added == x.Added))
                     .ToList();
-
-
-                vnWishList = (from first in wishlistItems join second in efList on first.VnId equals second.VnId select first)
-                    .Where(x => !efList.Any(y => y.Priority == x.Priority && y.Added == x.Added)).ToList();
             }
+
+
+            if (efList.Count > 0)
+            {
+                //find all vnwishlist items that have been modified
+                //localWishList = (from first in efList
+                //        join second in wishlistItems on first.VnId equals second.VnId
+                //        select first).Where(x => !wishlistItems.Any(y => y.Priority == x.Priority && y.Added == x.Added))
+                //    .ToList();
+
+
+                onlineWishList = (from first in wishlistItems join second in efList on first.VnId equals second.VnId select first)
+                    .Where(x => !efList.Any(y => y.Priority == x.Priority && y.Added == x.Added)).ToList();
+
+
+
+
+                //localWishList = onlineWishList;
+
+                localWishList.First().Priority = onlineWishList.First().Priority;
+            }
+
+
+            //foreach (var wish in localWishList)
+            //{
+            //    using (var context = new DatabaseContext())
+            //    {
+
+            //        context.Entry(wish).State = EntityState.Modified;
+
+
+            //    }
+            //}
+            using (var context = new DatabaseContext())
+            {
+                foreach (var wish in localWishList)
+                {
+                    context.Entry(wish).State = EntityState.Modified;
+                }
+
+                context.SaveChanges();
+
+            }
+
             
+
         }
 
         private void AddVotelistToDb(List<VnVoteList> votelistItems)
