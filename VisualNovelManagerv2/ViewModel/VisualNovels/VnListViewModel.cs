@@ -330,7 +330,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                                     }));
                                     page++;                                    
                                 }
-                                if (wishlist != null && wishlist.Count ==0)
+                                else if (wishlist != null && wishlist.Count == 0)
                                 {
                                     wishlist = await client.GetWishlistAsync(VndbFilters.UserId.Equals(_userId), VndbFlags.FullWishlist, ro);
                                     if (wishlist != null)
@@ -769,6 +769,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                         counter++;
                     }
                 }
+
+
                 //updates each of the entries
                 using (var context = new DatabaseContext())
                 {
@@ -780,6 +782,16 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                     context.SaveChanges();
 
                 }
+
+
+                List<VnWishList> addWishlistItem = wishlistItems;
+                addWishlistItem.RemoveAll(item => onlineWishList.Contains(item) && efList.Contains(item));
+                using (var context = new DatabaseContext())
+                {
+                    context.VnWishList.AddRange(addWishlistItem);
+                    context.SaveChanges();
+                }
+
             }
             catch (Exception e)
             {
