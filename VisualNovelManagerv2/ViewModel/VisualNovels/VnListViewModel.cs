@@ -298,6 +298,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 
                 List<Tuple<uint, string>> dbItemsToAdd = new List<Tuple<uint, string>>();
                 List<VnWishList> wishListItems= new List<VnWishList>();
+                bool removeItems = false;
                 using (Vndb client = new Vndb(Username, Password))
                 {
                     bool hasMore = true;
@@ -346,6 +347,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                                             Added = item.AddedOn.ToString(CultureInfo.InvariantCulture)
                                         }));
                                         page++;
+                                        removeItems = true;
                                     }
                                 }
                                 else
@@ -420,7 +422,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                     client.Dispose();
                 }
                 AddToIdListDb(dbItemsToAdd);
-                AddWishlistToDb(wishListItems);
+                AddWishlistToDb(wishListItems, removeItems);
 
                 Globals.StatusBar.ProgressText = "Done";
                 Globals.StatusBar.ProgressStatus = new BitmapImage(new Uri($@"{Globals.DirectoryPath}\Data\res\icons\statusbar\ok.png"));
@@ -722,7 +724,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             }
         }
 
-        private void AddWishlistToDb(List<VnWishList> wishlistItems)
+        private void AddWishlistToDb(List<VnWishList> wishlistItems, bool removeItems)
         {
             try
             {
@@ -737,8 +739,12 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                     //gets a list of all ids from the wishlistItems
                     List<uint> vnIdList = wishlistItems.Select(item => item.VnId).ToList();
                     //prepares EF to remove any items where the EF does not contain an item from the wishlistItems
-                    context.VnWishList.RemoveRange(efList.Where(item => !vnIdList.Contains(item.VnId)));
-                    context.SaveChanges();
+                    if (removeItems)
+                    {
+                        context.VnWishList.RemoveRange(efList.Where(item => !vnIdList.Contains(item.VnId)));
+                        context.SaveChanges();
+                    }
+                    
                 }
 
                 //begin section for modifying data
@@ -778,19 +784,22 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                     {
                         context.Entry(wish).State = EntityState.Modified;
                     }
-
                     context.SaveChanges();
-
                 }
 
 
                 List<VnWishList> addWishlistItem = wishlistItems;
-                addWishlistItem.RemoveAll(item => onlineWishList.Contains(item) && efList.Contains(item));
-                using (var context = new DatabaseContext())
-                {
-                    context.VnWishList.AddRange(addWishlistItem);
-                    context.SaveChanges();
-                }
+                //prevents adding duplicates
+                addWishlistItem.RemoveAll(x => efList.Any(y => y.VnId == x.VnId));
+                if (wishlistItems.Count != efList.Count && wishlistItems.Count >0)
+                {                    
+                    addWishlistItem.RemoveAll(item => onlineWishList.Contains(item) && efList.Contains(item));
+                    using (var context = new DatabaseContext())
+                    {
+                        context.VnWishList.AddRange(addWishlistItem);
+                        context.SaveChanges();
+                    }
+                }                
 
             }
             catch (Exception e)
