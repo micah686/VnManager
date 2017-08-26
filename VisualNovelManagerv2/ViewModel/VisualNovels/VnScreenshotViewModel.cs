@@ -1,26 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Data.Entity.Core;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using GalaSoft.MvvmLight;
-using System.Drawing.Drawing2D;
-using System.Windows.Input;
-using System.Data.SQLite;
 using System.Drawing.Imaging;
 using System.IO;
-using GalaSoft.MvvmLight.CommandWpf;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using VisualNovelManagerv2.Converters;
 using VisualNovelManagerv2.CustomClasses;
 using VisualNovelManagerv2.Design.VisualNovel;
-using VisualNovelManagerv2.EntityFramework;
-using VisualNovelManagerv2.EntityFramework.Entity.VnInfo;
+using VisualNovelManagerv2.EF.Context;
+using VisualNovelManagerv2.EF.Entity.VnInfo;
 
 namespace VisualNovelManagerv2.ViewModel.VisualNovels
 {
@@ -100,7 +93,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             try
             {
                 List<Screenshot> screenshotList = new List<Screenshot>();
-                using (var db = new DatabaseContext("Database"))
+                using (var db = new DatabaseContext())
                 {
                     foreach (VnInfoScreens screens in db.Set<VnInfoScreens>().Where(x=>x.VnId == Globals.VnId))
                     {

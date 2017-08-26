@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity;
-using System.Data.SQLite;
+
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -11,10 +10,7 @@ using Microsoft.Win32;
 using VisualNovelManagerv2.CustomClasses;
 using VisualNovelManagerv2.CustomClasses.ConfigSettings;
 using VisualNovelManagerv2.Design.Settings;
-using VisualNovelManagerv2.EF.Data.Context;
-using VisualNovelManagerv2.EntityFramework;
-using VisualNovelManagerv2.EntityFramework.Entity.VnInfo;
-using DatabaseContext = VisualNovelManagerv2.EF.Data.Context.DatabaseContext;
+using DatabaseContext = VisualNovelManagerv2.EF.Context.DatabaseContext;
 
 namespace VisualNovelManagerv2
 {
@@ -41,7 +37,7 @@ namespace VisualNovelManagerv2
         {
             string dbPath =
                 Path.Combine(Globals.DirectoryPath + @"\Data\Database\Database.db");
-
+            CreateDatabase();
             if (!File.Exists(dbPath))
             {
                 CreateDatabase();
@@ -61,28 +57,28 @@ namespace VisualNovelManagerv2
             //TODO:try to check for the tables as well
             //TODO: validate aginst EF model once ADO.net provider is released and get igrations working
             //needs custom string without pooling to be able to delete the database
-            using (SQLiteConnection db = new SQLiteConnection(@"Data Source=|DataDirectory|\Data\Database\Database.db;Version=3;"))
-            {
-                try
-                {
-                    db.Open();
-                    using (SQLiteTransaction transaction = db.BeginTransaction())
-                    {
-                        transaction.Rollback();
-                    }
-                }
-                catch (SQLiteException ex)
-                {
-                    db.Close();
-                    DebugLogging.WriteDebugLog(ex);
-                    return false;
-                }
-                catch (Exception ex)
-                {
-                    DebugLogging.WriteDebugLog(ex);
-                    return false;
-                }
-            }
+            //using (SQLiteConnection db = new SQLiteConnection(@"Data Source=|DataDirectory|\Data\Database\Database.db;Version=3;"))
+            //{
+            //    try
+            //    {
+            //        db.Open();
+            //        using (SQLiteTransaction transaction = db.BeginTransaction())
+            //        {
+            //            transaction.Rollback();
+            //        }
+            //    }
+            //    catch (SQLiteException ex)
+            //    {
+            //        db.Close();
+            //        DebugLogging.WriteDebugLog(ex);
+            //        return false;
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        DebugLogging.WriteDebugLog(ex);
+            //        return false;
+            //    }
+            //}
             return true;
         }
 

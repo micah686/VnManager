@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VisualNovelManagerv2", "Vis
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VndbSharp", "VndbSharp\VndbSharp\VndbSharp.csproj", "{3E3153B8-15BA-460D-AF9F-021EA1760C6E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VisualNovelManagerv2.EF.Data", "VisualNovelManagerv2.EF.Data\VisualNovelManagerv2.EF.Data.csproj", "{8D5382B7-794F-4DFB-94A8-763910B8999E}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,10 +21,6 @@ Global
 		{3E3153B8-15BA-460D-AF9F-021EA1760C6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3E3153B8-15BA-460D-AF9F-021EA1760C6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3E3153B8-15BA-460D-AF9F-021EA1760C6E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8D5382B7-794F-4DFB-94A8-763910B8999E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8D5382B7-794F-4DFB-94A8-763910B8999E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8D5382B7-794F-4DFB-94A8-763910B8999E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8D5382B7-794F-4DFB-94A8-763910B8999E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

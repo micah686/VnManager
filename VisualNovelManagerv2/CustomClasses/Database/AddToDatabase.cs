@@ -2,14 +2,16 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Data.SQLite;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using VisualNovelManagerv2.CustomClasses.Vndb;
-using VisualNovelManagerv2.EntityFramework;
-using VisualNovelManagerv2.EntityFramework.Entity.VnCharacter;
-using VisualNovelManagerv2.EntityFramework.Entity.VnInfo;
+using VisualNovelManagerv2.EF.Context;
+using VisualNovelManagerv2.EF.Entity.VnCharacter;
+using VisualNovelManagerv2.EF.Entity.VnInfo;
+using VisualNovelManagerv2.EF.Entity.VnOther;
+using VisualNovelManagerv2.EF.Entity.VnRelease;
+using VisualNovelManagerv2.EF.Entity.VnTagTrait;
 using VisualNovelManagerv2.ViewModel.VisualNovels;
 using VndbSharp;
 using VndbSharp.Models;
@@ -19,25 +21,20 @@ using VndbSharp.Models.Dumps;
 using VndbSharp.Models.Release;
 using VndbSharp.Models.VisualNovel;
 using static System.Globalization.CultureInfo;
-using VisualNovelMetadata = VndbSharp.Models.Release.VisualNovelMetadata;
-using VisualNovelManagerv2.EntityFramework.Entity.VnOther;
-using VisualNovelManagerv2.EntityFramework.Entity.VnRelease;
-using VisualNovelManagerv2.EntityFramework.Entity.VnTagTrait;
+
 
 namespace VisualNovelManagerv2.CustomClasses.Database
 {
     public class AddToDatabase
     {
-        private int _vnid;
-        private uint _uvnid;
+        private uint _vnid;
         private string _exepath;
         private string _iconpath;
         private double ProgressIncrement = 0;
 
-        public async void GetId(int id, string exe, string icon)
+        public async void GetId(uint id, string exe, string icon)
         {
             _vnid = id;
-            _uvnid = Convert.ToUInt32(id);
             _exepath = exe;
             _iconpath = icon;
             await GetData();
@@ -46,6 +43,7 @@ namespace VisualNovelManagerv2.CustomClasses.Database
 
         async Task GetData()
         {
+
             Globals.StatusBar.ProgressPercentage = 0;
             Globals.StatusBar.IsDbProcessing = true;
             Globals.StatusBar.IsWorkProcessing = true;
@@ -64,8 +62,7 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                     while (hasMore)
                     {
                         ro.Page = count;
-                        VndbResponse<Character> characterList =
-                            await client.GetCharacterAsync(VndbFilters.VisualNovel.Equals(_vnid), VndbFlags.Basic, ro);
+                        VndbResponse<Character> characterList = await client.GetCharacterAsync(VndbFilters.VisualNovel.Equals(_vnid), VndbFlags.Basic, ro);
                         hasMore = characterList.HasMore;
                         characterCount = characterCount + characterList.Count;
                         count++;
@@ -80,11 +77,10 @@ namespace VisualNovelManagerv2.CustomClasses.Database
 
                     #region VisualNovels
 
-                    VndbResponse<VisualNovel> visualNovels =
-                        await client.GetVisualNovelAsync(VndbFilters.Id.Equals(_uvnid), VndbFlags.FullVisualNovel);
+                    VndbResponse<VisualNovel> visualNovels = await client.GetVisualNovelAsync(VndbFilters.Id.Equals(_vnid), VndbFlags.FullVisualNovel);
                     if (Globals.StatusBar.ProgressPercentage != null)
                         Globals.StatusBar.ProgressPercentage =
-                            (double) Globals.StatusBar.ProgressPercentage + ProgressIncrement;
+                            (double)Globals.StatusBar.ProgressPercentage + ProgressIncrement;
 
                     #endregion
 
@@ -106,7 +102,7 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                     }
                     if (Globals.StatusBar.ProgressPercentage != null)
                         Globals.StatusBar.ProgressPercentage =
-                            (double) Globals.StatusBar.ProgressPercentage + ProgressIncrement;
+                            (double)Globals.StatusBar.ProgressPercentage + ProgressIncrement;
 
                     #endregion
 
@@ -130,7 +126,7 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                     }
                     if (Globals.StatusBar.ProgressPercentage != null)
                         Globals.StatusBar.ProgressPercentage =
-                            (double) Globals.StatusBar.ProgressPercentage + ProgressIncrement;
+                            (double)Globals.StatusBar.ProgressPercentage + ProgressIncrement;
 
                     #endregion
 
@@ -140,7 +136,7 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                 {
                     DebugLogging.WriteDebugLog(ex);
                     Globals.StatusBar.ProgressStatus = new BitmapImage(new Uri($@"{Globals.DirectoryPath}\Data\res\icons\statusbar\error.png"));
-                    Globals.StatusBar.ProgressText = "An Error Occured! Check log for details";                    
+                    Globals.StatusBar.ProgressText = "An Error Occured! Check log for details";
                     throw;
                 }
                 finally
@@ -165,13 +161,13 @@ namespace VisualNovelManagerv2.CustomClasses.Database
 
         async Task AddDataToDb(VndbResponse<VisualNovel> visualNovels, Collection<Release> releases, Collection<Character> characters)
         {
-            using (var db = new DatabaseContext("name=Database"))
+            using (var db = new DatabaseContext())
             {
                 try
                 {
                     #region VnInfo
                     var vninfo = db.Set<VnInfo>();
-                    var vninfoanime = db.Set<EntityFramework.Entity.VnInfo.VnInfoAnime>();
+                    var vninfoanime = db.Set<EF.Entity.VnInfo.VnInfoAnime>();
                     var vninfolinks = db.Set<VnInfoLinks>();
                     var vninfotags = db.Set<VnInfoTags>();
                     var vntagdata = db.Set<VnTagData>();
@@ -183,7 +179,7 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                         #region VnInfo
                         vninfo.Add(new VnInfo
                         {
-                            VnId = Convert.ToInt32(visualNovel.Id),
+                            VnId = visualNovel.Id,
                             Title = visualNovel.Name,
                             Original = visualNovel.OriginalName,
                             Released = visualNovel.Released?.ToString() ?? null,
@@ -203,7 +199,7 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                         #region VnInfoAnime
                         foreach (AnimeMetadata anime in visualNovel.Anime)
                         {
-                            vninfoanime.Add(new EntityFramework.Entity.VnInfo.VnInfoAnime
+                            vninfoanime.Add(new EF.Entity.VnInfo.VnInfoAnime
                             {
                                 VnId = Convert.ToInt32(visualNovel.Id),
                                 AniDbId = anime.AniDbId,
@@ -498,7 +494,7 @@ namespace VisualNovelManagerv2.CustomClasses.Database
 
                         #region VnReleaseVn
                         if (release.VisualNovels.Count <= 0) continue;
-                        foreach (VisualNovelMetadata vn in release.VisualNovels)
+                        foreach (VndbSharp.Models.Release.VisualNovelMetadata vn in release.VisualNovels)
                         {
                             vnreleasevn.Add(new VnReleaseVn
                             {

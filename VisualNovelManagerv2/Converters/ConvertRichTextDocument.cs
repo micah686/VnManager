@@ -14,23 +14,31 @@ namespace VisualNovelManagerv2.Converters
     {
         public static FlowDocument ConvertToFlowDocument(string text)
         {
-            try
-            {                                
-                List<string> websiteList = new List<string>();
-
-                if (string.IsNullOrEmpty(text) && string.IsNullOrWhiteSpace(text))
-                {
-                    return new FlowDocument();
-                }
-
-                websiteList = FindUrls(text, websiteList);
-                return CreateHyperlinks(text, websiteList);
-            }
-            catch (Exception ex)
+            if (string.IsNullOrEmpty(text))
             {
-                DebugLogging.WriteDebugLog(ex);
-                throw;
+                return new FlowDocument();
             }
+            else
+            {
+                try
+                {
+                    List<string> websiteList = new List<string>();
+
+                    if (string.IsNullOrEmpty(text) && string.IsNullOrWhiteSpace(text))
+                    {
+                        return new FlowDocument();
+                    }
+
+                    websiteList = FindUrls(text, websiteList);
+                    return CreateHyperlinks(text, websiteList);
+                }
+                catch (Exception ex)
+                {
+                    DebugLogging.WriteDebugLog(ex);
+                    throw;
+                }
+            }
+            
         }
 
         private static List<string> FindUrls(string text, List<string>websiteList)

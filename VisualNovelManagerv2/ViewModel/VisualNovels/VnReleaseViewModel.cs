@@ -1,22 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Data;
-using System.Data.SQLite;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using GalaSoft.MvvmLight;
 using VisualNovelManagerv2.Converters;
 using VisualNovelManagerv2.CustomClasses;
 using VisualNovelManagerv2.Design.VisualNovel;
-using VisualNovelManagerv2.EntityFramework;
-using VisualNovelManagerv2.EntityFramework.Entity.VnInfo;
-using VisualNovelManagerv2.EntityFramework.Entity.VnOther;
-using VisualNovelManagerv2.EntityFramework.Entity.VnRelease;
+using VisualNovelManagerv2.EF.Context;
+using VisualNovelManagerv2.EF.Entity.VnRelease;
 
 // ReSharper disable ExplicitCallerInfoArgument
 
@@ -117,7 +110,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             ReleaseNameCollection.Clear();
             try
             {
-                using (var db = new DatabaseContext("Database"))
+                using (var db = new DatabaseContext())
                 {
                     foreach (VnRelease release in db.Set<VnRelease>().Where(x=>x.VnId == Globals.VnId))
                     {
@@ -143,7 +136,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 _releaseLanguages.Clear();
                 _releasePlatforms.Clear();
                
-                using (var db = new DatabaseContext("Database"))
+                using (var db = new DatabaseContext())
                 {
                     int index = (SelectedReleaseIndex + 1);
                     int count = 1;
@@ -203,7 +196,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                     db.Dispose();
                 }
             }
-            catch (SQLiteException ex)
+            catch (Microsoft.Data.Sqlite.SqliteException ex)
             {
                 DebugLogging.WriteDebugLog(ex);
                 throw;
@@ -226,7 +219,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         {
             try
             {
-                using (var db = new DatabaseContext("Database"))
+                using (var db = new DatabaseContext())
                 {
                     foreach (VnReleaseProducers release in db.Set<VnReleaseProducers>().Where(x=>x.ReleaseId==releaseId))
                     {

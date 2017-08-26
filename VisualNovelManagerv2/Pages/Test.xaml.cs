@@ -1,13 +1,21 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using Microsoft.EntityFrameworkCore;
 using VisualNovelManagerv2.CustomClasses.ConfigSettings;
 using VisualNovelManagerv2.Design.Settings;
-using VisualNovelManagerv2.EF.Data;
-using VisualNovelManagerv2.EF.Data.Context;
-using VisualNovelManagerv2.EF.Data.Entity.VnOther;
+using VisualNovelManagerv2.EF.Context;
+using VisualNovelManagerv2.EF.Entity.VnInfo;
+using VisualNovelManagerv2.EF.Entity.VnOther;
+using VndbSharp;
+using VndbSharp.Models;
+
 
 namespace VisualNovelManagerv2.Pages
 {
@@ -23,13 +31,15 @@ namespace VisualNovelManagerv2.Pages
 
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
-            UserSettings userSettings = new UserSettings();
-            userSettings.NsfwEnabled = false;
-            userSettings.MaxSpoilerLevel = 2;
-            userSettings.VnSetting = new VnSetting
+            UserSettings userSettings = new UserSettings
             {
-                Id = 11,
-                Spoiler = 3
+                NsfwEnabled = false,
+                MaxSpoilerLevel = 2,
+                VnSetting = new VnSetting
+                {
+                    Id = 11,
+                    Spoiler = 3
+                }
             };
             ModifyUserSettings.SaveUserSettings(userSettings);
 
@@ -41,29 +51,52 @@ namespace VisualNovelManagerv2.Pages
         }
 
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
+        private async void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            var regex = new Regex(@"^(10|[1-9]{1,2}){1}(\.[0-9]{1,2})?$");
-            var result = regex.Match(1.3.ToString());
-            var sample = "3.4";
-            byte test1 = Convert.ToByte(sample.Replace(".", string.Empty));
-
-
-            var test = new DatabaseContext();
-
-            using (var db = new DatabaseContext())
+            try
             {
-              VisualNovelManagerv2.EF.Data.Entity.VnOther.Categories categories = new Categories()
-              {
-                  Category = "testcat"
-              };
-                db.Add(categories);
-                db.SaveChanges();
-
-                foreach (var cats in db.Set<Categories>())
+                Stopwatch stopwatch = new Stopwatch();
+                stopwatch.Start();
+                Thread.Sleep(150);
+                stopwatch.Stop();
+               
+               
+                VnUserData vnUserData;
+                using (var context = new DatabaseContext())
                 {
-                    Console.WriteLine(cats.Category);
+                    vnUserData = context.VnUserData.FirstOrDefault(x => x.VnId.Equals(Convert.ToUInt32(92)));
+                    var lastPlayTime = vnUserData.LastPlayed.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                    List<int> timecount = new List<int>();
+                    for (int i = 0; i < lastPlayTime.Count(); i++)
+                    {
+                        timecount.Add(new int());
+                        timecount[i] = Convert.ToInt32(lastPlayTime[i]);
+                    }
+
+                    TimeSpan timeSpan = new TimeSpan(timecount[0], timecount[1], timecount[2], timecount[3]);
+                    TimeSpan currentplaytime = new TimeSpan(stopwatch.Elapsed.Days, stopwatch.Elapsed.Hours, stopwatch.Elapsed.Minutes, stopwatch.Elapsed.Seconds);
+                    timeSpan = timeSpan.Add(currentplaytime);
                 }
+
+                if (vnUserData != null)
+                {
+                    vnUserData.LastPlayed = DateTime.Now.ToString(CultureInfo.InvariantCulture);
+
+                }
+
+                using (var context = new DatabaseContext())
+                {
+                    if (vnUserData != null)
+                    {
+                        context.Entry(vnUserData).State = EntityState.Modified;
+                        context.SaveChanges();
+                    }
+                }
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception);
+                throw;
             }
         }
     }
