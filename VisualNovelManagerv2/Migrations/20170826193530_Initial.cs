@@ -337,7 +337,7 @@ namespace VisualNovelManagerv2.Migrations
                     Added = table.Column<string>(type: "TEXT", nullable: true),
                     UserId = table.Column<uint>(type: "INTEGER", nullable: false),
                     VnId = table.Column<uint>(type: "INTEGER", nullable: false),
-                    Vote = table.Column<int>(type: "INTEGER", nullable: false)
+                    Vote = table.Column<uint>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {

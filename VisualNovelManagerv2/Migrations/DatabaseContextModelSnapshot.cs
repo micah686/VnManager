@@ -709,7 +709,7 @@ namespace VisualNovelManagerv2.Migrations
 
                     b.Property<uint>("VnId");
 
-                    b.Property<int>("Vote");
+                    b.Property<uint>("Vote");
 
                     b.HasKey("Id");
 
