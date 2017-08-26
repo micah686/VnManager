@@ -135,7 +135,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             }
             List<Tuple<uint, string>> dbItemsToAdd = new List<Tuple<uint, string>>();
             List<VnVoteList>voteListItems = new List<VnVoteList>();
-
+            bool removeItems = false;
             using (Vndb client = new Vndb(Username, Password))
             {
                 bool hasMore = true;
@@ -182,6 +182,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                                         Added = item.AddedOn.ToString(CultureInfo.InvariantCulture)
                                     }));
                                     page++;
+                                    removeItems = true;
                                 }
                             }
                             else
@@ -206,6 +207,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                                     Added = item.AddedOn.ToString(CultureInfo.InvariantCulture)
                                 }));
                                 page++;
+                                removeItems = true;
                             }
                             else
                             {
@@ -256,7 +258,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 client.Dispose();
             }
             AddToIdListDb(dbItemsToAdd);
-            AddVotelistToDb(voteListItems);
+            AddVotelistToDb(voteListItems, removeItems);
 
             Globals.StatusBar.ProgressText = "Done";
             Globals.StatusBar.ProgressStatus = new BitmapImage(new Uri($@"{Globals.DirectoryPath}\Data\res\icons\statusbar\ok.png"));
@@ -464,6 +466,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             }
             List<Tuple<uint, string>> dbItemsToAdd = new List<Tuple<uint, string>>();
             List<VnVisualNovelList> visualNovelListItems = new List<VnVisualNovelList>();
+            bool removeItems = false;
             using (Vndb client = new Vndb(Username, Password))
             {
                 bool hasMore = true;
@@ -497,7 +500,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                                 }));
                                 page++;
                             }
-                            if (vnList != null && vnList.Count == 0)
+                            else if (vnList != null && vnList.Count == 0)
                             {
                                 vnList = await client.GetVisualNovelListAsync(VndbFilters.UserId.Equals(_userId), VndbFlags.FullVisualNovelList, ro);
                                 if (vnList != null)
@@ -513,6 +516,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                                         Added = item.AddedOn.ToString(CultureInfo.InvariantCulture)
                                     }));
                                     page++;
+                                    removeItems = true;
                                 }
                             }
                             else
@@ -538,6 +542,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                                     Added = item.AddedOn.ToString(CultureInfo.InvariantCulture)
                                 }));
                                 page++;
+                                removeItems = true;
                             }
                             else
                             {
@@ -588,7 +593,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 client.Dispose();
             }
             AddToIdListDb(dbItemsToAdd);
-            AddVnListToDb(visualNovelListItems);
+            AddVnListToDb(visualNovelListItems, removeItems);
 
             Globals.StatusBar.ProgressText = "Done";
             Globals.StatusBar.ProgressStatus = new BitmapImage(new Uri($@"{Globals.DirectoryPath}\Data\res\icons\statusbar\ok.png"));
@@ -810,31 +815,174 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
         }
 
-        private void AddVotelistToDb(List<VnVoteList> votelistItems)
+        private void AddVotelistToDb(List<VnVoteList> vnVoteListItems, bool removeItems)
         {
-            using (var context = new DatabaseContext())
+            try
             {
-                //cheap way to make sure database is up to date
-                //TODO: Fix this hack
-#warning This is a hack, removing all items from the db, then adding them again. Maybe later, I can find out how to update records without creating aa new record
-                context.VnVoteList.RemoveRange(context.VnVoteList.Where(x => x.UserId.Equals(_userId)));
+                List<VnVoteList> efList;
+                //for removing items no longer on the user's vnVotelist
+                using (var context = new DatabaseContext())
+                {
+                    IQueryable<VnVoteList> rtn = from temp in context.VnVoteList select temp;
+                    efList = rtn.ToList();
 
-                context.AddRange(votelistItems);
-                context.SaveChanges();
+                    efList.RemoveAll(x => x.UserId != _userId);
+                    //gets a list of all ids from the vnvoteListItems
+                    List<uint> vnIdList = vnVoteListItems.Select(item => item.VnId).ToList();
+                    //prepares EF to remove any items where the EF does not contain an item from the vnVoteListItems
+                    if (removeItems)
+                    {
+                        context.VnVoteList.RemoveRange(efList.Where(item => !vnIdList.Contains(item.VnId)));
+                        context.SaveChanges();
+                    }
+
+                }
+
+                //begin section for modifying data
+                List<VnVoteList> onlineVoteList = new List<VnVoteList>();
+                List<VnVoteList> localVoteList;
+
+                using (var context = new DatabaseContext())
+                {
+                    localVoteList = (from first in context.VnVoteList
+                                   join second in vnVoteListItems on first.VnId equals second.VnId
+                                   select first).Where(x => !vnVoteListItems.Any(y => y.Vote == x.Vote && y.Added == x.Added))
+                        .ToList();
+                }
+
+
+                if (efList.Count > 0)
+                {
+                    //gets the modified values from online, which is the vnVoteListItems parameter
+                    onlineVoteList = (from first in vnVoteListItems join second in efList on first.VnId equals second.VnId select first)
+                        .Where(x => !efList.Any(y => y.Vote == x.Vote && y.Added == x.Added)).ToList();
+
+                    //sets each of the entries to the new value
+                    int counter = 0;
+                    foreach (var vn in localVoteList)
+                    {
+                        vn.Vote = onlineVoteList[counter].Vote;
+                        vn.Added = onlineVoteList[counter].Added;
+                        counter++;
+                    }
+                }
+
+
+                //updates each of the entries
+                using (var context = new DatabaseContext())
+                {
+                    foreach (var vote in localVoteList)
+                    {
+                        context.Entry(vote).State = EntityState.Modified;
+                    }
+                    context.SaveChanges();
+                }
+
+
+                List<VnVoteList> addVnVoteListItem = vnVoteListItems;
+                //prevents adding duplicates
+                addVnVoteListItem.RemoveAll(x => efList.Any(y => y.VnId == x.VnId));
+                if (vnVoteListItems.Count != efList.Count && vnVoteListItems.Count > 0)
+                {
+                    addVnVoteListItem.RemoveAll(item => onlineVoteList.Contains(item) && efList.Contains(item));
+                    using (var context = new DatabaseContext())
+                    {
+                        context.VnVoteList.AddRange(addVnVoteListItem);
+                        context.SaveChanges();
+                    }
+                }
+
+            }
+            catch (Exception e)
+            {
+                DebugLogging.WriteDebugLog(e);
+                throw;
             }
         }
 
-        private void AddVnListToDb(List<VnVisualNovelList> vnlistItems)
+        private void AddVnListToDb(List<VnVisualNovelList> vnListItems, bool removeItems)
         {
-            using (var context = new DatabaseContext())
+            try
             {
-                //cheap way to make sure database is up to date
-                //TODO: Fix this hack
-#warning This is a hack, removing all items from the db, then adding them again. Maybe later, I can find out how to update records without creating aa new record
-                context.VnVisualNovelList.RemoveRange(context.VnVisualNovelList.Where(x => x.UserId.Equals(_userId)));
+                List<VnVisualNovelList> efList;
+                //for removing items no longer on the user's vnlist
+                using (var context = new DatabaseContext())
+                {
+                    IQueryable<VnVisualNovelList> rtn = from temp in context.VnVisualNovelList select temp;
+                    efList = rtn.ToList();
 
-                context.AddRange(vnlistItems);
-                context.SaveChanges();
+                    efList.RemoveAll(x => x.UserId != _userId);
+                    //gets a list of all ids from the vnListItems
+                    List<uint> vnIdList = vnListItems.Select(item => item.VnId).ToList();
+                    //prepares EF to remove any items where the EF does not contain an item from the vnListItems
+                    if (removeItems)
+                    {
+                        context.VnVisualNovelList.RemoveRange(efList.Where(item => !vnIdList.Contains(item.VnId)));
+                        context.SaveChanges();
+                    }
+
+                }
+
+                //begin section for modifying data
+                List<VnVisualNovelList> onlineVnList = new List<VnVisualNovelList>();
+                List<VnVisualNovelList> localVnList;
+
+                using (var context = new DatabaseContext())
+                {
+                    localVnList = (from first in context.VnVisualNovelList
+                                     join second in vnListItems on first.VnId equals second.VnId
+                                     select first).Where(x => !vnListItems.Any(y => y.Status == x.Status && y.Added == x.Added && y.Notes == x.Notes))
+                        .ToList();
+                }
+
+
+                if (efList.Count > 0)
+                {
+                    //gets the modified values from online, which is the vnListItems parameter
+                    onlineVnList = (from first in vnListItems join second in efList on first.VnId equals second.VnId select first)
+                        .Where(x => !efList.Any(y => y.Status == x.Status && y.Added == x.Added && y.Notes == x.Notes)).ToList();
+
+                    //sets each of the entries to the new value
+                    int counter = 0;
+                    foreach (var vn in localVnList)
+                    {
+                        vn.Status = onlineVnList[counter].Status;
+                        vn.Added = onlineVnList[counter].Added;
+                        vn.Notes = onlineVnList[counter].Notes;
+                        counter++;
+                    }
+                }
+
+
+                //updates each of the entries
+                using (var context = new DatabaseContext())
+                {
+                    foreach (var vn in localVnList)
+                    {
+                        context.Entry(vn).State = EntityState.Modified;
+                    }
+                    context.SaveChanges();
+                }
+
+
+                List<VnVisualNovelList> addVnListItem = vnListItems;
+                //prevents adding duplicates
+                addVnListItem.RemoveAll(x => efList.Any(y => y.VnId == x.VnId));
+                if (vnListItems.Count != efList.Count && vnListItems.Count > 0)
+                {
+                    addVnListItem.RemoveAll(item => onlineVnList.Contains(item) && efList.Contains(item));
+                    using (var context = new DatabaseContext())
+                    {
+                        context.VnVisualNovelList.AddRange(addVnListItem);
+                        context.SaveChanges();
+                    }
+                }
+
+            }
+            catch (Exception e)
+            {
+                DebugLogging.WriteDebugLog(e);
+                throw;
             }
         }
 
