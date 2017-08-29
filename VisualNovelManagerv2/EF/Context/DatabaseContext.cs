@@ -32,10 +32,20 @@ namespace VisualNovelManagerv2.EF.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            
+            modelBuilder.Entity<CategoryJunction>()
+                .HasKey(k => new {k.CategoryId, k.VnUserCategoryTitleId});
+
+            modelBuilder.Entity<CategoryJunction>()
+                .HasOne(cj => cj.Category)
+                .WithMany(j => j.CategoryJunctions)
+                .HasForeignKey(f => f.CategoryId);
+
+            modelBuilder.Entity<CategoryJunction>()
+                .HasOne(cj => cj.VnUserCategoryTitle)
+                .WithMany(j => j.CategoryJunctions)
+                .HasForeignKey(f => f.VnUserCategoryTitleId);
         }
 
-        internal DbSet<Categories> Categories { get; set; }
         internal DbSet<VnCharacter> VnCharacter { get; set; }
         internal DbSet<VnCharacterTraits> VnCharacterTraits { get; set; }
         internal DbSet<VnCharacterVns> VnCharacterVns { get; set; }
@@ -59,10 +69,11 @@ namespace VisualNovelManagerv2.EF.Context
         internal DbSet<VnTagData> VnTagData { get; set; }
         internal DbSet<VnTraitData> VnTraitData { get; set; }
         internal DbSet<VnUserData> VnUserData { get; set; }
-        internal DbSet<VnUserDataCategories> VnUserDataCategories { get; set; }
         internal DbSet<VnVoteList> VnVoteList { get; set; }
         internal DbSet<VnVisualNovelList> VnVisualNovelList { get; set; }
         internal DbSet<VnWishList> VnWishList { get; set; }
         internal DbSet<VnIdList> VnIdList { get; set; }
+        internal DbSet<Category> Categories { get; set; }
+        internal DbSet<VnUserCategoryTitle> VnUserCategoryTitles { get; set; }
     }
 }
