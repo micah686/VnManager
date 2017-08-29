@@ -55,42 +55,9 @@ namespace VisualNovelManagerv2.Pages
         {
             try
             {
-                Stopwatch stopwatch = new Stopwatch();
-                stopwatch.Start();
-                Thread.Sleep(150);
-                stopwatch.Stop();
-               
-               
-                VnUserData vnUserData;
                 using (var context = new DatabaseContext())
                 {
-                    vnUserData = context.VnUserData.FirstOrDefault(x => x.VnId.Equals(Convert.ToUInt32(92)));
-                    var lastPlayTime = vnUserData.LastPlayed.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-                    List<int> timecount = new List<int>();
-                    for (int i = 0; i < lastPlayTime.Count(); i++)
-                    {
-                        timecount.Add(new int());
-                        timecount[i] = Convert.ToInt32(lastPlayTime[i]);
-                    }
-
-                    TimeSpan timeSpan = new TimeSpan(timecount[0], timecount[1], timecount[2], timecount[3]);
-                    TimeSpan currentplaytime = new TimeSpan(stopwatch.Elapsed.Days, stopwatch.Elapsed.Hours, stopwatch.Elapsed.Minutes, stopwatch.Elapsed.Seconds);
-                    timeSpan = timeSpan.Add(currentplaytime);
-                }
-
-                if (vnUserData != null)
-                {
-                    vnUserData.LastPlayed = DateTime.Now.ToString(CultureInfo.InvariantCulture);
-
-                }
-
-                using (var context = new DatabaseContext())
-                {
-                    if (vnUserData != null)
-                    {
-                        context.Entry(vnUserData).State = EntityState.Modified;
-                        context.SaveChanges();
-                    }
+                    
                 }
             }
             catch (Exception exception)
