@@ -74,21 +74,9 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                             VnNameCollection.InsertRange(context.VnIdList.Select(x => x.Title).ToList());
                             return;
                         }
-                    }
-                    //NEED to include the .Include, or it won't load the ICollection
-                    //foreach (Categories categories in context.Set<Categories>().Include(x => x.VnUserDataCategories))
-                    //{
-                    //    if (categories.Category == _selectedCategory)
-                    //    {
-
-                    //        if (categories.VnUserDataCategories != null)
-                    //        {
-                    //            VnNameCollection.InsertRange(categories.VnUserDataCategories.Select(x => x.Title)
-                    //                .ToList());
-                    //        }
-                    //        break;
-                    //    }
-                    //}
+                    }                    
+                    VnNameCollection.InsertRange(context.Categories.Where(cn => cn.CategoryName == _selectedCategory)
+                        .SelectMany(x => x.CategoryJunctions.Select(y => y.VnUserCategoryTitle)).Select(z => z.Title));                    
                 }
             }
             catch (Exception ex)
@@ -726,13 +714,13 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
             using (var context = new DatabaseContext())
             {
-                //foreach (var categories in context.Set<Categories>())
-                //{
-                //    if (categories.Category != "All")
-                //    {
-                //        item.Items.Add(new MenuItem { Header = categories.Category, /*Command = new FirstFloor.ModernUI.Presentation.RelayCommand(null)*/ });
-                //    }
-                //}
+                foreach (var categories in context.Set<Category>())
+                {
+                    if (categories.CategoryName != "All")
+                    {
+                        item.Items.Add(new MenuItem { Header = categories.CategoryName, /*Command = new FirstFloor.ModernUI.Presentation.RelayCommand(null)*/ });
+                    }
+                }
             }
             return item;
         }
@@ -855,11 +843,11 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 //TODO:move this to another method maybe?
                 using (var db = new DatabaseContext())
                 {
-                    //foreach (Categories category in db.Set<Categories>())
-                    //{
-                    //    _categoriesCollection.Add(category.Category);
-                    //}
-                    //db.Dispose();
+                    foreach (Category category in db.Set<Category>())
+                    {
+                        _categoriesCollection.Add(category.CategoryName);
+                    }
+                    db.Dispose();
                 }
                 return _categoriesCollection;
             }
