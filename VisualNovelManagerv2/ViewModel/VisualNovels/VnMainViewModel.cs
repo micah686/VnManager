@@ -12,6 +12,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -26,6 +27,7 @@ using VisualNovelManagerv2.EF.Context;
 using VisualNovelManagerv2.EF.Entity.VnInfo;
 using VisualNovelManagerv2.EF.Entity.VnOther;
 using VisualNovelManagerv2.EF.Entity.VnTagTrait;
+using Image = System.Drawing.Image;
 
 
 // ReSharper disable ExplicitCallerInfoArgument
@@ -34,241 +36,18 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 {
     public partial class VnMainViewModel : ViewModelBase
     {
-        #region observableCollections
-
-        #region ObservableVnNameCollection
-        private RangeEnabledObservableCollection<string> _vnNameCollection = new RangeEnabledObservableCollection<string>();
-        public RangeEnabledObservableCollection<string> VnNameCollection
-        {
-            get { return _vnNameCollection; }
-            set
-            {
-                _vnNameCollection = value;
-                RaisePropertyChanged(nameof(VnNameCollection));
-            }
-        }
-        #endregion
-
-        #region ObservableVnInfoAnime
-        private ObservableCollection<VnInfoAnime> _vnAnimeCollection = new ObservableCollection<VnInfoAnime>();
-        public ObservableCollection<VnInfoAnime> VnInfoAnimeCollection
-        {
-            get { return _vnAnimeCollection; }
-            set
-            {
-                _vnAnimeCollection = value;
-                RaisePropertyChanged(nameof(VnInfoAnimeCollection));
-            }
-        }
-        #endregion
-
-        #region ObservableLanguageCollection
-        private ObservableCollection<LanguagesCollection> _languageCollection = new ObservableCollection<LanguagesCollection>();
-        public ObservableCollection<LanguagesCollection> LanguageCollection
-        {
-            get { return _languageCollection; }
-            set
-            {
-                _languageCollection = value;
-                RaisePropertyChanged(nameof(LanguageCollection));
-            }
-        }
-        #endregion
-
-        #region ObserableOriginalLanguageCollection
-        private ObservableCollection<OriginalLanguagesCollection> _originalLanguagesCollection = new ObservableCollection<OriginalLanguagesCollection>();
-        public ObservableCollection<OriginalLanguagesCollection> OriginalLanguagesCollection
-        {
-            get { return _originalLanguagesCollection; }
-            set
-            {
-                _originalLanguagesCollection = value;
-                RaisePropertyChanged(nameof(OriginalLanguagesCollection));
-            }
-        }
-        #endregion
-
-        #region ObservablePlatformCollection
-        private ObservableCollection<PlatformCollection> _platformCollection = new ObservableCollection<PlatformCollection>();
-        public ObservableCollection<PlatformCollection> PlatformCollection
-        {
-            get { return _platformCollection; }
-            set
-            {
-                _platformCollection = value;
-                RaisePropertyChanged(nameof(PlatformCollection));
-            }
-        }
-        #endregion
-
-        #region VnInfoRelation
-        private ObservableCollection<VnInfoRelation> _vnInfoRelation = new ObservableCollection<VnInfoRelation>();
-        public ObservableCollection<VnInfoRelation> VnInfoRelation
-        {
-            get { return _vnInfoRelation; }
-            set
-            {
-                _vnInfoRelation = value;
-                RaisePropertyChanged(nameof(VnInfoRelation));
-            }
-        }
-        #endregion
-
-        #region ObservableCollectionVnTag
-        private ObservableCollection<string> _vnInfoTagCollection = new ObservableCollection<string>();
-        public ObservableCollection<string> VnInfoTagCollection
-        {
-            get { return _vnInfoTagCollection; }
-            set
-            {
-                _vnInfoTagCollection = value;
-                RaisePropertyChanged(nameof(VnInfoTagCollection));
-            }
-        }
-        #endregion
-
-        #region ObservableCategories
-        private RangeEnabledObservableCollection<string> _categoriesCollection= new RangeEnabledObservableCollection<string>();
-        public RangeEnabledObservableCollection<string> CategoriesCollection
-        {
-            get
-            {
-                //TODO:move this to another method maybe?
-                using (var db = new DatabaseContext())
-                {
-                    foreach (Categories category in db.Set<Categories>())
-                    {
-                        _categoriesCollection.Add(category.Category);
-                    }
-                    db.Dispose();
-                }
-                return _categoriesCollection;
-            }
-            set
-            {
-                _categoriesCollection = value;
-                RaisePropertyChanged(nameof(CategoriesCollection));
-            }
-        }
-
-        #endregion ObservableCategories
-
-        #endregion
-
-        public static bool IsDownloading = false;
-        private readonly Stopwatch stopwatch = new Stopwatch();
-
-        public static ICommand LoadBindVnDataCommand { get; set; }
+        public static ICommand LoadBindVnDataCommand { get; private set; }
         public static ICommand ClearCollectionsCommand { get; private set; }
-        public ICommand StartVnCommand => new GalaSoft.MvvmLight.CommandWpf.RelayCommand(StartVn);
         public VnMainViewModel()
         {
             LoadBindVnDataCommand = new RelayCommand(LoadCategories);
             ClearCollectionsCommand = new RelayCommand(ClearCollections);
-
             _vnMainModel = new VnMainModel();
             LoadCategories();
             
         }
 
-        #region Static Properties
-
-        #region maxwidth
-        private double _maxListWidth;
-        public double MaxListWidth
-        {
-            get { return _maxListWidth; }
-            set
-            {
-                _maxListWidth = value;
-                RaisePropertyChanged(nameof(MaxListWidth));
-            }
-        }
-        #endregion
-
-
-        #region VnMainModel
-        private VnMainModel _vnMainModel;
-        public VnMainModel VnMainModel
-        {
-            get { return _vnMainModel; }
-            set
-            {
-                _vnMainModel = value;
-                RaisePropertyChanged(nameof(VnMainModel));
-            }
-        }
-        #endregion
-
-        #region SelectedVn
-        private string _selectedVn;
-        public string SelectedVn
-        {
-            get { return _selectedVn; }
-            set
-            {
-                _selectedVn = value;
-                RaisePropertyChanged(nameof(SelectedVn));
-                GetVnData();
-            }
-        }
-        #endregion
-
-        #region SelectedTag
-        private string _selectedTag;
-        public string SelectedTag
-        {
-            get { return _selectedTag; }
-            set
-            {
-                _selectedTag = value;
-                RaisePropertyChanged(nameof(SelectedTag));
-                BindTagDescription();
-            }
-        }
-        #endregion
-
-        #region SelectedTagIndex
-        private int? _selectedTagIndex;
-        public int? SelectedTagIndex
-        {
-            get { return _selectedTagIndex; }
-            set
-            {
-                _selectedTagIndex = value;
-                RaisePropertyChanged(nameof(SelectedTagIndex));
-            }
-        }        
-        #endregion
-
-        #region TagDescription
-        private FlowDocument _tagDescription;
-        public FlowDocument TagDescription
-        {
-            get { return _tagDescription; }
-            set
-            {
-                _tagDescription = value;
-                RaisePropertyChanged(nameof(TagDescription));
-            }
-        }
-        #endregion
-
-        #region SelectedCategory
-        private string _selectedCategory;
-        public string SelectedCategory
-        {
-            get { return _selectedCategory; }
-            set
-            {
-                _selectedCategory = value;
-                LoadCategories();
-                RaisePropertyChanged(nameof(SelectedCategory));
-            }
-        }
-        #endregion
-
-        #endregion
+        
 
         private void ClearCollections()
         {
@@ -323,6 +102,10 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             }
             
         }
+
+        
+
+        
 
         public void SetMaxWidth()
         {
@@ -497,7 +280,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
         private void StartVn()
         {
-            stopwatch.Reset();
+            _stopwatch.Reset();
             Process process = null;
             using (var context = new DatabaseContext())
             {
@@ -509,7 +292,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                     string dirpath = Path.GetDirectoryName(exepath);
                     if (dirpath != null) Directory.SetCurrentDirectory(dirpath);
                     process = Process.Start(exepath);
-                    stopwatch.Start();
+                    _stopwatch.Start();
                 }
             }
             Directory.SetCurrentDirectory(Directory.GetCurrentDirectory());
@@ -523,7 +306,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                     //Only allows the HasExited event to trigger when there are no child processes
                     if (children.Count < 1 && initialChildrenCount == 0)
                     {
-                        stopwatch.Stop();
+                        _stopwatch.Stop();
                         VnOrChildProcessExited(null, null);
                     }
                 };
@@ -543,7 +326,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         {
             try
             {
-                stopwatch.Stop();
+                _stopwatch.Stop();
                 VnUserData vnUserData;
                 using (var context = new DatabaseContext())
                 {
@@ -569,7 +352,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                                 timecount[i] = Convert.ToInt32(lastPlayTime[i]);
                             }
                             TimeSpan timeSpan = new TimeSpan(timecount[0], timecount[1], timecount[2], timecount[3]);
-                            TimeSpan currentplaytime = new TimeSpan(stopwatch.Elapsed.Days, stopwatch.Elapsed.Hours, stopwatch.Elapsed.Minutes, stopwatch.Elapsed.Seconds);
+                            TimeSpan currentplaytime = new TimeSpan(_stopwatch.Elapsed.Days, _stopwatch.Elapsed.Hours, _stopwatch.Elapsed.Minutes, _stopwatch.Elapsed.Seconds);
                             timeSpan = timeSpan.Add(currentplaytime);
                             vnUserData.PlayTime = $"{timeSpan.Days},{timeSpan.Hours},{timeSpan.Minutes},{timeSpan.Seconds}";
                         }                        
@@ -919,7 +702,278 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         }
     }
 
+    //class for context menu
+    public partial class VnMainViewModel
+    {
+        private void CreateContextMenu()
+        {
+            var contextMenu = new ContextMenu();
+            contextMenu.Items.Add(CreateAddSubMenu("Add To Category"));
+            contextMenu.Items.Add(new MenuItem { Header = "Item with gesture", InputGestureText = "Ctrl+C" });
+            contextMenu.Items.Add(new MenuItem { Header = "Item, disabled", IsEnabled = false });
+            contextMenu.Items.Add(new MenuItem { Header = "Item, checked", IsChecked = true });
+            contextMenu.Items.Add(new MenuItem { Header = "Item, checked and disabled", IsChecked = true, IsEnabled = false });
+            contextMenu.Items.Add(new Separator());
+            var menu = CreateAddSubMenu("Item with Submenu, disabled");
+            contextMenu.Items.Add(menu);
+            menu.IsEnabled = false;
+            contextMenu.IsOpen = true;
+        }
 
+        private MenuItem CreateAddSubMenu(string header)
+        {
+            var item = new MenuItem { Header = header };
+
+            using (var context = new DatabaseContext())
+            {
+                foreach (var categories in context.Set<Categories>())
+                {
+                    if (categories.Category != "All")
+                    {
+                        item.Items.Add(new MenuItem { Header = categories.Category, /*Command = new FirstFloor.ModernUI.Presentation.RelayCommand(null)*/ });
+                    }
+                }
+            }
+            return item;
+        }
+
+        private MenuItem CreateRemoveSubMenu(string header)
+        {
+            var item = new MenuItem { Header = header };
+            return item;
+        }
+
+        private void AddCategory()
+        {
+            using (var context = new DatabaseContext())
+            {
+
+            }
+        }
+    }
+
+    //class for properties
+    public partial class VnMainViewModel
+    {
+        #region ObservableVnNameCollection
+        private RangeEnabledObservableCollection<string> _vnNameCollection = new RangeEnabledObservableCollection<string>();
+        public RangeEnabledObservableCollection<string> VnNameCollection
+        {
+            get { return _vnNameCollection; }
+            set
+            {
+                _vnNameCollection = value;
+                RaisePropertyChanged(nameof(VnNameCollection));
+            }
+        }
+        #endregion
+
+        #region ObservableVnInfoAnime
+        private ObservableCollection<VnInfoAnime> _vnAnimeCollection = new ObservableCollection<VnInfoAnime>();
+        public ObservableCollection<VnInfoAnime> VnInfoAnimeCollection
+        {
+            get { return _vnAnimeCollection; }
+            set
+            {
+                _vnAnimeCollection = value;
+                RaisePropertyChanged(nameof(VnInfoAnimeCollection));
+            }
+        }
+        #endregion
+
+        #region ObservableLanguageCollection
+        private ObservableCollection<LanguagesCollection> _languageCollection = new ObservableCollection<LanguagesCollection>();
+        public ObservableCollection<LanguagesCollection> LanguageCollection
+        {
+            get { return _languageCollection; }
+            set
+            {
+                _languageCollection = value;
+                RaisePropertyChanged(nameof(LanguageCollection));
+            }
+        }
+        #endregion
+
+        #region ObserableOriginalLanguageCollection
+        private ObservableCollection<OriginalLanguagesCollection> _originalLanguagesCollection = new ObservableCollection<OriginalLanguagesCollection>();
+        public ObservableCollection<OriginalLanguagesCollection> OriginalLanguagesCollection
+        {
+            get { return _originalLanguagesCollection; }
+            set
+            {
+                _originalLanguagesCollection = value;
+                RaisePropertyChanged(nameof(OriginalLanguagesCollection));
+            }
+        }
+        #endregion
+
+        #region ObservablePlatformCollection
+        private ObservableCollection<PlatformCollection> _platformCollection = new ObservableCollection<PlatformCollection>();
+        public ObservableCollection<PlatformCollection> PlatformCollection
+        {
+            get { return _platformCollection; }
+            set
+            {
+                _platformCollection = value;
+                RaisePropertyChanged(nameof(PlatformCollection));
+            }
+        }
+        #endregion
+
+        #region VnInfoRelation
+        private ObservableCollection<VnInfoRelation> _vnInfoRelation = new ObservableCollection<VnInfoRelation>();
+        public ObservableCollection<VnInfoRelation> VnInfoRelation
+        {
+            get { return _vnInfoRelation; }
+            set
+            {
+                _vnInfoRelation = value;
+                RaisePropertyChanged(nameof(VnInfoRelation));
+            }
+        }
+        #endregion
+
+        #region ObservableCollectionVnTag
+        private ObservableCollection<string> _vnInfoTagCollection = new ObservableCollection<string>();
+        public ObservableCollection<string> VnInfoTagCollection
+        {
+            get { return _vnInfoTagCollection; }
+            set
+            {
+                _vnInfoTagCollection = value;
+                RaisePropertyChanged(nameof(VnInfoTagCollection));
+            }
+        }
+        #endregion
+
+        #region ObservableCategories
+        private RangeEnabledObservableCollection<string> _categoriesCollection = new RangeEnabledObservableCollection<string>();
+        public RangeEnabledObservableCollection<string> CategoriesCollection
+        {
+            get
+            {
+                //TODO:move this to another method maybe?
+                using (var db = new DatabaseContext())
+                {
+                    foreach (Categories category in db.Set<Categories>())
+                    {
+                        _categoriesCollection.Add(category.Category);
+                    }
+                    db.Dispose();
+                }
+                return _categoriesCollection;
+            }
+            set
+            {
+                _categoriesCollection = value;
+                RaisePropertyChanged(nameof(CategoriesCollection));
+            }
+        }
+
+        #endregion ObservableCategories
+        
+
+        #region maxwidth
+        private double _maxListWidth;
+        public double MaxListWidth
+        {
+            get { return _maxListWidth; }
+            set
+            {
+                _maxListWidth = value;
+                RaisePropertyChanged(nameof(MaxListWidth));
+            }
+        }
+        #endregion
+
+        #region VnMainModel
+        private VnMainModel _vnMainModel;
+        public VnMainModel VnMainModel
+        {
+            get { return _vnMainModel; }
+            set
+            {
+                _vnMainModel = value;
+                RaisePropertyChanged(nameof(VnMainModel));
+            }
+        }
+        #endregion
+
+        #region SelectedVn
+        private string _selectedVn;
+        public string SelectedVn
+        {
+            get { return _selectedVn; }
+            set
+            {
+                _selectedVn = value;
+                RaisePropertyChanged(nameof(SelectedVn));
+                GetVnData();
+            }
+        }
+        #endregion
+
+        #region SelectedTag
+        private string _selectedTag;
+        public string SelectedTag
+        {
+            get { return _selectedTag; }
+            set
+            {
+                _selectedTag = value;
+                RaisePropertyChanged(nameof(SelectedTag));
+                BindTagDescription();
+            }
+        }
+        #endregion
+
+        #region SelectedTagIndex
+        private int? _selectedTagIndex;
+        public int? SelectedTagIndex
+        {
+            get { return _selectedTagIndex; }
+            set
+            {
+                _selectedTagIndex = value;
+                RaisePropertyChanged(nameof(SelectedTagIndex));
+            }
+        }
+        #endregion
+
+        #region TagDescription
+        private FlowDocument _tagDescription;
+        public FlowDocument TagDescription
+        {
+            get { return _tagDescription; }
+            set
+            {
+                _tagDescription = value;
+                RaisePropertyChanged(nameof(TagDescription));
+            }
+        }
+        #endregion
+
+        #region SelectedCategory
+        private string _selectedCategory;
+        public string SelectedCategory
+        {
+            get { return _selectedCategory; }
+            set
+            {
+                _selectedCategory = value;
+                LoadCategories();
+                RaisePropertyChanged(nameof(SelectedCategory));
+            }
+        }
+        #endregion
+
+        public static bool IsDownloading = false;
+        private readonly Stopwatch _stopwatch = new Stopwatch();
+        
+        public ICommand StartVnCommand => new GalaSoft.MvvmLight.CommandWpf.RelayCommand(StartVn);
+        public ICommand OpenContextMenuCommand => new GalaSoft.MvvmLight.CommandWpf.RelayCommand(CreateContextMenu);
+
+    }
 
 
     public class LanguagesCollection

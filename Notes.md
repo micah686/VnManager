@@ -10,6 +10,7 @@ These are just personal reminders for me to keep track of what I need to fix/add
 - add a bool to prevent users from adding a gaame while another is processing.
 - reload screenshot viewmodel after changing nsfw status
 - Set up method to find and set the Height="" property of the Vns in VnMain, so it adds a proper scrollbar. Currently won't add a scrollbar.
+- Set up some sort of wait timer/pause bool to prevent trying to load another Vn once one is selected(for use when someone holds down, aand it tries to load a large amount)
 
 
 ##Entity Framework Notes

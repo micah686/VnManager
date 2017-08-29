@@ -6,6 +6,8 @@
              xmlns:local ="clr-namespace:VisualNovelManagerv2.Pages"
              xmlns:custom="clr-namespace:VisualNovelManagerv2.CustomClasses"
              xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
              mc:Ignorable="d" 
              d:DesignHeight="1200" d:DesignWidth="800"
              DataContext="{Binding VnMain, Source={StaticResource Locator}}">
@@ -44,7 +46,13 @@
                               HorizontalAlignment="Center" HorizontalContentAlignment="Center" SelectedIndex="0"/>
                     
                     <ListBox Grid.Row="2" Name="NoteList" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" ItemsSource="{Binding VnNameCollection}" Margin="0,0,5,5"
-                             Width="{Binding MaxListWidth}" MaxWidth="{Binding MaxListWidth}" MinWidth="150" SelectedItem="{Binding SelectedVn}"/>
+                             Width="{Binding MaxListWidth}" MaxWidth="{Binding MaxListWidth}" MinWidth="150" SelectedItem="{Binding SelectedVn}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="MouseRightButtonUp">
+                                <i:InvokeCommandAction Command="{Binding OpenContextMenuCommand}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </ListBox>
                 </Grid>
 
                 <!--#region Divider-->
