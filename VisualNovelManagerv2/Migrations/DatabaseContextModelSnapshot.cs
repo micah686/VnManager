@@ -313,8 +313,6 @@ namespace VisualNovelManagerv2.Migrations
 
                     b.Property<string>("Category");
 
-                    b.Property<string>("Created");
-
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
@@ -359,11 +357,15 @@ namespace VisualNovelManagerv2.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int?>("Category");
+                    b.Property<int?>("CategoriesId");
+
+                    b.Property<string>("Title");
 
                     b.Property<int?>("VnId");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CategoriesId");
 
                     b.ToTable("VnUserDataCategories");
                 });
@@ -787,6 +789,13 @@ namespace VisualNovelManagerv2.Migrations
                     b.HasOne("VisualNovelManagerv2.EF.Entity.VnInfo.VnInfo")
                         .WithMany("VnInfoTags")
                         .HasForeignKey("VnInfoId");
+                });
+
+            modelBuilder.Entity("VisualNovelManagerv2.EF.Entity.VnOther.VnUserDataCategories", b =>
+                {
+                    b.HasOne("VisualNovelManagerv2.EF.Entity.VnOther.Categories")
+                        .WithMany("VnUserDataCategories")
+                        .HasForeignKey("CategoriesId");
                 });
 
             modelBuilder.Entity("VisualNovelManagerv2.EF.Entity.VnProducer.VnProducer", b =>

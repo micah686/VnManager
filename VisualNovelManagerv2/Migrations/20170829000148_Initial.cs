@@ -14,8 +14,7 @@ namespace VisualNovelManagerv2.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Category = table.Column<string>(type: "TEXT", nullable: true),
-                    Created = table.Column<string>(type: "TEXT", nullable: true)
+                    Category = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -298,20 +297,6 @@ namespace VisualNovelManagerv2.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "VnUserDataCategories",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Category = table.Column<int>(type: "INTEGER", nullable: true),
-                    VnId = table.Column<int>(type: "INTEGER", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_VnUserDataCategories", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "VnVisualNovelList",
                 columns: table => new
                 {
@@ -358,6 +343,27 @@ namespace VisualNovelManagerv2.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_VnWishList", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "VnUserDataCategories",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    CategoriesId = table.Column<int>(type: "INTEGER", nullable: true),
+                    Title = table.Column<string>(type: "TEXT", nullable: true),
+                    VnId = table.Column<int>(type: "INTEGER", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_VnUserDataCategories", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_VnUserDataCategories_Categories_CategoriesId",
+                        column: x => x.CategoriesId,
+                        principalTable: "Categories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -731,6 +737,11 @@ namespace VisualNovelManagerv2.Migrations
                 table: "VnStaff",
                 column: "VnStaffLinksId");
 
+            migrationBuilder.CreateIndex(
+                name: "IX_VnUserDataCategories_CategoriesId",
+                table: "VnUserDataCategories",
+                column: "CategoriesId");
+
             migrationBuilder.AddForeignKey(
                 name: "FK_VnCharacterTraits_VnCharacter_VnCharacterId",
                 table: "VnCharacterTraits",
@@ -761,9 +772,6 @@ namespace VisualNovelManagerv2.Migrations
             migrationBuilder.DropForeignKey(
                 name: "FK_VnInfoScreens_VnInfo_VnInfoId",
                 table: "VnInfoScreens");
-
-            migrationBuilder.DropTable(
-                name: "Categories");
 
             migrationBuilder.DropTable(
                 name: "VnCharacterTraits");
@@ -827,6 +835,9 @@ namespace VisualNovelManagerv2.Migrations
 
             migrationBuilder.DropTable(
                 name: "VnStaffLinks");
+
+            migrationBuilder.DropTable(
+                name: "Categories");
 
             migrationBuilder.DropTable(
                 name: "VnCharacterVns");

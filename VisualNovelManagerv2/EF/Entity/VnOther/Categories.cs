@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace VisualNovelManagerv2.EF.Entity.VnOther
 {
@@ -6,6 +7,6 @@ namespace VisualNovelManagerv2.EF.Entity.VnOther
     {        
         public int Id { get; set; }
         public string Category { get; set; }
-        public string Created { get; set; }
+        public virtual ICollection<VnUserDataCategories> VnUserDataCategories { get; set; }
     }
 }

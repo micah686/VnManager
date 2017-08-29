@@ -37,8 +37,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         #region observableCollections
 
         #region ObservableVnNameCollection
-        private ObservableCollection<string> _vnNameCollection = new ObservableCollection<string>();
-        public ObservableCollection<string> VnNameCollection
+        private RangeEnabledObservableCollection<string> _vnNameCollection = new RangeEnabledObservableCollection<string>();
+        public RangeEnabledObservableCollection<string> VnNameCollection
         {
             get { return _vnNameCollection; }
             set
@@ -127,6 +127,32 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         }
         #endregion
 
+        #region ObservableCategories
+        private RangeEnabledObservableCollection<string> _categoriesCollection= new RangeEnabledObservableCollection<string>();
+        public RangeEnabledObservableCollection<string> CategoriesCollection
+        {
+            get
+            {
+                //TODO:move this to another method maybe?
+                using (var db = new DatabaseContext())
+                {
+                    foreach (Categories category in db.Set<Categories>())
+                    {
+                        _categoriesCollection.Add(category.Category);
+                    }
+                    db.Dispose();
+                }
+                return _categoriesCollection;
+            }
+            set
+            {
+                _categoriesCollection = value;
+                RaisePropertyChanged(nameof(CategoriesCollection));
+            }
+        }
+
+        #endregion ObservableCategories
+
         #endregion
 
         public static bool IsDownloading = false;
@@ -137,11 +163,11 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         public ICommand StartVnCommand => new GalaSoft.MvvmLight.CommandWpf.RelayCommand(StartVn);
         public VnMainViewModel()
         {
-            LoadBindVnDataCommand = new RelayCommand(LoadVnNameCollection);
+            LoadBindVnDataCommand = new RelayCommand(LoadCategories);
             ClearCollectionsCommand = new RelayCommand(ClearCollections);
 
             _vnMainModel = new VnMainModel();
-            LoadVnNameCollection();
+            LoadCategories();
             
         }
 
@@ -225,7 +251,21 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 _tagDescription = value;
                 RaisePropertyChanged(nameof(TagDescription));
             }
-        }        
+        }
+        #endregion
+
+        #region SelectedCategory
+        private string _selectedCategory;
+        public string SelectedCategory
+        {
+            get { return _selectedCategory; }
+            set
+            {
+                _selectedCategory = value;
+                LoadCategories();
+                RaisePropertyChanged(nameof(SelectedCategory));
+            }
+        }
         #endregion
 
         #endregion
@@ -240,27 +280,48 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             VnInfoAnimeCollection.Clear();
         }
 
-        private void LoadVnNameCollection()
+        private void LoadCategories()
         {
+            VnNameCollection.Clear();
             try
             {
-                ObservableCollection<string> nameList = new ObservableCollection<string>();
-                using (var db = new DatabaseContext())
+                using (var context = new DatabaseContext())
                 {
-                    foreach (VnInfo vnInfo in db.Set<VnInfo>())
+                    //need to add/seed the "All" in StartupValidate
+                    if (_selectedCategory == "All" || string.IsNullOrEmpty(_selectedCategory))
                     {
-                       nameList.Add(vnInfo.Title); 
+                        if (context.VnInfo != null)
+                        {
+                            VnNameCollection.InsertRange(context.VnIdList.Select(x => x.Title).ToList());
+                            return;
+                        }
                     }
-                    db.Dispose();
+                    //NEED to include the .Include, or it won't load the ICollection
+                    foreach (Categories categories in context.Set<Categories>().Include(x => x.VnUserDataCategories))
+                    {
+                        if (categories.Category == _selectedCategory)
+                        {
+
+                            if (categories.VnUserDataCategories != null)
+                            {
+                                VnNameCollection.InsertRange(categories.VnUserDataCategories.Select(x => x.Title)
+                                    .ToList());
+                            }
+                            break;
+                        }
+                    }
                 }
-                VnNameCollection = nameList;
-                SetMaxWidth();
             }
             catch (Exception ex)
             {
                 DebugLogging.WriteDebugLog(ex);
                 throw;
-            }            
+            }
+            finally
+            {
+                SetMaxWidth();
+            }
+            
         }
 
         public void SetMaxWidth()
@@ -268,7 +329,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             if (VnNameCollection.Count <= 0) return;
             string longestString = VnNameCollection.OrderByDescending(s => s.Length).First();
             MaxListWidth = MeasureStringSize.GetMaxStringWidth(longestString);
-            Thread.Sleep(0);
         }
 
         private async void GetVnData()
@@ -542,15 +602,20 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
             try
             {
-                if (nsfw == true)
+                switch (nsfw)
                 {
-                    BitmapImage bImage = Base64Converter.GetBitmapImageFromBytes(File.ReadAllText(pathNoExt));
-                    VnMainModel.Image = bImage;
-                }
-                if (nsfw == false)
-                {
-                    BitmapImage bImage = new BitmapImage(new Uri(path));
-                    VnMainModel.Image = bImage;
+                    case true:
+                    {
+                        BitmapImage bImage = Base64Converter.GetBitmapImageFromBytes(File.ReadAllText(pathNoExt));
+                        VnMainModel.Image = bImage;
+                        break;
+                    }
+                    case false:
+                    {
+                        BitmapImage bImage = new BitmapImage(new Uri(path));
+                        VnMainModel.Image = bImage;
+                        break;
+                    }
                 }
             }
             catch (Exception ex)
