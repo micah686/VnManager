@@ -75,5 +75,6 @@ namespace VisualNovelManagerv2.EF.Context
         internal DbSet<VnIdList> VnIdList { get; set; }
         internal DbSet<Category> Categories { get; set; }
         internal DbSet<VnUserCategoryTitle> VnUserCategoryTitles { get; set; }
+        internal DbSet<CategoryJunction> CategoryJunction { get; set; }
     }
 }
