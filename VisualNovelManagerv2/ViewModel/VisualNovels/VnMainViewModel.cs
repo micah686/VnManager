@@ -44,6 +44,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             LoadBindVnDataCommand = new RelayCommand(LoadCategories);
             ClearCollectionsCommand = new RelayCommand(ClearCollections);
             AddToCategoryCommand = new RelayCommand<string>(AddToCategory);
+            RemoveFromCategoryCommand = new RelayCommand<string>(RemoveFromCategory);
             _vnMainModel = new VnMainModel();
             LoadCategories();
             
@@ -699,6 +700,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         {
             var contextMenu = new ContextMenu();
             contextMenu.Items.Add(CreateAddSubMenu("Add To Category"));
+            contextMenu.Items.Add(CreateRemoveSubMenu("Remove Category"));
             contextMenu.Items.Add(new MenuItem { Header = "Item with gesture", InputGestureText = "Ctrl+C" });
             contextMenu.Items.Add(new MenuItem { Header = "Item, disabled", IsEnabled = false });
             contextMenu.Items.Add(new MenuItem { Header = "Item, checked", IsChecked = true });
@@ -716,10 +718,13 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
             using (var context = new DatabaseContext())
             {
+                //get a list of all category names that are linked to the selected Vn
+                List<string> data = context.VnUserCategoryTitles.Where(x => x.Title == SelectedVn)
+                    .SelectMany(x => x.CategoryJunctions.Select(y=>y.Category.CategoryName)).ToList();
                 foreach (var categories in context.Set<Category>())
                 {
-                    //prevents adding to All or the category currently loaded
-                    if (categories.CategoryName != "All" && categories.CategoryName != _selectedCategory)
+                    //prevents adding to All or the category currently loaded, or any categories already added
+                    if (categories.CategoryName != "All" && categories.CategoryName != _selectedCategory && !data.Contains(categories.CategoryName))
                     {
                         item.Items.Add(new MenuItem { Header = categories.CategoryName, Command = AddToCategoryCommand, CommandParameter = categories.CategoryName });
                     }
@@ -731,6 +736,19 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         private MenuItem CreateRemoveSubMenu(string header)
         {
             var item = new MenuItem { Header = header };
+            using (var context = new DatabaseContext())
+            {
+                List<Category> data = context.VnUserCategoryTitles.Where(x => x.Title == SelectedVn)
+                    .SelectMany(x => x.CategoryJunctions.Select(y => y.Category)).ToList();
+                foreach (var categories in data)
+                {
+                    if (categories.CategoryName != "All")
+                    {
+                        item.Items.Add(new MenuItem { Header = categories.CategoryName, Command = RemoveFromCategoryCommand, CommandParameter = categories.CategoryName });
+                    }
+                }
+
+            }
             return item;
         }
 
@@ -760,6 +778,32 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 throw;
             }
             
+        }
+
+
+        private void RemoveFromCategory(string header)
+        {
+            try
+            {
+                using (var context = new DatabaseContext())
+                {
+                    if (!string.IsNullOrEmpty(header))
+                    {
+                        CategoryJunction data = context.CategoryJunction
+                            .FirstOrDefault(x => x.Category.CategoryName == header && x.VnUserCategoryTitle.Title == SelectedVn);
+                        if (data != null)
+                        {
+                            context.CategoryJunction.Remove(data);
+                            context.SaveChanges();
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                DebugLogging.WriteDebugLog(ex);
+                throw;
+            }
         }
 
     }
@@ -985,6 +1029,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         public ICommand StartVnCommand => new GalaSoft.MvvmLight.CommandWpf.RelayCommand(StartVn);
         public ICommand OpenContextMenuCommand => new GalaSoft.MvvmLight.CommandWpf.RelayCommand(CreateContextMenu);
         public ICommand AddToCategoryCommand { get; private set; }
+        public ICommand RemoveFromCategoryCommand { get; private set; }
 
     }
 
