@@ -43,7 +43,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         {
             LoadBindVnDataCommand = new RelayCommand(LoadCategories);
             ClearCollectionsCommand = new RelayCommand(ClearCollections);
-            AddCategoryCommand = new RelayCommand<string>(AddCategory);
+            AddToCategoryCommand = new RelayCommand<string>(AddToCategory);
             _vnMainModel = new VnMainModel();
             LoadCategories();
             
@@ -721,9 +721,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                     //prevents adding to All or the category currently loaded
                     if (categories.CategoryName != "All" && categories.CategoryName != _selectedCategory)
                     {
-                        var menuItem = new MenuItem { Header = categories.CategoryName, Command = AddCategoryCommand, CommandParameter = categories.CategoryName};
-                        //item.Items.Add(new MenuItem { Header = categories.CategoryName});
-                        item.Items.Add(menuItem);
+                        item.Items.Add(new MenuItem { Header = categories.CategoryName, Command = AddToCategoryCommand, CommandParameter = categories.CategoryName });
                     }
                 }
             }
@@ -736,16 +734,32 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             return item;
         }
 
-        private void AddCategory(string header)
+        private void AddToCategory(string header)
         {
-            using (var context = new DatabaseContext())
+            try
             {
-                if (!string.IsNullOrEmpty(header))
+                using (var context = new DatabaseContext())
                 {
-                    var category = context.Categories.Where(x => x.CategoryName == header).FirstOrDefault();
-
+                    if (!string.IsNullOrEmpty(header))
+                    {
+                        //create a relationship between the two members
+                        var category = context.Categories.FirstOrDefault(x => x.CategoryName == header);
+                        var vnUser = context.VnUserCategoryTitles.FirstOrDefault(v => v.Title == SelectedVn);
+                        if (category != null && vnUser != null)
+                        {
+                            var addCategoryVnEntry = new CategoryJunction { Category = category, VnUserCategoryTitle = vnUser };
+                            context.CategoryJunction.Add(addCategoryVnEntry);
+                            context.SaveChanges();
+                        }
+                    }
                 }
             }
+            catch (Exception ex)
+            {
+                DebugLogging.WriteDebugLog(ex);
+                throw;
+            }
+            
         }
 
     }
@@ -970,7 +984,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         
         public ICommand StartVnCommand => new GalaSoft.MvvmLight.CommandWpf.RelayCommand(StartVn);
         public ICommand OpenContextMenuCommand => new GalaSoft.MvvmLight.CommandWpf.RelayCommand(CreateContextMenu);
-        public ICommand AddCategoryCommand { get; private set; }
+        public ICommand AddToCategoryCommand { get; private set; }
 
     }
 
