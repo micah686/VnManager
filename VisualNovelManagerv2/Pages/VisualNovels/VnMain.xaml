@@ -39,7 +39,7 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <TextBlock Grid.Row="0" Style="{StaticResource Emphasis}" Text="Categories" Margin="0,0,5,5" TextAlignment="Center"/>
                     <ComboBox Grid.Row="1" Margin="0,5,5,10" MinWidth="175" ItemsSource="{Binding CategoriesCollection}" SelectedItem="{Binding SelectedCategory}"
