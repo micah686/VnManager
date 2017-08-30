@@ -18,7 +18,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.CommandWpf;
 using Microsoft.EntityFrameworkCore;
 using VisualNovelManagerv2.Converters;
 using VisualNovelManagerv2.Design.VisualNovel;
@@ -28,6 +28,7 @@ using VisualNovelManagerv2.EF.Entity.VnInfo;
 using VisualNovelManagerv2.EF.Entity.VnOther;
 using VisualNovelManagerv2.EF.Entity.VnTagTrait;
 using Image = System.Drawing.Image;
+using RelayCommand = GalaSoft.MvvmLight.Command.RelayCommand;
 
 
 // ReSharper disable ExplicitCallerInfoArgument
@@ -42,6 +43,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         {
             LoadBindVnDataCommand = new RelayCommand(LoadCategories);
             ClearCollectionsCommand = new RelayCommand(ClearCollections);
+            AddCategoryCommand = new RelayCommand<string>(AddCategory);
             _vnMainModel = new VnMainModel();
             LoadCategories();
             
@@ -716,9 +718,12 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             {
                 foreach (var categories in context.Set<Category>())
                 {
-                    if (categories.CategoryName != "All")
+                    //prevents adding to All or the category currently loaded
+                    if (categories.CategoryName != "All" && categories.CategoryName != _selectedCategory)
                     {
-                        item.Items.Add(new MenuItem { Header = categories.CategoryName, /*Command = new FirstFloor.ModernUI.Presentation.RelayCommand(null)*/ });
+                        var menuItem = new MenuItem { Header = categories.CategoryName, Command = AddCategoryCommand, CommandParameter = categories.CategoryName};
+                        //item.Items.Add(new MenuItem { Header = categories.CategoryName});
+                        item.Items.Add(menuItem);
                     }
                 }
             }
@@ -731,13 +736,18 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             return item;
         }
 
-        private void AddCategory()
+        private void AddCategory(string header)
         {
             using (var context = new DatabaseContext())
             {
+                if (!string.IsNullOrEmpty(header))
+                {
+                    var category = context.Categories.Where(x => x.CategoryName == header).FirstOrDefault();
 
+                }
             }
         }
+
     }
 
     //class for properties
@@ -960,6 +970,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         
         public ICommand StartVnCommand => new GalaSoft.MvvmLight.CommandWpf.RelayCommand(StartVn);
         public ICommand OpenContextMenuCommand => new GalaSoft.MvvmLight.CommandWpf.RelayCommand(CreateContextMenu);
+        public ICommand AddCategoryCommand { get; private set; }
 
     }
 
