@@ -38,15 +38,15 @@ namespace VisualNovelManagerv2.Design.VisualNovel
 
 
 
-        public BitmapImage Gender
+        public String Gender
         {
-            get { return (BitmapImage)GetValue(GenderProperty); }
+            get { return (String)GetValue(GenderProperty); }
             set { SetValue(GenderProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for Gender.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty GenderProperty =
-            DependencyProperty.Register("Gender", typeof(BitmapImage), typeof(VnCharacterModel), new PropertyMetadata(null));
+            DependencyProperty.Register("Gender", typeof(String), typeof(VnCharacterModel), new PropertyMetadata(""));
 
 
 

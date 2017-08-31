@@ -107,7 +107,7 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Label Grid.Column="0" Content="Gender:"/>
-                            <Image Grid.Column="1" Source="{Binding VnCharacterModel.Gender}"  Margin="10,0,0,0" Stretch="UniformToFill"  Height="20" Width="20" />
+                            <Path Grid.Column="1" Fill="{Binding GenderColor}" Data="{Binding VnCharacterModel.Gender}"  Margin="10,0,0,0" Stretch="Uniform" Height="20" Width="20" />
                         </Grid>
                     </Grid>
 
