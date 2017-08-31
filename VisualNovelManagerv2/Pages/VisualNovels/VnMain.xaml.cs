@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using GalaSoft.MvvmLight.Messaging;
 
 namespace VisualNovelManagerv2.Pages.VisualNovels
 {
@@ -23,6 +24,15 @@ namespace VisualNovelManagerv2.Pages.VisualNovels
         public VnMain()
         {
             InitializeComponent();
+            Messenger.Default.Register<NotificationMessage>(this, NotificationMessageReceived);
+        }
+        private void NotificationMessageReceived(NotificationMessage msg)
+        {
+            if (msg.Notification == "Show Add/Remove Category Window")
+            {
+                var view2 = new VnMainCategoryOptions();
+                view2.ShowDialog();
+            }
         }
     }
 }

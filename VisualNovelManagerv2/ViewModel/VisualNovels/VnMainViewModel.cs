@@ -19,6 +19,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
+using GalaSoft.MvvmLight.Messaging;
 using Microsoft.EntityFrameworkCore;
 using VisualNovelManagerv2.Converters;
 using VisualNovelManagerv2.Design.VisualNovel;
@@ -94,8 +95,11 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             
         }
 
-        
 
+        private void LoadAddRemoveCategoryWindow()
+        {
+            Messenger.Default.Send(new NotificationMessage("Show Add/Remove Category Window"));
+        }
         
 
         public void SetMaxWidth()
@@ -1028,6 +1032,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         
         public ICommand StartVnCommand => new GalaSoft.MvvmLight.CommandWpf.RelayCommand(StartVn);
         public ICommand OpenContextMenuCommand => new GalaSoft.MvvmLight.CommandWpf.RelayCommand(CreateContextMenu);
+        public ICommand AddRemoveCategoryCommand => new GalaSoft.MvvmLight.CommandWpf.RelayCommand(LoadAddRemoveCategoryWindow);
         public ICommand AddToCategoryCommand { get; private set; }
         public ICommand RemoveFromCategoryCommand { get; private set; }
 
