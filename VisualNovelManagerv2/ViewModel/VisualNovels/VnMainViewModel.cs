@@ -75,7 +75,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                     {
                         if (context.VnInfo != null)
                         {
-                            VnNameCollection.InsertRange(context.VnIdList.Select(x => x.Title).ToList());
+                            VnNameCollection.InsertRange(context.VnInfo.Select(x => x.Title).ToList());
                             return;
                         }
                     }                    
