@@ -334,10 +334,9 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
                     if (!string.IsNullOrEmpty(vnUserData.PlayTime))
                     {
-                        //match #,#,#,# format
-                        var regex = new Regex(@"^[0-9]+\,[0-9]+\,[0-9]+\,[0-9]+$");
-                        bool isMatch = regex.IsMatch(vnUserData.PlayTime);
-                        if (isMatch)
+                        //check if matches #,#,#,# format
+                        bool isMatch = new Regex(@"^[0-9]+\,[0-9]+\,[0-9]+\,[0-9]+$").IsMatch(vnUserData.PlayTime);
+                        if (new Regex(@"^[0-9]+\,[0-9]+\,[0-9]+\,[0-9]+$").IsMatch(vnUserData.PlayTime))
                         {
                             var lastPlayTime = vnUserData.PlayTime.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
                             List<int> timecount = new List<int>();
