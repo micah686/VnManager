@@ -40,6 +40,7 @@ namespace VisualNovelManagerv2.ViewModel
             SimpleIoc.Default.Register<StatusBarViewModel>();
             SimpleIoc.Default.Register<VnListViewModel>();
             SimpleIoc.Default.Register<UserSettingsViewModel>();
+            SimpleIoc.Default.Register<VnMainCategoryOptionsViewModel>();
         }
 
         public AddVnViewModel AddVn => ServiceLocator.Current.GetInstance<AddVnViewModel>();
@@ -57,6 +58,9 @@ namespace VisualNovelManagerv2.ViewModel
         public VnListViewModel VnList => ServiceLocator.Current.GetInstance<VnListViewModel>();
 
         public UserSettingsViewModel UserSettings => ServiceLocator.Current.GetInstance<UserSettingsViewModel>();
+
+        public VnMainCategoryOptionsViewModel VnMainCategoryOptionsViewModel =>
+            ServiceLocator.Current.GetInstance<VnMainCategoryOptionsViewModel>();
 
         public static void CleanupScreenshotViewModel()
         {

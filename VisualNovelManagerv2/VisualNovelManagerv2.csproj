@@ -238,6 +238,9 @@
     <Compile Include="Pages\VisualNovels\VisualNovelList.xaml.cs">
       <DependentUpon>VisualNovelList.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\VisualNovels\VnMainCategoryOptions.xaml.cs">
+      <DependentUpon>VnMainCategoryOptions.xaml</DependentUpon>
+    </Compile>
     <Compile Include="StartupValidate.cs" />
     <Compile Include="ViewModel\Global\StatusBarViewModel.cs" />
     <Compile Include="ViewModel\Settings\UserSettingsViewModel.cs" />
@@ -245,6 +248,7 @@
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Compile Include="ViewModel\VisualNovels\VnCharacterViewModel.cs" />
     <Compile Include="ViewModel\VisualNovels\VnListViewModel.cs" />
+    <Compile Include="ViewModel\VisualNovels\VnMainCategoryOptionsViewModel.cs" />
     <Compile Include="ViewModel\VisualNovels\VnMainViewModel.cs" />
     <Compile Include="ViewModel\VisualNovels\VnReleaseViewModel.cs" />
     <Compile Include="ViewModel\VisualNovels\VnScreenshotViewModel.cs" />
@@ -384,6 +388,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Pages\VisualNovels\VnMainCategoryOptions.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -443,6 +451,7 @@
       <Name>VndbSharp</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>ROBOCOPY "$(TargetDir) " "$(TargetDir)Data\libs\ " *.dll *.pdb *.xml /MOVE

@@ -1,0 +1,48 @@
+﻿<mui:ModernWindow x:Class="VisualNovelManagerv2.Pages.VisualNovels.VnMainCategoryOptions"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:VisualNovelManagerv2.Pages.VisualNovels"
+             xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+             mc:Ignorable="d" 
+             x:Name="AddRemoveCategoriesWindow"
+             ResizeMode="NoResize"
+             Style="{StaticResource BlankWindow}"
+             Title="Add or Remove Categories"  WindowStartupLocation="CenterScreen"
+             Width="350" Height="200" MaxHeight="200" MinHeight="100"     
+             DataContext="{Binding VnMainCategoryOptionsViewModel, Source={StaticResource Locator}}">
+    <Grid Margin="15">
+        <Grid.Resources>
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        </Grid.Resources>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+
+        <!--<Label Name="lblQuestion" Grid.Column="1">Question:</Label>-->
+        <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="5">
+            <RadioButton x:Name="AddRadio" Content="Add Category" IsChecked="True"/>
+            <RadioButton x:Name="RemoveRadio" Content="Remove Category" Margin="10,0,0,0" IsChecked="{Binding IsChecked}" Command="{Binding LoadCategoryListCommand}"/>
+        </StackPanel>
+        <TextBox x:Name="AddCategoryText" Grid.Column="1" Grid.Row="1" Width="150" HorizontalAlignment="Left"
+                 Text="{Binding AddCategoryText, Mode=TwoWay, ValidatesOnDataErrors=True}" Visibility="{Binding IsChecked, ElementName=AddRadio, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+        <ComboBox x:Name="RemoveCategoryDrop" Grid.Column="1" Grid.Row="1" SelectedItem="{Binding RemoveCategoryText}" IsDropDownOpen="{Binding IsDropdownOpen}"
+                  Visibility="{Binding IsChecked, ElementName=RemoveRadio, Converter={StaticResource BooleanToVisibilityConverter}}" ItemsSource="{Binding CategoriesCollection}"/>
+        <!--<TextBox Name="txtAnswer" Grid.Column="1" Grid.Row="1" MinWidth="250">Answer</TextBox>-->
+        <WrapPanel Grid.Row="2" Grid.ColumnSpan="2" HorizontalAlignment="Center" Margin="0,15,0,0">
+            <Button IsDefault="True"  MinWidth="60" Margin="0,0,10,0" Content="Submit" Command="{Binding SumbitCommand}" CommandParameter="{Binding ElementName=AddRemoveCategoriesWindow}"/>
+            <Button IsCancel="True" MinWidth="60" Content="Close" Command="{Binding CancelCommand, Mode=OneWay}" CommandParameter="{Binding ElementName=AddRemoveCategoriesWindow}"/>
+        </WrapPanel>
+        <mui:BBCodeBlock x:Name="BbCodeBlockDone" Grid.Row="3" Grid.ColumnSpan="2" HorizontalAlignment="Center" BBCode="{Binding BbCodeTextDone}" Margin="10" />
+        
+    </Grid>
+</mui:ModernWindow>
