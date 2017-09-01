@@ -14,7 +14,7 @@ namespace VisualNovelManagerv2
     {        
         public static readonly string DirectoryPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         public static readonly List<string> ClientInfo = new List<string>{"Visual Novel Manager v2", "0.0.1"};
-        public static int VnId;
+        public static uint VnId;
         public static readonly StatusBarViewModel StatusBar = (new ViewModelLocator()).StatusBar;
         public static bool NsfwEnabled = false;
         public static int MaxSpoiler = 0;

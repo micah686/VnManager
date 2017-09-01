@@ -46,7 +46,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             ClearCollectionsCommand = new RelayCommand(ClearCollections);
             AddToCategoryCommand = new RelayCommand<string>(AddToCategory);
             RemoveFromCategoryCommand = new RelayCommand<string>(RemoveFromCategory);
-            _vnMainModel = new VnMainModel();
+            //_vnMainModel = new VnMainModel();
             LoadCategories();
             
         }
@@ -129,7 +129,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
                     using (var db = new DatabaseContext())
                     {
-                        foreach (int vnid in db.Set<VnInfo>().Where(t=>t.Title==(SelectedVn)).Select(v=>v.VnId))
+                        foreach (uint vnid in db.Set<VnInfo>().Where(t=>t.Title==(SelectedVn)).Select(v=>v.VnId))
                         {
                             Globals.VnId = vnid;
                         }
@@ -325,7 +325,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 VnUserData vnUserData;
                 using (var context = new DatabaseContext())
                 {
-                    vnUserData = context.VnUserData.FirstOrDefault(x => x.VnId.Equals(Convert.ToUInt32(Globals.VnId)));
+                    vnUserData = context.VnUserData.FirstOrDefault(x => x.VnId.Equals(Globals.VnId));
                 }
 
                 if (vnUserData != null)
@@ -439,8 +439,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                     #region VnInfo
                     foreach (VnInfo vnInfo in db.Set<VnInfo>().Where(t => t.Title == (SelectedVn)))
                     {
-                        Globals.VnId = Convert.ToInt32(vnInfo.VnId);
-                        //TODO:Change Globals.VnId To uint
+                        Globals.VnId = vnInfo.VnId;
 
 
                         foreach (string language in GetLangauges(vnInfo.Languages))
@@ -946,7 +945,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         #endregion
 
         #region VnMainModel
-        private VnMainModel _vnMainModel;
+        private VnMainModel _vnMainModel = new VnMainModel();
         public VnMainModel VnMainModel
         {
             get { return _vnMainModel; }

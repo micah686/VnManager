@@ -121,7 +121,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             ViewModelLocator.CleanupScreenshotViewModel();
             try
             {
-                int vnid = Globals.VnId;
                 List<Screenshot> screenshotList = LoadScreenshotList();
                 foreach (Screenshot screenshot in screenshotList)
                 {
@@ -168,14 +167,13 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         {
             try
             {
-                int vnid = Globals.VnId;
                 List<Screenshot> screenshotList = LoadScreenshotList();
                 if (screenshotList[SelectedScreenIndex].IsNsfw == true)
                 {
                     if (Globals.NsfwEnabled == true)
                     {
                         string filename = Path.GetFileNameWithoutExtension(screenshotList[SelectedScreenIndex].Url);
-                        string pathNoExt = $@"{Globals.DirectoryPath}\Data\images\screenshots\{vnid}\{filename}";
+                        string pathNoExt = $@"{Globals.DirectoryPath}\Data\images\screenshots\{Globals.VnId}\{filename}";
                         BitmapImage bImage = Base64Converter.GetBitmapImageFromBytes(File.ReadAllText(pathNoExt));
                         MainImage = bImage;
                     }
@@ -187,7 +185,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 }
                 if (screenshotList[SelectedScreenIndex].IsNsfw == false)
                 {
-                    string path = $@"{Globals.DirectoryPath}\Data\images\screenshots\{vnid}\{
+                    string path = $@"{Globals.DirectoryPath}\Data\images\screenshots\{Globals.VnId}\{
                             Path.GetFileName(screenshotList[SelectedScreenIndex].Url)
                         }";
                     BitmapImage bImage = new BitmapImage(new Uri(path));
@@ -209,13 +207,12 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 Globals.StatusBar.ProgressText = "Downloading Screenshots";
                 VnMainViewModel.IsDownloading = true;
                 List<Screenshot> screenshotList = LoadScreenshotList();
-                int vnid = Globals.VnId;
                 foreach (Screenshot screenshot in screenshotList)
                 {
                     if (screenshotList.Count < 1) return;
-                    if (!Directory.Exists($@"{Globals.DirectoryPath}\Data\images\screenshots\{vnid}\thumbs"))
+                    if (!Directory.Exists($@"{Globals.DirectoryPath}\Data\images\screenshots\{Globals.VnId}\thumbs"))
                     {
-                        Directory.CreateDirectory($@"{Globals.DirectoryPath}\Data\images\screenshots\{vnid}\thumbs");
+                        Directory.CreateDirectory($@"{Globals.DirectoryPath}\Data\images\screenshots\{Globals.VnId}\thumbs");
                     }
 
                     string pathNoExt = $@"{Globals.DirectoryPath}\Data\images\screenshots\{Globals.VnId}\{Path.GetFileNameWithoutExtension(screenshot.Url)}";
