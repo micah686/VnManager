@@ -24,7 +24,6 @@ namespace VisualNovelManagerv2.CustomClasses.ConfigSettings
                 ValidationFlags = XmlSchemaValidationFlags.None,
                 ValidationType = ValidationType.None,
             };
-            bool isValid;
 
             using (XmlReader xmlReader = XmlReader.Create(input, settings))
             {
@@ -32,16 +31,15 @@ namespace VisualNovelManagerv2.CustomClasses.ConfigSettings
                 {
                     while (xmlReader.Read())
                     {
-                        ; // This space intentionally left blank
+                         // This space intentionally left blank
                     }
-                    isValid = true;
+                    return true;
                 }
                 catch (XmlException)
                 {
-                    isValid = false;
+                    return false;
                 }
             }
-            return isValid;
         }
     }
 }
