@@ -21,9 +21,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
     {       
         public VnScreenshotViewModel()
         {
-            _screenshotModel = new VnScreenshotModel();
-            
-            //ScreenshotCollection = new ObservableCollection<ScreenshotViewModelCollection>();
             BindScreenshots();
         }
 
@@ -43,7 +40,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         #endregion
 
         #region ScreenshotModel
-        private VnScreenshotModel _screenshotModel;
+        private VnScreenshotModel _screenshotModel= new VnScreenshotModel();
         public VnScreenshotModel ScreenshotModel
         {
             get { return _screenshotModel; }
@@ -128,31 +125,28 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                     string pathNoExt = $@"{Globals.DirectoryPath}\Data\images\screenshots\{Globals.VnId}\thumbs\{Path.GetFileNameWithoutExtension(screenshot.Url)}";
                     string path = $@"{Globals.DirectoryPath}\Data\images\screenshots\{Globals.VnId}\thumbs\{Path.GetFileName(screenshot.Url)}";
 
-                    if (screenshot.IsNsfw == true && File.Exists(pathNoExt))
+                    switch (screenshot.IsNsfw)
                     {
-                        BitmapImage bImage = new BitmapImage();
-                        if (Globals.NsfwEnabled == true)
+                        case true when File.Exists(pathNoExt):
                         {
-                            bImage = Base64Converter.GetBitmapImageFromBytes(File.ReadAllText(pathNoExt));
-                        }
-                        else
-                        {
-                            bImage = new BitmapImage(new Uri($@"{Globals.DirectoryPath}\Data\res\nsfw\thumb.jpg"));
-                        }
-                        
+                            BitmapImage bImage = Globals.NsfwEnabled ? Base64Converter.GetBitmapImageFromBytes(File.ReadAllText(pathNoExt)) 
+                                : new BitmapImage(new Uri($@"{Globals.DirectoryPath}\Data\res\nsfw\thumb.jpg"));
 
-                        _screenshotCollection.Add(new ScreenshotViewModelCollection
+                            _screenshotCollection.Add(new ScreenshotViewModelCollection
+                            {
+                                ScreenshotModel = new VnScreenshotModel {Screenshot = bImage}
+                            });
+                            break;
+                        }
+                        case false when File.Exists(path):
                         {
-                            ScreenshotModel = new VnScreenshotModel {Screenshot = bImage}
-                        });
-                    }
-                    if (screenshot.IsNsfw == false && File.Exists(path))
-                    {
-                        BitmapImage bImage = new BitmapImage(new Uri(path));
-                        _screenshotCollection.Add(new ScreenshotViewModelCollection
-                        {
-                            ScreenshotModel = new VnScreenshotModel {Screenshot = bImage}
-                        });
+                            BitmapImage bImage = new BitmapImage(new Uri(path));
+                            _screenshotCollection.Add(new ScreenshotViewModelCollection
+                            {
+                                ScreenshotModel = new VnScreenshotModel {Screenshot = bImage}
+                            });
+                            break;
+                        }
                     }
                 }
             }
