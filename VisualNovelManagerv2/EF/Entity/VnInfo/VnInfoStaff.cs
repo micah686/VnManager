@@ -5,7 +5,7 @@ namespace VisualNovelManagerv2.EF.Entity.VnInfo
     public class VnInfoStaff: IEntity
     {        
         public int Id { get; set; }
-        public int? VnId { get; set; }
+        public uint? VnId { get; set; }
         public int? StaffId { get; set; }
         public int? AliasId { get; set; }
         public string Name { get; set; }

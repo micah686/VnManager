@@ -239,7 +239,7 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                                 {
                                     vninfotags.Add(new VnInfoTags
                                     {
-                                        VnId = Convert.ToInt32(visualNovel.Id),
+                                        VnId = visualNovel.Id,
                                         TagId = Convert.ToInt32(tag.Id),
                                         TagName = tagMatches.ElementAt(count).Name,
                                         Score = tag.Score,
@@ -283,7 +283,7 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                             {
                                 vnscreens.Add(new VnInfoScreens
                                 {
-                                    VnId = Convert.ToInt32(visualNovel.Id),
+                                    VnId = visualNovel.Id,
                                     ImageUrl = screenshot.Url,
                                     ReleaseId = screenshot.ReleaseId,
                                     Nsfw = screenshot.IsNsfw.ToString(),
@@ -319,7 +319,7 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                             {
                                 vninfostaff.Add(new VnInfoStaff
                                 {
-                                    VnId = Convert.ToInt32(visualNovel.Id),
+                                    VnId = visualNovel.Id,
                                     StaffId = Convert.ToInt32(staff.StaffId),
                                     AliasId = Convert.ToInt32(staff.AliasId),
                                     Name = staff.Name,
@@ -415,7 +415,7 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                             vncharactervns.Add(new VnCharacterVns
                             {
                                 CharacterId = Convert.ToInt32(character.Id),
-                                VnId = Convert.ToInt32(vn.Id),
+                                VnId = vn.Id,
                                 ReleaseId = Convert.ToInt32(vn.ReleaseId),
                                 SpoilerLevel = vn.SpoilerLevel.ToString() ?? null,
                                 Role = vn.Role.ToString()
