@@ -232,34 +232,33 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
             try
             {
-                if (nsfw == true)
+                switch (nsfw)
                 {
-                    if (!File.Exists(pathNoExt))
-                    {
-                        Globals.StatusBar.IsDownloading = true;
-                        WebClient client = new WebClient();
-                        using (MemoryStream stream = new MemoryStream(client.DownloadData(new Uri(url))))
+                    case true:
+                        if (!File.Exists(pathNoExt))
                         {
-                            string base64Img =
-                                Base64Converter.ImageToBase64(Image.FromStream(stream), ImageFormat.Jpeg);
-                            File.WriteAllText(pathNoExt, base64Img);
+                            Globals.StatusBar.IsDownloading = true;
+                            WebClient client = new WebClient();
+                            using (MemoryStream stream = new MemoryStream(client.DownloadData(new Uri(url))))
+                            {
+                                string base64Img =
+                                    Base64Converter.ImageToBase64(Image.FromStream(stream), ImageFormat.Jpeg);
+                                File.WriteAllText(pathNoExt, base64Img);
+                            }
                         }
-                    }
-                }
-                if (nsfw == false)
-                {
-                    if (!File.Exists(path))
-                    {
-                        Globals.StatusBar.IsDownloading = true;
-                        Thread.Sleep(1500);
-                        WebClient client = new WebClient();
-                        client.DownloadFile(new Uri(url), path);
-                    }
-                    
+                        break;
+                    case false:
+                        if (!File.Exists(path))
+                        {
+                            Globals.StatusBar.IsDownloading = true;
+                            Thread.Sleep(1500);
+                            WebClient client = new WebClient();
+                            client.DownloadFile(new Uri(url), path);
+                        }
+                        break;
                 }
                 Globals.StatusBar.IsDownloading = false;
                 await Application.Current.Dispatcher.BeginInvoke(new Action((() => BindCoverImage(url, nsfw))));
-                //BindCoverImage(url, nsfw);
             }
             catch (WebException ex)
             {
