@@ -12,7 +12,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using FirstFloor.ModernUI.Windows.Controls;
 using GalaSoft.MvvmLight.Messaging;
+using VisualNovelManagerv2.ViewModel.VisualNovels.VnMain;
 
 namespace VisualNovelManagerv2.Pages.VisualNovels
 {
@@ -25,6 +27,7 @@ namespace VisualNovelManagerv2.Pages.VisualNovels
         {
             InitializeComponent();
             Messenger.Default.Register<NotificationMessage>(this, NotificationMessageReceived);
+            Messenger.Default.Register<NotificationMessageAction<MessageBoxResult>>(this, NotificationMessageBoxResultRecieved);
         }
         private void NotificationMessageReceived(NotificationMessage msg)
         {
@@ -32,7 +35,17 @@ namespace VisualNovelManagerv2.Pages.VisualNovels
             {
                 var view2 = new VnMainCategoryOptions();
                 view2.ShowDialog();
+            }                        
+        }
+
+        private void NotificationMessageBoxResultRecieved(NotificationMessageAction<MessageBoxResult> msg)
+        {
+            if (msg.Notification == "Delete Vn Confirm")
+            {
+                var result = ModernDialog.ShowMessage("Are you SURE you want to delete this visual novel and all aassociated data?", "Delete VIsual Novel?", MessageBoxButton.YesNo);
+                msg.Execute(result);
             }
         }
+        
     }
 }

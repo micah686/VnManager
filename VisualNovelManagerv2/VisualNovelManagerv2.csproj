@@ -252,6 +252,7 @@
     <Compile Include="ViewModel\VisualNovels\VnListViewModel\Properties.cs" />
     <Compile Include="ViewModel\VisualNovels\VnListViewModel\VndbSet.cs" />
     <Compile Include="ViewModel\VisualNovels\VnListViewModel\VnListViewModel.cs" />
+    <Compile Include="ViewModel\VisualNovels\VnMainCategoryOptions\Properties.cs" />
     <Compile Include="ViewModel\VisualNovels\VnMainCategoryOptions\VnMainCategoryOptionsViewModel.cs" />
     <Compile Include="ViewModel\VisualNovels\VnMain\Binding.cs" />
     <Compile Include="ViewModel\VisualNovels\VnMain\ContextMenu.cs" />

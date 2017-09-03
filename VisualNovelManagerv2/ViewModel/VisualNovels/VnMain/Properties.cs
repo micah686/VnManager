@@ -236,6 +236,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
         public ICommand AddRemoveCategoryCommand => new GalaSoft.MvvmLight.CommandWpf.RelayCommand(LoadAddRemoveCategoryWindow);
         public ICommand AddToCategoryCommand { get; private set; }
         public ICommand RemoveFromCategoryCommand { get; private set; }
+        public ICommand DeleteVnCommand => new GalaSoft.MvvmLight.CommandWpf.RelayCommand(DeleteVn);
 
     }
 }

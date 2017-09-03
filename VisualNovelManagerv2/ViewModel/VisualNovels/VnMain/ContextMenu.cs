@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
+using GalaSoft.MvvmLight.Messaging;
 using VisualNovelManagerv2.CustomClasses;
 using VisualNovelManagerv2.EF.Context;
 using VisualNovelManagerv2.EF.Entity.VnOther;
@@ -18,7 +21,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
             var contextMenu = new ContextMenu();
             contextMenu.Items.Add(CreateAddSubMenu("Add To Category"));
             contextMenu.Items.Add(CreateRemoveSubMenu("Remove Category"));
-            contextMenu.Items.Add(new MenuItem { Header = "Item with gesture", InputGestureText = "Ctrl+C" });
+            contextMenu.Items.Add(new MenuItem { Header = "Delete Vn", Command = DeleteVnCommand });
             contextMenu.Items.Add(new MenuItem { Header = "Item, disabled", IsEnabled = false });
             contextMenu.Items.Add(new MenuItem { Header = "Item, checked", IsChecked = true });
             contextMenu.Items.Add(new MenuItem { Header = "Item, checked and disabled", IsChecked = true, IsEnabled = false });
@@ -121,6 +124,65 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
                 DebugLogging.WriteDebugLog(ex);
                 throw;
             }
+        }
+
+        private void DeleteVn()
+        {
+            var msg = new NotificationMessageAction<MessageBoxResult>(this, "Delete Vn Confirm", (r) =>
+            {
+                if (r == MessageBoxResult.Yes)
+                {
+                    // do stuff
+                    try
+                    {
+                        using (var context = new DatabaseContext())
+                        {
+                            context.VnCharacter.RemoveRange(context.VnCharacter.Where(x => x.VnId == Convert.ToUInt32(Globals.VnId)));
+                            context.VnCharacterVns.RemoveRange(context.VnCharacterVns.Where(x => x.VnId == Globals.VnId));
+                            context.VnInfo.RemoveRange(context.VnInfo.Where(x => x.VnId == Globals.VnId));
+                            context.VnInfoAnime.RemoveRange(context.VnInfoAnime.Where(x => x.VnId == Globals.VnId));
+                            context.VnInfoLinks.RemoveRange(context.VnInfoLinks.Where(x => x.VnId == Globals.VnId));
+                            context.VnInfoRelations.RemoveRange(context.VnInfoRelations.Where(x => x.VnId == Globals.VnId));
+                            context.VnInfoScreens.RemoveRange(context.VnInfoScreens.Where(x => x.VnId == Globals.VnId));
+                            context.VnInfoStaff.RemoveRange(context.VnInfoStaff.Where(x => x.VnId == Globals.VnId));
+                            context.VnInfoTags.RemoveRange(context.VnInfoTags.Where(x => x.VnId == Globals.VnId));
+                            context.VnRelease.RemoveRange(context.VnRelease.Where(x => x.VnId == Globals.VnId));
+
+                            context.VnReleaseVn.RemoveRange(context.VnReleaseVn.Where(x => x.VnId == Globals.VnId));
+                            context.VnUserData.RemoveRange(context.VnUserData.Where(x => x.VnId == Globals.VnId));
+
+                            if (Directory.Exists($@"{Globals.DirectoryPath}\Data\images\screenshots\{Globals.VnId}"))
+                            {
+                                Directory.Delete($@"{Globals.DirectoryPath}\Data\images\screenshots\{Globals.VnId}", true);
+                            }
+
+                            if (Directory.Exists($@"{Globals.DirectoryPath}\Data\images\characters\{Globals.VnId}"))
+                            {
+                                Directory.Delete($@"{Globals.DirectoryPath}\Data\images\characters\{Globals.VnId}", true);
+                            }
+
+                            if (File.Exists($@"{Globals.DirectoryPath}\Data\images\cover\{Globals.VnId}.jpg"))
+                            {
+                                File.Delete($@"{Globals.DirectoryPath}\Data\images\cover\{Globals.VnId}.jpg");
+                            }
+                            else if (File.Exists($@"{Globals.DirectoryPath}\Data\images\cover\{Globals.VnId}"))
+                            {
+                                File.Delete($@"{Globals.DirectoryPath}\Data\images\cover\{Globals.VnId}");
+                            }
+                            context.SaveChanges();
+                        }
+                        ClearCollectionsCommand.Execute(null);
+                        LoadBindVnDataCommand.Execute(null);
+                    }
+                    catch (Exception exception)
+                    {
+                        DebugLogging.WriteDebugLog(exception);
+                        throw;
+                    }
+                }
+            });
+
+            Messenger.Default.Send(msg);            
         }
 
     }
