@@ -10,6 +10,7 @@ using System.Windows.Input;
 using GalaSoft.MvvmLight;
 using VisualNovelManagerv2.CustomClasses.ConfigSettings;
 using VisualNovelManagerv2.Design.Settings;
+using VisualNovelManagerv2.ViewModel.VisualNovels;
 
 namespace VisualNovelManagerv2.ViewModel.Settings
 {
@@ -111,6 +112,11 @@ namespace VisualNovelManagerv2.ViewModel.Settings
                 MaxSpoilerLevel = SpoilerLevel
             };
             ModifyUserSettings.SaveUserSettings(userSettings);
+
+            if (SelectedNsfwEnabled == true)
+            {
+                new VnScreenshotViewModel();
+            }
         }
 
     }
