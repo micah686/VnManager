@@ -17,6 +17,9 @@ using Microsoft.Practices.ServiceLocation;
 using VisualNovelManagerv2.ViewModel.Global;
 using VisualNovelManagerv2.ViewModel.Settings;
 using VisualNovelManagerv2.ViewModel.VisualNovels;
+using VisualNovelManagerv2.ViewModel.VisualNovels.AddVn;
+using VisualNovelManagerv2.ViewModel.VisualNovels.VnListViewModel;
+using VisualNovelManagerv2.ViewModel.VisualNovels.VnMain;
 
 namespace VisualNovelManagerv2.ViewModel
 {

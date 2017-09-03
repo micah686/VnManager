@@ -13,6 +13,7 @@ using VisualNovelManagerv2.EF.Entity.VnOther;
 using VisualNovelManagerv2.EF.Entity.VnRelease;
 using VisualNovelManagerv2.EF.Entity.VnTagTrait;
 using VisualNovelManagerv2.ViewModel.VisualNovels;
+using VisualNovelManagerv2.ViewModel.VisualNovels.VnMain;
 using VndbSharp;
 using VndbSharp.Models;
 using VndbSharp.Models.Character;
