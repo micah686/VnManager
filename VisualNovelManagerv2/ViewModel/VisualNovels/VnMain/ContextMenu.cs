@@ -134,7 +134,24 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
                 {
                     // do stuff
                     try
-                    {
+                    { 
+                    
+                        if (Directory.Exists($@"{Globals.DirectoryPath}\Data\images\screenshots\{Globals.VnId}"))
+                        {
+                            Directory.Delete($@"{Globals.DirectoryPath}\Data\images\screenshots\{Globals.VnId}", true);
+                        }
+                        if (Directory.Exists($@"{Globals.DirectoryPath}\Data\images\characters\{Globals.VnId}"))
+                        {
+                            Directory.Delete($@"{Globals.DirectoryPath}\Data\images\characters\{Globals.VnId}", true);
+                        }
+                        if (File.Exists($@"{Globals.DirectoryPath}\Data\images\cover\{Globals.VnId}.jpg"))
+                        {
+                            File.Delete($@"{Globals.DirectoryPath}\Data\images\cover\{Globals.VnId}.jpg");
+                        }
+                        else if (File.Exists($@"{Globals.DirectoryPath}\Data\images\cover\{Globals.VnId}"))
+                        {
+                            File.Delete($@"{Globals.DirectoryPath}\Data\images\cover\{Globals.VnId}");
+                        }
                         using (var context = new DatabaseContext())
                         {
                             context.VnCharacter.RemoveRange(context.VnCharacter.Where(x => x.VnId == Convert.ToUInt32(Globals.VnId)));
@@ -151,27 +168,11 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
                             context.VnReleaseVn.RemoveRange(context.VnReleaseVn.Where(x => x.VnId == Globals.VnId));
                             context.VnUserData.RemoveRange(context.VnUserData.Where(x => x.VnId == Globals.VnId));
 
-                            if (Directory.Exists($@"{Globals.DirectoryPath}\Data\images\screenshots\{Globals.VnId}"))
-                            {
-                                Directory.Delete($@"{Globals.DirectoryPath}\Data\images\screenshots\{Globals.VnId}", true);
-                            }
-
-                            if (Directory.Exists($@"{Globals.DirectoryPath}\Data\images\characters\{Globals.VnId}"))
-                            {
-                                Directory.Delete($@"{Globals.DirectoryPath}\Data\images\characters\{Globals.VnId}", true);
-                            }
-
-                            if (File.Exists($@"{Globals.DirectoryPath}\Data\images\cover\{Globals.VnId}.jpg"))
-                            {
-                                File.Delete($@"{Globals.DirectoryPath}\Data\images\cover\{Globals.VnId}.jpg");
-                            }
-                            else if (File.Exists($@"{Globals.DirectoryPath}\Data\images\cover\{Globals.VnId}"))
-                            {
-                                File.Delete($@"{Globals.DirectoryPath}\Data\images\cover\{Globals.VnId}");
-                            }
+                            
                             context.SaveChanges();
                         }
-                        ClearCollectionsCommand.Execute(null);
+                        SelectedVn = string.Empty;
+                        ClearCollectionsCommand.Execute(null);                        
                         LoadBindVnDataCommand.Execute(null);
                     }
                     catch (Exception exception)

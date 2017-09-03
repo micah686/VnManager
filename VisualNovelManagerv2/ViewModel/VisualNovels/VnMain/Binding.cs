@@ -37,8 +37,16 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
                     }
                     case false:
                     {
-                        BitmapImage bImage = new BitmapImage(new Uri(path));
-                        VnMainModel.Image = bImage;
+                        
+                        BitmapImage bitmap = new BitmapImage();
+                        using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
+                        {
+                            bitmap.BeginInit();
+                            bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                            bitmap.StreamSource = stream;
+                            bitmap.EndInit();
+                        }
+                        VnMainModel.Image = bitmap;
                         break;
                     }
                 }

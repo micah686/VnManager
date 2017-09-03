@@ -148,6 +148,16 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
                         if (!string.IsNullOrEmpty(path))
                         {
                             VnCharacterModel.Image = new BitmapImage(new Uri(path));
+                            BitmapImage bitmap = new BitmapImage();
+                            using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
+                            {
+                                bitmap.BeginInit();
+                                bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                                bitmap.StreamSource = stream;
+                                bitmap.EndInit();
+                                bitmap.Freeze();
+                                VnCharacterModel.Image = bitmap;
+                            }
                         }                        
                         VnCharacterModel.Bust = character.Bust.ToString();
                         VnCharacterModel.Waist = character.Waist.ToString();

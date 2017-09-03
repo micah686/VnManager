@@ -141,10 +141,17 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                         }
                         case false when File.Exists(path):
                         {
-                            BitmapImage bImage = new BitmapImage(new Uri(path));
+                            BitmapImage bitmap = new BitmapImage();
+                            using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
+                            {
+                                bitmap.BeginInit();
+                                bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                                bitmap.StreamSource = stream;
+                                bitmap.EndInit();
+                            }
                             _screenshotCollection.Add(new ScreenshotViewModelCollection
                             {
-                                ScreenshotModel = new VnScreenshotModel {Screenshot = bImage}
+                                ScreenshotModel = new VnScreenshotModel {Screenshot = bitmap}
                             });
                             break;
                         }
@@ -163,28 +170,36 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             try
             {
                 List<Screenshot> screenshotList = LoadScreenshotList();
-                if (screenshotList[SelectedScreenIndex].IsNsfw == true)
+                if (screenshotList.Count <= 0) return;
+                switch (screenshotList[SelectedScreenIndex].IsNsfw)
                 {
-                    if (Globals.NsfwEnabled == true)
-                    {
-                        string filename = Path.GetFileNameWithoutExtension(screenshotList[SelectedScreenIndex].Url);
-                        string pathNoExt = $@"{Globals.DirectoryPath}\Data\images\screenshots\{Globals.VnId}\{filename}";
-                        BitmapImage bImage = Base64Converter.GetBitmapImageFromBytes(File.ReadAllText(pathNoExt));
-                        MainImage = bImage;
-                    }
-                    else
-                    {
-                        MainImage = new BitmapImage(new Uri($@"{Globals.DirectoryPath}\Data\res\nsfw\screenshot.jpg"));
-                    }
-                    
-                }
-                if (screenshotList[SelectedScreenIndex].IsNsfw == false)
-                {
-                    string path = $@"{Globals.DirectoryPath}\Data\images\screenshots\{Globals.VnId}\{
-                            Path.GetFileName(screenshotList[SelectedScreenIndex].Url)
-                        }";
-                    BitmapImage bImage = new BitmapImage(new Uri(path));
-                    MainImage = bImage; ;
+                    case true:
+                        if (Globals.NsfwEnabled == true)
+                        {
+                            string filename = Path.GetFileNameWithoutExtension(screenshotList[SelectedScreenIndex].Url);
+                            string pathNoExt = $@"{Globals.DirectoryPath}\Data\images\screenshots\{Globals.VnId}\{filename}";
+                            BitmapImage bImage = Base64Converter.GetBitmapImageFromBytes(File.ReadAllText(pathNoExt));
+                            MainImage = bImage;
+                        }
+                        else
+                        {
+                            MainImage = new BitmapImage(new Uri($@"{Globals.DirectoryPath}\Data\res\nsfw\screenshot.jpg"));
+                        }
+                        break;
+                    case false:
+                        string path = $@"{Globals.DirectoryPath}\Data\images\screenshots\{Globals.VnId}\{Path.GetFileName(screenshotList[SelectedScreenIndex].Url)}";
+                        BitmapImage bitmap = new BitmapImage();
+                        using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
+                        {
+                            bitmap.BeginInit();
+                            bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                            bitmap.StreamSource = stream;
+                            bitmap.EndInit();
+                            bitmap.Freeze();
+                            MainImage = bitmap;
+                        }
+
+                        break;
                 }
             }
             catch (Exception ex)
@@ -216,72 +231,73 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                     string pathThumb = $@"{Globals.DirectoryPath}\Data\images\screenshots\{Globals.VnId}\thumbs\{Path.GetFileName(screenshot.Url)}";
                     try
                     {
-                        if (screenshot.IsNsfw == true)
+                        switch (screenshot.IsNsfw)
                         {
-                            if (!File.Exists(pathNoExt))
-                            {
-                                Globals.StatusBar.IsDownloading = true;
-                                WebClient client = new WebClient();
-                                using (MemoryStream stream = new MemoryStream(client.DownloadData(new Uri(screenshot.Url))))
+                            case true:
+                                if (!File.Exists(pathNoExt))
                                 {
-
-                                    string base64Img = Base64Converter.ImageToBase64(Image.FromStream(stream), ImageFormat.Jpeg);
-                                    File.WriteAllText(pathNoExt, base64Img);                                    
-                                }
-                                client.Dispose();
-                            }
-                            if (!File.Exists(pathNoExtThumb))
-                            {
-                                Globals.StatusBar.IsDownloading = true;
-                                WebClient client = new WebClient();
-                                using (MemoryStream stream = new MemoryStream(client.DownloadData(new Uri(screenshot.Url))))
-                                {
-                                    //write thumbnail
-                                    while (client.IsBusy)
+                                    Globals.StatusBar.IsDownloading = true;
+                                    WebClient client = new WebClient();
+                                    using (MemoryStream stream = new MemoryStream(client.DownloadData(new Uri(screenshot.Url))))
                                     {
-                                        Thread.Sleep(100);
+
+                                        string base64Img = Base64Converter.ImageToBase64(Image.FromStream(stream), ImageFormat.Jpeg);
+                                        File.WriteAllText(pathNoExt, base64Img);                                    
                                     }
-
-                                    var bitmap = new BitmapImage();
-                                    bitmap.BeginInit();
-                                    bitmap.StreamSource = stream;
-                                    bitmap.CacheOption = BitmapCacheOption.OnLoad;
-                                    bitmap.EndInit();
-                                    bitmap.Freeze();
-                                    Size thumbnailSize = GetThumbnailSize(bitmap);
-
-                                    Image thumb = Image.FromStream(stream).GetThumbnailImage(thumbnailSize.Width, thumbnailSize.Height, () => false, IntPtr.Zero);
-                                    if (!File.Exists($@"{Globals.DirectoryPath}\Data\images\screenshots\{Globals.VnId}\thumbs\{Path.GetFileNameWithoutExtension(screenshot.Url)}"))
+                                    client.Dispose();
+                                }
+                                if (!File.Exists(pathNoExtThumb))
+                                {
+                                    Globals.StatusBar.IsDownloading = true;
+                                    WebClient client = new WebClient();
+                                    using (MemoryStream stream = new MemoryStream(client.DownloadData(new Uri(screenshot.Url))))
                                     {
-                                        File.WriteAllText(pathNoExtThumb, Base64Converter.ImageToBase64(thumb, ImageFormat.Jpeg));
+                                        //write thumbnail
+                                        while (client.IsBusy)
+                                        {
+                                            Thread.Sleep(100);
+                                        }
+
+                                        var bitmap = new BitmapImage();
+                                        bitmap.BeginInit();
+                                        bitmap.StreamSource = stream;
+                                        bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                                        bitmap.EndInit();
+                                        bitmap.Freeze();
+                                        Size thumbnailSize = GetThumbnailSize(bitmap);
+
+                                        Image thumb = Image.FromStream(stream).GetThumbnailImage(thumbnailSize.Width, thumbnailSize.Height, () => false, IntPtr.Zero);
+                                        if (!File.Exists($@"{Globals.DirectoryPath}\Data\images\screenshots\{Globals.VnId}\thumbs\{Path.GetFileNameWithoutExtension(screenshot.Url)}"))
+                                        {
+                                            File.WriteAllText(pathNoExtThumb, Base64Converter.ImageToBase64(thumb, ImageFormat.Jpeg));
+                                        }
+                                        thumb.Dispose();
+                                    }
+                                    client.Dispose();
+                                }
+                                Globals.StatusBar.IsDownloading = false;
+                                break;
+                            case false:
+                                if (!File.Exists(path))
+                                {
+                                    Globals.StatusBar.IsDownloading = true;
+                                    WebClient client = new WebClient();
+                                    client.DownloadFile(new Uri(screenshot.Url), path);
+                                    client.Dispose();                               
+                                }
+                                if (!File.Exists(pathThumb))
+                                {
+                                    Size thumnailSize = GetThumbnailSize(new BitmapImage(new Uri(path)));
+                                    Image thumb = Image.FromFile(path).GetThumbnailImage(thumnailSize.Width, thumnailSize.Height, () => false,IntPtr.Zero);
+
+                                    if (!File.Exists($@"{Globals.DirectoryPath}\Data\images\screenshots\{Globals.VnId}\thumbs\{Path.GetFileName(screenshot.Url)}"))
+                                    {
+                                        thumb.Save($@"{Globals.DirectoryPath}\Data\images\screenshots\{Globals.VnId}\thumbs\{Path.GetFileName(screenshot.Url)}");
                                     }
                                     thumb.Dispose();
                                 }
-                                client.Dispose();
-                            }
-                            Globals.StatusBar.IsDownloading = false;
-                        }
-                        if (screenshot.IsNsfw == false)
-                        {
-                            if (!File.Exists(path))
-                            {
-                                Globals.StatusBar.IsDownloading = true;
-                                WebClient client = new WebClient();
-                                client.DownloadFile(new Uri(screenshot.Url), path);
-                                client.Dispose();                               
-                            }
-                            if (!File.Exists(pathThumb))
-                            {
-                                Size thumnailSize = GetThumbnailSize(new BitmapImage(new Uri(path)));
-                                Image thumb = Image.FromFile(path).GetThumbnailImage(thumnailSize.Width, thumnailSize.Height, () => false,IntPtr.Zero);
-
-                                if (!File.Exists($@"{Globals.DirectoryPath}\Data\images\screenshots\{Globals.VnId}\thumbs\{Path.GetFileName(screenshot.Url)}"))
-                                {
-                                    thumb.Save($@"{Globals.DirectoryPath}\Data\images\screenshots\{Globals.VnId}\thumbs\{Path.GetFileName(screenshot.Url)}");
-                                }
-                                thumb.Dispose();
-                            }
-                            Globals.StatusBar.IsDownloading = false;
+                                Globals.StatusBar.IsDownloading = false;
+                                break;
                         }
                     }
                     catch (System.Net.WebException ex)
