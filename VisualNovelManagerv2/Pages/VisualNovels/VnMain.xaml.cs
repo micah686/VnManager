@@ -42,7 +42,7 @@ namespace VisualNovelManagerv2.Pages.VisualNovels
         {
             if (msg.Notification == "Delete Vn Confirm")
             {
-                var result = ModernDialog.ShowMessage("Are you SURE you want to delete this visual novel and all aassociated data?", "Delete VIsual Novel?", MessageBoxButton.YesNo);
+                var result = ModernDialog.ShowMessage("Are you SURE you want to delete this visual novel and all associated data?", "Delete Visual Novel?", MessageBoxButton.YesNo);
                 msg.Execute(result);
             }
         }

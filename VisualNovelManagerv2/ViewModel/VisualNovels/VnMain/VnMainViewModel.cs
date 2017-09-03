@@ -21,6 +21,7 @@ using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
 using GalaSoft.MvvmLight.Messaging;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Practices.ServiceLocation;
 using VisualNovelManagerv2.Converters;
 using VisualNovelManagerv2.CustomClasses;
 using VisualNovelManagerv2.Design.VisualNovel;
@@ -45,7 +46,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
         public VnMainViewModel()
         {
             LoadBindVnDataCommand = new RelayCommand(LoadCategories);
-            ClearCollectionsCommand = new RelayCommand(ClearCollections);
+            ClearCollectionsCommand = new RelayCommand(ClearVnData);
             AddToCategoryCommand = new RelayCommand<string>(AddToCategory);
             RemoveFromCategoryCommand = new RelayCommand<string>(RemoveFromCategory);
             //_vnMainModel = new VnMainModel();
@@ -55,7 +56,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
 
         
 
-        private void ClearCollections()
+        private void ClearVnData()
         {
             VnNameCollection.Clear();
             LanguageCollection.Clear();
@@ -63,6 +64,21 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
             VnInfoRelation.Clear();
             VnInfoTagCollection.Clear();
             VnInfoAnimeCollection.Clear();
+            PlatformCollection.Clear();
+            VnMainModel.Name = String.Empty;
+            VnMainModel.Original = String.Empty;
+            VnMainModel.PlayTime = String.Empty;
+            VnMainModel.LastPlayed = String.Empty;
+            VnMainModel.Image = null;
+            VnMainModel.Aliases = String.Empty;
+            VnMainModel.Description = new FlowDocument();
+            VnMainModel.Released = String.Empty;
+            VnMainModel.Length = String.Empty;
+            VnMainModel.VnIcon = null;
+            VnMainModel.Popularity = 0;
+            VnMainModel.Rating = 0;
+            VnMainModel.Links = string.Empty;
+
         }
 
         private void LoadCategories()
@@ -160,7 +176,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
         private void UpdateViews()
         {
             //new VnCharacterViewModel();
-            //new VnScreenshotViewModel();
+            new VnScreenshotViewModel();
             //new VnReleaseViewModel();
         }
 
