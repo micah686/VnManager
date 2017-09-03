@@ -85,7 +85,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
                     }
                     string path = $@"{Globals.DirectoryPath}\Data\images\characters\{Globals.VnId}\{Path.GetFileName(character)}";
 
-                    if (!File.Exists(path))
+                    if (!File.Exists(path) && !string.IsNullOrEmpty(character))
                     {
                         WebClient client = new WebClient();
                         client.DownloadFile(new Uri(character), path);
@@ -145,7 +145,10 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
                                 : character.Aliases;
 
                         string path = $@"{Globals.DirectoryPath}\Data\images\characters\{Globals.VnId}\{Path.GetFileName(character.ImageLink)}";
-                        VnCharacterModel.Image = new BitmapImage(new Uri(path));
+                        if (!string.IsNullOrEmpty(path))
+                        {
+                            VnCharacterModel.Image = new BitmapImage(new Uri(path));
+                        }                        
                         VnCharacterModel.Bust = character.Bust.ToString();
                         VnCharacterModel.Waist = character.Waist.ToString();
                         VnCharacterModel.Hip = character.Hip.ToString();
