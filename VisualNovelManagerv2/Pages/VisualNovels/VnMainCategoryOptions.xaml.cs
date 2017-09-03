@@ -15,6 +15,7 @@ using System.Windows.Shapes;
 using FirstFloor.ModernUI.Windows.Controls;
 using GalaSoft.MvvmLight.Ioc;
 using VisualNovelManagerv2.ViewModel.VisualNovels;
+using VisualNovelManagerv2.ViewModel.VisualNovels.VnMainCategoryOptions;
 
 namespace VisualNovelManagerv2.Pages.VisualNovels
 {

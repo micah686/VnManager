@@ -2,18 +2,15 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using GalaSoft.MvvmLight;
 using MvvmValidation;
 using VisualNovelManagerv2.CustomClasses;
 using VisualNovelManagerv2.EF.Context;
 using VisualNovelManagerv2.EF.Entity.VnOther;
 using VisualNovelManagerv2.Infrastructure;
-using ValidationResult = System.Windows.Controls.ValidationResult;
 
-namespace VisualNovelManagerv2.ViewModel.VisualNovels
+namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMainCategoryOptions
 {
     /// <summary>
     ///Interface that implements the Close method

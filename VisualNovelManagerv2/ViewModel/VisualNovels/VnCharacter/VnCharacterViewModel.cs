@@ -1,159 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Windows.Input;
-using GalaSoft.MvvmLight;
-using VisualNovelManagerv2.Design.VisualNovel;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Windows.Documents;
+using System.Windows.Input;
 using System.Windows.Media.Imaging;
+using GalaSoft.MvvmLight;
 using VisualNovelManagerv2.Converters;
 using VisualNovelManagerv2.CustomClasses;
+using VisualNovelManagerv2.Design.VisualNovel;
 using VisualNovelManagerv2.EF.Context;
 using VisualNovelManagerv2.EF.Entity.VnCharacter;
 using VisualNovelManagerv2.EF.Entity.VnTagTrait;
 
 // ReSharper disable ExplicitCallerInfoArgument
 
-namespace VisualNovelManagerv2.ViewModel.VisualNovels
+namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
 {
-    public class VnCharacterViewModel: ViewModelBase
-    {
-
-        public ICommand LoadCharacterCommand => new GalaSoft.MvvmLight.CommandWpf.RelayCommand(LoadCharacterNameList);
-
-        #region ObservableCollections
-
-        private static ObservableCollection<string> _characterNameCollection = new ObservableCollection<string>();
-        public ObservableCollection<string> CharacterNameCollection
-        {
-            get { return _characterNameCollection; }
-            set
-            {
-                _characterNameCollection = value;
-                RaisePropertyChanged(nameof(CharacterNameCollection));
-            }
-        }
-
-        private static ObservableCollection<string> _traitsCollection = new ObservableCollection<string>();
-        public ObservableCollection<string> TraitsCollection
-        {
-            get { return _traitsCollection; }
-            set
-            {
-                _traitsCollection = value;
-                RaisePropertyChanged(nameof(TraitsCollection));
-            }
-        }
-
-
-        #endregion
-
+    public partial class VnCharacterViewModel: ViewModelBase
+    {                
         public VnCharacterViewModel()
         {            
             LoadCharacterNameList();
         }
-
-        #region Properties
-
-        private static VnCharacterModel _vnCharacterModel = new VnCharacterModel();
-        public VnCharacterModel VnCharacterModel
-        {
-            get { return _vnCharacterModel; }
-            set
-            {
-                _vnCharacterModel = value;
-                RaisePropertyChanged(nameof(VnCharacterModel));
-            }
-        }
-
-        private double _maxWidth;
-        public double MaxWidth
-        {
-            get { return _maxWidth; }
-            set
-            {
-                _maxWidth = value;
-                RaisePropertyChanged(nameof(MaxWidth));
-            }
-        }
-
-        private int _selectedCharacterIndex;
-        public int SelectedCharacterIndex
-        {
-            get { return _selectedCharacterIndex; }
-            set
-            {
-                _selectedCharacterIndex = value;
-                RaisePropertyChanged(nameof(SelectedCharacterIndex));
-            }
-        }
-
-        private string _selectedCharacter;
-        public string SelectedCharacter
-        {
-            get { return _selectedCharacter; }
-            set
-            {
-                _selectedCharacter = value;
-                RaisePropertyChanged(nameof(SelectedCharacter));
-                LoadCharacterData();
-            }
-        }
-
-
-        private int _selectedTraitIndex;
-        public int SelectedTraitIndex
-        {
-            get { return _selectedTraitIndex; }
-            set
-            {
-                _selectedTraitIndex = value;
-                RaisePropertyChanged(nameof(SelectedTraitIndex));
-            }
-        }
-
-        private string _selectedTrait;
-        public string SelectedTrait
-        {
-            get { return _selectedTrait; }
-            set
-            {
-                _selectedTrait = value;
-                BindTraitDescription();
-                RaisePropertyChanged(nameof(SelectedTrait));
-                
-            }
-        }
-
-        private FlowDocument _traitDescription;
-        public FlowDocument TraitDescription
-        {
-            get { return _traitDescription; }
-            set
-            {
-                _traitDescription = value;
-                RaisePropertyChanged(nameof(TraitDescription));
-            }
-        }
-
-
-        private string _genderColor;
-        public string GenderColor
-        {
-            get { return _genderColor; }
-            set
-            {
-                _genderColor = value;
-                RaisePropertyChanged(nameof(GenderColor));
-            }
-        }
-
-        #endregion
-
-
+        
         private void LoadCharacterNameList()
         {
             CharacterNameCollection.Clear();
@@ -161,7 +33,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             {
                 using (var db = new DatabaseContext())
                 {
-                    foreach (VnCharacter character in db.Set<VnCharacter>().Where(x => x.VnId == Globals.VnId))
+                    foreach (EF.Entity.VnCharacter.VnCharacter character in db.Set<EF.Entity.VnCharacter.VnCharacter>().Where(x => x.VnId == Globals.VnId))
                     {
                         _characterNameCollection.Add(character.Name);
                     }
@@ -184,7 +56,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             {
                 using (var db = new DatabaseContext())
                 {
-                    foreach (var character in db.Set<VnCharacter>().Where(x => x.VnId == Globals.VnId).Select(p => p.ImageLink))
+                    foreach (var character in db.Set<EF.Entity.VnCharacter.VnCharacter>().Where(x => x.VnId == Globals.VnId).Select(p => p.ImageLink))
                     {
                         characterUrlList.Add(character);
                     }
@@ -257,7 +129,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
                 using (var db = new DatabaseContext())
                 {
-                    foreach (var character in db.Set<VnCharacter>().Where(n => n.Name == SelectedCharacter).Where(i => i.VnId == Globals.VnId))
+                    foreach (var character in db.Set<EF.Entity.VnCharacter.VnCharacter>().Where(n => n.Name == SelectedCharacter).Where(i => i.VnId == Globals.VnId))
                     {
                         VnCharacterModel.Name = character.Name;
                         VnCharacterModel.OriginalName = character.Original;

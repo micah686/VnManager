@@ -247,16 +247,18 @@
     <Compile Include="ViewModel\VisualNovels\AddVn\AddVnViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Compile Include="ViewModel\VisualNovels\AddVn\Properties.cs" />
-    <Compile Include="ViewModel\VisualNovels\VnCharacterViewModel.cs" />
+    <Compile Include="ViewModel\VisualNovels\VnCharacter\Properties.cs" />
+    <Compile Include="ViewModel\VisualNovels\VnCharacter\VnCharacterViewModel.cs" />
     <Compile Include="ViewModel\VisualNovels\VnListViewModel\Properties.cs" />
     <Compile Include="ViewModel\VisualNovels\VnListViewModel\VndbSet.cs" />
     <Compile Include="ViewModel\VisualNovels\VnListViewModel\VnListViewModel.cs" />
-    <Compile Include="ViewModel\VisualNovels\VnMainCategoryOptionsViewModel.cs" />
+    <Compile Include="ViewModel\VisualNovels\VnMainCategoryOptions\VnMainCategoryOptionsViewModel.cs" />
     <Compile Include="ViewModel\VisualNovels\VnMain\Binding.cs" />
     <Compile Include="ViewModel\VisualNovels\VnMain\ContextMenu.cs" />
     <Compile Include="ViewModel\VisualNovels\VnMain\Properties.cs" />
     <Compile Include="ViewModel\VisualNovels\VnMain\VnMainViewModel.cs" />
-    <Compile Include="ViewModel\VisualNovels\VnReleaseViewModel.cs" />
+    <Compile Include="ViewModel\VisualNovels\VnRelease\Properties.cs" />
+    <Compile Include="ViewModel\VisualNovels\VnRelease\VnReleaseViewModel.cs" />
     <Compile Include="ViewModel\VisualNovels\VnScreenshotViewModel.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

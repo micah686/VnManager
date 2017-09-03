@@ -18,8 +18,11 @@ using VisualNovelManagerv2.ViewModel.Global;
 using VisualNovelManagerv2.ViewModel.Settings;
 using VisualNovelManagerv2.ViewModel.VisualNovels;
 using VisualNovelManagerv2.ViewModel.VisualNovels.AddVn;
+using VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter;
 using VisualNovelManagerv2.ViewModel.VisualNovels.VnListViewModel;
 using VisualNovelManagerv2.ViewModel.VisualNovels.VnMain;
+using VisualNovelManagerv2.ViewModel.VisualNovels.VnMainCategoryOptions;
+using VisualNovelManagerv2.ViewModel.VisualNovels.VnRelease;
 
 namespace VisualNovelManagerv2.ViewModel
 {
