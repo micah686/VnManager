@@ -171,6 +171,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
                             
                             context.SaveChanges();
                         }
+                        Globals.VnId = 0;
                         SelectedVn = string.Empty;
                         ClearCollectionsCommand.Execute(null);                        
                         LoadBindVnDataCommand.Execute(null);

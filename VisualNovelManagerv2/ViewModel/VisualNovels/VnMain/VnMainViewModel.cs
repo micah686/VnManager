@@ -28,6 +28,8 @@ using VisualNovelManagerv2.EF.Context;
 using VisualNovelManagerv2.EF.Entity.VnInfo;
 using VisualNovelManagerv2.EF.Entity.VnOther;
 using VisualNovelManagerv2.EF.Entity.VnTagTrait;
+using VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter;
+using VisualNovelManagerv2.ViewModel.VisualNovels.VnRelease;
 using Image = System.Drawing.Image;
 using RelayCommand = GalaSoft.MvvmLight.Command.RelayCommand;
 
@@ -136,9 +138,13 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
                         db.Dispose();
                     }
 
-                    await Task.Run((BindVnData));
-                    await Task.Run((() => VnScreenshotViewModel.DownloadScreenshots()));
-                    UpdateViews();
+                    if (Globals.VnId > 0)
+                    {
+                        await Task.Run((BindVnData));
+                        await Task.Run((() => VnScreenshotViewModel.DownloadScreenshots()));
+                        UpdateViews();
+                    }
+                    
                 }
                 catch (Exception ex)
                 {

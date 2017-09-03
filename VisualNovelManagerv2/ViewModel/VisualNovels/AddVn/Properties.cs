@@ -185,8 +185,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
         private VndbResponse<VisualNovel> _vnNameList;
         private readonly AddVnViewModelService _exeService;
         private readonly AddVnViewModelService _iconService;
-        //TODO:Deprecated, switch to using xaml svg
-        internal BitmapImage SearchImage => new BitmapImage(new Uri($@"{Globals.DirectoryPath}\Data\res\icons\assorted\search.png"));
         public RelayCommand GetFile { get; }
         public RelayCommand GetIcon { get; }
         public ObservableCollection<string> SuggestedNamesCollection { get; set; }

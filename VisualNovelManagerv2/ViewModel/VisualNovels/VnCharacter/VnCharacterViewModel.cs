@@ -147,7 +147,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
                         string path = $@"{Globals.DirectoryPath}\Data\images\characters\{Globals.VnId}\{Path.GetFileName(character.ImageLink)}";
                         if (!string.IsNullOrEmpty(path))
                         {
-                            VnCharacterModel.Image = new BitmapImage(new Uri(path));
                             BitmapImage bitmap = new BitmapImage();
                             using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
                             {
