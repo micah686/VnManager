@@ -6,6 +6,8 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
+using GalaSoft.MvvmLight.CommandWpf;
 using Microsoft.Win32;
 using VisualNovelManagerv2.CustomClasses;
 using VisualNovelManagerv2.CustomClasses.ConfigSettings;
@@ -16,7 +18,12 @@ namespace VisualNovelManagerv2
 {
     public class StartupValidate
     {
-        public void CreateFolders()
+        public ICommand CreateFoldersCommand => new RelayCommand(CreateFolders);
+        public ICommand CheckForDatabaseCommand => new RelayCommand(CheckForDatabase);
+        public ICommand CheckXmlConfigCommand => new RelayCommand(CheckXmlConfig);
+        public ICommand LoadXmlSettingsCommand => new RelayCommand(LoadXmlSettings);
+
+        private void CreateFolders()
         {
             Directory.CreateDirectory(Globals.DirectoryPath + @"\Data\config");
             Directory.CreateDirectory(Globals.DirectoryPath + @"\Data\Database");
@@ -32,7 +39,7 @@ namespace VisualNovelManagerv2
             Directory.CreateDirectory(Globals.DirectoryPath + @"\Data\res\icons\statusbar");
         }
 
-        public void CheckForDatabase()
+        private void CheckForDatabase()
         {
             string dbPath =
                 Path.Combine(Globals.DirectoryPath + @"\Data\Database\Database.db");
@@ -89,7 +96,7 @@ namespace VisualNovelManagerv2
             }
         }
 
-        public void CheckXmlConfig()
+        private void CheckXmlConfig()
         {
             UserSettings userSettings = new UserSettings();
             if (!File.Exists(Globals.DirectoryPath + @"/Data/config/config.xml"))
@@ -106,7 +113,7 @@ namespace VisualNovelManagerv2
             ModifyUserSettings.SaveUserSettings(userSettings);            
         }
 
-        public void LoadXmlSettings()
+        private void LoadXmlSettings()
         {
             Globals.NsfwEnabled = ModifyUserSettings.LoadUserSettings().NsfwEnabled;
             Globals.MaxSpoiler = ModifyUserSettings.LoadUserSettings().MaxSpoilerLevel;

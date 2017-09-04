@@ -18,10 +18,10 @@ namespace VisualNovelManagerv2
             base.OnStartup(e);
 			//TODO:Perhaps use an ICommand, and make these private?
             StartupValidate sv = new StartupValidate();
-            sv.CreateFolders();
-            sv.CheckForDatabase();
-            sv.CheckXmlConfig();
-            sv.LoadXmlSettings();
+            sv.CreateFoldersCommand.Execute(null);
+            sv.CheckForDatabaseCommand.Execute(null);
+            sv.CheckXmlConfigCommand.Execute(null);
+            sv.LoadXmlSettingsCommand.Execute(null);
         }
     }
 
