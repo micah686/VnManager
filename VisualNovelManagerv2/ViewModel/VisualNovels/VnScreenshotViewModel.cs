@@ -9,6 +9,8 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading;
+using System.Windows.Input;
+using GalaSoft.MvvmLight.CommandWpf;
 using VisualNovelManagerv2.Converters;
 using VisualNovelManagerv2.CustomClasses;
 using VisualNovelManagerv2.Design.VisualNovel;
@@ -22,9 +24,10 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
     {       
         public VnScreenshotViewModel()
         {
-            BindScreenshots();
         }
 
+        public ICommand BindScreenshotsCommand => new RelayCommand(BindScreenshots);
+        public ICommand DownloadScreenshotsCommand => new RelayCommand(DownloadScreenshots);
         #region StaticProperties
 
         #region ScreenshotCollection
@@ -209,7 +212,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             }            
         }
 
-        public static void DownloadScreenshots()
+        private void DownloadScreenshots()
         {
             try
             {
@@ -287,7 +290,16 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                                 }
                                 if (!File.Exists(pathThumb))
                                 {
-                                    Size thumnailSize = GetThumbnailSize(new BitmapImage(new Uri(path)));
+                                    BitmapImage bitmap = new BitmapImage();
+                                    using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
+                                    {
+                                        bitmap.BeginInit();
+                                        bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                                        bitmap.StreamSource = stream;
+                                        bitmap.EndInit();
+                                        bitmap.Freeze();
+                                    }
+                                    Size thumnailSize = GetThumbnailSize(bitmap);
                                     Image thumb = Image.FromFile(path).GetThumbnailImage(thumnailSize.Width, thumnailSize.Height, () => false,IntPtr.Zero);
 
                                     if (!File.Exists($@"{Globals.DirectoryPath}\Data\images\screenshots\{Globals.VnId}\thumbs\{Path.GetFileName(screenshot.Url)}"))

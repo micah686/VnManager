@@ -157,7 +157,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
                     if (Globals.VnId > 0)
                     {
                         await Task.Run((BindVnData));
-                        await Task.Run((() => VnScreenshotViewModel.DownloadScreenshots()));
                         UpdateViews();
                     }
                     
@@ -173,11 +172,13 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
 
         
 
-        private void UpdateViews()
+        private async void UpdateViews()
         {
-            //new VnCharacterViewModel();
-            new VnScreenshotViewModel();
-            //new VnReleaseViewModel();
+            new VnCharacterViewModel();
+            new VnReleaseViewModel();
+            var ssvm = ServiceLocator.Current.GetInstance<VnScreenshotViewModel>();            
+            await Task.Run((() => ssvm.DownloadScreenshotsCommand.Execute(null)));
+            ssvm.BindScreenshotsCommand.Execute(null);
         }
 
         
