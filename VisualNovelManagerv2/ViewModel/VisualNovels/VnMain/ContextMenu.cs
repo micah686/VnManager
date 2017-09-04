@@ -178,6 +178,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
                     }
                     catch (Exception exception)
                     {
+                        //TODO: Figure out why in the same session that you add a game and it downloads screenshots, it prevents you from deleting the files
                         DebugLogging.WriteDebugLog(exception);
                         throw;
                     }

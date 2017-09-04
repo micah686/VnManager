@@ -16,11 +16,12 @@ namespace VisualNovelManagerv2
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-
+			//TODO:Perhaps use an ICommand, and make these private?
             StartupValidate sv = new StartupValidate();
             sv.CreateFolders();
             sv.CheckForDatabase();
             sv.CheckXmlConfig();
+            sv.LoadXmlSettings();
         }
     }
 

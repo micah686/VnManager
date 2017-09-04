@@ -103,7 +103,13 @@ namespace VisualNovelManagerv2
             File.Delete(Globals.DirectoryPath + @"/Data/config/config.xml");            
             userSettings.NsfwEnabled = false;
             userSettings.MaxSpoilerLevel = 0;
-            ModifyUserSettings.SaveUserSettings(userSettings);
+            ModifyUserSettings.SaveUserSettings(userSettings);            
+        }
+
+        public void LoadXmlSettings()
+        {
+            Globals.NsfwEnabled = ModifyUserSettings.LoadUserSettings().NsfwEnabled;
+            Globals.MaxSpoiler = ModifyUserSettings.LoadUserSettings().MaxSpoilerLevel;
         }
 
     }
