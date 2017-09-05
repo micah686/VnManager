@@ -299,6 +299,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
                     if (dirpath != null) Directory.SetCurrentDirectory(dirpath);
                     process = Process.Start(exepath);
                     _stopwatch.Start();
+                    IsPlayEnabled = false;
                 }
             }
             Directory.SetCurrentDirectory(Directory.GetCurrentDirectory());
@@ -376,7 +377,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
                 DebugLogging.WriteDebugLog(ex);
                 throw;
             }
-            
+            IsPlayEnabled = true;
         }
     }
 

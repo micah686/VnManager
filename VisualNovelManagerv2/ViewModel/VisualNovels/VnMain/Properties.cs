@@ -228,6 +228,19 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
         }
         #endregion
 
+        #region IsPlayEnabled
+        private bool _isPlayEnabled = true;
+        public bool IsPlayEnabled
+        {
+            get { return _isPlayEnabled; }
+            set
+            {
+                _isPlayEnabled = value;
+                RaisePropertyChanged(nameof(IsPlayEnabled));
+            }
+        }
+        #endregion
+
         public static bool IsDownloading = false;
         private readonly Stopwatch _stopwatch = new Stopwatch();
 

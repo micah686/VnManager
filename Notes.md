@@ -7,7 +7,7 @@ These are just personal reminders for me to keep track of what I need to fix/add
 - [ ] add a bool to prevent users from adding a gaame while another is processing.
 - [X]  reload screenshot viewmodel after changing nsfw status
 - [ ] Set up some sort of wait timer/pause bool to prevent trying to load another Vn once one is selected(for use when someone holds down, aand it tries to load a large amount)
-- [ ] Prevent user from playing a game while playing another one
+- [X] Prevent user from playing a game while playing another one
 - [ ] Replace FlowDocument with a BBCodeBlock, and have a converter to convert the vndb local URLs to standard BBCode URLs
 
 
