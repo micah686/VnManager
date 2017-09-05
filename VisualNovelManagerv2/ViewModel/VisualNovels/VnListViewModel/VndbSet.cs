@@ -25,7 +25,12 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnListViewModel
             try
             {
                 bool didErrorOccur = false;
+                IsUserInputEnabled = false;
                 if (VoteDropDownSelected == "No Change")
+                {
+                    return;
+                }
+                if (_vnId == 0)
                 {
                     return;
                 }
@@ -60,6 +65,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnListViewModel
 
                     }
                 }
+                IsUserInputEnabled = true;
             }
             catch (Exception exception)
             {
@@ -73,7 +79,12 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnListViewModel
             try
             {
                 bool didErrorOccur = false;
+                IsUserInputEnabled = false;
                 if (VnListStatus == "No Change")
+                {
+                    return;
+                }
+                if (_vnId == 0)
                 {
                     return;
                 }
@@ -121,6 +132,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnListViewModel
                         }
                     }
                 }
+                IsUserInputEnabled = true;
             }
             catch (Exception exception)
             {
@@ -134,7 +146,12 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnListViewModel
             try
             {
                 bool didErrorOccur = false;
+                IsUserInputEnabled = false;
                 if (WishlistPriority == "No Change")
+                {
+                    return;
+                }
+                if (_vnId == 0)
                 {
                     return;
                 }
@@ -175,6 +192,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnListViewModel
                         }
                     }
                 }
+                IsUserInputEnabled = true;
             }
             catch (Exception exception)
             {

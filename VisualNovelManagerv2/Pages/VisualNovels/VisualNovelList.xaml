@@ -33,7 +33,7 @@
                         <RowDefinition Height="4.5*"/>
                     </Grid.RowDefinitions>
                     <ListBox Grid.Row="0"  Name="NoteList" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Visible" Margin="0,0,5,5" MaxWidth="250"
-                             ItemsSource="{Binding UserListCollection}" SelectedIndex="{Binding SelectedIndex}"  SelectedItem="{Binding SelectedItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                             ItemsSource="{Binding UserListCollection}"  SelectedItem="{Binding SelectedItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                     </ListBox>
                     <Grid Grid.Row="1" ShowGridLines="True" Margin="0,5,5,5">
                         <Image HorizontalAlignment="Left"  VerticalAlignment="Top" Stretch="Uniform" 
@@ -68,7 +68,7 @@
                     </Grid.RowDefinitions>
 
                     <TextBlock Grid.Row="0" Text="Visual Novel List" Style="{StaticResource Heading2}" Margin="0,0,0,8" />
-                    <mui:BBCodeBlock Grid.Row="1" BBCode="Enter your Vndb.org login to view and manage your Visual Novel List" Margin="0,0,0,16"/>
+                    <mui:BBCodeBlock Grid.Row="1" BBCode="Enter your [url=http:\\www.vndb.org]Vndb.org[/url] login to view and manage your Visual Novel List" Margin="0,0,0,16"/>
 
                     <Grid Grid.Row="2">
                         <Grid.Resources>
@@ -186,7 +186,8 @@
                         <StackPanel>
                             <Grid HorizontalAlignment="Left">
                                 <TextBlock Text="Votelist" Style="{StaticResource Emphasis}"/>
-                                <ComboBox Grid.Row="0" Grid.Column="0" Margin="0,20,0,0" MinWidth="100" ItemsSource="{Binding VoteCollection}" SelectedItem="{Binding VoteDropDownSelected}"/>
+                                <ComboBox Grid.Row="0" Grid.Column="0" Margin="0,20,0,0" MinWidth="100" ItemsSource="{Binding VoteCollection}" SelectedItem="{Binding VoteDropDownSelected}"
+                                          IsEnabled="{Binding IsUserInputEnabled}" SelectedIndex="0"/>
                             </Grid>
                             
                             <Grid>
@@ -199,7 +200,7 @@
                                 </Grid.RowDefinitions>
                                 <Label Grid.Row="0" Grid.Column="0" Content="Vote:" Margin="0,10,0,0"/>
                                 <TextBox customClasses:TextBoxService.IsVoteOnly="True" Grid.Row="0" Grid.Column="1" Background="#333" BorderThickness="0" Foreground="#DCDCDC" Margin="10,10,0,0" Width="70" MaxLength="3" ContextMenu="{x:Null}"
-                                     Text="{Binding VotelistVote, Mode=TwoWay, ValidatesOnDataErrors=True}"/>
+                                     Text="{Binding VotelistVote, Mode=TwoWay, ValidatesOnDataErrors=True}" IsEnabled="{Binding IsUserInputEnabled}"/>
                             </Grid>
                         </StackPanel>
                     </Grid>
@@ -218,7 +219,8 @@
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
                                 <Label Grid.Row="0" Grid.Column="0" Content="Status:" Margin="0,10,0,0"/>
-                                <ComboBox Grid.Row="0" Grid.Column="1" Margin="10,7,0,0" Width="100" ItemsSource="{Binding VnListCollection}" SelectedItem="{Binding VnListStatus}"/>
+                                <ComboBox Grid.Row="0" Grid.Column="1" Margin="10,7,0,0" Width="100" ItemsSource="{Binding VnListCollection}" SelectedItem="{Binding VnListStatus}" 
+                                          IsEnabled="{Binding IsUserInputEnabled}" SelectedIndex="0"/>
                             </Grid>
                             <Grid Margin="0,5,0,0">
                                 <Grid.ColumnDefinitions>
@@ -230,10 +232,10 @@
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
-                                <CheckBox Grid.Row="0" Grid.Column="0" Content="Edit Note" Margin="0,10,0,0" IsChecked="{Binding NoteEnabled}"/>
+                                <CheckBox Grid.Row="0" Grid.Column="0" Content="Edit Note" Margin="0,10,0,0" IsChecked="{Binding NoteEnabled}" IsEnabled="{Binding IsUserInputEnabled}"/>
                                 <Label Grid.Row="1" Grid.Column="0" Content="Note:" Margin="0,10,0,0"/>
                                 <TextBox Grid.Row="1" Grid.Column="1"  Background="#333" BorderThickness="0" Foreground="#DCDCDC" MaxLength="1000" Margin="-30,10,0,0" Width="500"
-                                         Text="{Binding VnListNote}"/>
+                                         Text="{Binding VnListNote}" IsEnabled="{Binding NoteEnabled}"/>
                             </Grid>
                         </StackPanel>
                     </Grid>
@@ -252,13 +254,14 @@
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
                                 <Label Grid.Row="0" Grid.Column="0" Content="Priority:" Margin="0,10,0,0"/>
-                                <ComboBox Grid.Row="0" Grid.Column="1" Margin="10,7,0,0" Width="100" ItemsSource="{Binding WishlistCollection}" SelectedItem="{Binding WishlistPriority}"/>
+                                <ComboBox Grid.Row="0" Grid.Column="1" Margin="10,7,0,0" Width="100" ItemsSource="{Binding WishlistCollection}" SelectedItem="{Binding WishlistPriority}" 
+                                          IsEnabled="{Binding IsUserInputEnabled}" SelectedIndex="0"/>
                             </Grid>
                         </StackPanel>
                     </Grid>
                     
                     <Grid Grid.Row="12" Margin="10,15,0,0" HorizontalAlignment="Left">
-                        <Button Content="Update Data" Width="120" Command="{Binding UpdateCommand}"></Button>
+                        <Button Content="Update Data" Width="120" Command="{Binding UpdateCommand}" IsEnabled="{Binding IsUserInputEnabled}"/>
                     </Grid>
 
 
