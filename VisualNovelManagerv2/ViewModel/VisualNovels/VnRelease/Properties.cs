@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using VisualNovelManagerv2.Design.VisualNovel;
 
 namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnRelease
@@ -88,5 +89,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnRelease
                 RaisePropertyChanged(nameof(ReleasePlatforms));
             }
         }
+
+        public ICommand LoadReleaseNamesCommand => new GalaSoft.MvvmLight.CommandWpf.RelayCommand(LoadReleaseNameList);
     }
 }

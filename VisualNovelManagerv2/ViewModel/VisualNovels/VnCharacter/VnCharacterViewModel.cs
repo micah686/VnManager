@@ -14,6 +14,7 @@ using VisualNovelManagerv2.Design.VisualNovel;
 using VisualNovelManagerv2.EF.Context;
 using VisualNovelManagerv2.EF.Entity.VnCharacter;
 using VisualNovelManagerv2.EF.Entity.VnTagTrait;
+using VisualNovelManagerv2.ViewModel.VisualNovels.VnMain;
 
 // ReSharper disable ExplicitCallerInfoArgument
 
@@ -46,52 +47,39 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
                 throw;
             }
             SetMaxWidth();
-            LoadCharacterUrlList();
         }
 
-        private void LoadCharacterUrlList()
-        {
-            List<string> characterUrlList = new List<string>();
-            try
-            {
-                using (var db = new DatabaseContext())
-                {
-                    foreach (var character in db.Set<EF.Entity.VnCharacter.VnCharacter>().Where(x => x.VnId == Globals.VnId).Select(p => p.ImageLink))
-                    {
-                        characterUrlList.Add(character);
-                    }
-                    db.Dispose();
-                }
-            }
-            catch (Exception ex)
-            {
-                DebugLogging.WriteDebugLog(ex);
-                throw;
-            }
-            SetMaxWidth();
-            DownloadCharacters(characterUrlList);
-        }
 
-        private void DownloadCharacters(List<string> characterList)
+        private void DownloadCharacters()
         {
             try
             {
-                foreach (string character in characterList)
+                Globals.StatusBar.IsWorkProcessing = true;
+                Globals.StatusBar.ProgressText = "Downloading Characters";
+                Globals.StatusBar.IsDownloading = true;
+                using (var context = new DatabaseContext())
                 {
-                    if (characterList.Count < 1) return;
-                    if (!Directory.Exists($@"{Globals.DirectoryPath}\Data\images\characters\{Globals.VnId}"))
+                    List<string> characterList = context.Set<EF.Entity.VnCharacter.VnCharacter>()
+                        .Where(x => x.VnId == Globals.VnId).Select(i => i.ImageLink).ToList();
+                    if (characterList.Count <= 0) return;
+                    foreach (string character in characterList)
                     {
-                        Directory.CreateDirectory($@"{Globals.DirectoryPath}\Data\images\characters\{Globals.VnId}");
-                    }
-                    string path = $@"{Globals.DirectoryPath}\Data\images\characters\{Globals.VnId}\{Path.GetFileName(character)}";
+                        if (!Directory.Exists($@"{Globals.DirectoryPath}\Data\images\characters\{Globals.VnId}"))
+                        {
+                            Directory.CreateDirectory($@"{Globals.DirectoryPath}\Data\images\characters\{Globals.VnId}");
+                        }
+                        string path = $@"{Globals.DirectoryPath}\Data\images\characters\{Globals.VnId}\{Path.GetFileName(character)}";
 
-                    if (!File.Exists(path) && !string.IsNullOrEmpty(character))
-                    {
-                        WebClient client = new WebClient();
-                        client.DownloadFile(new Uri(character), path);
+                        if (!File.Exists(path) && !string.IsNullOrEmpty(character))
+                        {
+                            WebClient client = new WebClient();
+                            client.DownloadFile(new Uri(character), path);
+                        }
                     }
                 }
-                
+                Globals.StatusBar.IsDownloading = true;
+                Globals.StatusBar.IsWorkProcessing = false;
+                Globals.StatusBar.ProgressText = string.Empty;
             }
             catch (System.Net.WebException ex)
             {
@@ -102,8 +90,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
             {
                 DebugLogging.WriteDebugLog(ex);
             }
-            
-            //LoadCharacterNameList();
         }
 
         

@@ -174,9 +174,14 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
 
         private async void UpdateViews()
         {
-            new VnCharacterViewModel();
-            new VnReleaseViewModel();
-            var ssvm = ServiceLocator.Current.GetInstance<VnScreenshotViewModel>();            
+            var cvm = ServiceLocator.Current.GetInstance<VnCharacterViewModel>();
+            await Task.Run((() => cvm.DownloadCharactersCommand.Execute(null)));
+            cvm.LoadCharacterCommand.Execute(null);
+            
+            var rvm = ServiceLocator.Current.GetInstance<VnReleaseViewModel>();
+            rvm.LoadReleaseNamesCommand.Execute(null);
+
+            var ssvm = ServiceLocator.Current.GetInstance<VnScreenshotViewModel>();
             await Task.Run((() => ssvm.DownloadScreenshotsCommand.Execute(null)));
             ssvm.BindScreenshotsCommand.Execute(null);
         }

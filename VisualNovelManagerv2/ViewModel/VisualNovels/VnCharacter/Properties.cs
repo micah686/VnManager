@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Documents;
 using System.Windows.Input;
+using GalaSoft.MvvmLight.CommandWpf;
 using VisualNovelManagerv2.Design.VisualNovel;
 
 namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
@@ -129,5 +130,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
         }
 
         public ICommand LoadCharacterCommand => new GalaSoft.MvvmLight.CommandWpf.RelayCommand(LoadCharacterNameList);
+        public ICommand DownloadCharactersCommand => new RelayCommand(DownloadCharacters);
     }
 }

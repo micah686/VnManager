@@ -19,7 +19,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnRelease
     {
         public VnReleaseViewModel()
         {
-            LoadReleaseNameList();
         }
 
         
