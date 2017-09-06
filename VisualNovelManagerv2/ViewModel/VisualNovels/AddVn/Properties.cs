@@ -18,16 +18,16 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
         #region Static Properties
 
         #region VnId
-        private uint? _vnId;
-        public uint? VnId
+        private uint? _inputVnId;
+        public uint? InputVnId
         {
-            get { return _vnId; }
+            get { return _inputVnId; }
             set
             {
-                _vnId = value;
-                RaisePropertyChanged(nameof(VnId));
-                if (VnId == null) return;
-                Validator.ValidateAsync(VnId);
+                _inputVnId = value;
+                RaisePropertyChanged(nameof(InputVnId));
+                if (InputVnId == null) return;
+                Validator.ValidateAsync(InputVnId);
             }
         }
         #endregion VnId
@@ -85,7 +85,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
             {
                 _isNameChecked = value;
                 VnName = null;
-                VnId = null;
+                InputVnId = null;
                 RaisePropertyChanged(nameof(IsNameChecked));
             }
         }
@@ -182,6 +182,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
         }
         #endregion ValidationErrorsString
 
+        private uint _vnid = 0;
         private VndbResponse<VisualNovel> _vnNameList;
         private readonly AddVnViewModelService _exeService;
         private readonly AddVnViewModelService _iconService;

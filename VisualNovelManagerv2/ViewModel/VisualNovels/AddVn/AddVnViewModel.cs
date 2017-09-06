@@ -56,12 +56,12 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
         {
             if (IsNameChecked != true)
             {
-                Validator.AddRequiredRule(() => VnId, "Vndb ID is required");
-                Validator.AddRule(nameof(VnId),
-                    () => RuleResult.Assert(VnId >= 1, "Vndb ID must be at least 1"));
-                Validator.AddRule(nameof(VnId),
-                    () => RuleResult.Assert(VnId <= IsAboveMaxId().Result, "Not a Valid Vndb ID"));
-                Validator.AddRule(nameof(VnId),
+                Validator.AddRequiredRule(() => InputVnId, "Vndb ID is required");
+                Validator.AddRule(nameof(InputVnId),
+                    () => RuleResult.Assert(InputVnId >= 1, "Vndb ID must be at least 1"));
+                Validator.AddRule(nameof(InputVnId),
+                    () => RuleResult.Assert(InputVnId <= IsAboveMaxId().Result, "Not a Valid Vndb ID"));
+                Validator.AddRule(nameof(InputVnId),
                     () => RuleResult.Assert(IsDeletedVn().Result != true, "This Vndb ID has been removed"));
             }
 
@@ -91,7 +91,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
         {
             try
             {
-                using (Vndb client = new Vndb(true).WithClientDetails("VisualNovelManagerv2", "0.0.0"))
+                using (Vndb client = new Vndb(true))
                 {
                     RequestOptions ro = new RequestOptions
                     {
@@ -114,9 +114,9 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
         {
             try
             {
-                using (Vndb client = new Vndb(true).WithClientDetails("VisualNovelManagerv2", "0.0.0"))
+                using (Vndb client = new Vndb(true))
                 {
-                    uint vnid = Convert.ToUInt32(VnId);
+                    uint vnid = Convert.ToUInt32(InputVnId);
                     VndbResponse<VisualNovel> response = await client.GetVisualNovelAsync(VndbFilters.Id.Equals(vnid));
 
                     client.Logout();
@@ -212,17 +212,19 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                     if (VnName != null)
                     {
                         AddToDatabase atd = new AddToDatabase();
+                        _vnid = _vnNameList.Items[DropdownIndex].Id;
                         atd.GetId(_vnNameList.Items[DropdownIndex].Id, FileName, IconName);
                         FileName = String.Empty;
-                        VnId = 0;
+                        InputVnId = 0;
                         VnName = string.Empty;
                     }
                     else
                     {
                         AddToDatabase atd = new AddToDatabase();
-                        atd.GetId(Convert.ToUInt32(VnId), FileName, IconName);
+                        _vnid = Convert.ToUInt32(InputVnId);
+                        atd.GetId(Convert.ToUInt32(InputVnId), FileName, IconName);
                         FileName = String.Empty;
-                        VnId = 0;
+                        InputVnId = 0;
                     }
                 }
             }

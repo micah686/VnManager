@@ -43,7 +43,7 @@
                         </Grid.ColumnDefinitions>
                         <Label Content="{Binding Path=IsNameChecked, Converter={StaticResource BoolToStringConverter}}" Width="120" />
                         <TextBox x:Name="TextVnId" Grid.Column="1" Width="150" MaxLength="9" custom:TextBoxService.IsNumericOnly="True" Height="25"
-                            Text="{Binding VnId, Mode=TwoWay, ValidatesOnDataErrors=True}" Visibility="{Binding IsChecked, ElementName=VnIdRadio, Converter={StaticResource ConvVisibility}}" />
+                            Text="{Binding InputVnId, Mode=TwoWay, ValidatesOnDataErrors=True}" Visibility="{Binding IsChecked, ElementName=VnIdRadio, Converter={StaticResource ConvVisibility}}" />
 
                         <ComboBox x:Name="ComboVnName" Grid.Column="1" Width="150"  IsEditable="True"
                             Text="{Binding VnName, Mode=TwoWay, ValidatesOnDataErrors=True}" Visibility="{Binding IsChecked, ElementName=VnNameRadio, Converter={StaticResource ConvVisibility}}"

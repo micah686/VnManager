@@ -49,7 +49,7 @@ namespace VisualNovelManagerv2.CustomClasses.Database
             Globals.StatusBar.IsDbProcessing = true;
             Globals.StatusBar.IsWorkProcessing = true;
             Globals.StatusBar.ProgressText = "Processing";
-            using (VndbSharp.Vndb client = new VndbSharp.Vndb(true).WithClientDetails(Globals.ClientInfo[0], Globals.ClientInfo[1]))
+            using (VndbSharp.Vndb client = new VndbSharp.Vndb(true))
             {
                 try
                 {

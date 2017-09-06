@@ -246,6 +246,7 @@
     <Compile Include="ViewModel\Settings\UserSettingsViewModel.cs" />
     <Compile Include="ViewModel\VisualNovels\AddVn\AddVnViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
+    <Compile Include="ViewModel\VisualNovels\AddVn\GetVnDataForDatabase.cs" />
     <Compile Include="ViewModel\VisualNovels\AddVn\Properties.cs" />
     <Compile Include="ViewModel\VisualNovels\VnCharacter\Properties.cs" />
     <Compile Include="ViewModel\VisualNovels\VnCharacter\VnCharacterViewModel.cs" />
