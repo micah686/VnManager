@@ -19,7 +19,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
     {
         private async Task GetData()
         {
-            double progressIncrement = 0;
+            
 
             Globals.StatusBar.ProgressPercentage = 0;
             Globals.StatusBar.IsDbProcessing = true;
@@ -46,10 +46,10 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                         pageCount++;
                     }
                     //TODO: See why I added 10 to the value
-                    progressIncrement = (double) 100 / (10 + characterCount);
+                    _progressIncrement = (double) 100 / (10 + characterCount);
 
                     if (Globals.StatusBar.ProgressPercentage != null)
-                        Globals.StatusBar.ProgressPercentage = (double)Globals.StatusBar.ProgressPercentage + progressIncrement;
+                        Globals.StatusBar.ProgressPercentage = (double)Globals.StatusBar.ProgressPercentage + _progressIncrement;
 
                     hasMore = true;
                     pageCount = 1;
@@ -57,7 +57,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
 
                     VndbResponse<VisualNovel> visualNovels = await client.GetVisualNovelAsync(VndbFilters.Id.Equals(_vnid), VndbFlags.FullVisualNovel);
                     if (Globals.StatusBar.ProgressPercentage != null)
-                        Globals.StatusBar.ProgressPercentage = (double) Globals.StatusBar.ProgressPercentage + progressIncrement;
+                        Globals.StatusBar.ProgressPercentage = (double) Globals.StatusBar.ProgressPercentage + _progressIncrement;
 
 
                     List<Release> releaseList = new List<Release>();
@@ -70,7 +70,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                         pageCount++;
                     }
                     if (Globals.StatusBar.ProgressPercentage != null)
-                        Globals.StatusBar.ProgressPercentage = (double)Globals.StatusBar.ProgressPercentage + progressIncrement;
+                        Globals.StatusBar.ProgressPercentage = (double)Globals.StatusBar.ProgressPercentage + _progressIncrement;
 
                     //await save vn data here
                 }

@@ -183,6 +183,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
         #endregion ValidationErrorsString
 
         private uint _vnid = 0;
+        private double _progressIncrement = 0;
+        private Tuple<bool, DateTime> _didDownloadTagDump;
         private VndbResponse<VisualNovel> _vnNameList;
         private readonly AddVnViewModelService _exeService;
         private readonly AddVnViewModelService _iconService;
