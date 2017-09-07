@@ -225,6 +225,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                         PlayTime = "0,0,0,0"
                     });
                     #endregion
+
+                    context.SaveChanges();
                 }
             }
             catch (Exception ex)
@@ -245,7 +247,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                 {
                     // this query SHOULD be implementing this: foreach (TagMetadata tag in visualNovel.Tags){if (tagMatches.Any(c => c.Id == tag.Id)){} }
                     //checks if the dump was downloaded, or if 24 hours have passed
-                    if (_didDownloadTagDump.Item1 == false || Math.Abs(_didDownloadTagDump.Item2.Subtract(DateTime.Now).TotalHours) <= 24)
+                    if (_didDownloadTagDump.Key == false || Math.Abs(_didDownloadTagDump.Value.Subtract(DateTime.Now).TotalHours) >= 24)
                     {
                         #region This section deals with the daily TagDump ONLY
 
@@ -264,9 +266,9 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
 
                         //IQueryable<VnTagData> foo = context.VnTagData.Where(x => tagsToAdd.Any(y => y.TagId == x.TagId));
                         //tags that AREN'T exact duplicates, that also share the same ID (contents edited online, ID wasn't)
-                        IQueryable<VnTagData> tagsToDelete = context.VnTagData.Except(tagsToAdd).Where(x => tagsToAdd.Any(y => y.TagId == x.TagId));
+                        List<VnTagData> tagsToDelete = context.VnTagData.Except(tagsToAdd).Where(x => tagsToAdd.Any(y => y.TagId == x.TagId)).ToList();
                         context.RemoveRange(tagsToDelete);
-
+                        context.VnTagData.AddRange(tagsToAdd);
                         #endregion This section deals with the daily TagDump ONLY
 
 
@@ -290,16 +292,19 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                     {
                         //gets a list of all tags from the VnTagData where that data contains the tagId from the vn
                         List<TagMetadata> vnInfoTags = (from tag in vnTags from ef in context.VnTagData where tag.Id == ef.TagId select tag).ToList();
-                        foreach (TagMetadata tagMetadata in vnInfoTags)
-                        {
-                            context.VnInfoTags.Add(new VnInfoTags
+                        List<VnInfoTags> vnInfoTagsToAdd= vnInfoTags.Select(tagMetadata => new VnInfoTags
                             {
                                 VnId = _vnid,
                                 TagId = tagMetadata.Id,
                                 Score = tagMetadata.Score,
                                 Spoiler = tagMetadata.SpoilerLevel.ToString()
-                            });
-                        }
+                            }).ToList();
+                        //TODO: compare the two lists, because Except() won't work because of all of the 0's for IDs. When I'm finished, make a copy up above
+                        //also, set the KeyValuePair back to false when done
+                        var foo = context.VnInfoTags.ToList();
+                        var tagsToDelete = vnInfoTagsToAdd.Except(context.VnInfoTags).ToList();
+                        context.VnInfoTags.RemoveRange(tagsToDelete);
+                        context.VnInfoTags.AddRange(vnInfoTagsToAdd.Except(context.VnInfoTags));
 
                         context.SaveChanges();
                         //gets a list of items from VnTagData where it contains the tagId from the vn

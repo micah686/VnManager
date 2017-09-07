@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using GalaSoft.MvvmLight.Command;
+using Microsoft.Expression.Interactivity.Core;
 using VisualNovelManagerv2.Design.VisualNovel;
 using VndbSharp.Models;
 using VndbSharp.Models.VisualNovel;
@@ -184,7 +185,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
 
         private uint _vnid = 0;
         private double _progressIncrement = 0;
-        private Tuple<bool, DateTime> _didDownloadTagDump= new Tuple<bool, DateTime>(false, DateTime.Now);
+        private KeyValuePair<bool, DateTime> _didDownloadTagDump = new KeyValuePair<bool, DateTime>(true, DateTime.Now);
         private VndbResponse<VisualNovel> _vnNameList;
         private readonly AddVnViewModelService _exeService;
         private readonly AddVnViewModelService _iconService;
@@ -193,7 +194,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
         public ObservableCollection<string> SuggestedNamesCollection { get; set; }
         public ICommand ValidateCommand => new GalaSoft.MvvmLight.CommandWpf.RelayCommand(Validate);
         public ICommand SearchNamesCommand => new GalaSoft.MvvmLight.CommandWpf.RelayCommand(SearchName);
-
+        public ICommand GetVnDataCommand => new GalaSoft.MvvmLight.CommandWpf.RelayCommand(GetData);
         #endregion
+
     }
 }
