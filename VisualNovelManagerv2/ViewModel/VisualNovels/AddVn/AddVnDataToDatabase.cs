@@ -82,61 +82,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                         #region VnTags
                         if (visualNovel.Tags.Count > 0)
                         {
-
-                            // this query SHOULD be implementing this: foreach (TagMetadata tag in visualNovel.Tags){if (tagMatches.Any(c => c.Id == tag.Id)){} }
-                            //checks if the dump was downloaded, or if 24 hours have passed
-                            if (_didDownloadTagDump.Item1 == false || Math.Abs(_didDownloadTagDump.Item2.Subtract(DateTime.Now).TotalHours) <= 24)
-                            {
-                                List<Tag> tagDump = (await VndbUtils.GetTagsDumpAsync()).ToList();
-                                //TODO: check for duplicates
-                                foreach (Tag tag in tagDump)
-                                {
-                                    context.VnTagData.Add(new VnTagData
-                                    {
-                                        TagId = tag.Id,
-                                        Name = tag.Name,
-                                        Description = tag.Description,
-                                        Meta = tag.IsMeta.ToString(),
-                                        Vns = tag.VisualNovels,
-                                        Cat = tag.TagCategory.ToString(),
-                                        Aliases = ConvertToCsv(tag.Aliases),
-                                        Parents = tag.Parents != null ? string.Join(",", tag.Parents) : null,
-                                    });
-                                }
-                                //gets a list of all tags from the TagDump where the dump contains the tagIds from the vn
-                                List<TagMetadata> vnInfoTags = (from tag in visualNovel.Tags from ef in tagDump where tag.Id == ef.Id select tag).ToList();
-                                foreach (TagMetadata tagMetadata in vnInfoTags)
-                                {
-                                    context.VnInfoTags.Add(new VnInfoTags
-                                    {
-                                        VnId = _vnid,
-                                        TagId = tagMetadata.Id,
-                                        Score = tagMetadata.Score,
-                                        Spoiler = tagMetadata.SpoilerLevel.ToString()
-                                    });
-                                }
-
-                                //gets a list of items from VnTagData where it contains the tagId from the vn
-                                List<VnTagData> matches = (from ef in context.VnTagData from tag in visualNovel.Tags where ef.TagId == tag.Id select ef).ToList();
-                            }
-                            else
-                            {
-                                //gets a list of all tags from the VnTagData where that data contains the tagId from the vn
-                                List<TagMetadata> vnInfoTags = (from tag in visualNovel.Tags from ef in context.VnTagData where tag.Id == ef.TagId select tag).ToList();
-                                foreach (TagMetadata tagMetadata in vnInfoTags)
-                                {
-                                    context.VnInfoTags.Add(new VnInfoTags
-                                    {
-                                        VnId = _vnid,
-                                        TagId = tagMetadata.Id,
-                                        Score = tagMetadata.Score,
-                                        Spoiler = tagMetadata.SpoilerLevel.ToString()
-                                    });
-                                }
-
-                                //gets a list of items from VnTagData where it contains the tagId from the vn
-                                List<VnTagData> matches = (from ef in context.VnTagData from tag in visualNovel.Tags where ef.TagId == tag.Id select ef).ToList();
-                            }
+                            await GetDetailsFromTagDump(visualNovel.Tags);
                         }
 
 
@@ -291,17 +237,20 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
 
 
 
-        private async Task<List<VnTagData>> GetDetailsFromTagDump(ReadOnlyCollection<TagMetadata> tags)
+        private async Task GetDetailsFromTagDump(ReadOnlyCollection<TagMetadata> vnTags)
         {
-            using (var context = new DatabaseContext())
+            try
             {
-                //checks if the dump was downloaded, or if 24 hours have passed
-                if (_didDownloadTagDump.Item1 == false || Math.Abs(_didDownloadTagDump.Item2.Subtract(DateTime.Now).TotalHours) <= 24)
+                using (var context = new DatabaseContext())
                 {
-                    List<Tag> tagDump = (await VndbUtils.GetTagsDumpAsync()).ToList();
-                    foreach (Tag tag in tagDump)
+                    // this query SHOULD be implementing this: foreach (TagMetadata tag in visualNovel.Tags){if (tagMatches.Any(c => c.Id == tag.Id)){} }
+                    //checks if the dump was downloaded, or if 24 hours have passed
+                    if (_didDownloadTagDump.Item1 == false || Math.Abs(_didDownloadTagDump.Item2.Subtract(DateTime.Now).TotalHours) <= 24)
                     {
-                        context.VnTagData.Add(new VnTagData
+                        #region This section deals with the daily TagDump ONLY
+
+                        List<Tag> tagDump = (await VndbUtils.GetTagsDumpAsync()).ToList();
+                        List<VnTagData> tagsToAdd = tagDump.Select(tag => new VnTagData
                         {
                             TagId = tag.Id,
                             Name = tag.Name,
@@ -311,46 +260,58 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                             Cat = tag.TagCategory.ToString(),
                             Aliases = ConvertToCsv(tag.Aliases),
                             Parents = tag.Parents != null ? string.Join(",", tag.Parents) : null,
-                        });
-                    }                    
-                    //gets a list of all tags from the TagDump where the dump contains the tagIds from the vn
-                    List<TagMetadata> vnInfoTags = (from tag in tags from ef in tagDump where tag.Id == ef.Id select tag).ToList();
-                    foreach (TagMetadata tagMetadata in vnInfoTags)
-                    {
-                        context.VnInfoTags.Add(new VnInfoTags
-                        {
-                            VnId = _vnid,
-                            TagId = tagMetadata.Id,
-                            Score = tagMetadata.Score,
-                            Spoiler = tagMetadata.SpoilerLevel.ToString()
-                        });
-                    }
+                        }).ToList();
 
-                    //gets a list of items from VnTagData where it contains the tagId from the vn
-                    List<VnTagData> matches = (from ef in context.VnTagData from tag in tags where ef.TagId == tag.Id select ef).ToList();
-                    return matches;
+                        //IQueryable<VnTagData> foo = context.VnTagData.Where(x => tagsToAdd.Any(y => y.TagId == x.TagId));
+                        //tags that AREN'T exact duplicates, that also share the same ID (contents edited online, ID wasn't)
+                        IQueryable<VnTagData> tagsToDelete = context.VnTagData.Except(tagsToAdd).Where(x => tagsToAdd.Any(y => y.TagId == x.TagId));
+                        context.RemoveRange(tagsToDelete);
+
+                        #endregion This section deals with the daily TagDump ONLY
+
+
+                        //gets a list of all tags from the TagDump where the dump contains the tagIds from the vn
+                        List<TagMetadata> vnInfoTags = (from tag in vnTags from ef in tagDump where tag.Id == ef.Id select tag).ToList();
+                        foreach (TagMetadata tagMetadata in vnInfoTags)
+                        {
+                            context.VnInfoTags.Add(new VnInfoTags
+                            {
+                                VnId = _vnid,
+                                TagId = tagMetadata.Id,
+                                Score = tagMetadata.Score,
+                                Spoiler = tagMetadata.SpoilerLevel.ToString()
+                            });
+                        }
+                        context.SaveChanges();
+                        //gets a list of items from VnTagData where it contains the tagId from the vn
+                        //List<VnTagData> matches = (from ef in context.VnTagData from tag in vnTags where ef.TagId == tag.Id select ef).ToList();
+                    }
+                    else
+                    {
+                        //gets a list of all tags from the VnTagData where that data contains the tagId from the vn
+                        List<TagMetadata> vnInfoTags = (from tag in vnTags from ef in context.VnTagData where tag.Id == ef.TagId select tag).ToList();
+                        foreach (TagMetadata tagMetadata in vnInfoTags)
+                        {
+                            context.VnInfoTags.Add(new VnInfoTags
+                            {
+                                VnId = _vnid,
+                                TagId = tagMetadata.Id,
+                                Score = tagMetadata.Score,
+                                Spoiler = tagMetadata.SpoilerLevel.ToString()
+                            });
+                        }
+
+                        context.SaveChanges();
+                        //gets a list of items from VnTagData where it contains the tagId from the vn
+                        //List<VnTagData> matches = (from ef in context.VnTagData from tag in vnTags where ef.TagId == tag.Id select ef).ToList();
+                    }
                 }
-                else
-                {
-                    //gets a list of all tags from the VnTagData where that data contains the tagId from the vn
-                    List<TagMetadata> vnInfoTags = (from tag in tags from ef in context.VnTagData where tag.Id == ef.TagId select tag).ToList();
-                    foreach (TagMetadata tagMetadata in vnInfoTags)
-                    {
-                        context.VnInfoTags.Add(new VnInfoTags
-                        {
-                            VnId = _vnid,
-                            TagId = tagMetadata.Id,
-                            Score = tagMetadata.Score,
-                            Spoiler = tagMetadata.SpoilerLevel.ToString()
-                        });
-                    }
-
-                    //gets a list of items from VnTagData where it contains the tagId from the vn
-                    List<VnTagData> matches = (from ef in context.VnTagData from tag in tags where ef.TagId == tag.Id select ef).ToList();
-                    return matches;
-                }                
             }
-            
+            catch (Exception ex)
+            {
+                DebugLogging.WriteDebugLog(ex);
+                throw;
+            }                        
         }
 
         private IEnumerable<Trait> GetDetailsFromTraitDump(IEnumerable<Trait> traitDump, ReadOnlyCollection<TraitMetadata> traits)
