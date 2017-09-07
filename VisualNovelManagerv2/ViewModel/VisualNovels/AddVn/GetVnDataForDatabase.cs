@@ -17,10 +17,10 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
 {
     public partial class AddVnViewModel
     {
-        private async Task GetData()
+        private async void GetData()
         {
-            
 
+            _vnid = 4;
             Globals.StatusBar.ProgressPercentage = 0;
             Globals.StatusBar.IsDbProcessing = true;
             Globals.StatusBar.IsWorkProcessing = true;
@@ -73,6 +73,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                         Globals.StatusBar.ProgressPercentage = (double)Globals.StatusBar.ProgressPercentage + _progressIncrement;
 
                     //await save vn data here
+                    await AddToDatabase(visualNovels, releaseList, characterList);
                 }
 
             }

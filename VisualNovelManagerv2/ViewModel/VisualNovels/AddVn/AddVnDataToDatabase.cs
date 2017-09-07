@@ -18,6 +18,7 @@ using VndbSharp.Models.Dumps;
 using VndbSharp.Models.Release;
 using VndbSharp.Models.VisualNovel;
 using System.Globalization;
+using System.Security.Policy;
 
 namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
 {
@@ -271,20 +272,33 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                         context.VnTagData.AddRange(tagsToAdd);
                         #endregion This section deals with the daily TagDump ONLY
 
-
+                        #region This Section is for VnInfoTags
                         //gets a list of all tags from the TagDump where the dump contains the tagIds from the vn
                         List<TagMetadata> vnInfoTags = (from tag in vnTags from ef in tagDump where tag.Id == ef.Id select tag).ToList();
-                        foreach (TagMetadata tagMetadata in vnInfoTags)
+
+                        List<VnInfoTags> vnInfoTagsToAdd = vnInfoTags.Select(tagMetadata => new VnInfoTags
                         {
-                            context.VnInfoTags.Add(new VnInfoTags
-                            {
-                                VnId = _vnid,
-                                TagId = tagMetadata.Id,
-                                Score = tagMetadata.Score,
-                                Spoiler = tagMetadata.SpoilerLevel.ToString()
-                            });
-                        }
+                            VnId = _vnid,
+                            TagId = tagMetadata.Id,
+                            Score = tagMetadata.Score,
+                            Spoiler = tagMetadata.SpoilerLevel.ToString()
+                        }).ToList();
+
+                        //list of items to delete where the db DOESN'T contain the exact item from tagsToAdd (indicates something was modified)
+                        List<VnInfoTags> vnInfoTagsToDelete = context.VnInfoTags.Where(x => !vnInfoTagsToAdd.Any(y => y.VnId == x.VnId &&
+                            Convert.ToDecimal(y.Score) == Convert.ToDecimal(x.Score) && y.Spoiler == x.Spoiler && y.TagId == x.TagId)).ToList();
+
+                        context.VnInfoTags.RemoveRange(vnInfoTagsToDelete);
+
+                        //removes all items from the ItemsToAdd where the vnId and TagId already exists in the database
+                        vnInfoTagsToAdd.RemoveAll(x => vnInfoTagsToAdd.Where(item => context.VnInfoTags.Where(v => v.VnId == _vnid).Any(y => y.TagId == item.TagId)).Contains(x));
+
+                        context.VnInfoTags.AddRange(vnInfoTagsToAdd);
+
                         context.SaveChanges();
+
+                        #endregion End This Section is for VnInfoTags
+
                         //gets a list of items from VnTagData where it contains the tagId from the vn
                         //List<VnTagData> matches = (from ef in context.VnTagData from tag in vnTags where ef.TagId == tag.Id select ef).ToList();
                     }
@@ -292,21 +306,27 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                     {
                         //gets a list of all tags from the VnTagData where that data contains the tagId from the vn
                         List<TagMetadata> vnInfoTags = (from tag in vnTags from ef in context.VnTagData where tag.Id == ef.TagId select tag).ToList();
-                        List<VnInfoTags> vnInfoTagsToAdd= vnInfoTags.Select(tagMetadata => new VnInfoTags
-                            {
-                                VnId = _vnid,
-                                TagId = tagMetadata.Id,
-                                Score = tagMetadata.Score,
-                                Spoiler = tagMetadata.SpoilerLevel.ToString()
-                            }).ToList();
-                        //TODO: compare the two lists, because Except() won't work because of all of the 0's for IDs. When I'm finished, make a copy up above
-                        //also, set the KeyValuePair back to false when done
-                        var foo = context.VnInfoTags.ToList();
-                        var tagsToDelete = vnInfoTagsToAdd.Except(context.VnInfoTags).ToList();
-                        context.VnInfoTags.RemoveRange(tagsToDelete);
-                        context.VnInfoTags.AddRange(vnInfoTagsToAdd.Except(context.VnInfoTags));
+                        List<VnInfoTags> vnInfoTagsToAdd = vnInfoTags.Select(tagMetadata => new VnInfoTags
+                        {
+                            VnId = _vnid,
+                            TagId = tagMetadata.Id,
+                            Score = tagMetadata.Score,
+                            Spoiler = tagMetadata.SpoilerLevel.ToString()
+                        }).ToList();
+                        //list of items to delete where the db DOESN'T contain the exact item from tagsToAdd (indicates something was modified)
+                        List<VnInfoTags> vnInfoTagsToDelete = context.VnInfoTags.Where(x => !vnInfoTagsToAdd.Any(y => y.VnId == x.VnId &&
+                             Convert.ToDecimal(y.Score) == Convert.ToDecimal(x.Score) && y.Spoiler == x.Spoiler && y.TagId == x.TagId)).ToList();
+
+                        context.VnInfoTags.RemoveRange(vnInfoTagsToDelete);
+
+                        //removes all items from the ItemsToAdd where the vnId and TagId already exists in the database
+                        vnInfoTagsToAdd.RemoveAll(x => vnInfoTagsToAdd.Where(item => context.VnInfoTags.Where(v => v.VnId == _vnid).Any(y => y.TagId == item.TagId)).Contains(x));
+
+                        context.VnInfoTags.AddRange(vnInfoTagsToAdd);
 
                         context.SaveChanges();
+                        
+                        //for selection. Remove once I use this elsewhere
                         //gets a list of items from VnTagData where it contains the tagId from the vn
                         //List<VnTagData> matches = (from ef in context.VnTagData from tag in vnTags where ef.TagId == tag.Id select ef).ToList();
                     }

@@ -8,6 +8,7 @@ using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using GalaSoft.MvvmLight.Command;
 using Microsoft.Expression.Interactivity.Core;
+using VisualNovelManagerv2.CustomClasses.TinyClasses;
 using VisualNovelManagerv2.Design.VisualNovel;
 using VndbSharp.Models;
 using VndbSharp.Models.VisualNovel;
@@ -185,7 +186,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
 
         private uint _vnid = 0;
         private double _progressIncrement = 0;
-        private KeyValuePair<bool, DateTime> _didDownloadTagDump = new KeyValuePair<bool, DateTime>(true, DateTime.Now);
+        private readonly MutableKeyValuePair<bool, DateTime> _didDownloadTagDump = new MutableKeyValuePair<bool, DateTime>(false, DateTime.Now);
         private VndbResponse<VisualNovel> _vnNameList;
         private readonly AddVnViewModelService _exeService;
         private readonly AddVnViewModelService _iconService;
@@ -198,4 +199,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
         #endregion
 
     }
+
+    
 }
