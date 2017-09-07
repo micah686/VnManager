@@ -239,11 +239,12 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                                 {
                                     vninfotags.Add(new VnInfoTags
                                     {
-                                        VnId = visualNovel.Id,
-                                        TagId = Convert.ToInt32(tag.Id),
-                                        TagName = tagMatches.ElementAt(count).Name,
-                                        Score = tag.Score,
-                                        Spoiler = tag.SpoilerLevel.ToString()
+                                        //COMMENTED OUT IN PREPARATION FOR NEW METHOD
+                                        //VnId = visualNovel.Id,
+                                        //TagId = Convert.ToInt32(tag.Id),
+                                        //TagName = tagMatches.ElementAt(count).Name,
+                                        //Score = tag.Score,
+                                        //Spoiler = tag.SpoilerLevel.ToString()
                                     });
                                     count++;
                                 }
@@ -259,17 +260,17 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                         {
                             foreach (Tag tag in tagMatches)
                             {
-                                vntagdata.Add(new VnTagData
-                                {
-                                    TagId = Convert.ToInt32(tag.Id),
-                                    Name = tag.Name,
-                                    Description = tag.Description,
-                                    Meta = tag.IsMeta.ToString(),
-                                    Vns = Convert.ToInt32(tag.VisualNovels),
-                                    Cat = tag.TagCategory.ToString(),
-                                    Aliases = ConvertToCsv(tag.Aliases),
-                                    Parents = string.Join(",", tag.Parents)
-                                });
+                                //vntagdata.Add(new VnTagData
+                                //{
+                                //    TagId = Convert.ToInt32(tag.Id),
+                                //    Name = tag.Name,
+                                //    Description = tag.Description,
+                                //    Meta = tag.IsMeta.ToString(),
+                                //    Vns = Convert.ToInt32(tag.VisualNovels),
+                                //    Cat = tag.TagCategory.ToString(),
+                                //    Aliases = ConvertToCsv(tag.Aliases),
+                                //    Parents = string.Join(",", tag.Parents)
+                                //});
                             }
                         }
 

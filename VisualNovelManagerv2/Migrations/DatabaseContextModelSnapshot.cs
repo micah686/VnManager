@@ -101,7 +101,7 @@ namespace VisualNovelManagerv2.Migrations
 
                     b.Property<string>("SpoilerLevel");
 
-                    b.Property<int?>("VnId");
+                    b.Property<uint?>("VnId");
 
                     b.HasKey("Id");
 
@@ -245,7 +245,7 @@ namespace VisualNovelManagerv2.Migrations
 
                     b.Property<string>("ReleaseId");
 
-                    b.Property<int?>("VnId");
+                    b.Property<uint?>("VnId");
 
                     b.Property<int?>("VnInfoId");
 
@@ -275,7 +275,7 @@ namespace VisualNovelManagerv2.Migrations
 
                     b.Property<int?>("StaffId");
 
-                    b.Property<int?>("VnId");
+                    b.Property<uint?>("VnId");
 
                     b.HasKey("Id");
 
@@ -291,11 +291,9 @@ namespace VisualNovelManagerv2.Migrations
 
                     b.Property<string>("Spoiler");
 
-                    b.Property<int?>("TagId");
+                    b.Property<uint>("TagId");
 
-                    b.Property<string>("TagName");
-
-                    b.Property<int?>("VnId");
+                    b.Property<uint?>("VnId");
 
                     b.Property<int?>("VnInfoId");
 
@@ -656,9 +654,9 @@ namespace VisualNovelManagerv2.Migrations
 
                     b.Property<string>("Parents");
 
-                    b.Property<int?>("TagId");
+                    b.Property<uint>("TagId");
 
-                    b.Property<int?>("Vns");
+                    b.Property<uint>("Vns");
 
                     b.HasKey("Id");
 

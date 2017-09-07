@@ -184,7 +184,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
 
         private uint _vnid = 0;
         private double _progressIncrement = 0;
-        private Tuple<bool, DateTime> _didDownloadTagDump;
+        private Tuple<bool, DateTime> _didDownloadTagDump= new Tuple<bool, DateTime>(false, DateTime.Now);
         private VndbResponse<VisualNovel> _vnNameList;
         private readonly AddVnViewModelService _exeService;
         private readonly AddVnViewModelService _iconService;

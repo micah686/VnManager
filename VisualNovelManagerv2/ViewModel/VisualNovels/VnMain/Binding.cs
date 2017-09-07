@@ -191,13 +191,13 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
                     #endregion
 
                     #region VnTags
-
-                    foreach (string tag in db.Set<VnInfoTags>().Where(v => v.VnId == Globals.VnId)
-                        .Select(n => n.TagName))
-                    {
-                        await Application.Current.Dispatcher.BeginInvoke(
-                            new Action(() => VnInfoTagCollection.Add(tag)));
-                    }
+                    //TODO: FIX VN Tags
+                    //foreach (string tag in db.Set<VnInfoTags>().Where(v => v.VnId == Globals.VnId)
+                    //    .Select(n => n.TagName))
+                    //{
+                    //    await Application.Current.Dispatcher.BeginInvoke(
+                    //        new Action(() => VnInfoTagCollection.Add(tag)));
+                    //}
                     if (Globals.StatusBar.ProgressPercentage != null)
                         Globals.StatusBar.ProgressPercentage =
                             (double)Globals.StatusBar.ProgressPercentage + ProgressIncrement;

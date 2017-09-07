@@ -31,7 +31,7 @@ namespace VisualNovelManagerv2.Migrations
                     ReleaseId = table.Column<int>(type: "INTEGER", nullable: true),
                     Role = table.Column<string>(type: "TEXT", nullable: true),
                     SpoilerLevel = table.Column<string>(type: "TEXT", nullable: true),
-                    VnId = table.Column<int>(type: "INTEGER", nullable: true)
+                    VnId = table.Column<uint>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -118,7 +118,7 @@ namespace VisualNovelManagerv2.Migrations
                     Original = table.Column<string>(type: "TEXT", nullable: true),
                     Role = table.Column<string>(type: "TEXT", nullable: true),
                     StaffId = table.Column<int>(type: "INTEGER", nullable: true),
-                    VnId = table.Column<int>(type: "INTEGER", nullable: true)
+                    VnId = table.Column<uint>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -252,8 +252,8 @@ namespace VisualNovelManagerv2.Migrations
                     Meta = table.Column<string>(type: "TEXT", nullable: true),
                     Name = table.Column<string>(type: "TEXT", nullable: true),
                     Parents = table.Column<string>(type: "TEXT", nullable: true),
-                    TagId = table.Column<int>(type: "INTEGER", nullable: true),
-                    Vns = table.Column<int>(type: "INTEGER", nullable: true)
+                    TagId = table.Column<uint>(type: "INTEGER", nullable: false),
+                    Vns = table.Column<uint>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -511,7 +511,7 @@ namespace VisualNovelManagerv2.Migrations
                     ImageUrl = table.Column<string>(type: "TEXT", nullable: true),
                     Nsfw = table.Column<string>(type: "TEXT", nullable: true),
                     ReleaseId = table.Column<string>(type: "TEXT", nullable: true),
-                    VnId = table.Column<int>(type: "INTEGER", nullable: true),
+                    VnId = table.Column<uint>(type: "INTEGER", nullable: true),
                     VnInfoId = table.Column<int>(type: "INTEGER", nullable: true),
                     Width = table.Column<int>(type: "INTEGER", nullable: true)
                 },
@@ -589,9 +589,8 @@ namespace VisualNovelManagerv2.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     Score = table.Column<double>(type: "REAL", nullable: false),
                     Spoiler = table.Column<string>(type: "TEXT", nullable: true),
-                    TagId = table.Column<int>(type: "INTEGER", nullable: true),
-                    TagName = table.Column<string>(type: "TEXT", nullable: true),
-                    VnId = table.Column<int>(type: "INTEGER", nullable: true),
+                    TagId = table.Column<uint>(type: "INTEGER", nullable: false),
+                    VnId = table.Column<uint>(type: "INTEGER", nullable: true),
                     VnInfoId = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
