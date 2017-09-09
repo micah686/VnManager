@@ -378,10 +378,10 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                             {
                                 vncharactertraits.Add(new VnCharacterTraits
                                 {
-                                    CharacterId = Convert.ToInt32(character.Id),
-                                    TraitId = Convert.ToInt32(trait.Id),
-                                    TraitName = traitMatches.ElementAt(count).Name,
-                                    SpoilerLevel = trait.SpoilerLevel.ToString() ?? null,
+                                    //CharacterId = Convert.ToInt32(character.Id),
+                                    //TraitId = Convert.ToInt32(trait.Id),
+                                    //TraitName = traitMatches.ElementAt(count).Name,
+                                    //SpoilerLevel = trait.SpoilerLevel.ToString() ?? null,
                                 });
                                 count++;
                             }
@@ -396,13 +396,13 @@ namespace VisualNovelManagerv2.CustomClasses.Database
                             {
                                 vntraitdata.Add(new VnTraitData
                                 {
-                                    TraitId = Convert.ToInt32(trait.Id),
-                                    Name = trait.Name,
-                                    Description = trait.Description,
-                                    Meta = trait.IsMeta.ToString(),
-                                    Chars = Convert.ToInt32(trait.Characters),
-                                    Aliases = ConvertToCsv(trait.Aliases),
-                                    Parents = string.Join(",", trait.Parents)
+                                    //TraitId = Convert.ToInt32(trait.Id),
+                                    //Name = trait.Name,
+                                    //Description = trait.Description,
+                                    //Meta = trait.IsMeta.ToString(),
+                                    //Chars = Convert.ToInt32(trait.Characters),
+                                    //Aliases = ConvertToCsv(trait.Aliases),
+                                    //Parents = string.Join(",", trait.Parents)
                                 });
                             }
                         }

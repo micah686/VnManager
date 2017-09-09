@@ -175,6 +175,7 @@
     <Compile Include="CustomClasses\PasswordBoxBindingBehavior.cs" />
     <Compile Include="CustomClasses\ProcessExtensions.cs" />
     <Compile Include="CustomClasses\RangeEnabledObservableCollection.cs" />
+    <Compile Include="CustomClasses\TinyClasses\MutableKeyValuePair.cs" />
     <Compile Include="CustomClasses\Vndb\HandleError.cs" />
     <Compile Include="CustomClasses\Vndb\RequestOptions.cs" />
     <Compile Include="CustomClasses\TextBoxService.cs" />

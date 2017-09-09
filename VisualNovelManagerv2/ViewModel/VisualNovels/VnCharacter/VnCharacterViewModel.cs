@@ -152,7 +152,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
 
                         foreach (VnCharacterTraits trait in db.Set<VnCharacterTraits>().Where(c=>c.CharacterId== character.CharacterId))
                         {
-                            _traitsCollection.Add(trait.TraitName);
+                            //TODO: FIX ME
+                            //_traitsCollection.Add(trait.TraitName);
                         }
                         break;
                     }                    

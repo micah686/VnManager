@@ -187,6 +187,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
         private uint _vnid = 0;
         private double _progressIncrement = 0;
         private readonly MutableKeyValuePair<bool, DateTime> _didDownloadTagDump = new MutableKeyValuePair<bool, DateTime>(false, DateTime.Now);
+        private readonly MutableKeyValuePair<bool, DateTime> _didDownloadTraitDump= new MutableKeyValuePair<bool, DateTime>(false, DateTime.Now);
         private VndbResponse<VisualNovel> _vnNameList;
         private readonly AddVnViewModelService _exeService;
         private readonly AddVnViewModelService _iconService;

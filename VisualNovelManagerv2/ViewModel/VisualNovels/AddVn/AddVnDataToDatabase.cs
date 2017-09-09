@@ -19,6 +19,7 @@ using VndbSharp.Models.Release;
 using VndbSharp.Models.VisualNovel;
 using System.Globalization;
 using System.Security.Policy;
+using VisualNovelManagerv2.EF.Entity.VnCharacter;
 
 namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
 {
@@ -147,6 +148,93 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                     }
 
 
+                    #region VnCharacter
+
+                    foreach (Character character in characters)
+                    {
+                        #region VnCharacter
+                        context.VnCharacter.Add(new EF.Entity.VnCharacter.VnCharacter
+                        {
+                            VnId = _vnid,
+                            CharacterId = Convert.ToInt32(character.Id),
+                            Name = character.Name,
+                            Original = character.OriginalName,
+                            Gender = character.Gender.ToString(),
+                            BloodType = character.BloodType.ToString(),
+                            Birthday = ConvertBirthday(character.Birthday),
+                            Aliases = ConvertToCsv(character.Aliases),
+                            Description = character.Description,
+                            ImageLink = character.Image,
+                            Bust = Convert.ToInt32(character.Bust),
+                            Waist = Convert.ToInt32(character.Waist),
+                            Hip = Convert.ToInt32(character.Hip),
+                            Height = Convert.ToInt32(character.Height),
+                            Weight = Convert.ToInt32(character.Weight)
+                        });
+                        #endregion
+
+                        #region VnCharacterTraits
+
+                        if (character.Traits.Count <= 0) continue;
+                        await GetDetailsFromTraitDump(character.Traits, character.Id);
+                        //IEnumerable<Trait> traitMatches = GetDetailsFromTraitDump(traitDump, character.Traits);
+                        //int count = 0;
+                        //foreach (TraitMetadata trait in character.Traits)
+                        //{
+                        //    if (traitMatches.Any(c => c.Id == trait.Id))//prevents crashes with awaiting traits
+                        //    {
+                        //        vncharactertraits.Add(new VnCharacterTraits
+                        //        {
+                        //            CharacterId = Convert.ToInt32(character.Id),
+                        //            TraitId = Convert.ToInt32(trait.Id),
+                        //            TraitName = traitMatches.ElementAt(count).Name,
+                        //            SpoilerLevel = trait.SpoilerLevel.ToString() ?? null,
+                        //        });
+                        //        count++;
+                        //    }
+                        //}
+
+                        #endregion
+
+                        #region TraitMatches
+                        //if (traitMatches != null)
+                        //{
+                        //    foreach (Trait trait in traitMatches)
+                        //    {
+                        //        vntraitdata.Add(new VnTraitData
+                        //        {
+                        //            TraitId = Convert.ToInt32(trait.Id),
+                        //            Name = trait.Name,
+                        //            Description = trait.Description,
+                        //            Meta = trait.IsMeta.ToString(),
+                        //            Chars = Convert.ToInt32(trait.Characters),
+                        //            Aliases = ConvertToCsv(trait.Aliases),
+                        //            Parents = string.Join(",", trait.Parents)
+                        //        });
+                        //    }
+                        //}
+
+
+                        #endregion
+
+                        #region VnCharacterVns
+                        foreach (VndbSharp.Models.Character.VisualNovelMetadata vn in character.VisualNovels)
+                        {
+                            context.VnCharacterVns.Add(new VnCharacterVns
+                            {
+                                CharacterId = Convert.ToInt32(character.Id),
+                                VnId = vn.Id,
+                                ReleaseId = Convert.ToInt32(vn.ReleaseId),
+                                SpoilerLevel = vn.SpoilerLevel.ToString() ?? null,
+                                Role = vn.Role.ToString()
+                            });
+                        }
+                        #endregion
+
+                    }
+
+                    #endregion
+
                     #region VnRelease
 
                     foreach (Release release in releases)
@@ -267,6 +355,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
 
                         //IQueryable<VnTagData> foo = context.VnTagData.Where(x => tagsToAdd.Any(y => y.TagId == x.TagId));
                         //tags that AREN'T exact duplicates, that also share the same ID (contents edited online, ID wasn't)
+                        //TODO: check/fix the EXCEPT method
                         List<VnTagData> tagsToDelete = context.VnTagData.Except(tagsToAdd).Where(x => tagsToAdd.Any(y => y.TagId == x.TagId)).ToList();
                         context.RemoveRange(tagsToDelete);
                         context.VnTagData.AddRange(tagsToAdd);
@@ -299,6 +388,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
 
                         #endregion End This Section is for VnInfoTags
 
+                        _didDownloadTagDump.Key = true;
                         //gets a list of items from VnTagData where it contains the tagId from the vn
                         //List<VnTagData> matches = (from ef in context.VnTagData from tag in vnTags where ef.TagId == tag.Id select ef).ToList();
                     }
@@ -339,17 +429,78 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
             }                        
         }
 
-        private IEnumerable<Trait> GetDetailsFromTraitDump(IEnumerable<Trait> traitDump, ReadOnlyCollection<TraitMetadata> traits)
+        private async Task GetDetailsFromTraitDump(ReadOnlyCollection<TraitMetadata> traits, UInt32 charId)
         {
+            try
+            {
+                using (var context = new DatabaseContext())
+                {
+                    //checks if the dump was downloaded, or if 24 hours have passed
+                    if (_didDownloadTraitDump.Key == false || Math.Abs(_didDownloadTraitDump.Value.Subtract(DateTime.Now).TotalHours) >= 24)
+                    {
+                        #region This section deals with the daily TraitDump ONLY
+                        List<Trait> traitDump = (await VndbUtils.GetTraitsDumpAsync()).ToList();
+                        List<VnTraitData> traitsToAdd = traitDump.Select(trait => new VnTraitData
+                        {
+                            TraitId = trait.Id,
+                            Name = trait.Name,
+                            Description = trait.Description,
+                            Meta = trait.IsMeta.ToString(),
+                            Chars = trait.Characters,
+                            Aliases = ConvertToCsv(trait.Aliases),
+                            Parents = trait.Parents != null ? string.Join(",", trait.Parents) : null
+                        }).ToList();
 
-            IEnumerable<Trait> matches = from traitMetadata in traits
-                from tTrait in traitDump
-                where tTrait.Id == traitMetadata.Id
-                select tTrait;
-            if (Globals.StatusBar.ProgressPercentage != null)
-                Globals.StatusBar.ProgressPercentage =
-                    (double) Globals.StatusBar.ProgressPercentage + _progressIncrement;
-            return matches;
+                        //TODO: FIx this so it only finds the modified items, and also deletes from the collection properly
+                        //traits that AREN'T exact duplicates, that also share the same ID (contents edited online, ID wasn't)
+                        List<VnTraitData> traitsToDelete = context.VnTraitData.Where(x => traitsToAdd.Any(y => y.TraitId == x.TraitId && y.Aliases == x.Aliases &&
+                        y.Chars == x.Chars && y.Description == x.Description && y.Meta == x.Meta && y.Name == x.Name && y.Parents == x.Parents)).ToList();
+                        
+                        traitsToAdd.RemoveAll(x => traitsToDelete.Contains(x));
+
+                        //context.RemoveRange(traitsToDelete);
+                        context.VnTraitData.AddRange(traitsToAdd);
+                        #endregion This section deals with the daily TraitDump ONLY
+
+                        #region This Section is for VnCharacterTraits
+                        //gets a list of all traits from the TraitDump where the dump contains the traitIds from the character
+                        List<TraitMetadata> vnCharacterTraits = (from trait in traits from ef in traitDump where trait.Id == ef.Id select trait).ToList();
+                        var vnCharacterTraitsToAdd = vnCharacterTraits.Select(traitMetaData => new VnCharacterTraits
+                        {
+                            CharacterId = charId,
+                            TraitId = traitMetaData.Id,
+                            SpoilerLevel = traitMetaData.SpoilerLevel.ToString()
+                        }).ToList();
+
+                        //list of items to delete where the db DOESN'T contain the exact item from traitsToAdd (indicates something was modified)
+                        List<VnCharacterTraits> vnCharacterTraitsToDelete = context.VnCharacterTraits.Where(x => !vnCharacterTraitsToAdd.Any(y => y.CharacterId == x.CharacterId &&
+                             y.SpoilerLevel == x.SpoilerLevel && y.TraitId == x.TraitId)).ToList();
+
+                        context.VnCharacterTraits.RemoveRange(vnCharacterTraitsToDelete);
+                        //removes all items from the ItemsToAdd where the vnId and TraitId already exists in the database
+                        vnCharacterTraitsToAdd.RemoveAll(x => vnCharacterTraitsToAdd.Where(item => context.VnCharacterTraits.Where(c => c.CharacterId == charId)
+                                .Any(y => y.TraitId == item.TraitId)).Contains(x));
+
+                        context.VnCharacterTraits.AddRange(vnCharacterTraitsToAdd);
+                        context.SaveChanges();
+                        _didDownloadTraitDump.Key = true;
+
+                        #endregion
+                    }
+                    else
+                    {
+                        
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                DebugLogging.WriteDebugLog(ex);
+                throw;
+            }
+
+            //IEnumerable<Trait> matches = from traitMetadata in traits from tTrait in traitDump where tTrait.Id == traitMetadata.Id select tTrait;
+            
         }
 
         private string ConvertBirthday(SimpleDate birthday)
