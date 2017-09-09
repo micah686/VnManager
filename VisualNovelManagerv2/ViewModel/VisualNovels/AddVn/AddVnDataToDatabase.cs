@@ -84,7 +84,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                         #region VnTags
                         if (visualNovel.Tags.Count > 0)
                         {
-                            await GetDetailsFromTagDump(visualNovel.Tags);
+                           // await GetDetailsFromTagDump(visualNovel.Tags);
                         }
 
 
@@ -451,14 +451,11 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                             Parents = trait.Parents != null ? string.Join(",", trait.Parents) : null
                         }).ToList();
 
-                        //TODO: FIx this so it only finds the modified items, and also deletes from the collection properly
-                        //traits that AREN'T exact duplicates, that also share the same ID (contents edited online, ID wasn't)
-                        List<VnTraitData> traitsToDelete = context.VnTraitData.Where(x => traitsToAdd.Any(y => y.TraitId == x.TraitId && y.Aliases == x.Aliases &&
-                        y.Chars == x.Chars && y.Description == x.Description && y.Meta == x.Meta && y.Name == x.Name && y.Parents == x.Parents)).ToList();
-                        
-                        traitsToAdd.RemoveAll(x => traitsToDelete.Contains(x));
+                        //traits that AREN'T exact duplicates, that also share the same ID (contents edited online/ new character/parent/... added to trait, ID wasn't)
+                        List<VnTraitData> traitsToDelete = traitsToAdd.Where(x => context.VnTraitData.Any(y => y.TraitId == x.TraitId && y.Chars == x.Chars && y.Description == x.Description
+                        && y.Meta == x.Meta && y.Name == x.Name && y.Parents == x.Parents && y.Aliases == x.Aliases)).ToList();
 
-                        //context.RemoveRange(traitsToDelete);
+                        traitsToAdd.RemoveAll(x => traitsToDelete.Contains(x));
                         context.VnTraitData.AddRange(traitsToAdd);
                         #endregion This section deals with the daily TraitDump ONLY
 
@@ -473,11 +470,12 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                         }).ToList();
 
                         //list of items to delete where the db DOESN'T contain the exact item from traitsToAdd (indicates something was modified)
-                        List<VnCharacterTraits> vnCharacterTraitsToDelete = context.VnCharacterTraits.Where(x => !vnCharacterTraitsToAdd.Any(y => y.CharacterId == x.CharacterId &&
-                             y.SpoilerLevel == x.SpoilerLevel && y.TraitId == x.TraitId)).ToList();
+                        List<VnCharacterTraits> vnCharacterTraitsToDelete = vnCharacterTraitsToAdd.Where(x => context.VnCharacterTraits.Any(y =>
+                            y.CharacterId == x.CharacterId && y.SpoilerLevel == x.SpoilerLevel && y.TraitId == x.TraitId)).ToList();
+                        vnCharacterTraitsToAdd.RemoveAll(x => vnCharacterTraitsToDelete.Contains(x));
 
                         context.VnCharacterTraits.RemoveRange(vnCharacterTraitsToDelete);
-                        //removes all items from the ItemsToAdd where the vnId and TraitId already exists in the database
+                        //removes all items from the ItemsToAdd when the SpoilerLevel was modified
                         vnCharacterTraitsToAdd.RemoveAll(x => vnCharacterTraitsToAdd.Where(item => context.VnCharacterTraits.Where(c => c.CharacterId == charId)
                                 .Any(y => y.TraitId == item.TraitId)).Contains(x));
 
