@@ -462,7 +462,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                         #region This Section is for VnCharacterTraits
                         //gets a list of all traits from the TraitDump where the dump contains the traitIds from the character
                         List<TraitMetadata> vnCharacterTraits = (from trait in traits from ef in traitDump where trait.Id == ef.Id select trait).ToList();
-                        var vnCharacterTraitsToAdd = vnCharacterTraits.Select(traitMetaData => new VnCharacterTraits
+                        List<VnCharacterTraits> vnCharacterTraitsToAdd = vnCharacterTraits.Select(traitMetaData => new VnCharacterTraits
                         {
                             CharacterId = charId,
                             TraitId = traitMetaData.Id,
@@ -487,7 +487,30 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                     }
                     else
                     {
-                        
+                        #region This Section is for VnCharacterTraits
+                        //gets a list of all traits from the localdb where the database contains the traitIds from the character
+                        List<TraitMetadata> vnCharacterTraits = (from trait in traits from ef in context.VnTraitData where trait.Id == ef.Id select trait).ToList();
+                        List<VnCharacterTraits> vnCharacterTraitsToAdd = vnCharacterTraits.Select(traitMetaData => new VnCharacterTraits
+                        {
+                            CharacterId = charId,
+                            TraitId = traitMetaData.Id,
+                            SpoilerLevel = traitMetaData.SpoilerLevel.ToString()
+                        }).ToList();
+
+                        //list of items to delete where the db DOESN'T contain the exact item from traitsToAdd (indicates something was modified)
+                        List<VnCharacterTraits> vnCharacterTraitsToDelete = vnCharacterTraitsToAdd.Where(x => context.VnCharacterTraits.Any(y =>
+                            y.CharacterId == x.CharacterId && y.SpoilerLevel == x.SpoilerLevel && y.TraitId == x.TraitId)).ToList();
+                        vnCharacterTraitsToAdd.RemoveAll(x => vnCharacterTraitsToDelete.Contains(x));
+
+                        context.VnCharacterTraits.RemoveRange(vnCharacterTraitsToDelete);
+                        //removes all items from the ItemsToAdd when the SpoilerLevel was modified
+                        vnCharacterTraitsToAdd.RemoveAll(x => vnCharacterTraitsToAdd.Where(item => context.VnCharacterTraits.Where(c => c.CharacterId == charId)
+                            .Any(y => y.TraitId == item.TraitId)).Contains(x));
+
+                        context.VnCharacterTraits.AddRange(vnCharacterTraitsToAdd);
+                        context.SaveChanges();
+
+                        #endregion
                     }
                 }
             }
