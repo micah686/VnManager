@@ -15,7 +15,7 @@ using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
 using MvvmValidation;
 using VisualNovelManagerv2.CustomClasses;
-using VisualNovelManagerv2.CustomClasses.Database;
+//using VisualNovelManagerv2.CustomClasses.Database;
 using VisualNovelManagerv2.CustomClasses.Vndb;
 using VisualNovelManagerv2.Design.VisualNovel;
 using VisualNovelManagerv2.Infrastructure;
@@ -209,22 +209,25 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                 await ValidateAsync();
                 if (IsValid == true)
                 {
+                    IsUserInputEnabled = false;
                     if (VnName != null)
-                    {
-                        AddToDatabase atd = new AddToDatabase();
+                    {                        
                         _vnid = _vnNameList.Items[DropdownIndex].Id;
-                        atd.GetId(_vnNameList.Items[DropdownIndex].Id, FileName, IconName);
-                        FileName = String.Empty;
-                        InputVnId = 0;
-                        VnName = string.Empty;
+                        //AddToDatabase atd = new AddToDatabase();
+                        //atd.GetId(_vnNameList.Items[DropdownIndex].Id, FileName, IconName);
+                        //FileName = String.Empty;
+                        //InputVnId = 0;
+                        //VnName = string.Empty;
+                        GetData();
                     }
                     else
                     {
-                        AddToDatabase atd = new AddToDatabase();
                         _vnid = Convert.ToUInt32(InputVnId);
-                        atd.GetId(Convert.ToUInt32(InputVnId), FileName, IconName);
-                        FileName = String.Empty;
-                        InputVnId = 0;
+                        GetData();
+                        //AddToDatabase atd = new AddToDatabase();                        
+                        //atd.GetId(Convert.ToUInt32(InputVnId), FileName, IconName);
+                        //FileName = String.Empty;
+                        //InputVnId = 0;
                     }
                 }
             }

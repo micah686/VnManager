@@ -46,7 +46,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                         pageCount++;
                     }
                     //TODO: See why I added 10 to the value
-                    _progressIncrement = (double) 100 / (10 + characterCount);
+                    _progressIncrement = (double) 100 / (9 + characterCount);
 
                     if (Globals.StatusBar.ProgressPercentage != null)
                         Globals.StatusBar.ProgressPercentage = (double)Globals.StatusBar.ProgressPercentage + _progressIncrement;

@@ -158,6 +158,19 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
         }
         #endregion IsIconEnabled
 
+        #region IsUserInputEnabled
+        private bool _isUserInputEnabled = true;
+        public bool IsUserInputEnabled
+        {
+            get { return _isUserInputEnabled; }
+            set
+            {
+                _isUserInputEnabled = value;
+                RaisePropertyChanged(nameof(IsUserInputEnabled));
+            }
+        }
+        #endregion
+
         #region IsValid
         private bool? _isValid;
         public bool? IsValid

@@ -19,7 +19,9 @@ using VndbSharp.Models.Release;
 using VndbSharp.Models.VisualNovel;
 using System.Globalization;
 using System.Security.Policy;
+using System.Windows.Media.Imaging;
 using VisualNovelManagerv2.EF.Entity.VnCharacter;
+using VisualNovelManagerv2.ViewModel.VisualNovels.VnMain;
 
 namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
 {
@@ -32,6 +34,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
             {
                 using (var context = new DatabaseContext())
                 {
+                    #region VnInfo
                     foreach (VisualNovel visualNovel in visualNovels)
                     {
                         #region VnInfo
@@ -80,16 +83,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                             Renai = visualNovel.VisualNovelLinks.Renai
                         });
                         #endregion
-
-                        #region VnTags
-                        if (visualNovel.Tags.Count > 0)
-                        {
-                           // await GetDetailsFromTagDump(visualNovel.Tags);
-                        }
-
-
-                        #endregion
-
 
                         #region VnScreens
                         if (visualNovel.Screenshots.Count > 0)
@@ -145,8 +138,24 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                             }
                         }
                         #endregion
-                    }
 
+                        if (Globals.StatusBar.ProgressPercentage != null)
+                            Globals.StatusBar.ProgressPercentage = (double)Globals.StatusBar.ProgressPercentage + _progressIncrement;
+
+
+                        #region VnTags
+                        if (visualNovel.Tags.Count > 0)
+                        {
+                            await Task.Run((() => GetDetailsFromTagDump(visualNovel.Tags)));
+                        }
+
+
+                        #endregion
+
+                        if (Globals.StatusBar.ProgressPercentage != null)
+                            Globals.StatusBar.ProgressPercentage = (double)Globals.StatusBar.ProgressPercentage + _progressIncrement;
+                    }
+                    #endregion
 
                     #region VnCharacter
 
@@ -173,50 +182,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                         });
                         #endregion
 
-                        #region VnCharacterTraits
-
-                        if (character.Traits.Count <= 0) continue;
-                        await GetDetailsFromTraitDump(character.Traits, character.Id);
-                        //IEnumerable<Trait> traitMatches = GetDetailsFromTraitDump(traitDump, character.Traits);
-                        //int count = 0;
-                        //foreach (TraitMetadata trait in character.Traits)
-                        //{
-                        //    if (traitMatches.Any(c => c.Id == trait.Id))//prevents crashes with awaiting traits
-                        //    {
-                        //        vncharactertraits.Add(new VnCharacterTraits
-                        //        {
-                        //            CharacterId = Convert.ToInt32(character.Id),
-                        //            TraitId = Convert.ToInt32(trait.Id),
-                        //            TraitName = traitMatches.ElementAt(count).Name,
-                        //            SpoilerLevel = trait.SpoilerLevel.ToString() ?? null,
-                        //        });
-                        //        count++;
-                        //    }
-                        //}
-
-                        #endregion
-
-                        #region TraitMatches
-                        //if (traitMatches != null)
-                        //{
-                        //    foreach (Trait trait in traitMatches)
-                        //    {
-                        //        vntraitdata.Add(new VnTraitData
-                        //        {
-                        //            TraitId = Convert.ToInt32(trait.Id),
-                        //            Name = trait.Name,
-                        //            Description = trait.Description,
-                        //            Meta = trait.IsMeta.ToString(),
-                        //            Chars = Convert.ToInt32(trait.Characters),
-                        //            Aliases = ConvertToCsv(trait.Aliases),
-                        //            Parents = string.Join(",", trait.Parents)
-                        //        });
-                        //    }
-                        //}
-
-
-                        #endregion
-
                         #region VnCharacterVns
                         foreach (VndbSharp.Models.Character.VisualNovelMetadata vn in character.VisualNovels)
                         {
@@ -231,6 +196,19 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                         }
                         #endregion
 
+                        if (Globals.StatusBar.ProgressPercentage != null)
+                            Globals.StatusBar.ProgressPercentage = (double)Globals.StatusBar.ProgressPercentage + _progressIncrement;
+
+                        #region VnCharacterTraits
+                        if (character.Traits.Count > 0)
+                        {
+                            await Task.Run(() => GetDetailsFromTraitDump(character.Traits, character.Id));
+                            Console.WriteLine($@"{character.Id}...{character.Name}");
+                        }
+                        #endregion
+
+                        if (Globals.StatusBar.ProgressPercentage != null)
+                            Globals.StatusBar.ProgressPercentage = (double)Globals.StatusBar.ProgressPercentage + _progressIncrement;
                     }
 
                     #endregion
@@ -239,6 +217,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
 
                     foreach (Release release in releases)
                     {
+                        #region VnRelease
                         context.VnRelease.Add(new EF.Entity.VnRelease.VnRelease
                         {
                             VnId = _vnid,
@@ -261,7 +240,9 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                             Voiced = release.Voiced.ToString(),
                             Animation = string.Join(",", release.Animation)
                         });
+                        #endregion
 
+                        #region VnReleaseMedia
                         if (release.Media.Count <= 0) continue;
                         foreach (Media media in release.Media)
                         {
@@ -272,7 +253,9 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                                 Quantity = Convert.ToInt32(media.Quantity)
                             });
                         }
+                        #endregion
 
+                        #region VnReleaseProducers
                         if (release.Producers.Count <= 0) continue;
                         foreach (ProducerRelease producer in release.Producers)
                         {
@@ -287,7 +270,9 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                                 ProducerType = producer.ProducerType
                             });
                         }
+                        #endregion
 
+                        #region VnReleaseVns
                         if (release.VisualNovels.Count <= 0) continue;
                         foreach (VndbSharp.Models.Release.VisualNovelMetadata vn in release.VisualNovels)
                         {
@@ -299,6 +284,10 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                                 Original = vn.OriginalName
                             });
                         }
+                        #endregion
+
+                        if (Globals.StatusBar.ProgressPercentage != null)
+                            Globals.StatusBar.ProgressPercentage = (double)Globals.StatusBar.ProgressPercentage + _progressIncrement;
                     }
                     
 
@@ -313,6 +302,9 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                         LastPlayed = String.Empty,
                         PlayTime = "0,0,0,0"
                     });
+
+                    if (Globals.StatusBar.ProgressPercentage != null)
+                        Globals.StatusBar.ProgressPercentage = (double)Globals.StatusBar.ProgressPercentage + _progressIncrement;
                     #endregion
 
                     context.SaveChanges();
@@ -323,10 +315,30 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                 DebugLogging.WriteDebugLog(ex);
                 throw;
             }
+            finally
+            {
+                IsUserInputEnabled = true;
+                InputVnId = 0;
+                FileName = String.Empty;
+                VnName = String.Empty;
+                IconName = String.Empty;
+
+                if (Globals.StatusBar.ProgressPercentage != null)
+                    Globals.StatusBar.ProgressPercentage = 100;
+                Globals.StatusBar.ProgressStatus = new BitmapImage(new Uri($@"{Globals.DirectoryPath}\Data\res\icons\statusbar\ok.png"));
+                Globals.StatusBar.ProgressText = "Done";
+                await Task.Delay(1500);
+                Globals.StatusBar.ProgressStatus = null;
+                Globals.StatusBar.ProgressPercentage = null;
+                Globals.StatusBar.IsDbProcessing = false;
+                Globals.StatusBar.IsWorkProcessing = false;
+                Globals.StatusBar.ProgressText = string.Empty;
+                VnMainViewModel.ClearCollectionsCommand.Execute(null);
+                VnMainViewModel.LoadBindVnDataCommand.Execute(null);
+
+            }
         }
-
-
-
+    
 
         private async Task GetDetailsFromTagDump(ReadOnlyCollection<TagMetadata> vnTags)
         {
@@ -464,13 +476,15 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                         List<TraitMetadata> vnCharacterTraits = (from trait in traits from ef in traitDump where trait.Id == ef.Id select trait).ToList();
                         List<VnCharacterTraits> vnCharacterTraitsToAdd = vnCharacterTraits.Select(traitMetaData => new VnCharacterTraits
                         {
+                            Id = (int.MinValue + new Random().Next()),
                             CharacterId = charId,
                             TraitId = traitMetaData.Id,
                             SpoilerLevel = traitMetaData.SpoilerLevel.ToString()
                         }).ToList();
 
                         //list of items to delete where the db DOESN'T contain the exact item from traitsToAdd (indicates something was modified)
-                        List<VnCharacterTraits> vnCharacterTraitsToDelete = vnCharacterTraitsToAdd.Where(x => context.VnCharacterTraits.Any(y =>
+                        //TODO: this is slow
+                        List<VnCharacterTraits> vnCharacterTraitsToDelete = context.VnCharacterTraits.Where(x => !vnCharacterTraitsToAdd.Any(y =>
                             y.CharacterId == x.CharacterId && y.SpoilerLevel == x.SpoilerLevel && y.TraitId == x.TraitId)).ToList();
                         vnCharacterTraitsToAdd.RemoveAll(x => vnCharacterTraitsToDelete.Contains(x));
 
@@ -518,10 +532,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
             {
                 DebugLogging.WriteDebugLog(ex);
                 throw;
-            }
-
-            //IEnumerable<Trait> matches = from traitMetadata in traits from tTrait in traitDump where tTrait.Id == traitMetadata.Id select tTrait;
-            
+            }            
         }
 
         private string ConvertBirthday(SimpleDate birthday)

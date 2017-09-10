@@ -167,7 +167,6 @@
     <Compile Include="CustomClasses\BindableRichTextBox.cs" />
     <Compile Include="Converters\ConvertRichTextDocument.cs" />
     <Compile Include="CustomClasses\ConfigSettings\ValidateXml.cs" />
-    <Compile Include="CustomClasses\Database\AddToDatabase.cs" />
     <Compile Include="CustomClasses\DebugLogging.cs" />
     <Compile Include="CustomClasses\MeasureStringSize.cs" />
     <Compile Include="Converters\NullImageConverter.cs" />
@@ -463,7 +462,9 @@
       <Name>VndbSharp</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="CustomClasses\Database\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>ROBOCOPY "$(TargetDir) " "$(TargetDir)Data\libs\ " *.dll *.pdb *.xml /MOVE
