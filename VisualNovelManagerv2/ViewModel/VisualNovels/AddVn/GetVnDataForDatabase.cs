@@ -20,7 +20,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
         private async void GetData()
         {
 
-            _vnid = 4;
             Globals.StatusBar.ProgressPercentage = 0;
             Globals.StatusBar.IsDbProcessing = true;
             Globals.StatusBar.IsWorkProcessing = true;
