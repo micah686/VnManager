@@ -386,8 +386,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                         }).ToList();
 
                         //list of items to delete where the db DOESN'T contain the exact item from tagsToAdd (indicates something was modified)
-                        List<VnInfoTags> vnInfoTagsToDelete = context.VnInfoTags.Where(x => !vnInfoTagsToAdd.Any(y => y.VnId == x.VnId &&
-                            Convert.ToDecimal(y.Score) == Convert.ToDecimal(x.Score) && y.Spoiler == x.Spoiler && y.TagId == x.TagId)).ToList();
+                        List<VnInfoTags> vnInfoTagsToDelete = context.VnInfoTags.Except(vnInfoTagsToAdd).ToList();
 
                         context.VnInfoTags.RemoveRange(vnInfoTagsToDelete);
 
@@ -416,8 +415,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                             Spoiler = tagMetadata.SpoilerLevel.ToString()
                         }).ToList();
                         //list of items to delete where the db DOESN'T contain the exact item from tagsToAdd (indicates something was modified)
-                        List<VnInfoTags> vnInfoTagsToDelete = context.VnInfoTags.Where(x => !vnInfoTagsToAdd.Any(y => y.VnId == x.VnId &&
-                             Convert.ToDecimal(y.Score) == Convert.ToDecimal(x.Score) && y.Spoiler == x.Spoiler && y.TagId == x.TagId)).ToList();
+                        List<VnInfoTags> vnInfoTagsToDelete = context.VnInfoTags.Except(vnInfoTagsToAdd).ToList();
 
                         context.VnInfoTags.RemoveRange(vnInfoTagsToDelete);
 
