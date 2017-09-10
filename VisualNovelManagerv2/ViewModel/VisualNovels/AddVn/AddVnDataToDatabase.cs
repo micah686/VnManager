@@ -464,6 +464,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                         }).ToList();
 
                         //traits that AREN'T exact duplicates, that also share the same ID (contents edited online/ new character/parent/... added to trait, ID wasn't)
+                        //TODO: see about speeding this up
                         List<VnTraitData> traitsToDelete = traitsToAdd.Where(x => context.VnTraitData.Any(y => y.TraitId == x.TraitId && y.Chars == x.Chars && y.Description == x.Description
                         && y.Meta == x.Meta && y.Name == x.Name && y.Parents == x.Parents && y.Aliases == x.Aliases)).ToList();
 
@@ -483,9 +484,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                         }).ToList();
 
                         //list of items to delete where the db DOESN'T contain the exact item from traitsToAdd (indicates something was modified)
-                        //TODO: this is slow
-                        List<VnCharacterTraits> vnCharacterTraitsToDelete = context.VnCharacterTraits.Where(x => !vnCharacterTraitsToAdd.Any(y =>
-                            y.CharacterId == x.CharacterId && y.SpoilerLevel == x.SpoilerLevel && y.TraitId == x.TraitId)).ToList();
+                        List<VnCharacterTraits> vnCharacterTraitsToDelete = context.VnCharacterTraits.Except(vnCharacterTraitsToAdd).ToList();
                         vnCharacterTraitsToAdd.RemoveAll(x => vnCharacterTraitsToDelete.Contains(x));
 
                         context.VnCharacterTraits.RemoveRange(vnCharacterTraitsToDelete);
@@ -506,14 +505,14 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                         List<TraitMetadata> vnCharacterTraits = (from trait in traits from ef in context.VnTraitData where trait.Id == ef.Id select trait).ToList();
                         List<VnCharacterTraits> vnCharacterTraitsToAdd = vnCharacterTraits.Select(traitMetaData => new VnCharacterTraits
                         {
+                            Id = (int.MinValue + new Random().Next()),
                             CharacterId = charId,
                             TraitId = traitMetaData.Id,
                             SpoilerLevel = traitMetaData.SpoilerLevel.ToString()
                         }).ToList();
 
                         //list of items to delete where the db DOESN'T contain the exact item from traitsToAdd (indicates something was modified)
-                        List<VnCharacterTraits> vnCharacterTraitsToDelete = vnCharacterTraitsToAdd.Where(x => context.VnCharacterTraits.Any(y =>
-                            y.CharacterId == x.CharacterId && y.SpoilerLevel == x.SpoilerLevel && y.TraitId == x.TraitId)).ToList();
+                        List<VnCharacterTraits> vnCharacterTraitsToDelete = context.VnCharacterTraits.Except(vnCharacterTraitsToAdd).ToList();
                         vnCharacterTraitsToAdd.RemoveAll(x => vnCharacterTraitsToDelete.Contains(x));
 
                         context.VnCharacterTraits.RemoveRange(vnCharacterTraitsToDelete);
