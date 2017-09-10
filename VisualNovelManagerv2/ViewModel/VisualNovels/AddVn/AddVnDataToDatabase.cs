@@ -354,10 +354,10 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                         }).ToList();
 
                         //IQueryable<VnTagData> foo = context.VnTagData.Where(x => tagsToAdd.Any(y => y.TagId == x.TagId));
-                        //tags that AREN'T exact duplicates, that also share the same ID (contents edited online, ID wasn't)
-                        //TODO: check/fix the EXCEPT method
-                        List<VnTagData> tagsToDelete = context.VnTagData.Except(tagsToAdd).Where(x => tagsToAdd.Any(y => y.TagId == x.TagId)).ToList();
-                        context.RemoveRange(tagsToDelete);
+                        //tags that AREN'T exact duplicates, that also share the same ID (contents edited online/ new vn, parent,..., ID wasn't)
+                        List<VnTagData> tagsToDelete = tagsToAdd.Where(x => context.VnTagData.Any(y => y.TagId == x.TagId && y.Aliases == x.Aliases && y.Cat == x.Cat
+                            && y.Description == x.Description && y.Meta == x.Meta && y.Name == x.Name && y.Parents == x.Parents && y.Vns == x.Vns)).ToList();
+                        tagsToAdd.RemoveAll(x => tagsToDelete.Contains(x));
                         context.VnTagData.AddRange(tagsToAdd);
                         #endregion This section deals with the daily TagDump ONLY
 
