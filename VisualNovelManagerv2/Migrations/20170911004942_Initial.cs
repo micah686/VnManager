@@ -267,12 +267,12 @@ namespace VisualNovelManagerv2.Migrations
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Aliases = table.Column<string>(type: "TEXT", nullable: true),
-                    Chars = table.Column<int>(type: "INTEGER", nullable: true),
+                    Chars = table.Column<uint>(type: "INTEGER", nullable: false),
                     Description = table.Column<string>(type: "TEXT", nullable: true),
                     Meta = table.Column<string>(type: "TEXT", nullable: true),
                     Name = table.Column<string>(type: "TEXT", nullable: true),
                     Parents = table.Column<string>(type: "TEXT", nullable: true),
-                    TraitId = table.Column<int>(type: "INTEGER", nullable: true)
+                    TraitId = table.Column<uint>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -455,10 +455,9 @@ namespace VisualNovelManagerv2.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    CharacterId = table.Column<int>(type: "INTEGER", nullable: true),
+                    CharacterId = table.Column<uint>(type: "INTEGER", nullable: false),
                     SpoilerLevel = table.Column<string>(type: "TEXT", nullable: true),
-                    TraitId = table.Column<int>(type: "INTEGER", nullable: true),
-                    TraitName = table.Column<string>(type: "TEXT", nullable: true),
+                    TraitId = table.Column<uint>(type: "INTEGER", nullable: false),
                     VnCharacterId = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>

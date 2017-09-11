@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -379,9 +380,9 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
 
                         //IQueryable<VnTagData> foo = context.VnTagData.Where(x => tagsToAdd.Any(y => y.TagId == x.TagId));
                         //tags that AREN'T exact duplicates, that also share the same ID (contents edited online/ new vn, parent,..., ID wasn't)
-                        List<VnTagData> tagsToDelete = tagsToAdd.Where(x => context.VnTagData.Any(y => y.TagId == x.TagId && y.Aliases == x.Aliases && y.Cat == x.Cat
-                            && y.Description == x.Description && y.Meta == x.Meta && y.Name == x.Name && y.Parents == x.Parents && y.Vns == x.Vns)).ToList();
+                        List<VnTagData> tagsToDelete = tagsToAdd.Intersect(context.VnTagData).ToList();
                         tagsToAdd.RemoveAll(x => tagsToDelete.Contains(x));
+
                         context.VnTagData.AddRange(tagsToAdd);
                         #endregion This section deals with the daily TagDump ONLY
 
@@ -473,13 +474,12 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                             Parents = trait.Parents != null ? string.Join(",", trait.Parents) : null
                         }).ToList();
 
-                        //traits that AREN'T exact duplicates, that also share the same ID (contents edited online/ new character/parent/... added to trait, ID wasn't)
-                        //TODO: see about speeding this up
-                        List<VnTraitData> traitsToDelete = traitsToAdd.Where(x => context.VnTraitData.Any(y => y.TraitId == x.TraitId && y.Chars == x.Chars && y.Description == x.Description
-                        && y.Meta == x.Meta && y.Name == x.Name && y.Parents == x.Parents && y.Aliases == x.Aliases)).ToList();
-
+                        //traits that AREN'T exact duplicates, that also share the same ID (contents edited online/ new character/parent/... added to trait, ID wasn't), using custom .Equals
+                        List<VnTraitData> traitsToDelete = traitsToAdd.Intersect(context.VnTraitData).ToList();
                         traitsToAdd.RemoveAll(x => traitsToDelete.Contains(x));
+
                         context.VnTraitData.AddRange(traitsToAdd);
+
                         #endregion This section deals with the daily TraitDump ONLY
 
                         #region This Section is for VnCharacterTraits
@@ -498,8 +498,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
 
                         context.VnCharacterTraits.RemoveRange(vnCharacterTraitsToDelete);
                         //removes all items from the ItemsToAdd when the SpoilerLevel was modified
-                        vnCharacterTraitsToAdd.RemoveAll(x => vnCharacterTraitsToAdd.Where(item => context.VnCharacterTraits.Where(c => c.CharacterId == charId)
-                                .Any(y => y.TraitId == item.TraitId)).Contains(x));
+                        vnCharacterTraitsToAdd.RemoveAll(x =>vnCharacterTraitsToAdd.Where(y => x.SpoilerLevel != y.SpoilerLevel).Contains(x));
 
                         context.VnCharacterTraits.AddRange(vnCharacterTraitsToAdd);
                         context.SaveChanges();
@@ -525,8 +524,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
 
                         context.VnCharacterTraits.RemoveRange(vnCharacterTraitsToDelete);
                         //removes all items from the ItemsToAdd when the SpoilerLevel was modified
-                        vnCharacterTraitsToAdd.RemoveAll(x => vnCharacterTraitsToAdd.Where(item => context.VnCharacterTraits.Where(c => c.CharacterId == charId)
-                            .Any(y => y.TraitId == item.TraitId)).Contains(x));
+                        vnCharacterTraitsToAdd.RemoveAll(x => vnCharacterTraitsToAdd.Where(y => x.SpoilerLevel != y.SpoilerLevel).Contains(x));
 
                         context.VnCharacterTraits.AddRange(vnCharacterTraitsToAdd);
                         context.SaveChanges();

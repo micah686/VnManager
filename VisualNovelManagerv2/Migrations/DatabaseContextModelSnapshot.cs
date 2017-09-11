@@ -71,13 +71,11 @@ namespace VisualNovelManagerv2.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int?>("CharacterId");
+                    b.Property<uint>("CharacterId");
 
                     b.Property<string>("SpoilerLevel");
 
-                    b.Property<int?>("TraitId");
-
-                    b.Property<string>("TraitName");
+                    b.Property<uint>("TraitId");
 
                     b.Property<int?>("VnCharacterId");
 
@@ -670,7 +668,7 @@ namespace VisualNovelManagerv2.Migrations
 
                     b.Property<string>("Aliases");
 
-                    b.Property<int?>("Chars");
+                    b.Property<uint>("Chars");
 
                     b.Property<string>("Description");
 
@@ -680,7 +678,7 @@ namespace VisualNovelManagerv2.Migrations
 
                     b.Property<string>("Parents");
 
-                    b.Property<int?>("TraitId");
+                    b.Property<uint>("TraitId");
 
                     b.HasKey("Id");
 
