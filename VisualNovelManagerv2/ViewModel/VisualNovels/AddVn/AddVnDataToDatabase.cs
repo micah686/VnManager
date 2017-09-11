@@ -34,7 +34,9 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
             try
             {
                 #region VnInfo
-                foreach (VisualNovel visualNovel in visualNovels)
+
+                VisualNovel visualNovel = visualNovels.FirstOrDefault();
+                if (visualNovel != null)
                 {
                     using (var context = new DatabaseContext())
                     {
@@ -144,14 +146,11 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                             Globals.StatusBar.ProgressPercentage = (double)Globals.StatusBar.ProgressPercentage + _progressIncrement;
                     }
 
-
                     #region VnTags
                     if (visualNovel.Tags.Count > 0)
                     {
                         await Task.Run((() => GetDetailsFromTagDump(visualNovel.Tags)));
                     }
-
-
                     #endregion
 
                     if (Globals.StatusBar.ProgressPercentage != null)

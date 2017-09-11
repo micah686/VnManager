@@ -32,6 +32,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                     RequestOptions ro = new RequestOptions { Count = 25 };
                     int pageCount = 1;
                     int characterCount = 0;
+                    int releasesCount = 0;
 
 
                     List<Character> characterList = new List<Character>();
@@ -44,11 +45,11 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                         characterCount = characterCount + characters.Count;
                         pageCount++;
                     }
-                    //TODO: See why I added 10 to the value
-                    _progressIncrement = (double) 100 / (9 + characterCount);
 
+                    //set progress percentage to a set value until I get the values for each, then I get the real double I need
+                    //TODO: make it so the max percentage is 100, not over
                     if (Globals.StatusBar.ProgressPercentage != null)
-                        Globals.StatusBar.ProgressPercentage = (double)Globals.StatusBar.ProgressPercentage + _progressIncrement;
+                        Globals.StatusBar.ProgressPercentage = 3;
 
                     hasMore = true;
                     pageCount = 1;
@@ -56,7 +57,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
 
                     VndbResponse<VisualNovel> visualNovels = await client.GetVisualNovelAsync(VndbFilters.Id.Equals(_vnid), VndbFlags.FullVisualNovel);
                     if (Globals.StatusBar.ProgressPercentage != null)
-                        Globals.StatusBar.ProgressPercentage = (double) Globals.StatusBar.ProgressPercentage + _progressIncrement;
+                        Globals.StatusBar.ProgressPercentage = 6;
 
 
                     List<Release> releaseList = new List<Release>();
@@ -66,11 +67,14 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                         VndbResponse<Release> releases = await client.GetReleaseAsync(VndbFilters.VisualNovel.Equals(_vnid), VndbFlags.FullRelease, ro);
                         hasMore = releases.HasMore;
                         releaseList.AddRange(releases.Items);
+                        releasesCount = releasesCount + releases.Count;
                         pageCount++;
                     }
                     if (Globals.StatusBar.ProgressPercentage != null)
-                        Globals.StatusBar.ProgressPercentage = (double)Globals.StatusBar.ProgressPercentage + _progressIncrement;
+                        Globals.StatusBar.ProgressPercentage = 9;
 
+
+                    _progressIncrement = (double) 91 / (2 + characterCount + releasesCount);
                     //await save vn data here
                     await AddToDatabase(visualNovels, releaseList, characterList);
                 }
