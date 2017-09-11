@@ -7,7 +7,6 @@ namespace VisualNovelManagerv2.EF.Entity.VnInfo
         public int Id { get; set; }
         public uint? VnId { get; set; }
         public uint TagId { get; set; }
-        //public string TagName { get; set; }
         public double Score { get; set; }
         public string Spoiler { get; set; }
     }

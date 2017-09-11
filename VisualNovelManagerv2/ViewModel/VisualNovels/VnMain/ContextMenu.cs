@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using GalaSoft.MvvmLight.Messaging;
 using VisualNovelManagerv2.CustomClasses;
+using VisualNovelManagerv2.CustomClasses.TinyClasses;
 using VisualNovelManagerv2.EF.Context;
 using VisualNovelManagerv2.EF.Entity.VnOther;
 

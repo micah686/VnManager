@@ -475,7 +475,7 @@ namespace VisualNovelManagerv2.Migrations
                     Birthday = table.Column<string>(type: "TEXT", nullable: true),
                     BloodType = table.Column<string>(type: "TEXT", nullable: true),
                     Bust = table.Column<int>(type: "INTEGER", nullable: true),
-                    CharacterId = table.Column<int>(type: "INTEGER", nullable: true),
+                    CharacterId = table.Column<uint>(type: "INTEGER", nullable: false),
                     Description = table.Column<string>(type: "TEXT", nullable: true),
                     Gender = table.Column<string>(type: "TEXT", nullable: true),
                     Height = table.Column<int>(type: "INTEGER", nullable: true),

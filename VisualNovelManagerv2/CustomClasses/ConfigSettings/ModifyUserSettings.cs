@@ -2,6 +2,7 @@
 using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
+using VisualNovelManagerv2.CustomClasses.TinyClasses;
 using VisualNovelManagerv2.Design.Settings;
 
 namespace VisualNovelManagerv2.CustomClasses.ConfigSettings

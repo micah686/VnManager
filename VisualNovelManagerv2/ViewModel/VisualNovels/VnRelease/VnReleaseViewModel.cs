@@ -7,6 +7,7 @@ using System.Windows.Media.Imaging;
 using GalaSoft.MvvmLight;
 using VisualNovelManagerv2.Converters;
 using VisualNovelManagerv2.CustomClasses;
+using VisualNovelManagerv2.CustomClasses.TinyClasses;
 using VisualNovelManagerv2.Design.VisualNovel;
 using VisualNovelManagerv2.EF.Context;
 using VisualNovelManagerv2.EF.Entity.VnRelease;

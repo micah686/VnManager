@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using VisualNovelManagerv2.CustomClasses.TinyClasses;
 using VndbSharp.Interfaces;
 using VndbSharp.Models.Errors;
 

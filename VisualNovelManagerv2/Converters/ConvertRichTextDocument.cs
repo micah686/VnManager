@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Documents;
 using VisualNovelManagerv2.CustomClasses;
 using VisualNovelManagerv2.CustomClasses.ConfigSettings;
+using VisualNovelManagerv2.CustomClasses.TinyClasses;
 
 namespace VisualNovelManagerv2.Converters
 {

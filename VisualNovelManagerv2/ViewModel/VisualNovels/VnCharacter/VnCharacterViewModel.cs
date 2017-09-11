@@ -10,6 +10,7 @@ using System.Windows.Media.Imaging;
 using GalaSoft.MvvmLight;
 using VisualNovelManagerv2.Converters;
 using VisualNovelManagerv2.CustomClasses;
+using VisualNovelManagerv2.CustomClasses.TinyClasses;
 using VisualNovelManagerv2.Design.VisualNovel;
 using VisualNovelManagerv2.EF.Context;
 using VisualNovelManagerv2.EF.Entity.VnCharacter;
@@ -150,11 +151,16 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
                         VnCharacterModel.Height = character.Height.ToString();
                         VnCharacterModel.Weight = character.Weight.ToString();
 
-                        foreach (VnCharacterTraits trait in db.Set<VnCharacterTraits>().Where(c=>c.CharacterId== character.CharacterId))
-                        {
-                            //TODO: FIX ME
-                            //_traitsCollection.Add(trait.TraitName);
-                        }
+                        List<string> traitNames = (from charactr in db.VnCharacterTraits
+                            where charactr.CharacterId.Equals(character.CharacterId)
+                            join trait in db.VnTraitData on charactr.TraitId equals trait.TraitId
+                            select trait.Name).ToList();
+                        //_traitsCollection.InsertRange(traitNames);
+                        //foreach (VnCharacterTraits trait in db.Set<VnCharacterTraits>().Where(c=>c.CharacterId== character.CharacterId))
+                        //{
+                        //    //TODO: FIX ME
+                        //    //_traitsCollection.Add(trait.TraitName);
+                        //}
                         break;
                     }                    
                     db.Dispose();

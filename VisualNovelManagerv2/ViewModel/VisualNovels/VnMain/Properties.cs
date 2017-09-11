@@ -95,8 +95,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
         #endregion
 
         #region ObservableCollectionVnTag
-        private ObservableCollection<string> _vnInfoTagCollection = new ObservableCollection<string>();
-        public ObservableCollection<string> VnInfoTagCollection
+        private RangeEnabledObservableCollection<string> _vnInfoTagCollection = new RangeEnabledObservableCollection<string>();
+        public RangeEnabledObservableCollection<string> VnInfoTagCollection
         {
             get { return _vnInfoTagCollection; }
             set

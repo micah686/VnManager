@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using MvvmValidation;
 using VisualNovelManagerv2.CustomClasses;
+using VisualNovelManagerv2.CustomClasses.TinyClasses;
 using VisualNovelManagerv2.CustomClasses.Vndb;
 using VndbSharp;
 using VndbSharp.Models.Common;

@@ -167,12 +167,12 @@
     <Compile Include="CustomClasses\BindableRichTextBox.cs" />
     <Compile Include="Converters\ConvertRichTextDocument.cs" />
     <Compile Include="CustomClasses\ConfigSettings\ValidateXml.cs" />
-    <Compile Include="CustomClasses\DebugLogging.cs" />
-    <Compile Include="CustomClasses\MeasureStringSize.cs" />
+    <Compile Include="CustomClasses\TinyClasses\DebugLogging.cs" />
+    <Compile Include="CustomClasses\TinyClasses\MeasureStringSize.cs" />
     <Compile Include="Converters\NullImageConverter.cs" />
     <Compile Include="CustomClasses\ConfigSettings\ModifyUserSettings.cs" />
     <Compile Include="CustomClasses\PasswordBoxBindingBehavior.cs" />
-    <Compile Include="CustomClasses\ProcessExtensions.cs" />
+    <Compile Include="CustomClasses\TinyClasses\ProcessExtensions.cs" />
     <Compile Include="CustomClasses\RangeEnabledObservableCollection.cs" />
     <Compile Include="CustomClasses\TinyClasses\MutableKeyValuePair.cs" />
     <Compile Include="CustomClasses\Vndb\HandleError.cs" />
@@ -218,9 +218,9 @@
     <Compile Include="EF\Entity\VnUserList\VnWishList.cs" />
     <Compile Include="Globals.cs" />
     <Compile Include="Infrastructure\ValidatableViewModelBase.cs" />
-    <Compile Include="Migrations\20170911004942_Initial.cs" />
-    <Compile Include="Migrations\20170911004942_Initial.designer.cs">
-      <DependentUpon>20170911004942_Initial.cs</DependentUpon>
+    <Compile Include="Migrations\20170911203412_Initial.cs" />
+    <Compile Include="Migrations\20170911203412_Initial.designer.cs">
+      <DependentUpon>20170911203412_Initial.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\DatabaseContextModelSnapshot.cs" />
     <Compile Include="Pages\Links\About\FullText.xaml.cs">
@@ -462,9 +462,7 @@
       <Name>VndbSharp</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="CustomClasses\Database\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>ROBOCOPY "$(TargetDir) " "$(TargetDir)Data\libs\ " *.dll *.pdb *.xml /MOVE

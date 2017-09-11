@@ -31,7 +31,7 @@ namespace VisualNovelManagerv2.Migrations
 
                     b.Property<int?>("Bust");
 
-                    b.Property<int?>("CharacterId");
+                    b.Property<uint>("CharacterId");
 
                     b.Property<string>("Description");
 

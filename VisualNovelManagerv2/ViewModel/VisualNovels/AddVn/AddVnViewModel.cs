@@ -15,6 +15,7 @@ using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
 using MvvmValidation;
 using VisualNovelManagerv2.CustomClasses;
+using VisualNovelManagerv2.CustomClasses.TinyClasses;
 //using VisualNovelManagerv2.CustomClasses.Database;
 using VisualNovelManagerv2.CustomClasses.Vndb;
 using VisualNovelManagerv2.Design.VisualNovel;
@@ -202,33 +203,28 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
         {
             try
             {
+                IsUserInputEnabled = false;
                 ValidateExe();
                 //set validation rules here, so they are are checked on submit
                 ConfigureValidationRules();
                 Validator.ResultChanged += OnValidationResultChanged;
                 await ValidateAsync();
                 if (IsValid == true)
-                {
-                    IsUserInputEnabled = false;
-                    if (VnName != null)
+                {                    
+                    if (!string.IsNullOrEmpty(VnName))
                     {                        
                         _vnid = _vnNameList.Items[DropdownIndex].Id;
-                        //AddToDatabase atd = new AddToDatabase();
-                        //atd.GetId(_vnNameList.Items[DropdownIndex].Id, FileName, IconName);
-                        //FileName = String.Empty;
-                        //InputVnId = 0;
-                        //VnName = string.Empty;
                         GetData();
                     }
                     else
                     {
                         _vnid = Convert.ToUInt32(InputVnId);
                         GetData();
-                        //AddToDatabase atd = new AddToDatabase();                        
-                        //atd.GetId(Convert.ToUInt32(InputVnId), FileName, IconName);
-                        //FileName = String.Empty;
-                        //InputVnId = 0;
                     }
+                }
+                else
+                {
+                    IsUserInputEnabled = true;
                 }
             }
             catch (Exception ex)

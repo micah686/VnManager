@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Management;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace VisualNovelManagerv2.CustomClasses
+namespace VisualNovelManagerv2.CustomClasses.TinyClasses
 {
     public static class ProcessExtensions
     {

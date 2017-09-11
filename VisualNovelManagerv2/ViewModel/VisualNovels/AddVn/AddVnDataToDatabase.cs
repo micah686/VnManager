@@ -21,6 +21,7 @@ using VndbSharp.Models.VisualNovel;
 using System.Globalization;
 using System.Security.Policy;
 using System.Windows.Media.Imaging;
+using VisualNovelManagerv2.CustomClasses.TinyClasses;
 using VisualNovelManagerv2.EF.Entity.VnCharacter;
 using VisualNovelManagerv2.ViewModel.VisualNovels.VnMain;
 
@@ -168,7 +169,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                         context.VnCharacter.Add(new EF.Entity.VnCharacter.VnCharacter
                         {
                             VnId = _vnid,
-                            CharacterId = Convert.ToInt32(character.Id),
+                            CharacterId = character.Id,
                             Name = character.Name,
                             Original = character.OriginalName,
                             Gender = character.Gender.ToString(),
@@ -321,15 +322,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                 #endregion
 
                 
-            }
-            catch (Exception ex)
-            {
-                DebugLogging.WriteDebugLog(ex);
-                throw;
-            }
-            finally
-            {
-                IsUserInputEnabled = true;
                 InputVnId = 0;
                 FileName = String.Empty;
                 VnName = String.Empty;
@@ -347,7 +339,15 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                 Globals.StatusBar.ProgressText = string.Empty;
                 VnMainViewModel.ClearCollectionsCommand.Execute(null);
                 VnMainViewModel.LoadBindVnDataCommand.Execute(null);
-
+            }
+            catch (Exception ex)
+            {
+                DebugLogging.WriteDebugLog(ex);
+                throw;
+            }
+            finally
+            {
+                IsUserInputEnabled = true;
             }
         }
     

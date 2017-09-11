@@ -15,6 +15,7 @@ using System.Windows.Media.Imaging;
 using Microsoft.EntityFrameworkCore;
 using MvvmValidation;
 using VisualNovelManagerv2.CustomClasses;
+using VisualNovelManagerv2.CustomClasses.TinyClasses;
 using VisualNovelManagerv2.CustomClasses.Vndb;
 using VisualNovelManagerv2.Design.VisualNovel;
 using VisualNovelManagerv2.EF.Context;

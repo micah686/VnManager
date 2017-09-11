@@ -8,6 +8,7 @@ using System.Drawing;
 using System.Windows.Media.Imaging;
 using System.IO;
 using VisualNovelManagerv2.CustomClasses;
+using VisualNovelManagerv2.CustomClasses.TinyClasses;
 
 namespace VisualNovelManagerv2.Converters
 {

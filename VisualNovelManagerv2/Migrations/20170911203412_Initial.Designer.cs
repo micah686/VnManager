@@ -10,7 +10,7 @@ using VisualNovelManagerv2.EF.Context;
 namespace VisualNovelManagerv2.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20170911004942_Initial")]
+    [Migration("20170911203412_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -32,7 +32,7 @@ namespace VisualNovelManagerv2.Migrations
 
                     b.Property<int?>("Bust");
 
-                    b.Property<int?>("CharacterId");
+                    b.Property<uint>("CharacterId");
 
                     b.Property<string>("Description");
 

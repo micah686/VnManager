@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Media.Imaging;
 using VisualNovelManagerv2.Converters;
 using VisualNovelManagerv2.CustomClasses;
+using VisualNovelManagerv2.CustomClasses.TinyClasses;
 using VisualNovelManagerv2.Design.VisualNovel;
 using VisualNovelManagerv2.EF.Context;
 using VisualNovelManagerv2.EF.Entity.VnInfo;
@@ -191,13 +192,9 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
                     #endregion
 
                     #region VnTags
-                    //TODO: FIX VN Tags
-                    //foreach (string tag in db.Set<VnInfoTags>().Where(v => v.VnId == Globals.VnId)
-                    //    .Select(n => n.TagName))
-                    //{
-                    //    await Application.Current.Dispatcher.BeginInvoke(
-                    //        new Action(() => VnInfoTagCollection.Add(tag)));
-                    //}
+                    List<string> tagNames = (from info in db.VnInfoTags where info.VnId.Equals(Globals.VnId) join tag in db.VnTagData on info.TagId equals tag.TagId select tag.Name).ToList();
+                    await Application.Current.Dispatcher.BeginInvoke(new Action(() => VnInfoTagCollection.InsertRange(tagNames)));
+
                     if (Globals.StatusBar.ProgressPercentage != null)
                         Globals.StatusBar.ProgressPercentage =
                             (double)Globals.StatusBar.ProgressPercentage + ProgressIncrement;

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Documents;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.CommandWpf;
+using VisualNovelManagerv2.CustomClasses;
 using VisualNovelManagerv2.Design.VisualNovel;
 
 namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
@@ -25,8 +26,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
             }
         }
 
-        private static ObservableCollection<string> _traitsCollection = new ObservableCollection<string>();
-        public ObservableCollection<string> TraitsCollection
+        private static RangeEnabledObservableCollection<string> _traitsCollection = new RangeEnabledObservableCollection<string>();
+        public RangeEnabledObservableCollection<string> TraitsCollection
         {
             get { return _traitsCollection; }
             set
