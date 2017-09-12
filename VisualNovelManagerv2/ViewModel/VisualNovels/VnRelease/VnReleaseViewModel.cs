@@ -82,8 +82,69 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnRelease
                             if (release.Gtin != null) VnReleaseModel.Gtin = Convert.ToUInt64(release.Gtin);
                             VnReleaseModel.Catalog = release.Catalog;
                             VnReleaseModel.Resolution = release.Resolution;
-                            VnReleaseModel.Voiced = release.Voiced;
-                            VnReleaseModel.Animation = release.Animation;
+                            switch (release.Voiced)
+                            {
+                                case "0":
+                                    VnReleaseModel.Voiced = String.Empty;
+                                    return;
+                                case "Not":
+                                    VnReleaseModel.Voiced = $"Not Voiced";
+                                    break;
+                                case "Ero":
+                                    VnReleaseModel.Voiced = $"Ero Scenes Only";
+                                    break;
+                                case "Partial":
+                                    VnReleaseModel.Voiced = $"Partially Voiced";
+                                    break;
+                                case "Full":
+                                    VnReleaseModel.Voiced = $"Fully Voiced";
+                                    break;
+                                default:
+                                    break;
+                            }
+                            //TODO: see if I can make this more effiecient
+                            string[] animation = release.Animation.Split(',');
+                            string[] animationStrings = new string[2];
+                            switch (animation[0])
+                            {
+                                case "0":
+                                    break;
+                                case "Not":
+                                    animationStrings[0] = "Story: Not Animated";
+                                    break;
+                                case "Simple":
+                                    animationStrings[0] = "Story: Simple Animations";
+                                    break;
+                                case "Partial":
+                                    animationStrings[0] = "Story: Partial Animations";
+                                    break;
+                                case "Full":
+                                    animationStrings[0] = "Story: Full Animations";
+                                    break;
+                                default:
+                                    break;
+                            }
+                            switch (animation[1])
+                            {
+                                case "0":
+                                    break;
+                                case "Not":
+                                    animationStrings[1] = "Ero Scenes: Not Animated";
+                                    break;
+                                case "Simple":
+                                    animationStrings[1] = "Ero Scenes: Simple Animations";
+                                    break;
+                                case "Partial":
+                                    animationStrings[1] = "Ero Scenes: Partial Animations";
+                                    break;
+                                case "Full":
+                                    animationStrings[1] = "Ero Scenes: Full Animations";
+                                    break;
+                                default:
+                                    break;
+                            }
+                            VnReleaseModel.Animation =string.Join(", ", animationStrings.Where(s => !string.IsNullOrEmpty(s)));
+
                             foreach (string language in GetLangauges(release.Languages))
                             {
                                 if (language != null)
