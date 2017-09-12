@@ -151,17 +151,9 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
                         VnCharacterModel.Height = character.Height.ToString();
                         VnCharacterModel.Weight = character.Weight.ToString();
 
-                        List<string> traitNames = (from charactr in db.VnCharacterTraits
-                            where charactr.CharacterId.Equals(character.CharacterId)
-                            join trait in db.VnTraitData on charactr.TraitId equals trait.TraitId
-                            select trait.Name).ToList();
-                        //_traitsCollection.InsertRange(traitNames);
-                        //foreach (VnCharacterTraits trait in db.Set<VnCharacterTraits>().Where(c=>c.CharacterId== character.CharacterId))
-                        //{
-                        //    //TODO: FIX ME
-                        //    //_traitsCollection.Add(trait.TraitName);
-                        //}
-                        break;
+                        List<string> traitNames = (from charactr in db.VnCharacterTraits where charactr.CharacterId.Equals(character.CharacterId)
+                            join trait in db.VnTraitData on charactr.TraitId equals trait.TraitId select trait.Name).ToList();
+                        _traitsCollection.InsertRange(traitNames);
                     }                    
                     db.Dispose();
                 }

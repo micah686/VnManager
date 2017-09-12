@@ -351,7 +351,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
             }
         }
     
-
+        //NOTE: These two methods can be tricky to debug. They should be ok, but there is a decent chance that I messed something up, due to how many times I had to redo things
         private async Task GetDetailsFromTagDump(ReadOnlyCollection<TagMetadata> vnTags)
         {
             try
@@ -491,8 +491,9 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                             SpoilerLevel = traitMetaData.SpoilerLevel.ToString()
                         }).ToList();
 
-                        //list of items to delete where the db DOESN'T contain the exact item from traitsToAdd (indicates something was modified)
-                        List<VnCharacterTraits> vnCharacterTraitsToDelete = context.VnCharacterTraits.Except(vnCharacterTraitsToAdd).ToList();
+                        //list of items to delete of previous entries
+                        List<VnCharacterTraits> vnCharacterTraitsToDelete = context.VnCharacterTraits.Where(x =>
+                            vnCharacterTraitsToAdd.Any(y => x.CharacterId == charId && x.TraitId == y.TraitId)).ToList();
                         vnCharacterTraitsToAdd.RemoveAll(x => vnCharacterTraitsToDelete.Contains(x));
 
                         context.VnCharacterTraits.RemoveRange(vnCharacterTraitsToDelete);
@@ -517,8 +518,9 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                             SpoilerLevel = traitMetaData.SpoilerLevel.ToString()
                         }).ToList();
 
-                        //list of items to delete where the db DOESN'T contain the exact item from traitsToAdd (indicates something was modified)
-                        List<VnCharacterTraits> vnCharacterTraitsToDelete = context.VnCharacterTraits.Except(vnCharacterTraitsToAdd).ToList();
+                        //list of items to delete of previous entries
+                        List<VnCharacterTraits> vnCharacterTraitsToDelete = context.VnCharacterTraits.Where(x =>
+                                vnCharacterTraitsToAdd.Any(y => x.CharacterId == charId && x.TraitId == y.TraitId)).ToList();
                         vnCharacterTraitsToAdd.RemoveAll(x => vnCharacterTraitsToDelete.Contains(x));
 
                         context.VnCharacterTraits.RemoveRange(vnCharacterTraitsToDelete);
