@@ -168,6 +168,15 @@
     <Compile Include="CustomClasses\BindableRichTextBox.cs" />
     <Compile Include="Converters\ConvertRichTextDocument.cs" />
     <Compile Include="CustomClasses\ConfigSettings\ValidateXml.cs" />
+    <Compile Include="CustomClasses\FirstFloorMui\BBCode\BBCodeBlock.cs" />
+    <Compile Include="CustomClasses\FirstFloorMui\BBCode\BBCodeLexer.cs" />
+    <Compile Include="CustomClasses\FirstFloorMui\BBCode\BBCodeParser.cs" />
+    <Compile Include="CustomClasses\FirstFloorMui\BBCode\CharBuffer.cs" />
+    <Compile Include="CustomClasses\FirstFloorMui\BBCode\Lexer.cs" />
+    <Compile Include="CustomClasses\FirstFloorMui\BBCode\ParseException.cs" />
+    <Compile Include="CustomClasses\FirstFloorMui\BBCode\Parser.cs" />
+    <Compile Include="CustomClasses\FirstFloorMui\BBCode\Token.cs" />
+    <Compile Include="CustomClasses\FirstFloorMui\BBCode\TokenBuffer.cs" />
     <Compile Include="CustomClasses\TinyClasses\DebugLogging.cs" />
     <Compile Include="CustomClasses\TinyClasses\MeasureStringSize.cs" />
     <Compile Include="Converters\NullImageConverter.cs" />
