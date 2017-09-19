@@ -6,6 +6,7 @@
              xmlns:local ="clr-namespace:VisualNovelManagerv2.Pages"
              xmlns:custom="clr-namespace:VisualNovelManagerv2.CustomClasses"
              xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+             xmlns:bb="clr-namespace:VisualNovelManagerv2.CustomClasses.FirstFloorMui.BBCode"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
              mc:Ignorable="d" 
@@ -274,26 +275,27 @@
                         <Label Grid.Row="4" Grid.Column="0" Margin="5,10,0,0" Content="Summary:"/>
 
                         <Grid Grid.Row="5" Grid.Column="0" Margin="10,10,25,0">
-                            <custom:BindableRichTextBox x:Name="VnDescription" IsReadOnly="True" MinWidth="250" MinHeight="70" IsReadOnlyCaretVisible="True" Focusable="False" IsDocumentEnabled="True" Background="#333" BorderThickness="0"
-                                   Foreground="#DCDCDC"                    Document="{Binding VnMainModel.Description}">
-                                <custom:BindableRichTextBox.Resources>
-                                    <Style x:Key="{x:Type Hyperlink}" TargetType="{x:Type Hyperlink}">
-                                        <Setter Property="Foreground" Value="Orange"/>
-                                        <Setter Property="TextDecorations" Value="Underline"/>
-                                        <Style.Triggers>
-                                            <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter Property="Foreground" Value="Red"/>
-                                            </Trigger>
-                                            <Trigger Property="IsEnabled" Value="False">
-                                                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
-                                            </Trigger>
-                                            <Trigger Property="IsEnabled" Value="True">
-                                                <Setter Property="Cursor" Value="Hand"/>
-                                            </Trigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </custom:BindableRichTextBox.Resources>
-                            </custom:BindableRichTextBox>
+                            <ScrollViewer  MaxHeight="250" >
+                                <bb:BBCodeBlock x:Name="VnDescription" BBCode="{Binding VnMainModel.Description}" TextWrapping="Wrap">
+                                    <bb:BBCodeBlock.Resources>
+                                        <Style x:Key="{x:Type Hyperlink}" TargetType="{x:Type Hyperlink}">
+                                            <Setter Property="Foreground" Value="Orange"/>
+                                            <Setter Property="TextDecorations" Value="Underline"/>
+                                            <Style.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Foreground" Value="Red"/>
+                                                </Trigger>
+                                                <Trigger Property="IsEnabled" Value="False">
+                                                    <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                                                </Trigger>
+                                                <Trigger Property="IsEnabled" Value="True">
+                                                    <Setter Property="Cursor" Value="Hand"/>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </bb:BBCodeBlock.Resources>
+                                </bb:BBCodeBlock>
+                            </ScrollViewer>
                         </Grid>
 
                         <TextBlock Grid.Row="6" Text="Tags" Margin="10,20,0,0" Style="{StaticResource Heading2}"/>

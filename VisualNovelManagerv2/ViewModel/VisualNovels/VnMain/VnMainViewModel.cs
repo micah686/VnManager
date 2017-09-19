@@ -72,7 +72,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
             VnMainModel.LastPlayed = String.Empty;
             VnMainModel.Image = null;
             VnMainModel.Aliases = String.Empty;
-            VnMainModel.Description = new FlowDocument();
+            VnMainModel.Description = String.Empty;
             VnMainModel.Released = String.Empty;
             VnMainModel.Length = String.Empty;
             VnMainModel.VnIcon = null;

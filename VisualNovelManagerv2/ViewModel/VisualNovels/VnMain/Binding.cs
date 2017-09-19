@@ -130,7 +130,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
                                 (double)Globals.StatusBar.ProgressPercentage + ProgressIncrement;
 
                         await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Description =
-                            ConvertRichTextDocument.ConvertToFlowDocument(vnInfo.Description))));
+                            ConvertTextBBcode.ConvertText(vnInfo.Description))));
                         if (Globals.StatusBar.ProgressPercentage != null)
                             Globals.StatusBar.ProgressPercentage =
                                 (double)Globals.StatusBar.ProgressPercentage + ProgressIncrement;
