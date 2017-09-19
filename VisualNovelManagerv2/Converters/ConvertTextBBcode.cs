@@ -18,6 +18,7 @@ namespace VisualNovelManagerv2.Converters
             if (string.IsNullOrEmpty(modifiedText)) return string.Empty;
             modifiedText = ReplaceSpoilers(text);
             modifiedText = ReplaceVndbLocalUrls(modifiedText);
+            modifiedText = EscapeBbCode(modifiedText);
             return modifiedText;
         }
 
@@ -84,6 +85,27 @@ namespace VisualNovelManagerv2.Converters
                 DebugLogging.WriteDebugLog(ex);
                 throw;
             }            
+        }
+
+        private static string EscapeBbCode(string text)
+        {
+            string rawText = text;
+            //matches ALL instances of [ $something here ]
+            var allBracket = new Regex(@"(\[)(.+?)(\])", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+            List<string> abMatch = allBracket.Matches(rawText).Cast<Match>().Select(m => m.Value).ToList();
+            //matches only valid bbcode brackets
+            Regex bbCodeBracket = new Regex(@"/([\r\n])|(?:\[([a-z]{1,16})(?:=([^\x00-\x1F""'\(\)<>\[\]]{1,256}))?\])|(?:\[/([a-z]{1,16})\])", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+            List<string> bbMatch = bbCodeBracket.Matches(rawText).Cast<Match>().Select(m => m.Value).ToList();
+
+            List<string> invalidBbCodeList = abMatch.Except(bbMatch).ToList();
+            foreach (string invalid in invalidBbCodeList)
+            {
+                //invalid should be something like [notBBcode text here....
+                //escaped adds a '\' right after the first bracket, which is the currently defined escape character, so the BBCode parser doesn't parse that bracket
+                string escaped = invalid.Insert(1, "\\");
+                rawText = rawText.Replace(invalid, escaped);
+            }        
+            return rawText;
         }
     }
 }
