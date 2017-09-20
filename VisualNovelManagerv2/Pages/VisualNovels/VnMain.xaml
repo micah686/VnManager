@@ -308,26 +308,27 @@
                                 </Grid.ColumnDefinitions>
                                 <!--change listbox to use max width of largest string, so it doesn't dynamically adjust-->
                                 <ListBox Grid.Column="0"   ItemsSource="{Binding VnInfoTagCollection}" Height="250" SelectedItem="{Binding SelectedTag}" SelectedIndex="{Binding SelectedTagIndex}"/>
-                                <custom:BindableRichTextBox Grid.Column="1" MinWidth="250" MinHeight="70" IsReadOnly="True" Margin="15,0,25,0" IsReadOnlyCaretVisible="True" Focusable="False" IsDocumentEnabled="True" Background="#333" BorderThickness="0"
-                                      Foreground="#DCDCDC"  Document="{Binding TagDescription}" >
-                                    <custom:BindableRichTextBox.Resources>
-                                        <Style x:Key="{x:Type Hyperlink}" TargetType="{x:Type Hyperlink}">
-                                            <Setter Property="Foreground" Value="Orange"/>
-                                            <Setter Property="TextDecorations" Value="Underline"/>
-                                            <Style.Triggers>
-                                                <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter Property="Foreground" Value="Red"/>
-                                                </Trigger>
-                                                <Trigger Property="IsEnabled" Value="False">
-                                                    <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
-                                                </Trigger>
-                                                <Trigger Property="IsEnabled" Value="True">
-                                                    <Setter Property="Cursor" Value="Hand"/>
-                                                </Trigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </custom:BindableRichTextBox.Resources>
-                                </custom:BindableRichTextBox>
+                                <ScrollViewer Grid.Column="1" Margin="15,0,25,0" MinHeight="70">
+                                    <bb:BBCodeBlock  BBCode="{Binding TagDescription}" TextWrapping="Wrap">
+                                        <bb:BBCodeBlock.Resources>
+                                            <Style x:Key="{x:Type Hyperlink}" TargetType="{x:Type Hyperlink}">
+                                                <Setter Property="Foreground" Value="Orange"/>
+                                                <Setter Property="TextDecorations" Value="Underline"/>
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="Foreground" Value="Red"/>
+                                                    </Trigger>
+                                                    <Trigger Property="IsEnabled" Value="False">
+                                                        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                                                    </Trigger>
+                                                    <Trigger Property="IsEnabled" Value="True">
+                                                        <Setter Property="Cursor" Value="Hand"/>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </bb:BBCodeBlock.Resources>
+                                    </bb:BBCodeBlock>
+                                </ScrollViewer>
                             </Grid>
                         </Grid>
 

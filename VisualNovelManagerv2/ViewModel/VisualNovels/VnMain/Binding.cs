@@ -68,7 +68,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
                 {
                     foreach (string tag in db.Set<VnTagData>().Where(n => n.Name == SelectedTag).Select(d => d.Description))
                     {
-                        TagDescription = ConvertRichTextDocument.ConvertToFlowDocument(tag);
+                        TagDescription = ConvertTextBBcode.ConvertText(tag);
                         break;
                     }
                     db.Dispose();

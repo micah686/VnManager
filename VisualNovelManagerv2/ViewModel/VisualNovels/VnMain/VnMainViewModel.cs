@@ -144,7 +144,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
                     VnInfoRelation.Clear();
                     VnInfoTagCollection.Clear();
                     VnInfoAnimeCollection.Clear();
-                    _tagDescription?.Blocks.Clear();
+                    TagDescription = String.Empty;
 
                     using (var db = new DatabaseContext())
                     {

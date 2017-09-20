@@ -202,8 +202,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
         #endregion
 
         #region TagDescription
-        private FlowDocument _tagDescription;
-        public FlowDocument TagDescription
+        private string _tagDescription;
+        public string TagDescription
         {
             get { return _tagDescription; }
             set
