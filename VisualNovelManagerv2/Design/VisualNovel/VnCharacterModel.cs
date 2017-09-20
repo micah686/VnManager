@@ -93,15 +93,15 @@ namespace VisualNovelManagerv2.Design.VisualNovel
 
 
 
-        public FlowDocument Description
+        public string Description
         {
-            get { return (FlowDocument)GetValue(DescriptionProperty); }
+            get { return (string)GetValue(DescriptionProperty); }
             set { SetValue(DescriptionProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for Description.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty DescriptionProperty =
-            DependencyProperty.Register("Description", typeof(FlowDocument), typeof(VnCharacterModel), new PropertyMetadata(null));
+            DependencyProperty.Register("Description", typeof(string), typeof(VnCharacterModel), new PropertyMetadata(null));
 
 
 

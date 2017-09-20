@@ -109,9 +109,9 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
             try
             {
                 TraitsCollection.Clear();
-                if (SelectedTraitIndex < 0 && _traitDescription.Blocks.Count >= 1)
+                if (SelectedTraitIndex < 0 && !string.IsNullOrEmpty(TraitDescription))
                 {
-                    TraitDescription.Blocks.Clear();
+                    TraitDescription = String.Empty;
                 }
 
                 using (var db = new DatabaseContext())
@@ -123,7 +123,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
                         VnCharacterModel.Gender = GetGenderIcon(character.Gender);
                         VnCharacterModel.BloodType = character.BloodType;
                         VnCharacterModel.Birthday = character.Birthday;
-                        VnCharacterModel.Description = ConvertRichTextDocument.ConvertToFlowDocument(character.Description);
+                        VnCharacterModel.Description = ConvertTextBBcode.ConvertText(character.Description);
                         if (string.IsNullOrEmpty(character.Aliases))
                             VnCharacterModel.Aliases = string.Empty;
                         else
@@ -174,7 +174,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
                     {
                         foreach (string trait in db.Set<VnTraitData>().Where(n => n.Name == SelectedTrait).Select(d => d.Description))
                         {
-                            TraitDescription = ConvertRichTextDocument.ConvertToFlowDocument(trait);
+                            TraitDescription = ConvertTextBBcode.ConvertText(trait);
                             break;
                         }
                         db.Dispose();

@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:VisualNovelManagerv2.Pages"
              xmlns:custom="clr-namespace:VisualNovelManagerv2.CustomClasses"
+             xmlns:bb="clr-namespace:VisualNovelManagerv2.CustomClasses.FirstFloorMui.BBCode"
              mc:Ignorable="d" 
              d:DesignHeight="900" d:DesignWidth="600"
              DataContext="{Binding VnCharacter, Source={StaticResource Locator}}">
@@ -193,26 +194,27 @@
                     </Grid>
 
                     <Grid Grid.Row="13" Margin="10,10,10,0">
-                        <custom:BindableRichTextBox IsReadOnly="True" MinWidth="250" MinHeight="70" IsReadOnlyCaretVisible="True" Focusable="False" IsDocumentEnabled="True" Background="#333" BorderThickness="0"
-                           Foreground="#DCDCDC" Document="{Binding VnCharacterModel.Description}">
-                            <custom:BindableRichTextBox.Resources>
-                                <Style x:Key="{x:Type Hyperlink}" TargetType="{x:Type Hyperlink}">
-                                    <Setter Property="Foreground" Value="Orange"/>
-                                    <Setter Property="TextDecorations" Value="Underline"/>
-                                    <Style.Triggers>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter Property="Foreground" Value="Red"/>
-                                        </Trigger>
-                                        <Trigger Property="IsEnabled" Value="False">
-                                            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
-                                        </Trigger>
-                                        <Trigger Property="IsEnabled" Value="True">
-                                            <Setter Property="Cursor" Value="Hand"/>
-                                        </Trigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </custom:BindableRichTextBox.Resources>
-                            </custom:BindableRichTextBox>
+                        <ScrollViewer MinHeight="70" MaxHeight="350">
+                            <bb:BBCodeBlock BBCode="{Binding VnCharacterModel.Description}" TextWrapping="Wrap">
+                                <bb:BBCodeBlock.Resources>
+                                    <Style x:Key="{x:Type Hyperlink}" TargetType="{x:Type Hyperlink}">
+                                        <Setter Property="Foreground" Value="Orange"/>
+                                        <Setter Property="TextDecorations" Value="Underline"/>
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Foreground" Value="Red"/>
+                                            </Trigger>
+                                            <Trigger Property="IsEnabled" Value="False">
+                                                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                                            </Trigger>
+                                            <Trigger Property="IsEnabled" Value="True">
+                                                <Setter Property="Cursor" Value="Hand"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </bb:BBCodeBlock.Resources>
+                            </bb:BBCodeBlock>
+                        </ScrollViewer>
                     </Grid>
 
                     <Grid Grid.Row="14" Margin="5,20,0,0">
@@ -227,7 +229,28 @@
                             </Grid.ColumnDefinitions>
                             <!--change listbox to use max width of largest string, so it doesn't dynamically adjust -->
                             <ListBox Grid.Column="0"   ItemsSource="{Binding TraitsCollection}" Height="250" SelectedIndex="{Binding SelectedTraitIndex}" SelectedItem="{Binding SelectedTrait}"/>
-                            <custom:BindableRichTextBox Grid.Column="1" MinWidth="250" MinHeight="70" IsReadOnly="True" Margin="15,0,15,0" IsReadOnlyCaretVisible="True" Focusable="False" IsDocumentEnabled="True" Background="#333" BorderThickness="0"
+                            <ScrollViewer Grid.Column="1" Margin="15,0,15,0" MinHeight="70">
+                                <bb:BBCodeBlock BBCode="{Binding TraitDescription}">
+                                    <bb:BBCodeBlock.Resources>
+                                        <Style x:Key="{x:Type Hyperlink}" TargetType="{x:Type Hyperlink}">
+                                            <Setter Property="Foreground" Value="Orange"/>
+                                            <Setter Property="TextDecorations" Value="Underline"/>
+                                            <Style.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Foreground" Value="Red"/>
+                                                </Trigger>
+                                                <Trigger Property="IsEnabled" Value="False">
+                                                    <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                                                </Trigger>
+                                                <Trigger Property="IsEnabled" Value="True">
+                                                    <Setter Property="Cursor" Value="Hand"/>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </bb:BBCodeBlock.Resources>
+                                </bb:BBCodeBlock>
+                            </ScrollViewer>
+                            <!--<custom:BindableRichTextBox Grid.Column="1" MinWidth="250" MinHeight="70" IsReadOnly="True" Margin="15,0,15,0" IsReadOnlyCaretVisible="True" Focusable="False" IsDocumentEnabled="True" Background="#333" BorderThickness="0"
                               Foreground="#DCDCDC" Document="{Binding TraitDescription}">
                                 <custom:BindableRichTextBox.Resources>
                                     <Style x:Key="{x:Type Hyperlink}" TargetType="{x:Type Hyperlink}">
@@ -246,7 +269,7 @@
                                         </Style.Triggers>
                                     </Style>
                                 </custom:BindableRichTextBox.Resources>
-                            </custom:BindableRichTextBox>
+                            </custom:BindableRichTextBox>-->
                         </Grid>
                     </Grid>
 

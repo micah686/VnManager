@@ -107,8 +107,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
             }
         }
 
-        private FlowDocument _traitDescription;
-        public FlowDocument TraitDescription
+        private string _traitDescription;
+        public string TraitDescription
         {
             get { return _traitDescription; }
             set
