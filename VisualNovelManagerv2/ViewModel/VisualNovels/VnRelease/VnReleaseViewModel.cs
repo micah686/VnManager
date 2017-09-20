@@ -77,7 +77,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnRelease
                             VnReleaseModel.Freeware = release.Freeware;
                             VnReleaseModel.Doujin = release.Doujin;
                             VnReleaseModel.Website = release.Website;
-                            VnReleaseModel.Notes = ConvertRichTextDocument.ConvertToFlowDocument(release.Notes);
+                            VnReleaseModel.Notes = ConvertTextBBcode.ConvertText(release.Notes);
                             VnReleaseModel.MinAge = release.MinAge;
                             if (release.Gtin != null) VnReleaseModel.Gtin = Convert.ToUInt64(release.Gtin);
                             VnReleaseModel.Catalog = release.Catalog;

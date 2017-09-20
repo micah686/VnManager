@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:VisualNovelManagerv2.Pages"
              xmlns:custom="clr-namespace:VisualNovelManagerv2.CustomClasses"
+             xmlns:bb="clr-namespace:VisualNovelManagerv2.CustomClasses.FirstFloorMui.BBCode"
              mc:Ignorable="d" 
              d:DesignHeight="900" d:DesignWidth="300"
              DataContext="{Binding VnRelease, Source={StaticResource Locator}}">
@@ -273,8 +274,27 @@
                     </Grid>
 
                     <Grid Grid.Row="18" Margin="10,10,10,0">
-                        <custom:BindableRichTextBox  MinWidth="250" MinHeight="70" IsReadOnly="True" Margin="15,0,15,0" IsReadOnlyCaretVisible="True" Focusable="False" IsDocumentEnabled="True" Background="#333" BorderThickness="0"
-                           Foreground="#DCDCDC" Document="{Binding VnReleaseModel.Notes}"/>
+                        <ScrollViewer MinHeight="70" Margin="15,0,15,0">
+                            <bb:BBCodeBlock BBCode="{Binding VnReleaseModel.Notes}" TextWrapping="Wrap">
+                                <bb:BBCodeBlock.Resources>
+                                    <Style x:Key="{x:Type Hyperlink}" TargetType="{x:Type Hyperlink}">
+                                        <Setter Property="Foreground" Value="Orange"/>
+                                        <Setter Property="TextDecorations" Value="Underline"/>
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Foreground" Value="Red"/>
+                                            </Trigger>
+                                            <Trigger Property="IsEnabled" Value="False">
+                                                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                                            </Trigger>
+                                            <Trigger Property="IsEnabled" Value="True">
+                                                <Setter Property="Cursor" Value="Hand"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </bb:BBCodeBlock.Resources>
+                            </bb:BBCodeBlock>
+                        </ScrollViewer>
                     </Grid>
 
                     <Grid Grid.Row="19" Margin="10,30,0,0">

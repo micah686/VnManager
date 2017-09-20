@@ -169,15 +169,15 @@ namespace VisualNovelManagerv2.Design.VisualNovel
 
 
 
-        public FlowDocument Notes
+        public string Notes
         {
-            get { return (FlowDocument)GetValue(NotesProperty); }
+            get { return (string)GetValue(NotesProperty); }
             set { SetValue(NotesProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for Notes.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty NotesProperty =
-            DependencyProperty.Register("Notes", typeof(FlowDocument), typeof(VnReleaseModel), new PropertyMetadata(null));
+            DependencyProperty.Register("Notes", typeof(string), typeof(VnReleaseModel), new PropertyMetadata(null));
 
 
 
