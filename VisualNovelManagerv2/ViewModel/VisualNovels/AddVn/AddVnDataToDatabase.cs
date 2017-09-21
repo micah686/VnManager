@@ -397,14 +397,10 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                             Spoiler = tagMetadata.SpoilerLevel.ToString()
                         }).ToList();
 
-                        //list of items to delete where the db DOESN'T contain the exact item from tagsToAdd (indicates something was modified)
-                        List<VnInfoTags> vnInfoTagsToDelete = context.VnInfoTags.Except(vnInfoTagsToAdd).ToList();
-
+                        //list of items to delete where the db contains the vnid
+                        List<VnInfoTags> vnInfoTagsToDelete = context.VnInfoTags.Where(x => x.VnId.Equals(_vnid)).ToList();
+                        //delete items with same vnid, then re-add them
                         context.VnInfoTags.RemoveRange(vnInfoTagsToDelete);
-
-                        //removes all items from the ItemsToAdd where the vnId and TagId already exists in the database
-                        vnInfoTagsToAdd.RemoveAll(x => vnInfoTagsToAdd.Where(item => context.VnInfoTags.Where(v => v.VnId == _vnid).Any(y => y.TagId == item.TagId)).Contains(x));
-
                         context.VnInfoTags.AddRange(vnInfoTagsToAdd);
 
                         context.SaveChanges();
@@ -426,18 +422,15 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                             Score = tagMetadata.Score,
                             Spoiler = tagMetadata.SpoilerLevel.ToString()
                         }).ToList();
-                        //list of items to delete where the db DOESN'T contain the exact item from tagsToAdd (indicates something was modified)
-                        List<VnInfoTags> vnInfoTagsToDelete = context.VnInfoTags.Except(vnInfoTagsToAdd).ToList();
 
+                        //list of items to delete where the db contains the vnid
+                        List<VnInfoTags> vnInfoTagsToDelete = context.VnInfoTags.Where(x => x.VnId.Equals(_vnid)).ToList();
+                        //delete items with same vnid, then re-add them
                         context.VnInfoTags.RemoveRange(vnInfoTagsToDelete);
-
-                        //removes all items from the ItemsToAdd where the vnId and TagId already exists in the database
-                        vnInfoTagsToAdd.RemoveAll(x => vnInfoTagsToAdd.Where(item => context.VnInfoTags.Where(v => v.VnId == _vnid).Any(y => y.TagId == item.TagId)).Contains(x));
-
                         context.VnInfoTags.AddRange(vnInfoTagsToAdd);
 
                         context.SaveChanges();
-                        
+
                         //for selection. Remove once I use this elsewhere
                         //gets a list of items from VnTagData where it contains the tagId from the vn
                         //List<VnTagData> matches = (from ef in context.VnTagData from tag in vnTags where ef.TagId == tag.Id select ef).ToList();
@@ -492,15 +485,11 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                         }).ToList();
 
                         //list of items to delete of previous entries
-                        List<VnCharacterTraits> vnCharacterTraitsToDelete = context.VnCharacterTraits.Where(x =>
-                            vnCharacterTraitsToAdd.Any(y => x.CharacterId == charId && x.TraitId == y.TraitId)).ToList();
-                        vnCharacterTraitsToAdd.RemoveAll(x => vnCharacterTraitsToDelete.Contains(x));
-
+                        List<VnCharacterTraits> vnCharacterTraitsToDelete = context.VnCharacterTraits.Where(x => x.CharacterId.Equals(charId)).ToList();
+                        //remove then re-add the items
                         context.VnCharacterTraits.RemoveRange(vnCharacterTraitsToDelete);
-                        //removes all items from the ItemsToAdd when the SpoilerLevel was modified
-                        vnCharacterTraitsToAdd.RemoveAll(x =>vnCharacterTraitsToAdd.Where(y => x.SpoilerLevel != y.SpoilerLevel).Contains(x));
-
                         context.VnCharacterTraits.AddRange(vnCharacterTraitsToAdd);
+
                         context.SaveChanges();
                         _didDownloadTraitDump.Key = true;
 
@@ -519,14 +508,9 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                         }).ToList();
 
                         //list of items to delete of previous entries
-                        List<VnCharacterTraits> vnCharacterTraitsToDelete = context.VnCharacterTraits.Where(x =>
-                                vnCharacterTraitsToAdd.Any(y => x.CharacterId == charId && x.TraitId == y.TraitId)).ToList();
-                        vnCharacterTraitsToAdd.RemoveAll(x => vnCharacterTraitsToDelete.Contains(x));
-
+                        List<VnCharacterTraits> vnCharacterTraitsToDelete = context.VnCharacterTraits.Where(x => x.CharacterId.Equals(charId)).ToList();
+                        //remove then re-add the items
                         context.VnCharacterTraits.RemoveRange(vnCharacterTraitsToDelete);
-                        //removes all items from the ItemsToAdd when the SpoilerLevel was modified
-                        vnCharacterTraitsToAdd.RemoveAll(x => vnCharacterTraitsToAdd.Where(y => x.SpoilerLevel != y.SpoilerLevel).Contains(x));
-
                         context.VnCharacterTraits.AddRange(vnCharacterTraitsToAdd);
                         context.SaveChanges();
 
