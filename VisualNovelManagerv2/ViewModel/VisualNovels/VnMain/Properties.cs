@@ -113,14 +113,9 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
         {
             get
             {
-                //TODO:move this to another method maybe?
-                using (var db = new DatabaseContext())
+                using (var context = new DatabaseContext())
                 {
-                    foreach (Category category in db.Set<Category>())
-                    {
-                        _categoriesCollection.Add(category.CategoryName);
-                    }
-                    db.Dispose();
+                    _categoriesCollection.InsertRange(context.Categories.Select(category => category.CategoryName));
                 }
                 return _categoriesCollection;
             }

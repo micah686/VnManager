@@ -48,44 +48,6 @@ namespace VisualNovelManagerv2
             {
                 CreateDatabase();
             }
-
-            if (File.Exists(dbPath))
-            {
-                bool isValid = DbConnection();
-                if (isValid == true) return;
-                File.Move(dbPath, Path.Combine(dbPath+".corrupt"));
-                CreateDatabase();
-            }
-        }
-
-        static bool DbConnection()
-        {
-            //TODO:try to check for the tables as well
-            //TODO: validate aginst EF model once ADO.net provider is released and get igrations working
-            //needs custom string without pooling to be able to delete the database
-            //using (SQLiteConnection db = new SQLiteConnection(@"Data Source=|DataDirectory|\Data\Database\Database.db;Version=3;"))
-            //{
-            //    try
-            //    {
-            //        db.Open();
-            //        using (SQLiteTransaction transaction = db.BeginTransaction())
-            //        {
-            //            transaction.Rollback();
-            //        }
-            //    }
-            //    catch (SQLiteException ex)
-            //    {
-            //        db.Close();
-            //        DebugLogging.WriteDebugLog(ex);
-            //        return false;
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        DebugLogging.WriteDebugLog(ex);
-            //        return false;
-            //    }
-            //}
-            return true;
         }
 
         void CreateDatabase()

@@ -230,7 +230,7 @@
                             <!--change listbox to use max width of largest string, so it doesn't dynamically adjust -->
                             <ListBox Grid.Column="0"   ItemsSource="{Binding TraitsCollection}" Height="250" SelectedIndex="{Binding SelectedTraitIndex}" SelectedItem="{Binding SelectedTrait}"/>
                             <ScrollViewer Grid.Column="1" Margin="15,0,15,0" MinHeight="70">
-                                <bb:BBCodeBlock BBCode="{Binding TraitDescription}" TextWrapping="Wrap">
+                                <bb:BBCodeBlock BBCode="{Binding TraitDescription}">
                                     <bb:BBCodeBlock.Resources>
                                         <Style x:Key="{x:Type Hyperlink}" TargetType="{x:Type Hyperlink}">
                                             <Setter Property="Foreground" Value="Orange"/>
