@@ -10,7 +10,7 @@ using VisualNovelManagerv2.EF.Context;
 namespace VisualNovelManagerv2.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20170911203412_Initial")]
+    [Migration("20170922054034_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
