@@ -9,6 +9,7 @@ using System.Windows.Input;
 using GalaSoft.MvvmLight.CommandWpf;
 using VisualNovelManagerv2.CustomClasses;
 using VisualNovelManagerv2.Design.VisualNovel;
+using VisualNovelManagerv2.EF.Entity.VnTagTrait;
 
 namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
 {
@@ -129,6 +130,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
                 RaisePropertyChanged(nameof(GenderColor));
             }
         }
+
+        private VnTraitData[] traitArray;
 
         public ICommand LoadCharacterCommand => new GalaSoft.MvvmLight.CommandWpf.RelayCommand(LoadCharacterNameList);
         public ICommand DownloadCharactersCommand => new RelayCommand(DownloadCharacters);

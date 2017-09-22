@@ -151,9 +151,11 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
                         VnCharacterModel.Height = character.Height.ToString();
                         VnCharacterModel.Weight = character.Weight.ToString();
 
-                        List<string> traitNames = (from charactr in db.VnCharacterTraits where charactr.CharacterId.Equals(character.CharacterId)
-                            join trait in db.VnTraitData on charactr.TraitId equals trait.TraitId select trait.Name).ToList();
-                        _traitsCollection.InsertRange(traitNames);
+                        traitArray = (from charactr in db.VnCharacterTraits
+                            where charactr.CharacterId.Equals(character.CharacterId)
+                            join trait in db.VnTraitData on charactr.TraitId equals trait.TraitId
+                            select trait).ToArray();
+                        TraitsCollection.InsertRange(traitArray.Select(x => x.Name));
                     }                    
                     db.Dispose();
                 }
@@ -170,15 +172,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
             if (SelectedTraitIndex >= 0)
                 try
                 {
-                    using (var db = new DatabaseContext())
-                    {
-                        foreach (string trait in db.Set<VnTraitData>().Where(n => n.Name == SelectedTrait).Select(d => d.Description))
-                        {
-                            TraitDescription = ConvertTextBBcode.ConvertText(trait);
-                            break;
-                        }
-                        db.Dispose();
-                    }
+                    TraitDescription = ConvertTextBBcode.ConvertText(traitArray
+                        .Where(n => n.Name == SelectedTrait).Select(d => d.Description).FirstOrDefault());
                 }
                 catch (Exception ex)
                 {
