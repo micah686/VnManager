@@ -176,11 +176,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnRelease
                     db.Dispose();
                 }
             }
-            //catch (Microsoft.Data.Sqlite.SqliteException ex)
-            //{
-            //    DebugLogging.WriteDebugLog(ex);
-            //    throw;
-            //}
             catch (System.IndexOutOfRangeException ex)
             {
                 DebugLogging.WriteDebugLog(ex);
