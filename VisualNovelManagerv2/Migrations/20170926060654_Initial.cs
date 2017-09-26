@@ -286,7 +286,7 @@ namespace VisualNovelManagerv2.Migrations
                     VnUserCategoryTitleId = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Title = table.Column<string>(type: "TEXT", nullable: true),
-                    VnId = table.Column<int>(type: "INTEGER", nullable: true)
+                    VnId = table.Column<uint>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {

@@ -42,7 +42,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
                 //get a list of all category names that are linked to the selected Vn
                 List<string> data = context.VnUserCategoryTitles.Where(x => x.Title == SelectedVn)
                     .SelectMany(x => x.CategoryJunctions.Select(y => y.Category.CategoryName)).ToList();
-                foreach (var categories in context.Set<Category>())
+                foreach (var categories in context.Categories)
                 {
                     //prevents adding to All or the category currently loaded, or any categories already added
                     if (categories.CategoryName != "All" && categories.CategoryName != _selectedCategory && !data.Contains(categories.CategoryName))
@@ -81,15 +81,9 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
                 {
                     if (!string.IsNullOrEmpty(header))
                     {
-                        //create a relationship between the two members
-                        var category = context.Categories.FirstOrDefault(x => x.CategoryName == header);
-                        var vnUser = context.VnUserCategoryTitles.FirstOrDefault(v => v.Title == SelectedVn);
-                        if (category != null && vnUser != null)
-                        {
-                            var addCategoryVnEntry = new CategoryJunction { Category = category, VnUserCategoryTitle = vnUser };
-                            context.CategoryJunction.Add(addCategoryVnEntry);
-                            context.SaveChanges();
-                        }
+                        var categoryEntry = new VnUserCategoryTitle{Title = header, VnId = Globals.VnId};
+                        context.VnUserCategoryTitles.Add(categoryEntry);
+                        context.SaveChanges();
                     }
                 }
             }

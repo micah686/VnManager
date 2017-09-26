@@ -88,7 +88,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
             try
             {
                 using (var context = new DatabaseContext())
-                {
+                {                    
                     //need to add/seed the "All" in StartupValidate
                     if (_selectedCategory == "All" || string.IsNullOrEmpty(_selectedCategory))
                     {
@@ -97,9 +97,9 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
                             VnNameCollection.InsertRange(context.VnInfo.Select(x => x.Title).ToList());
                             return;
                         }
-                    }                    
-                    VnNameCollection.InsertRange(context.Categories.Where(cn => cn.CategoryName == _selectedCategory)
-                        .SelectMany(x => x.CategoryJunctions.Select(y => y.VnUserCategoryTitle)).Select(z => z.Title));                    
+                    }
+                    VnNameCollection.InsertRange(from first in context.VnUserCategoryTitles
+                         join second in context.VnInfo on first.VnId equals second.VnId select second.Title);
                 }
             }
             catch (Exception ex)

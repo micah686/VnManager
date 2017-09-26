@@ -348,7 +348,7 @@ namespace VisualNovelManagerv2.Migrations
 
                     b.Property<string>("Title");
 
-                    b.Property<int?>("VnId");
+                    b.Property<uint>("VnId");
 
                     b.HasKey("VnUserCategoryTitleId");
 

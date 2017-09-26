@@ -9,7 +9,7 @@ namespace VisualNovelManagerv2.EF.Entity.VnOther
     public class VnUserCategoryTitle
     {
         public int VnUserCategoryTitleId { get; set; }
-        public int? VnId { get; set; }
+        public uint VnId { get; set; }
         public string Title { get; set; }
 
         public List<CategoryJunction> CategoryJunctions { get; set; }
