@@ -49,6 +49,24 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
             SetMaxWidth();
         }
 
+        private void ClearCharacterData()
+        {
+            VnCharacterModel.Name = String.Empty;
+            VnCharacterModel.Aliases = String.Empty;
+            VnCharacterModel.Birthday = String.Empty;
+            VnCharacterModel.BloodType = String.Empty;
+            VnCharacterModel.Bust = String.Empty;
+            VnCharacterModel.Description = String.Empty;
+            VnCharacterModel.Gender = String.Empty;
+            VnCharacterModel.Height = String.Empty;
+            VnCharacterModel.Hip = String.Empty;
+            VnCharacterModel.Image= new BitmapImage();
+            VnCharacterModel.OriginalName = String.Empty;
+            VnCharacterModel.Waist = String.Empty;
+            VnCharacterModel.Weight = String.Empty;
+            TraitDescription = String.Empty;
+        }
+
 
         private void DownloadCharacters()
         {

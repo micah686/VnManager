@@ -221,6 +221,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
         {
             var cvm = ServiceLocator.Current.GetInstance<VnCharacterViewModel>();
             await Task.Run((() => cvm.DownloadCharactersCommand.Execute(null)));
+            cvm.ClearCharacterDataCommand.Execute(null);
             cvm.LoadCharacterCommand.Execute(null);
             
             var rvm = ServiceLocator.Current.GetInstance<VnReleaseViewModel>();
