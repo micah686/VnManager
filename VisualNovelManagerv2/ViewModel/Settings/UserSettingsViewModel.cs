@@ -89,7 +89,7 @@ namespace VisualNovelManagerv2.ViewModel.Settings
 
         #endregion
 
-        public int SpoilerLevel { get; set; }
+        public uint SpoilerLevel { get; set; }
         #endregion
 
         public UserSettingsViewModel()

@@ -40,10 +40,6 @@ namespace VisualNovelManagerv2.CustomClasses.ConfigSettings
                 {
                     return false;
                 }
-                catch (Exception ex)
-                {
-                    DebugLogging.WriteDebugLog(ex);
-                }
             }
         }
     }

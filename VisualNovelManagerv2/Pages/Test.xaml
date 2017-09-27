@@ -13,7 +13,6 @@
             
             <Button Content="Button" HorizontalAlignment="Left"  VerticalAlignment="Top" Width="75" Margin="40,124,0,0" Click="Button_Click"/>
             <Button Content="Button" HorizontalAlignment="Left" Margin="207,262,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_1"/>
-            <bb:BBCodeBlock BBCode="[\Partially taken from [url=http://mirrormoon.org/fate_stay_night]mirror moon[/url]]"/>
         </Grid>
         <local:BottomStatusBar ></local:BottomStatusBar>
     </Grid>

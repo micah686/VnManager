@@ -15,6 +15,7 @@ using VisualNovelManagerv2.EF.Entity.VnInfo;
 using VisualNovelManagerv2.EF.Entity.VnOther;
 using VndbSharp;
 using VndbSharp.Models;
+#pragma warning disable 1998
 
 
 namespace VisualNovelManagerv2.Pages

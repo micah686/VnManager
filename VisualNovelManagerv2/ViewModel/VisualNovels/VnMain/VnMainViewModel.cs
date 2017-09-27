@@ -157,10 +157,13 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
                         MenuItem parent = (MenuItem)menuItem.Parent;
                         DatabaseContext context = new DatabaseContext();
                         if (!context.Categories.Select(x => x.CategoryName).Contains(name) && name != "Visual Novels")
-                        {
-                            _selectedVn = String.Empty;
+                        {                            
                             _selectedCategory = parent.Header.ToString();
                             GetVnData();
+                        }
+                        else
+                        {
+                            _selectedVn = String.Empty;
                         }
                         context.Dispose();
                     }
