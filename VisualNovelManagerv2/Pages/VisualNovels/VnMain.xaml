@@ -64,8 +64,13 @@
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
                     </ListBox>-->
-                    <TreeView Grid.Row="4" ItemsSource="{Binding TreeVnCategories}" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" Margin="0,5,5,5"
-                              Width="{Binding MaxListWidth}" MaxWidth="{Binding MaxListWidth}" MinWidth="150" >
+                    <TreeView x:Name="CategoryTreeView" Grid.Row="4" ItemsSource="{Binding TreeVnCategories}" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" 
+                               >
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="SelectedItemChanged">
+                                <i:InvokeCommandAction Command="{Binding GetVnDataCommand}" CommandParameter="{Binding ElementName=CategoryTreeView, Path=SelectedItem}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
                         <TreeView.ItemTemplate>
                             <HierarchicalDataTemplate  ItemsSource="{Binding Items}">
                                 <Label Content="{Binding Header}"/>

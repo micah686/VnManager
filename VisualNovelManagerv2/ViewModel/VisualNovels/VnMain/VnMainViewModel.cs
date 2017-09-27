@@ -155,6 +155,18 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
             MaxListWidth = MeasureStringSize.GetMaxStringWidth(longestString);
         }
 
+        private void CheckMenuItemName(object obj)
+        {
+            MenuItem menuItem = (MenuItem)obj;
+            if (obj == null) return;
+            if (obj.GetType() == typeof(MenuItem))
+            {
+                var name = menuItem.Header.ToString();
+                _selectedVn = name;
+                GetVnData();
+            }
+        }
+
         private async void GetVnData()
         {
             while (IsDownloading== true)
@@ -175,7 +187,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
 
                     using (var db = new DatabaseContext())
                     {
-                        foreach (uint vnid in db.Set<VnInfo>().Where(t=>t.Title==(SelectedVn)).Select(v=>v.VnId))
+                        foreach (uint vnid in db.Set<VnInfo>().Where(t=>t.Title==(_selectedVn)).Select(v=>v.VnId))
                         {
                             Globals.VnId = vnid;
                         }
@@ -318,7 +330,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
             Process process = null;
             using (var context = new DatabaseContext())
             {
-                VnInfo idList = context.VnInfo.FirstOrDefault(x => x.Title.Equals(SelectedVn));
+                VnInfo idList = context.VnInfo.FirstOrDefault(x => x.Title.Equals(_selectedVn));
                 VnUserData vnUserData = context.VnUserData.FirstOrDefault(x => x.VnId.Equals(idList.VnId));
                 if (vnUserData?.ExePath != null)
                 {

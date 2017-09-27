@@ -94,7 +94,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
 
 
                     #region VnInfo
-                    foreach (VnInfo vnInfo in db.Set<VnInfo>().Where(t => t.Title == (SelectedVn)))
+                    foreach (VnInfo vnInfo in db.Set<VnInfo>().Where(t => t.Title == (_selectedVn)))
                     {
                         Globals.VnId = vnInfo.VnId;
 

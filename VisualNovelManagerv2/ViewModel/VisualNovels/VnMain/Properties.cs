@@ -172,20 +172,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
         }
         #endregion
 
-        #region SelectedVn
-        private string _selectedVn;
-        public string SelectedVn
-        {
-            get { return _selectedVn; }
-            set
-            {
-                _selectedVn = value;
-                RaisePropertyChanged(nameof(SelectedVn));
-                GetVnData();
-            }
-        }
-        #endregion
-
         #region SelectedTag
         private string _selectedTag;
         public string SelectedTag
@@ -234,7 +220,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
             set
             {
                 _selectedCategory = value;
-                //LoadCategories();
                 RaisePropertyChanged(nameof(SelectedCategory));
             }
         }
@@ -255,6 +240,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
 
         public static bool IsDownloading = false;
         private readonly Stopwatch _stopwatch = new Stopwatch();
+        private string _selectedVn= String.Empty;
 
         public ICommand StartVnCommand => new GalaSoft.MvvmLight.CommandWpf.RelayCommand(StartVn);
         public ICommand OpenContextMenuCommand => new GalaSoft.MvvmLight.CommandWpf.RelayCommand(CreateContextMenu);
@@ -262,7 +248,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
         public ICommand AddToCategoryCommand { get; private set; }
         public ICommand RemoveFromCategoryCommand { get; private set; }
         public ICommand DeleteVnCommand => new GalaSoft.MvvmLight.CommandWpf.RelayCommand(DeleteVn);
-        public ICommand GetVnDataCommand => new GalaSoft.MvvmLight.CommandWpf.RelayCommand(GetVnData);
-
+        public ICommand GetVnDataCommand => new GalaSoft.MvvmLight.CommandWpf.RelayCommand<Object>(CheckMenuItemName);
     }
 }

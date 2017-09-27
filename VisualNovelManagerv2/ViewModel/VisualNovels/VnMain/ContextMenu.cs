@@ -40,7 +40,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
             using (var context = new DatabaseContext())
             {
                 //get a list of all category names that are linked to the selected Vn
-                List<string> data = context.VnUserCategoryTitles.Where(x => x.Title == SelectedVn)
+                List<string> data = context.VnUserCategoryTitles.Where(x => x.Title == _selectedVn)
                     .SelectMany(x => x.CategoryJunctions.Select(y => y.Category.CategoryName)).ToList();
                 foreach (var categories in context.Categories)
                 {
@@ -59,7 +59,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
             var item = new MenuItem { Header = header };
             using (var context = new DatabaseContext())
             {
-                List<Category> data = context.VnUserCategoryTitles.Where(x => x.Title == SelectedVn)
+                List<Category> data = context.VnUserCategoryTitles.Where(x => x.Title == _selectedVn)
                     .SelectMany(x => x.CategoryJunctions.Select(y => y.Category)).ToList();
                 foreach (var categories in data)
                 {
@@ -105,7 +105,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
                     if (!string.IsNullOrEmpty(header))
                     {
                         CategoryJunction data = context.CategoryJunction
-                            .FirstOrDefault(x => x.Category.CategoryName == header && x.VnUserCategoryTitle.Title == SelectedVn);
+                            .FirstOrDefault(x => x.Category.CategoryName == header && x.VnUserCategoryTitle.Title == _selectedVn);
                         if (data != null)
                         {
                             context.CategoryJunction.Remove(data);
@@ -167,7 +167,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
                             context.SaveChanges();
                         }
                         Globals.VnId = 0;
-                        SelectedVn = string.Empty;
+                        _selectedVn = string.Empty;
                         ClearCollectionsCommand.Execute(null);                        
                         LoadBindVnDataCommand.Execute(null);
                     }
