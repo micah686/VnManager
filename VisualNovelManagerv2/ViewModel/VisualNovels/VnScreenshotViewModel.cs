@@ -95,9 +95,9 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             try
             {
                 List<Screenshot> screenshotList = new List<Screenshot>();
-                using (var db = new DatabaseContext())
+                using (var context = new DatabaseContext())
                 {
-                    foreach (VnInfoScreens screens in db.Set<VnInfoScreens>().Where(x=>x.VnId == Globals.VnId))
+                    foreach (VnInfoScreens screens in context.VnInfoScreens.Where(x=>x.VnId == Globals.VnId))
                     {
                         screenshotList.Add(new Screenshot
                         {
@@ -105,7 +105,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                             IsNsfw = Convert.ToBoolean(screens.Nsfw)
                         });
                     }
-                    db.Dispose();
                 }
                 return screenshotList;
             }
@@ -213,7 +212,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             }            
         }
 
-        private void DownloadScreenshots()
+        private async void DownloadScreenshots()
         {
             try
             {
@@ -242,7 +241,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                                 {
                                     Globals.StatusBar.IsDownloading = true;
                                     WebClient client = new WebClient();
-                                    using (MemoryStream stream = new MemoryStream(client.DownloadData(new Uri(screenshot.Url))))
+                                    using (MemoryStream stream = new MemoryStream(await client.DownloadDataTaskAsync(new Uri(screenshot.Url))))
                                     {
 
                                         string base64Img = Base64Converter.ImageToBase64(Image.FromStream(stream), ImageFormat.Jpeg);
@@ -254,14 +253,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                                 {
                                     Globals.StatusBar.IsDownloading = true;
                                     WebClient client = new WebClient();
-                                    using (MemoryStream stream = new MemoryStream(client.DownloadData(new Uri(screenshot.Url))))
+                                    using (MemoryStream stream = new MemoryStream(await client.DownloadDataTaskAsync(new Uri(screenshot.Url))))
                                     {
-                                        //write thumbnail
-                                        while (client.IsBusy)
-                                        {
-                                            Thread.Sleep(100);
-                                        }
-
                                         var bitmap = new BitmapImage();
                                         bitmap.BeginInit();
                                         bitmap.StreamSource = stream;
