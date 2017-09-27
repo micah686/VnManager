@@ -166,7 +166,6 @@
     <Compile Include="Converters\ConvertTextBBcode.cs" />
     <Compile Include="Converters\YesNoBoolConverter.cs" />
     <Compile Include="CustomClasses\BindableRichTextBox.cs" />
-    <Compile Include="Converters\ConvertRichTextDocument.cs" />
     <Compile Include="CustomClasses\ConfigSettings\ValidateXml.cs" />
     <Compile Include="CustomClasses\FirstFloorMui\BBCode\BBCodeBlock.cs" />
     <Compile Include="CustomClasses\FirstFloorMui\BBCode\BBCodeLexer.cs" />

@@ -9,7 +9,7 @@ namespace VisualNovelManagerv2.CustomClasses.TinyClasses
         public static double GetMaxStringWidth(string text)
         {
             FormattedText formattedText = new FormattedText(
-                text, CultureInfo.CurrentCulture, FlowDirection.LeftToRight,
+                text, CultureInfo.InvariantCulture, FlowDirection.LeftToRight,
                 new Typeface(new System.Windows.Media.FontFamily("Segoe UI"), FontStyles.Normal, FontWeights.Bold, FontStretches.Normal),
                 13, Brushes.Black);
             //add 10 for some extra padding

@@ -9,14 +9,14 @@ namespace VisualNovelManagerv2.Design.Settings
     public class UserSettings
     {
         public bool NsfwEnabled { get; set; }
-        public int MaxSpoilerLevel { get; set; }
+        public uint MaxSpoilerLevel { get; set; }
         public VnSetting VnSetting { get; set; }
     }
 
     public class VnSetting
     {
-        public int Id { get; set; }
+        public uint Id { get; set; }
         public bool NsfwEnabled { get; set; }
-        public int Spoiler { get; set; }
+        public uint Spoiler { get; set; }
     }
 }

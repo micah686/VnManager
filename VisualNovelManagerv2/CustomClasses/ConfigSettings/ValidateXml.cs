@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Schema;
+using VisualNovelManagerv2.CustomClasses.TinyClasses;
 
 namespace VisualNovelManagerv2.CustomClasses.ConfigSettings
 {
@@ -38,6 +39,10 @@ namespace VisualNovelManagerv2.CustomClasses.ConfigSettings
                 catch (XmlException)
                 {
                     return false;
+                }
+                catch (Exception ex)
+                {
+                    DebugLogging.WriteDebugLog(ex);
                 }
             }
         }
