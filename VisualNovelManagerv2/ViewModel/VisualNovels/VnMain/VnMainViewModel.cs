@@ -91,42 +91,29 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
             {
                 using (var context = new DatabaseContext())
                 {
-                    MenuItem root = new MenuItem(){Header = "Visual Novels", IsSubmenuOpen = true};
+                    MenuItem root = new MenuItem(){Header = "Visual Novels"};
                     MenuItem all= new MenuItem(){Header = "All", IsSubmenuOpen = true};
                     foreach (var item in context.VnInfo.Select(x => x.Title))
                     {
-                        all.Items.Add(new MenuItem(){Header = item, Command = GetVnDataCommand});
+                        all.Items.Add(new MenuItem(){Header = item});
                     }
                     root.Items.Add(all);
 
                     foreach (var category in context.Categories.Where(x => x.CategoryName != "All").Select(x => x.CategoryName))
                     {
                         var menuItem = new MenuItem(){Header = category};
-                        //var vnIds = context.VnUserCategoryTitles.Where(x => x.Title == category).Select(x => x.VnId);
-                        //var names = context.VnInfo.Where(x => vnIds.Contains(x.VnId)).Select(x => x.Title).ToArray();
 
                         string[] names = context.VnInfo.Where(v => context.VnUserCategoryTitles.Where(c => c.Title == category).Select(x => x.VnId)
                                 .Contains(v.VnId)).Select(t => t.Title).ToArray();
 
                         foreach (var vn in names)
                         {
-                            menuItem.Items.Add(new MenuItem() {Header = vn, Command = GetVnDataCommand});
+                            menuItem.Items.Add(new MenuItem() {Header = vn});
                         }
                         root.Items.Add(menuItem);
                     }
                     TreeVnCategories.Add(root);
-
-                    ////need to add/seed the "All" in StartupValidate
-                    //if (_selectedCategory == "All" || string.IsNullOrEmpty(_selectedCategory))
-                    //{
-                    //    if (context.VnInfo != null)
-                    //    {
-                    //        VnNameCollection.InsertRange(context.VnInfo.Select(x => x.Title).ToList());
-                    //        return;
-                    //    }
-                    //}
-                    //VnNameCollection.InsertRange(from first in context.VnUserCategoryTitles
-                    //     join second in context.VnInfo on first.VnId equals second.VnId select second.Title);
+                    
                 }
             }
             catch (Exception ex)
@@ -161,9 +148,25 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
             if (obj == null) return;
             if (obj.GetType() == typeof(MenuItem))
             {
-                var name = menuItem.Header.ToString();
+                string name = menuItem.Header.ToString();                
                 _selectedVn = name;
-                GetVnData();
+                if (menuItem.Parent != null)
+                {
+                    if (menuItem.Parent.GetType() == typeof(MenuItem))
+                    {
+                        MenuItem parent = (MenuItem)menuItem.Parent;
+                        DatabaseContext context = new DatabaseContext();
+                        if (!context.Categories.Select(x => x.CategoryName).Contains(name) && name != "Visual Novels")
+                        {
+                            _selectedVn = String.Empty;
+                            _selectedCategory = parent.Header.ToString();
+                            GetVnData();
+                        }
+                        context.Dispose();
+                    }
+                }
+                
+                
             }
         }
 

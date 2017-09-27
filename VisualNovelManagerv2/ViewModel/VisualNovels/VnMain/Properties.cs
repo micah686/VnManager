@@ -108,26 +108,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
         }
         #endregion
 
-        #region ObservableCategories
-        private RangeEnabledObservableCollection<string> _categoriesCollection = new RangeEnabledObservableCollection<string>();
-        public RangeEnabledObservableCollection<string> CategoriesCollection
-        {
-            get
-            {
-                using (var context = new DatabaseContext())
-                {
-                    _categoriesCollection.InsertRange(context.Categories.Select(category => category.CategoryName));
-                }
-                return _categoriesCollection;
-            }
-            set
-            {
-                _categoriesCollection = value;
-                RaisePropertyChanged(nameof(CategoriesCollection));
-            }
-        }
-
-        #endregion ObservableCategories
 
         #region ObservableTreeVnCategory
         private ObservableCollection<MenuItem> _treeVnCategories= new ObservableCollection<MenuItem>();
@@ -140,9 +120,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
                 RaisePropertyChanged(nameof(TreeVnCategories));
             }
         }
-
-
-
         #endregion
 
 
@@ -212,19 +189,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
         }
         #endregion
 
-        #region SelectedCategory
-        private string _selectedCategory;
-        public string SelectedCategory
-        {
-            get { return _selectedCategory; }
-            set
-            {
-                _selectedCategory = value;
-                RaisePropertyChanged(nameof(SelectedCategory));
-            }
-        }
-        #endregion
-
         #region IsPlayEnabled
         private bool _isPlayEnabled = true;
         public bool IsPlayEnabled
@@ -238,9 +202,11 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
         }
         #endregion
 
+
         public static bool IsDownloading = false;
         private readonly Stopwatch _stopwatch = new Stopwatch();
         private string _selectedVn= String.Empty;
+        private string _selectedCategory = String.Empty;
 
         public ICommand StartVnCommand => new GalaSoft.MvvmLight.CommandWpf.RelayCommand(StartVn);
         public ICommand OpenContextMenuCommand => new GalaSoft.MvvmLight.CommandWpf.RelayCommand(CreateContextMenu);
