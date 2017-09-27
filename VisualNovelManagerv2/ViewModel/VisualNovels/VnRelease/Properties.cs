@@ -5,14 +5,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using VisualNovelManagerv2.CustomClasses;
 using VisualNovelManagerv2.Design.VisualNovel;
 
 namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnRelease
 {
     public partial class VnReleaseViewModel
     {
-        private static ObservableCollection<string> _releaseNameCollection = new ObservableCollection<string>();
-        public ObservableCollection<string> ReleaseNameCollection
+        private RangeEnabledObservableCollection<string> _releaseNameCollection = new RangeEnabledObservableCollection<string>();
+        public RangeEnabledObservableCollection<string> ReleaseNameCollection
         {
             get { return _releaseNameCollection; }
             set

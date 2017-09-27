@@ -56,10 +56,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnRelease
             {
                 using (var context = new DatabaseContext())
                 {
-                    foreach (EF.Entity.VnRelease.VnRelease release in context.VnRelease.Where(x=>x.VnId == Globals.VnId))
-                    {
-                        _releaseNameCollection.Add(release.Title);
-                    }
+                    ReleaseNameCollection.InsertRange(context.VnRelease.Where(x => x.VnId == Globals.VnId).Select(x => x.Title));
                 }
             }
 
@@ -100,7 +97,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnRelease
                             VnReleaseModel.Patch = release.Patch;
                             VnReleaseModel.Freeware = release.Freeware;
                             VnReleaseModel.Doujin = release.Doujin;
-                            VnReleaseModel.Website = release.Website;
+                            VnReleaseModel.Website = $"[url={release.Website}]{release.Website}[/url]";
                             VnReleaseModel.Notes = ConvertTextBBcode.ConvertText(release.Notes);
                             VnReleaseModel.MinAge = release.MinAge;
                             if (release.Gtin != null) VnReleaseModel.Gtin = Convert.ToUInt64(release.Gtin);
