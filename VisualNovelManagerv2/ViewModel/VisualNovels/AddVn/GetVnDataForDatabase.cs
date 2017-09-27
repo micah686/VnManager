@@ -21,10 +21,9 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
         private async void GetData()
         {
 
-            Globals.StatusBar.ProgressPercentage = 0;
-            Globals.StatusBar.IsDbProcessing = true;
+            Globals.StatusBar.ProgressPercentage = 0;            
             Globals.StatusBar.IsWorkProcessing = true;
-            Globals.StatusBar.ProgressText = "Processing";
+            Globals.StatusBar.ProgressText = "Retrieving Data";
             try
             {
                 using (Vndb client = new Vndb(true))
@@ -77,6 +76,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
 
                     _progressIncrement = (double) 91 / (2 + characterCount + releasesCount);
                     //await save vn data here
+                    Globals.StatusBar.ProgressText = "Processing Data";
+                    Globals.StatusBar.IsDbProcessing = true;
                     await AddToDatabase(visualNovels, releaseList, characterList);
                 }
 

@@ -18,6 +18,7 @@ using VisualNovelManagerv2.CustomClasses;
 using VisualNovelManagerv2.CustomClasses.TinyClasses;
 using VisualNovelManagerv2.CustomClasses.Vndb;
 using VisualNovelManagerv2.Design.VisualNovel;
+using VisualNovelManagerv2.EF.Context;
 using VisualNovelManagerv2.Infrastructure;
 using VisualNovelManagerv2.Pages.VisualNovels;
 using VndbSharp;
@@ -52,83 +53,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
             IconName = _iconService.PickedFileName;
         }
 
-        private void ConfigureValidationRules()
-        {
-            if (IsNameChecked != true)
-            {
-                Validator.AddRequiredRule(() => InputVnId, "Vndb ID is required");
-                Validator.AddRule(nameof(InputVnId),
-                    () => RuleResult.Assert(InputVnId >= 1, "Vndb ID must be at least 1"));
-                Validator.AddRule(nameof(InputVnId),
-                    () => RuleResult.Assert(InputVnId <= IsAboveMaxId().Result, "Not a Valid Vndb ID"));
-                Validator.AddRule(nameof(InputVnId),
-                    () => RuleResult.Assert(IsDeletedVn().Result != true, "This Vndb ID has been removed"));
-            }
-
-            Validator.AddRequiredRule(() => FileName, "Path to application is required");
-            Validator.AddRule(nameof(FileName),
-                () =>
-                {
-                    bool filepath = File.Exists(FileName);
-                    string ext = Path.GetExtension(FileName) ?? string.Empty;
-                    return RuleResult.Assert(filepath && ext.EndsWith(".exe"), "Not a valid file path");
-                });
-
-            if (IsIconEnabled == true)
-            {
-                Validator.AddRule(nameof(IconName),
-                    () =>
-                    {
-                        bool filepath = File.Exists(IconName);
-                        string ext = Path.GetExtension(IconName) ?? string.Empty;
-                        return RuleResult.Assert(filepath && ext.EndsWith(".ico"), "Not a valid file path");
-                    });
-            }
-            
-        }
-
-        private async Task<uint> IsAboveMaxId()
-        {
-            try
-            {
-                using (Vndb client = new Vndb(true))
-                {
-                    RequestOptions ro = new RequestOptions
-                    {
-                        Reverse = true,
-                        Sort = "id",
-                        Count = 1
-                    };
-                    VndbResponse<VisualNovel> response = await client.GetVisualNovelAsync(VndbFilters.Id.GreaterThan(1), VndbFlags.Basic, ro);
-                    return response.Items[0].Id;
-                }
-            }
-            catch (Exception ex)
-            {
-                DebugLogging.WriteDebugLog(ex);
-                throw;
-            }            
-        }
-
-        private async Task<bool> IsDeletedVn()
-        {
-            try
-            {
-                using (Vndb client = new Vndb(true))
-                {
-                    uint vnid = Convert.ToUInt32(InputVnId);
-                    VndbResponse<VisualNovel> response = await client.GetVisualNovelAsync(VndbFilters.Id.Equals(vnid));
-
-                    client.Logout();
-                    return response.Count < 1;
-                }
-            }
-            catch (Exception ex)
-            {
-                DebugLogging.WriteDebugLog(ex);
-                throw;
-            }            
-        }
+        
 
         private void ValidateExe()
         {
@@ -191,11 +116,104 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
             }            
         }
 
+        
+
+        #region ValidationRulesChecker
+        private void ConfigureValidationRules()
+        {
+            if (IsNameChecked != true)
+            {
+                Validator.AddRequiredRule(() => InputVnId, "Vndb ID is required");
+                Validator.AddRule(nameof(InputVnId),
+                    () => RuleResult.Assert(InputVnId >= 1, "Vndb ID must be at least 1"));
+                Validator.AddRule(nameof(InputVnId),
+                    () => RuleResult.Assert(InputVnId <= IsAboveMaxId().Result, "Not a Valid Vndb ID"));
+                Validator.AddRule(nameof(InputVnId),
+                    () => RuleResult.Assert(IsDeletedVn().Result != true, "This Vndb ID has been removed"));
+                Validator.AddRule(nameof(InputVnId),
+                    () => RuleResult.Assert(IsDuplicateVn() != true, "This Vndb ID already exists"));
+            }
+
+            Validator.AddRequiredRule(() => FileName, "Path to application is required");
+            Validator.AddRule(nameof(FileName),
+                () =>
+                {
+                    bool filepath = File.Exists(FileName);
+                    string ext = Path.GetExtension(FileName) ?? string.Empty;
+                    return RuleResult.Assert(filepath && ext.EndsWith(".exe"), "Not a valid file path");
+                });
+
+            if (IsIconEnabled == true)
+            {
+                Validator.AddRule(nameof(IconName),
+                    () =>
+                    {
+                        bool filepath = File.Exists(IconName);
+                        string ext = Path.GetExtension(IconName) ?? string.Empty;
+                        return RuleResult.Assert(filepath && ext.EndsWith(".ico"), "Not a valid file path");
+                    });
+            }
+
+        }
+
+        private async Task<uint> IsAboveMaxId()
+        {
+            try
+            {
+                using (Vndb client = new Vndb(true))
+                {
+                    RequestOptions ro = new RequestOptions
+                    {
+                        Reverse = true,
+                        Sort = "id",
+                        Count = 1
+                    };
+                    VndbResponse<VisualNovel> response = await client.GetVisualNovelAsync(VndbFilters.Id.GreaterThan(1), VndbFlags.Basic, ro);
+                    return response.Items[0].Id;
+                }
+            }
+            catch (Exception ex)
+            {
+                DebugLogging.WriteDebugLog(ex);
+                throw;
+            }
+        }
+
+        private async Task<bool> IsDeletedVn()
+        {
+            try
+            {
+                using (Vndb client = new Vndb(true))
+                {
+                    uint vnid = Convert.ToUInt32(InputVnId);
+                    VndbResponse<VisualNovel> response = await client.GetVisualNovelAsync(VndbFilters.Id.Equals(vnid));
+
+                    client.Logout();
+                    return response.Count < 1;
+                }
+            }
+            catch (Exception ex)
+            {
+                DebugLogging.WriteDebugLog(ex);
+                throw;
+            }
+        }
+
         private bool IsJapaneseText(string text)
         {
             Regex regex = new Regex(@"/[\u3000-\u303F]|[\u3040-\u309F]|[\u30A0-\u30FF]|[\uFF00-\uFFEF]|[\u4E00-\u9FAF]|[\u2605-\u2606]|[\u2190-\u2195]|\u203B/g");
             return regex.IsMatch(text);
         }
+
+        private bool IsDuplicateVn()
+        {
+            using (var context = new DatabaseContext())
+            {
+                return context.VnInfo.Any(x => x.VnId.Equals(InputVnId));
+            }
+        }
+
+        #endregion
 
         #region Validation Methods
         private async void Validate()
@@ -203,6 +221,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
             try
             {
                 IsUserInputEnabled = false;
+                Globals.StatusBar.IsWorkProcessing = true;
+                Globals.StatusBar.ProgressText = "Checking input";
                 ValidateExe();
                 //set validation rules here, so they are are checked on submit
                 ConfigureValidationRules();
@@ -223,6 +243,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                 }
                 else
                 {
+                    Globals.StatusBar.IsWorkProcessing = false;
+                    Globals.StatusBar.ProgressText = String.Empty;
                     IsUserInputEnabled = true;
                 }
             }

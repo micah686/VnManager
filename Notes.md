@@ -8,9 +8,9 @@ These are just personal reminders for me to keep track of what I need to fix/add
 - [X]  reload screenshot viewmodel after changing nsfw status
 - [ ] Set up some sort of wait timer/pause bool to prevent trying to load another Vn once one is selected(for use when someone holds down, aand it tries to load a large amount)
 - [X] Prevent user from playing a game while playing another one
-- [ ] Replace FlowDocument with a BBCodeBlock, and have a converter to convert the vndb local URLs to standard BBCode URLs
+- [X] Replace FlowDocument with a BBCodeBlock, and have a converter to convert the vndb local URLs to standard BBCode URLs
 - [X] Fix the Tags collection messing up when switching between games
-- [ ] Fix the issue where it doesn't show Processing when it's getting a lot of characters(like 751)
+- [X] Fix the issue where it doesn't show Processing when it's getting a lot of characters(like 751)
 - [ ] Fix the issue where adding categories keeps triggering the validation helper
 
 
