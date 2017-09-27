@@ -36,6 +36,7 @@ using Image = System.Drawing.Image;
 using RelayCommand = GalaSoft.MvvmLight.Command.RelayCommand;
 
 
+
 // ReSharper disable ExplicitCallerInfoArgument
 
 namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
@@ -85,21 +86,47 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
         private void LoadCategories()
         {
             VnNameCollection.Clear();
+            
             try
             {
                 using (var context = new DatabaseContext())
-                {                    
-                    //need to add/seed the "All" in StartupValidate
-                    if (_selectedCategory == "All" || string.IsNullOrEmpty(_selectedCategory))
+                {
+                    MenuItem root = new MenuItem(){Header = "Visual Novels", IsSubmenuOpen = true};
+                    MenuItem all= new MenuItem(){Header = "All", IsSubmenuOpen = true};
+                    foreach (var item in context.VnInfo.Select(x => x.Title))
                     {
-                        if (context.VnInfo != null)
-                        {
-                            VnNameCollection.InsertRange(context.VnInfo.Select(x => x.Title).ToList());
-                            return;
-                        }
+                        all.Items.Add(new MenuItem(){Header = item, Command = GetVnDataCommand});
                     }
-                    VnNameCollection.InsertRange(from first in context.VnUserCategoryTitles
-                         join second in context.VnInfo on first.VnId equals second.VnId select second.Title);
+                    root.Items.Add(all);
+
+                    foreach (var category in context.Categories.Where(x => x.CategoryName != "All").Select(x => x.CategoryName))
+                    {
+                        var menuItem = new MenuItem(){Header = category};
+                        //var vnIds = context.VnUserCategoryTitles.Where(x => x.Title == category).Select(x => x.VnId);
+                        //var names = context.VnInfo.Where(x => vnIds.Contains(x.VnId)).Select(x => x.Title).ToArray();
+
+                        string[] names = context.VnInfo.Where(v => context.VnUserCategoryTitles.Where(c => c.Title == category).Select(x => x.VnId)
+                                .Contains(v.VnId)).Select(t => t.Title).ToArray();
+
+                        foreach (var vn in names)
+                        {
+                            menuItem.Items.Add(new MenuItem() {Header = vn, Command = GetVnDataCommand});
+                        }
+                        root.Items.Add(menuItem);
+                    }
+                    TreeVnCategories.Add(root);
+
+                    ////need to add/seed the "All" in StartupValidate
+                    //if (_selectedCategory == "All" || string.IsNullOrEmpty(_selectedCategory))
+                    //{
+                    //    if (context.VnInfo != null)
+                    //    {
+                    //        VnNameCollection.InsertRange(context.VnInfo.Select(x => x.Title).ToList());
+                    //        return;
+                    //    }
+                    //}
+                    //VnNameCollection.InsertRange(from first in context.VnUserCategoryTitles
+                    //     join second in context.VnInfo on first.VnId equals second.VnId select second.Title);
                 }
             }
             catch (Exception ex)

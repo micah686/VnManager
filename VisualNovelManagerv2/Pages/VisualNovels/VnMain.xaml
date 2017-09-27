@@ -9,6 +9,7 @@
              xmlns:bb="clr-namespace:VisualNovelManagerv2.CustomClasses.FirstFloorMui.BBCode"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
+             xmlns:vm="clr-namespace:VisualNovelManagerv2.ViewModel.VisualNovels.VnMain"
              mc:Ignorable="d" 
              d:DesignHeight="1200" d:DesignWidth="800"
              DataContext="{Binding VnMain, Source={StaticResource Locator}}">
@@ -55,14 +56,22 @@
 
                     <Separator Grid.Row="3" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
 
-                    <ListBox Grid.Row="4" Name="NoteList" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" ItemsSource="{Binding VnNameCollection}" Margin="0,5,5,5"
+                    <!--<ListBox Grid.Row="4" Name="NoteList" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" ItemsSource="{Binding VnNameCollection}" Margin="0,5,5,5"
                              Width="{Binding MaxListWidth}" MaxWidth="{Binding MaxListWidth}" MinWidth="150" SelectedItem="{Binding SelectedVn}">
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="MouseRightButtonUp">
                                 <i:InvokeCommandAction Command="{Binding OpenContextMenuCommand}"/>
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
-                    </ListBox>
+                    </ListBox>-->
+                    <TreeView Grid.Row="4" ItemsSource="{Binding TreeVnCategories}" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" Margin="0,5,5,5"
+                              Width="{Binding MaxListWidth}" MaxWidth="{Binding MaxListWidth}" MinWidth="150" >
+                        <TreeView.ItemTemplate>
+                            <HierarchicalDataTemplate  ItemsSource="{Binding Items}">
+                                <Label Content="{Binding Header}"/>
+                            </HierarchicalDataTemplate>
+                        </TreeView.ItemTemplate>
+                    </TreeView>
                 </Grid>
 
                 <!--#region Divider-->
@@ -372,7 +381,7 @@
                 </ScrollViewer>
             </Grid>
         </Grid>
-        <local:BottomStatusBar />
+        <!--<local:BottomStatusBar />-->
 
         
     </Grid>

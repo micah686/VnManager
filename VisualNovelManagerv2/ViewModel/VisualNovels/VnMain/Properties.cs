@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using VisualNovelManagerv2.CustomClasses;
@@ -128,6 +129,22 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
 
         #endregion ObservableCategories
 
+        #region ObservableTreeVnCategory
+        private ObservableCollection<MenuItem> _treeVnCategories= new ObservableCollection<MenuItem>();
+        public ObservableCollection<MenuItem> TreeVnCategories
+        {
+            get { return _treeVnCategories; }
+            set
+            {
+                _treeVnCategories = value;
+                RaisePropertyChanged(nameof(TreeVnCategories));
+            }
+        }
+
+
+
+        #endregion
+
 
         #region maxwidth
         private double _maxListWidth;
@@ -217,7 +234,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
             set
             {
                 _selectedCategory = value;
-                LoadCategories();
+                //LoadCategories();
                 RaisePropertyChanged(nameof(SelectedCategory));
             }
         }
@@ -245,6 +262,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
         public ICommand AddToCategoryCommand { get; private set; }
         public ICommand RemoveFromCategoryCommand { get; private set; }
         public ICommand DeleteVnCommand => new GalaSoft.MvvmLight.CommandWpf.RelayCommand(DeleteVn);
+        public ICommand GetVnDataCommand => new GalaSoft.MvvmLight.CommandWpf.RelayCommand(GetVnData);
 
     }
 }

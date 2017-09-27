@@ -11,6 +11,7 @@ These are just personal reminders for me to keep track of what I need to fix/add
 - [ ] Replace FlowDocument with a BBCodeBlock, and have a converter to convert the vndb local URLs to standard BBCode URLs
 - [X] Fix the Tags collection messing up when switching between games
 - [ ] Fix the issue where it doesn't show Processing when it's getting a lot of characters(like 751)
+- [ ] Fix the issue where adding categories keeps triggering the validation helper
 
 
 ## Entity Framework Notes
