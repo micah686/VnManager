@@ -695,14 +695,14 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnListViewModel
             using (var context = new DatabaseContext())
             {
                 uint data = 0;
-                data = context.Set<VnInfo>().Where(v => v.Title == SelectedItem).Select(x => x.VnId).FirstOrDefault();
+                data = context.VnInfo.Where(v => v.Title == SelectedItem).Select(x => x.VnId).FirstOrDefault();
                 if (data != 0)
                 {
                     return data;
                 }
                 if (data == 0)
                 {
-                    data = context.Set<VnIdList>().Where(v => v.Title == SelectedItem).Select(x => x.VnId)
+                    data = context.VnIdList.Where(v => v.Title == SelectedItem).Select(x => x.VnId)
                         .FirstOrDefault();
                     return data;
                 }

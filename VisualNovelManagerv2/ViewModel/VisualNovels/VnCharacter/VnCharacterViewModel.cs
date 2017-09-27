@@ -33,13 +33,12 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
             CharacterNameCollection.Clear();
             try
             {
-                using (var db = new DatabaseContext())
+                using (var context = new DatabaseContext())
                 {
-                    foreach (EF.Entity.VnCharacter.VnCharacter character in db.Set<EF.Entity.VnCharacter.VnCharacter>().Where(x => x.VnId == Globals.VnId))
+                    foreach (EF.Entity.VnCharacter.VnCharacter character in context.VnCharacter.Where(x => x.VnId == Globals.VnId))
                     {
                         _characterNameCollection.Add(character.Name);
                     }
-                    db.Dispose();
                 }
             }
             catch (Exception ex)
@@ -60,8 +59,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
                 Globals.StatusBar.IsDownloading = true;
                 using (var context = new DatabaseContext())
                 {
-                    List<string> characterList = context.Set<EF.Entity.VnCharacter.VnCharacter>()
-                        .Where(x => x.VnId == Globals.VnId).Select(i => i.ImageLink).ToList();
+                    List<string> characterList = context.VnCharacter.Where(x => x.VnId == Globals.VnId).Select(i => i.ImageLink).ToList();
                     if (characterList.Count <= 0) return;
                     foreach (string character in characterList)
                     {
@@ -114,9 +112,9 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
                     TraitDescription = String.Empty;
                 }
 
-                using (var db = new DatabaseContext())
+                using (var context = new DatabaseContext())
                 {
-                    foreach (var character in db.Set<EF.Entity.VnCharacter.VnCharacter>().Where(n => n.Name == SelectedCharacter).Where(i => i.VnId == Globals.VnId))
+                    foreach (var character in context.VnCharacter.Where(n => n.Name == SelectedCharacter).Where(i => i.VnId == Globals.VnId))
                     {
                         VnCharacterModel.Name = character.Name;
                         VnCharacterModel.OriginalName = character.Original;
@@ -151,13 +149,12 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
                         VnCharacterModel.Height = character.Height.ToString();
                         VnCharacterModel.Weight = character.Weight.ToString();
 
-                        traitArray = (from charactr in db.VnCharacterTraits
+                        traitArray = (from charactr in context.VnCharacterTraits
                             where charactr.CharacterId.Equals(character.CharacterId)
-                            join trait in db.VnTraitData on charactr.TraitId equals trait.TraitId
+                            join trait in context.VnTraitData on charactr.TraitId equals trait.TraitId
                             select trait).ToArray();
                         TraitsCollection.InsertRange(traitArray.Select(x => x.Name));
                     }                    
-                    db.Dispose();
                 }
             }
             catch (Exception exception)

@@ -64,14 +64,13 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
             try
             {
                 if (!(_selectedTagIndex >= 0)) return;
-                using (var db = new DatabaseContext())
+                using (var context = new DatabaseContext())
                 {
-                    foreach (string tag in db.Set<VnTagData>().Where(n => n.Name == SelectedTag).Select(d => d.Description))
+                    foreach (string tag in context.VnTagData.Where(n => n.Name == SelectedTag).Select(d => d.Description))
                     {
                         TagDescription = ConvertTextBBcode.ConvertText(tag);
                         break;
                     }
-                    db.Dispose();
                 }
             }
             catch (Exception ex)
@@ -89,12 +88,12 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
             Globals.StatusBar.ProgressText = "Loading Main Data";
             try
             {
-                using (var db = new DatabaseContext())
+                using (var context = new DatabaseContext())
                 {
 
 
                     #region VnInfo
-                    foreach (VnInfo vnInfo in db.Set<VnInfo>().Where(t => t.Title == (_selectedVn)))
+                    foreach (VnInfo vnInfo in context.VnInfo.Where(t => t.Title == (_selectedVn)))
                     {
                         Globals.VnId = vnInfo.VnId;
 
@@ -170,8 +169,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
 
                     #region VnAnime
 
-                    foreach (var anime in db.Set<EF.Entity.VnInfo.VnInfoAnime>()
-                        .Where(v => v.VnId == Globals.VnId))
+                    foreach (var anime in context.VnInfoAnime.Where(v => v.VnId == Globals.VnId))
                     {
                         await Application.Current.Dispatcher.BeginInvoke(new Action(() => VnInfoAnimeCollection.Add(
                             new VnInfoAnime
@@ -192,7 +190,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
                     #endregion
 
                     #region VnTags
-                    List<string> tagNames = (from info in db.VnInfoTags where info.VnId.Equals(Globals.VnId) join tag in db.VnTagData on info.TagId equals tag.TagId select tag.Name).ToList();
+                    List<string> tagNames = (from info in context.VnInfoTags where info.VnId.Equals(Globals.VnId)
+                                             join tag in context.VnTagData on info.TagId equals tag.TagId select tag.Name).ToList();
                     await Application.Current.Dispatcher.BeginInvoke(new Action(() => VnInfoTagCollection.InsertRange(tagNames)));
 
                     if (Globals.StatusBar.ProgressPercentage != null)
@@ -203,7 +202,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
 
                     #region VnLinks
 
-                    foreach (VnInfoLinks links in db.Set<VnInfoLinks>().Where(v => v.VnId == Globals.VnId))
+                    foreach (VnInfoLinks links in context.VnInfoLinks.Where(v => v.VnId == Globals.VnId))
                     {
                         string wikipedia = String.Empty;
                         string encubed = String.Empty;
@@ -232,7 +231,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
 
                     #region VnRelations
 
-                    foreach (VnInfoRelations relation in db.Set<VnInfoRelations>().Where(v => v.VnId == Globals.VnId))
+                    foreach (VnInfoRelations relation in context.VnInfoRelations.Where(v => v.VnId == Globals.VnId))
                     {
                         await Application.Current.Dispatcher.BeginInvoke(new Action((() => this.VnInfoRelation.Add(
                             new VnInfoRelation
@@ -251,7 +250,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
 
                     #region VnUserData
 
-                    foreach (var userData in db.Set<VnUserData>().Where(v => v.VnId == Globals.VnId))
+                    foreach (var userData in context.VnUserData.Where(v => v.VnId == Globals.VnId))
                     {
                         if (string.IsNullOrEmpty(userData.LastPlayed))
                         {
@@ -313,7 +312,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
                             (double)Globals.StatusBar.ProgressPercentage + ProgressIncrement;
 
                     #endregion
-                    db.Dispose();
                 }
             }
             catch (Exception exception)

@@ -191,13 +191,12 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
                     VnInfoAnimeCollection.Clear();
                     TagDescription = String.Empty;
 
-                    using (var db = new DatabaseContext())
+                    using (var context = new DatabaseContext())
                     {
-                        foreach (uint vnid in db.Set<VnInfo>().Where(t=>t.Title==(_selectedVn)).Select(v=>v.VnId))
+                        foreach (uint vnid in context.VnInfo.Where(t=>t.Title==(_selectedVn)).Select(v=>v.VnId))
                         {
                             Globals.VnId = vnid;
                         }
-                        db.Dispose();
                     }
 
                     if (Globals.VnId > 0)
@@ -240,14 +239,13 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
         {
             try
             {
-                using (var db = new DatabaseContext())
+                using (var context = new DatabaseContext())
                 {
-                    foreach (VnUserData userData in db.Set<VnUserData>().Where(v=>v.VnId == Globals.VnId))
+                    foreach (VnUserData userData in context.VnUserData.Where(v=>v.VnId == Globals.VnId))
                     {
                         //checks for existance of Iconpath first, then ExePath. If both are null/empty, it returns a null image
                         return !string.IsNullOrEmpty(userData.IconPath) ? CreateIcon(userData.IconPath) : CreateIcon(!string.IsNullOrEmpty(userData.ExePath) ? userData.ExePath : null);
                     }
-                    db.Dispose();
                 }
                 return null;
             }
