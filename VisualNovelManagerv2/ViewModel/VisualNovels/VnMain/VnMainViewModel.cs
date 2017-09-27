@@ -60,7 +60,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
 
         private void ClearVnData()
         {
-            VnNameCollection.Clear();
+            TreeVnCategories.Clear();
             LanguageCollection.Clear();
             OriginalLanguagesCollection.Clear();
             VnInfoRelation.Clear();
@@ -85,7 +85,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
 
         private void LoadCategories()
         {
-            VnNameCollection.Clear();
+            TreeVnCategories.Clear();
             
             try
             {
@@ -123,7 +123,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
             }
             finally
             {
-                SetMaxWidth();
             }
             
         }
@@ -135,12 +134,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
         }
         
 
-        public void SetMaxWidth()
-        {
-            if (VnNameCollection.Count <= 0) return;
-            string longestString = VnNameCollection.OrderByDescending(s => s.Length).First();
-            MaxListWidth = MeasureStringSize.GetMaxStringWidth(longestString);
-        }
+
 
         private void CheckMenuItemName(object obj)
         {
@@ -297,12 +291,13 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
                         {
                             Globals.StatusBar.IsDownloading = true;
                             WebClient client = new WebClient();
-                            using (MemoryStream stream = new MemoryStream(client.DownloadData(new Uri(url))))
+                            using (MemoryStream stream = new MemoryStream(await client.DownloadDataTaskAsync(new Uri(url))))
                             {
                                 string base64Img =
                                     Base64Converter.ImageToBase64(Image.FromStream(stream), ImageFormat.Jpeg);
                                 File.WriteAllText(pathNoExt, base64Img);
                             }
+                            client.Dispose();
                         }
                         break;
                     case false:
@@ -311,7 +306,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
                             Globals.StatusBar.IsDownloading = true;
                             Thread.Sleep(1500);
                             WebClient client = new WebClient();
-                            client.DownloadFile(new Uri(url), path);
+                            await client.DownloadFileTaskAsync(new Uri(url), path);
+                            client.Dispose();
                         }
                         break;
                 }
@@ -393,7 +389,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
                     if (!string.IsNullOrEmpty(vnUserData.PlayTime))
                     {
                         //check if matches #,#,#,# format
-                        bool isMatch = new Regex(@"^[0-9]+\,[0-9]+\,[0-9]+\,[0-9]+$").IsMatch(vnUserData.PlayTime);
                         if (new Regex(@"^[0-9]+\,[0-9]+\,[0-9]+\,[0-9]+$").IsMatch(vnUserData.PlayTime))
                         {
                             var lastPlayTime = vnUserData.PlayTime.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);

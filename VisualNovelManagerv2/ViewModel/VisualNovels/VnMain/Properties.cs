@@ -17,18 +17,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
 {
     public partial class VnMainViewModel
     {
-        #region ObservableVnNameCollection
-        private RangeEnabledObservableCollection<string> _vnNameCollection = new RangeEnabledObservableCollection<string>();
-        public RangeEnabledObservableCollection<string> VnNameCollection
-        {
-            get { return _vnNameCollection; }
-            set
-            {
-                _vnNameCollection = value;
-                RaisePropertyChanged(nameof(VnNameCollection));
-            }
-        }
-        #endregion
 
         #region ObservableVnInfoAnime
         private ObservableCollection<VnInfoAnime> _vnAnimeCollection = new ObservableCollection<VnInfoAnime>();
@@ -108,7 +96,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
         }
         #endregion
 
-
         #region ObservableTreeVnCategory
         private ObservableCollection<MenuItem> _treeVnCategories= new ObservableCollection<MenuItem>();
         public ObservableCollection<MenuItem> TreeVnCategories
@@ -120,21 +107,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
                 RaisePropertyChanged(nameof(TreeVnCategories));
             }
         }
-        #endregion
-
-
-        #region maxwidth
-        private double _maxListWidth;
-        public double MaxListWidth
-        {
-            get { return _maxListWidth; }
-            set
-            {
-                _maxListWidth = value;
-                RaisePropertyChanged(nameof(MaxListWidth));
-            }
-        }
-        #endregion
+        #endregion        
 
         #region VnMainModel
         private VnMainModel _vnMainModel = new VnMainModel();
