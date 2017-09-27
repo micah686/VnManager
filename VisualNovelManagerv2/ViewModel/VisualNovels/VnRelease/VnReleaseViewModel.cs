@@ -29,13 +29,12 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnRelease
             ReleaseNameCollection.Clear();
             try
             {
-                using (var db = new DatabaseContext())
+                using (var context = new DatabaseContext())
                 {
-                    foreach (EF.Entity.VnRelease.VnRelease release in db.Set<EF.Entity.VnRelease.VnRelease>().Where(x=>x.VnId == Globals.VnId))
+                    foreach (EF.Entity.VnRelease.VnRelease release in context.VnRelease.Where(x=>x.VnId == Globals.VnId))
                     {
                         _releaseNameCollection.Add(release.Title);
                     }
-                    db.Dispose();
                 }
             }
 
@@ -55,11 +54,11 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnRelease
                 _releaseLanguages.Clear();
                 _releasePlatforms.Clear();
                
-                using (var db = new DatabaseContext())
+                using (var context = new DatabaseContext())
                 {
                     int index = (SelectedReleaseIndex + 1);
                     int count = 1;
-                    foreach (EF.Entity.VnRelease.VnRelease release in db.Set<EF.Entity.VnRelease.VnRelease>().Where(x=>x.VnId==Globals.VnId))
+                    foreach (EF.Entity.VnRelease.VnRelease release in context.VnRelease.Where(x=>x.VnId==Globals.VnId))
                     {
                         if (count != index)
                         {
@@ -173,7 +172,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnRelease
                             break;
                         }
                     }
-                    db.Dispose();
                 }
             }
             catch (System.IndexOutOfRangeException ex)
@@ -194,9 +192,9 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnRelease
         {
             try
             {
-                using (var db = new DatabaseContext())
+                using (var context = new DatabaseContext())
                 {
-                    foreach (VnReleaseProducers release in db.Set<VnReleaseProducers>().Where(x=>x.ReleaseId==releaseId))
+                    foreach (VnReleaseProducers release in context.VnReleaseProducers.Where(x=>x.ReleaseId==releaseId))
                     {
                         VnReleaseProducerModel.IsDeveloper = release.Developer;
                         VnReleaseProducerModel.IsPublisher = release.Publisher;
@@ -219,7 +217,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnRelease
                                 break;
                         }
                     }
-                    db.Dispose();
                 }
             }
             catch (IndexOutOfRangeException ex)
