@@ -91,5 +91,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnRelease
         }
 
         public ICommand LoadReleaseNamesCommand => new GalaSoft.MvvmLight.CommandWpf.RelayCommand(LoadReleaseNameList);
+        public ICommand ClearReleaseDataCommand => new GalaSoft.MvvmLight.CommandWpf.RelayCommand(ClearReleaseData);
     }
 }

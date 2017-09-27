@@ -22,7 +22,32 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnRelease
         {
         }
 
-        
+        private void ClearReleaseData()
+        {
+            VnReleaseModel.Title = String.Empty;
+            VnReleaseModel.Animation = String.Empty;
+            VnReleaseModel.Catalog = String.Empty;
+            VnReleaseModel.Doujin = String.Empty;
+            VnReleaseModel.Freeware = String.Empty;
+            VnReleaseModel.Gtin = null;
+            VnReleaseModel.Languages = new BitmapImage();
+            VnReleaseModel.MinAge = null;
+            VnReleaseModel.Notes = String.Empty;
+            VnReleaseModel.OriginalTitle = String.Empty;
+            VnReleaseModel.Patch = String.Empty;
+            VnReleaseModel.Platforms = new BitmapImage();
+            VnReleaseModel.ReleaseType = String.Empty;
+            VnReleaseModel.Released = String.Empty;
+            VnReleaseModel.Resolution = String.Empty;
+            VnReleaseModel.Voiced = String.Empty;
+            VnReleaseModel.Website = String.Empty;
+
+            VnReleaseProducerModel.Name = String.Empty;
+            VnReleaseProducerModel.IsDeveloper = String.Empty;
+            VnReleaseProducerModel.IsPublisher = String.Empty;
+            VnReleaseProducerModel.OriginalName = String.Empty;
+            VnReleaseProducerModel.Type = String.Empty;
+        }
 
         private void LoadReleaseNameList()
         {

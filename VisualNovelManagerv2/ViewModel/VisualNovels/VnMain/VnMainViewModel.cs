@@ -225,6 +225,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
             cvm.LoadCharacterCommand.Execute(null);
             
             var rvm = ServiceLocator.Current.GetInstance<VnReleaseViewModel>();
+            rvm.ClearReleaseDataCommand.Execute(null);
             rvm.LoadReleaseNamesCommand.Execute(null);
 
             var ssvm = ServiceLocator.Current.GetInstance<VnScreenshotViewModel>();
