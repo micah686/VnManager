@@ -12,6 +12,7 @@ These are just personal reminders for me to keep track of what I need to fix/add
 - [X] Fix the Tags collection messing up when switching between games
 - [X] Fix the issue where it doesn't show Processing when it's getting a lot of characters(like 751)
 - [ ] Fix the issue where adding categories keeps triggering the validation helper
+- [ ] Fix alignment of text on vnList
 
 
 ## Entity Framework Notes
