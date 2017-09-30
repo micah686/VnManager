@@ -19,7 +19,15 @@
             </mui:LinkGroup.Links>
         </mui:LinkGroup>
         
+
         <mui:LinkGroup DisplayName="Advanced">
+            <mui:LinkGroup.Links>
+                <mui:Link DisplayName="" Source="../Pages/Home.xaml"/>
+            </mui:LinkGroup.Links>
+        </mui:LinkGroup>
+
+        <!--If I add another link group, always move DebugLinkGroup to the end. Otherwise, there will be larger spacing on the release build -->
+        <mui:LinkGroup x:Name="DebugLinkGroup" DisplayName="Debug">
             <mui:LinkGroup.Links>
                 <mui:Link DisplayName="TEST" Source="../Pages/Test.xaml"/>
             </mui:LinkGroup.Links>

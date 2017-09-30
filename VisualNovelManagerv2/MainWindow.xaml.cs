@@ -25,6 +25,11 @@ namespace VisualNovelManagerv2
         {
             FirstFloor.ModernUI.Presentation.AppearanceManager.Current.ThemeSource = new Uri("pack://application:,,,/FirstFloor.ModernUI;component/Assets/ModernUI.Dark.xaml");
             InitializeComponent();
+
+#if (!DEBUG)
+            DebugLinkGroup.Links.Clear();
+            DebugLinkGroup.DisplayName = null;
+#endif
         }
     }
 }
