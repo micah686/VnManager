@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.CommandWpf;
 using VisualNovelManagerv2.Converters;
@@ -28,7 +29,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         }
 
         public ICommand BindScreenshotsCommand => new RelayCommand(BindScreenshots);
-        public ICommand DownloadScreenshotsCommand => new RelayCommand(DownloadScreenshots);
         #region StaticProperties
 
         #region ScreenshotCollection
@@ -212,7 +212,12 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             }            
         }
 
-        private async void DownloadScreenshots()
+        public async Task DonwloadScreenshotImagesPublic()
+        {
+            await DownloadScreenshots();
+        }
+
+        private async Task DownloadScreenshots()
         {
             try
             {
@@ -279,7 +284,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                                 {
                                     Globals.StatusBar.IsDownloading = true;
                                     WebClient client = new WebClient();
-                                    client.DownloadFile(new Uri(screenshot.Url), path);
+                                    await client.DownloadFileTaskAsync(new Uri(screenshot.Url), path);
                                     client.Dispose();                               
                                 }
                                 if (!File.Exists(pathThumb))

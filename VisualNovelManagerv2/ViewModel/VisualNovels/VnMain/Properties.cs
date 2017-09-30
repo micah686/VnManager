@@ -175,6 +175,18 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
         }
         #endregion
 
+        #region IsUserInputEnabled
+        private bool _isUserInputEnabled = true;
+        public bool IsUserInputEnabled
+        {
+            get { return _isUserInputEnabled; }
+            set
+            {
+                _isUserInputEnabled = value;
+                RaisePropertyChanged(nameof(IsUserInputEnabled));
+            }
+        }
+        #endregion
 
         public static bool IsDownloading = false;
         private readonly Stopwatch _stopwatch = new Stopwatch();

@@ -13,6 +13,8 @@ These are just personal reminders for me to keep track of what I need to fix/add
 - [X] Fix the issue where it doesn't show Processing when it's getting a lot of characters(like 751)
 - [ ] Fix the issue where adding categories keeps triggering the validation helper
 - [ ] Fix alignment of text on vnList
+- [ ] Check clipboard before allowing user to paste
+- [ ] Fix the style on the treeview disabled(currently aa weird gray color)
 
 
 ## Entity Framework Notes

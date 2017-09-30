@@ -63,10 +63,11 @@
                         </i:Interaction.Triggers>
                     </ListBox>-->
                     <TreeView x:Name="CategoryTreeView" Grid.Row="3" ItemsSource="{Binding TreeVnCategories}" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" 
-                               >
+                               IsEnabled="{Binding IsUserInputEnabled}">
                         <TreeView.ItemContainerStyle>
                             <Style TargetType="{x:Type TreeViewItem}">
                                 <Setter Property="IsExpanded" Value="True"/>
+                                <Setter Property="IsEnabled" Value="{Binding IsUserInputEnabled}"/>
                             </Style>
                         </TreeView.ItemContainerStyle>
                         <i:Interaction.Triggers>

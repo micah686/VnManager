@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
@@ -67,8 +68,12 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
             TraitDescription = String.Empty;
         }
 
+        public async Task DownloadCharacterImagesPublic()
+        {
+            await DownloadCharacters();
+        }
 
-        private void DownloadCharacters()
+        private async Task DownloadCharacters()
         {
             try
             {
@@ -90,7 +95,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
                         if (!File.Exists(path) && !string.IsNullOrEmpty(character))
                         {
                             WebClient client = new WebClient();
-                            client.DownloadFile(new Uri(character), path);
+                            await client.DownloadFileTaskAsync(new Uri(character), path);
+                            client.Dispose();
                         }
                     }
                 }

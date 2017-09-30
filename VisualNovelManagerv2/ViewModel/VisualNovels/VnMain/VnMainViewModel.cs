@@ -195,7 +195,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
 
                     if (Globals.VnId > 0)
                     {
-                        await Task.Run((BindVnData));
+                        
                         UpdateViews();
                     }
                     
@@ -213,18 +213,29 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
 
         private async void UpdateViews()
         {
-            var cvm = ServiceLocator.Current.GetInstance<VnCharacterViewModel>();
-            await Task.Run((() => cvm.DownloadCharactersCommand.Execute(null)));
-            cvm.ClearCharacterDataCommand.Execute(null);
-            cvm.LoadCharacterCommand.Execute(null);
-            
-            var rvm = ServiceLocator.Current.GetInstance<VnReleaseViewModel>();
-            rvm.ClearReleaseDataCommand.Execute(null);
-            rvm.LoadReleaseNamesCommand.Execute(null);
+            //only load when user input is enabled
+            if (IsUserInputEnabled)
+            {
+                IsUserInputEnabled = false;
+                IsPlayEnabled = false;
 
-            var ssvm = ServiceLocator.Current.GetInstance<VnScreenshotViewModel>();
-            await Task.Run((() => ssvm.DownloadScreenshotsCommand.Execute(null)));
-            ssvm.BindScreenshotsCommand.Execute(null);
+                var cvm = ServiceLocator.Current.GetInstance<VnCharacterViewModel>();
+                var ssvm = ServiceLocator.Current.GetInstance<VnScreenshotViewModel>();
+                var rvm = ServiceLocator.Current.GetInstance<VnReleaseViewModel>();
+
+                await Task.WhenAll(BindVnData(), cvm.DownloadCharacterImagesPublic(),
+                    ssvm.DonwloadScreenshotImagesPublic());
+                cvm.ClearCharacterDataCommand.Execute(null);
+                cvm.LoadCharacterCommand.Execute(null);
+
+                rvm.ClearReleaseDataCommand.Execute(null);
+                rvm.LoadReleaseNamesCommand.Execute(null);
+
+                ssvm.BindScreenshotsCommand.Execute(null);
+                IsUserInputEnabled = true;
+                IsPlayEnabled = true;
+            }
+            
         }
 
         
