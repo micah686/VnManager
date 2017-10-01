@@ -92,7 +92,7 @@ namespace VisualNovelManagerv2.ViewModel.Settings
 
         #endregion
 
-        public uint SpoilerLevel { get; set; }
+        public byte SpoilerLevel { get; set; }
         #endregion
 
         public UserSettingsViewModel()
@@ -123,6 +123,7 @@ namespace VisualNovelManagerv2.ViewModel.Settings
             var mvm = ServiceLocator.Current.GetInstance<VnMainViewModel>();
 
             await mvm.BindVnDataPublic();
+            cvm.ClearCharacterDataCommand.Execute(null);
             cvm.LoadCharacterCommand.Execute(null);
             rvm.ClearReleaseDataCommand.Execute(null);
             rvm.LoadReleaseNamesCommand.Execute(null);

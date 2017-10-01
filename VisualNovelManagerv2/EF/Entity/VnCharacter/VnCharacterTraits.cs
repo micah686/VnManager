@@ -7,6 +7,6 @@ namespace VisualNovelManagerv2.EF.Entity.VnCharacter
         public int Id { get; set; }
         public uint CharacterId { get; set; }
         public uint TraitId { get; set; }
-        public string SpoilerLevel { get; set; }
+        public byte SpoilerLevel { get; set; }
     }
 }

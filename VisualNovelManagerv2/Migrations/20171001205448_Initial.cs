@@ -587,7 +587,7 @@ namespace VisualNovelManagerv2.Migrations
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Score = table.Column<double>(type: "REAL", nullable: false),
-                    Spoiler = table.Column<string>(type: "TEXT", nullable: true),
+                    Spoiler = table.Column<byte>(type: "INTEGER", nullable: false),
                     TagId = table.Column<uint>(type: "INTEGER", nullable: false),
                     VnId = table.Column<uint>(type: "INTEGER", nullable: true),
                     VnInfoId = table.Column<int>(type: "INTEGER", nullable: true)

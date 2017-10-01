@@ -174,9 +174,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
                         VnCharacterModel.Weight = character.Weight.ToString();
 
                         traitArray = (from charactr in context.VnCharacterTraits
-                            where charactr.CharacterId.Equals(character.CharacterId)
-                            join trait in context.VnTraitData on charactr.TraitId equals trait.TraitId
-                            select trait).ToArray();
+                            where charactr.CharacterId.Equals(character.CharacterId) where charactr.SpoilerLevel <= Globals.MaxSpoiler
+                            join trait in context.VnTraitData on charactr.TraitId equals trait.TraitId select trait).ToArray();
                         TraitsCollection.InsertRange(traitArray.Select(x => x.Name));
                     }                    
                 }

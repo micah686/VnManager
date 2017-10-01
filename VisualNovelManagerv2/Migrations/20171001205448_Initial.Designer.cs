@@ -10,7 +10,7 @@ using VisualNovelManagerv2.EF.Context;
 namespace VisualNovelManagerv2.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20170926060654_Initial")]
+    [Migration("20171001205448_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -288,7 +288,7 @@ namespace VisualNovelManagerv2.Migrations
 
                     b.Property<double>("Score");
 
-                    b.Property<string>("Spoiler");
+                    b.Property<byte>("Spoiler");
 
                     b.Property<uint>("TagId");
 

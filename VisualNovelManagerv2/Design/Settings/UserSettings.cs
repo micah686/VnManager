@@ -9,7 +9,7 @@ namespace VisualNovelManagerv2.Design.Settings
     public class UserSettings
     {
         public bool NsfwEnabled { get; set; }
-        public uint MaxSpoilerLevel { get; set; }
+        public byte MaxSpoilerLevel { get; set; }
         public VnSetting VnSetting { get; set; }
     }
 

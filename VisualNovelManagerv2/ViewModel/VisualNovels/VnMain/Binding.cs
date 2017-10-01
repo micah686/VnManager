@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Documents;
 using System.Windows.Media.Imaging;
 using VisualNovelManagerv2.Converters;
 using VisualNovelManagerv2.CustomClasses;
@@ -196,8 +197,9 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
                     #endregion
 
                     #region VnTags
-                    List<string> tagNames = (from info in context.VnInfoTags where info.VnId.Equals(Globals.VnId)
-                                             join tag in context.VnTagData on info.TagId equals tag.TagId select tag.Name).ToList();
+
+                    string[] tagNames = (from info in context.VnInfoTags where info.VnId.Equals(Globals.VnId) where info.Spoiler <= Globals.MaxSpoiler
+                        join tag in context.VnTagData on info.TagId equals tag.TagId select tag.Name).ToArray();
                     await Application.Current.Dispatcher.BeginInvoke(new Action(() => VnInfoTagCollection.InsertRange(tagNames)));
 
                     if (Globals.StatusBar.ProgressPercentage != null)

@@ -287,7 +287,7 @@ namespace VisualNovelManagerv2.Migrations
 
                     b.Property<double>("Score");
 
-                    b.Property<string>("Spoiler");
+                    b.Property<byte>("Spoiler");
 
                     b.Property<uint>("TagId");
 

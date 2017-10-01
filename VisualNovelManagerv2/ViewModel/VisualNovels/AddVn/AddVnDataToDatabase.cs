@@ -394,7 +394,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                             VnId = _vnid,
                             TagId = tagMetadata.Id,
                             Score = tagMetadata.Score,
-                            Spoiler = tagMetadata.SpoilerLevel.ToString()
+                            Spoiler = (byte)tagMetadata.SpoilerLevel
                         }).ToList();
 
                         //list of items to delete where the db contains the vnid
@@ -420,7 +420,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                             VnId = _vnid,
                             TagId = tagMetadata.Id,
                             Score = tagMetadata.Score,
-                            Spoiler = tagMetadata.SpoilerLevel.ToString()
+                            Spoiler = (byte)tagMetadata.SpoilerLevel
                         }).ToList();
 
                         //list of items to delete where the db contains the vnid
@@ -481,7 +481,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                         {
                             CharacterId = charId,
                             TraitId = traitMetaData.Id,
-                            SpoilerLevel = traitMetaData.SpoilerLevel.ToString()
+                            SpoilerLevel = (byte)traitMetaData.SpoilerLevel
                         }).ToList();
 
                         //list of items to delete of previous entries
@@ -504,7 +504,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                         {
                             CharacterId = charId,
                             TraitId = traitMetaData.Id,
-                            SpoilerLevel = traitMetaData.SpoilerLevel.ToString()
+                            SpoilerLevel = (byte)traitMetaData.SpoilerLevel
                         }).ToList();
 
                         //list of items to delete of previous entries
