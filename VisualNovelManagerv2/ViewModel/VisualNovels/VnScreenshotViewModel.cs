@@ -88,6 +88,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         }
         #endregion
 
+        public bool IsScreenshotDownloading = false;
         #endregion
 
         private static List<Screenshot> LoadScreenshotList()
@@ -221,6 +222,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
         {
             try
             {
+                IsScreenshotDownloading = true;
                 Globals.StatusBar.IsWorkProcessing = true;
                 Globals.StatusBar.ProgressText = "Downloading Screenshots";
                 VnMainViewModel.IsDownloading = true;
@@ -324,6 +326,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 VnMainViewModel.IsDownloading = false;
                 Globals.StatusBar.IsWorkProcessing = false;
                 Globals.StatusBar.ProgressText = string.Empty;
+                IsScreenshotDownloading = false;
             }
             catch (Exception exception)
             {

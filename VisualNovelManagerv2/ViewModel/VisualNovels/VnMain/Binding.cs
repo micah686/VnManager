@@ -89,6 +89,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
 
         private async Task BindVnData()
         {
+            IsMainBinding = true;
             double ProgressIncrement = 11.11111111111111;
             Globals.StatusBar.ProgressPercentage = 0;
             Globals.StatusBar.IsWorkProcessing = true;
@@ -340,6 +341,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
                 Globals.StatusBar.IsDbProcessing = false;
                 Globals.StatusBar.IsWorkProcessing = false;
                 Globals.StatusBar.ProgressText = string.Empty;
+                IsMainBinding = false;
             }
         }
 

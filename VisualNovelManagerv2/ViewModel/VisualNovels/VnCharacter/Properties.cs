@@ -131,7 +131,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
             }
         }
 
-        private VnTraitData[] traitArray;
+        private VnTraitData[] _traitArray;
+        public bool IsCharacterDownloading = false;
 
         public ICommand LoadCharacterCommand => new GalaSoft.MvvmLight.CommandWpf.RelayCommand(LoadCharacterNameList);
         public ICommand ClearCharacterDataCommand => new RelayCommand(ClearCharacterData);

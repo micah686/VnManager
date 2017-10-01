@@ -187,10 +187,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
 
                     using (var context = new DatabaseContext())
                     {
-                        foreach (uint vnid in context.VnInfo.Where(t=>t.Title==(_selectedVn)).Select(v=>v.VnId))
-                        {
-                            Globals.VnId = vnid;
-                        }
+                        Globals.VnId = context.VnInfo.Where(t => t.Title == (_selectedVn)).Select(v => v.VnId).FirstOrDefault();
                     }
 
                     if (Globals.VnId > 0)
@@ -223,8 +220,17 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
                 var ssvm = ServiceLocator.Current.GetInstance<VnScreenshotViewModel>();
                 var rvm = ServiceLocator.Current.GetInstance<VnReleaseViewModel>();
 
-                await Task.WhenAll(BindVnData(), cvm.DownloadCharacterImagesPublic(),
-                    ssvm.DonwloadScreenshotImagesPublic());
+                await Task.Run(BindVnData);
+                await Task.Run((() => cvm.DownloadCharacterImagesPublic()));
+                await Task.Run((() => ssvm.DonwloadScreenshotImagesPublic()));
+
+                while (IsMainBinding==true && cvm.IsCharacterDownloading ==true && ssvm.IsScreenshotDownloading== true)
+                {
+                    await Task.Delay(100);
+                }
+
+                //await Task.WhenAll(BindVnData(), cvm.DownloadCharacterImagesPublic(),
+                //    ssvm.DonwloadScreenshotImagesPublic());
                 cvm.ClearCharacterDataCommand.Execute(null);
                 cvm.LoadCharacterCommand.Execute(null);
 

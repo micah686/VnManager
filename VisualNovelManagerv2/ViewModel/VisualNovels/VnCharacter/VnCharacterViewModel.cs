@@ -77,6 +77,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
         {
             try
             {
+                IsCharacterDownloading = true;
                 Globals.StatusBar.IsWorkProcessing = true;
                 Globals.StatusBar.ProgressText = "Downloading Characters";
                 Globals.StatusBar.IsDownloading = true;
@@ -100,9 +101,10 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
                         }
                     }
                 }
-                Globals.StatusBar.IsDownloading = true;
+                Globals.StatusBar.IsDownloading = false;
                 Globals.StatusBar.IsWorkProcessing = false;
                 Globals.StatusBar.ProgressText = string.Empty;
+                IsCharacterDownloading = false;
             }
             catch (System.Net.WebException ex)
             {
@@ -173,10 +175,10 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
                         VnCharacterModel.Height = character.Height.ToString();
                         VnCharacterModel.Weight = character.Weight.ToString();
 
-                        traitArray = (from charactr in context.VnCharacterTraits
+                        _traitArray = (from charactr in context.VnCharacterTraits
                             where charactr.CharacterId.Equals(character.CharacterId) where charactr.SpoilerLevel <= Globals.MaxSpoiler
                             join trait in context.VnTraitData on charactr.TraitId equals trait.TraitId select trait).ToArray();
-                        TraitsCollection.InsertRange(traitArray.Select(x => x.Name));
+                        TraitsCollection.InsertRange(_traitArray.Select(x => x.Name));
                     }                    
                 }
             }
@@ -192,7 +194,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
             if (SelectedTraitIndex >= 0)
                 try
                 {
-                    TraitDescription = ConvertTextBBcode.ConvertText(traitArray
+                    TraitDescription = ConvertTextBBcode.ConvertText(_traitArray
                         .Where(n => n.Name == SelectedTrait).Select(d => d.Description).FirstOrDefault());
                 }
                 catch (Exception ex)
