@@ -14,7 +14,9 @@ These are just personal reminders for me to keep track of what I need to fix/add
 - [ ] Fix the issue where adding categories keeps triggering the validation helper
 - [ ] Fix alignment of text on vnList
 - [ ] Check clipboard before allowing user to paste
-- [ ] Fix the style on the treeview disabled(currently aa weird gray color)
+- [ ] Fix the style on the treeview disabled(currently a weird gray color)
+- [ ] Load default spoiler/nsfw settings on load, and change settings page to selected settings
+- [ ] Make the code check for usersettings, and load appropriate settings
 
 
 ## Entity Framework Notes

@@ -80,6 +80,11 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
             }
         }
 
+        public async Task BindVnDataPublic()
+        {
+            await BindVnData();
+        }
+
         private async Task BindVnData()
         {
             double ProgressIncrement = 11.11111111111111;

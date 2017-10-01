@@ -12,6 +12,9 @@ using Microsoft.Practices.ServiceLocation;
 using VisualNovelManagerv2.CustomClasses.ConfigSettings;
 using VisualNovelManagerv2.Design.Settings;
 using VisualNovelManagerv2.ViewModel.VisualNovels;
+using VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter;
+using VisualNovelManagerv2.ViewModel.VisualNovels.VnMain;
+using VisualNovelManagerv2.ViewModel.VisualNovels.VnRelease;
 
 namespace VisualNovelManagerv2.ViewModel.Settings
 {
@@ -102,7 +105,7 @@ namespace VisualNovelManagerv2.ViewModel.Settings
             SpoilerLevelCollection.Add("Major");
         }
         
-        private void SaveSettings()
+        private async void SaveSettings()
         {
             Globals.NsfwEnabled = SelectedNsfwEnabled;
             Globals.MaxSpoiler = SpoilerLevel;
@@ -114,7 +117,15 @@ namespace VisualNovelManagerv2.ViewModel.Settings
             };
             ModifyUserSettings.SaveUserSettings(userSettings);
 
+            var cvm = ServiceLocator.Current.GetInstance<VnCharacterViewModel>();
             var ssvm = ServiceLocator.Current.GetInstance<VnScreenshotViewModel>();
+            var rvm = ServiceLocator.Current.GetInstance<VnReleaseViewModel>();
+            var mvm = ServiceLocator.Current.GetInstance<VnMainViewModel>();
+
+            await mvm.BindVnDataPublic();
+            cvm.LoadCharacterCommand.Execute(null);
+            rvm.ClearReleaseDataCommand.Execute(null);
+            rvm.LoadReleaseNamesCommand.Execute(null);
             ssvm.BindScreenshotsCommand.Execute(null);
         }
 
