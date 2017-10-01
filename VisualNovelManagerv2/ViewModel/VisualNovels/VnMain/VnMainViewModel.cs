@@ -316,6 +316,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
                             if (!File.Exists(pathNoExt))
                             {
                                 Globals.StatusBar.IsDownloading = true;
+                                Globals.StatusBar.ProgressText = "Downloading cover image";
                                 Thread.Sleep(150);//to be nice to the server
                                 WebClient client = new WebClient();
                                 using (MemoryStream stream = new MemoryStream(await client.DownloadDataTaskAsync(new Uri(url))))
@@ -330,6 +331,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
                             if (!File.Exists(path))
                             {
                                 Globals.StatusBar.IsDownloading = true;
+                                Globals.StatusBar.ProgressText = "Downloading cover image";
                                 Thread.Sleep(150);//to be nice to the server
                                 WebClient client = new WebClient();
                                 await client.DownloadFileTaskAsync(new Uri(url), path);
@@ -338,6 +340,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
                             break;
                     }
                     Globals.StatusBar.IsDownloading = false;
+                    Globals.StatusBar.ProgressText = String.Empty;
                 }
                 catch (WebException ex)
                 {
