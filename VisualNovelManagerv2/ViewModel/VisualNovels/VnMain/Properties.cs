@@ -32,8 +32,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
         #endregion
 
         #region ObservableLanguageCollection
-        private ObservableCollection<LanguagesCollection> _languageCollection = new ObservableCollection<LanguagesCollection>();
-        public ObservableCollection<LanguagesCollection> LanguageCollection
+        private RangeEnabledObservableCollection<LanguagesCollection> _languageCollection = new RangeEnabledObservableCollection<LanguagesCollection>();
+        public RangeEnabledObservableCollection<LanguagesCollection> LanguageCollection
         {
             get { return _languageCollection; }
             set

@@ -21,7 +21,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
     //class for bindings
     public partial class VnMainViewModel
     {
-        private void BindCoverImage(string url, bool? nsfw)
+        private void BindCoverImage(bool? nsfw)
         {
             string pathNoExt = $@"{Globals.DirectoryPath}\Data\images\cover\{Globals.VnId}";
             string path = $@"{Globals.DirectoryPath}\Data\images\cover\{Globals.VnId}.jpg";
@@ -82,12 +82,12 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
             }
         }
 
-        public async Task BindVnDataPublic()
+        public void BindVnDataPublic()
         {
-            await BindVnData();
+            BindVnData();
         }
 
-        private async Task BindVnData()
+        private void BindVnData()
         {
             IsMainBinding = true;
             double ProgressIncrement = 11.11111111111111;
@@ -108,15 +108,18 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
 
                         foreach (string language in GetLangauges(vnInfo.Languages))
                         {
-                            await Application.Current.Dispatcher.BeginInvoke(new Action(() => LanguageCollection.Add(
-                                new LanguagesCollection
-                                { VnMainModel = new VnMainModel { Languages = new BitmapImage(new Uri(language)) } })));
+                            LanguageCollection.Add(new LanguagesCollection
+                            {
+                                VnMainModel = new VnMainModel {Languages = new BitmapImage(new Uri(language))}
+                            });
                         }
 
                         foreach (string platform in GetPlatforms(vnInfo.Platforms))
                         {
-                            await Application.Current.Dispatcher.BeginInvoke(new Action(() => PlatformCollection.Add(
-                                new PlatformCollection { VnMainModel = new VnMainModel { Platforms = new BitmapImage(new Uri(platform)) } })));
+                            PlatformCollection.Add(new PlatformCollection
+                            {
+                                VnMainModel = new VnMainModel {Platforms = new BitmapImage(new Uri(platform))}
+                            });
                         }
 
                         if (Globals.StatusBar.ProgressPercentage != null)
@@ -125,42 +128,34 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
 
                         foreach (string language in GetLangauges(vnInfo.OriginalLanguage))
                         {
-                            await Application.Current.Dispatcher.BeginInvoke(new Action(
-                                () => OriginalLanguagesCollection.Add(new OriginalLanguagesCollection
-                                {
-                                    VnMainModel =
-                                        new VnMainModel { OriginalLanguages = new BitmapImage(new Uri(language)) }
-                                })));
+                            OriginalLanguagesCollection.Add(new OriginalLanguagesCollection
+                            {
+                                VnMainModel =
+                                    new VnMainModel {OriginalLanguages = new BitmapImage(new Uri(language))}
+                            });
                         }
                         if (Globals.StatusBar.ProgressPercentage != null)
                             Globals.StatusBar.ProgressPercentage =
                                 (double)Globals.StatusBar.ProgressPercentage + ProgressIncrement;
 
-                        await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Description =
-                            ConvertTextBBcode.ConvertText(vnInfo.Description))));
+                        VnMainModel.Description = ConvertTextBBcode.ConvertText(vnInfo.Description);
                         if (Globals.StatusBar.ProgressPercentage != null)
                             Globals.StatusBar.ProgressPercentage =
                                 (double)Globals.StatusBar.ProgressPercentage + ProgressIncrement;
 
-                        DownloadCoverImage(vnInfo.ImageLink, Convert.ToBoolean(vnInfo.ImageNsfw));
+                        BindCoverImage(Convert.ToBoolean(vnInfo.ImageNsfw));
                         if (Globals.StatusBar.ProgressPercentage != null)
                             Globals.StatusBar.ProgressPercentage =
                                 (double)Globals.StatusBar.ProgressPercentage + ProgressIncrement;
 
-                        await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Name =
-                            vnInfo.Title)));
-                        await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Original =
-                            vnInfo.Original)));
-                        await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Released =
-                            vnInfo.Released)));
-                        await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Aliases =
-                            vnInfo.Aliases)));
-                        await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Length =
-                            vnInfo.Length)));
-                        await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Popularity =
-                            Math.Round(Convert.ToDouble(vnInfo.Popularity), 2))));
-                        await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Rating =
-                            Convert.ToInt32(vnInfo.Rating))));
+                        VnMainModel.Name = vnInfo.Title;
+                        VnMainModel.Original = vnInfo.Original;
+                        VnMainModel.Released = vnInfo.Released;
+                        VnMainModel.Aliases = vnInfo.Aliases;
+                        //TODO: Fix the names here
+                        VnMainModel.Length = vnInfo.Length;
+                        VnMainModel.Popularity = Math.Round(Convert.ToDouble(vnInfo.Popularity), 2);
+                        VnMainModel.Rating = Convert.ToInt32(vnInfo.Rating);
                         break;
                     }
 
@@ -168,8 +163,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
                     #endregion
 
                     #region VnIcon
-                    await Application.Current.Dispatcher.BeginInvoke(
-                        new Action((() => VnMainModel.VnIcon = LoadIcon())));
+                    VnMainModel.VnIcon = LoadIcon();
                     if (Globals.StatusBar.ProgressPercentage != null)
                         Globals.StatusBar.ProgressPercentage =
                             (double)Globals.StatusBar.ProgressPercentage + ProgressIncrement;
@@ -179,7 +173,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
 
                     foreach (var anime in context.VnInfoAnime.Where(v => v.VnId == Globals.VnId))
                     {
-                        await Application.Current.Dispatcher.BeginInvoke(new Action(() => VnInfoAnimeCollection.Add(
+                        VnInfoAnimeCollection.Add(
                             new VnInfoAnime
                             {
                                 Title = anime.TitleEng,
@@ -189,7 +183,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
                                 AniDb = $"anidb.net/a{anime.AniDbId}",
                                 Ann = $"animenewsnetwork.com/encyclopedia/anime.php?id={anime.AnnId}",
                                 //TODO: AnimeNFo not added because of inconsistant url naming scheme
-                            })));
+                            });
                     }
                     if (Globals.StatusBar.ProgressPercentage != null)
                         Globals.StatusBar.ProgressPercentage =
@@ -201,7 +195,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
 
                     string[] tagNames = (from info in context.VnInfoTags where info.VnId.Equals(Globals.VnId) where info.Spoiler <= Globals.MaxSpoiler
                         join tag in context.VnTagData on info.TagId equals tag.TagId select tag.Name).ToArray();
-                    await Application.Current.Dispatcher.BeginInvoke(new Action(() => VnInfoTagCollection.InsertRange(tagNames)));
+                    VnInfoTagCollection.InsertRange(tagNames);
 
                     if (Globals.StatusBar.ProgressPercentage != null)
                         Globals.StatusBar.ProgressPercentage =
@@ -231,8 +225,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
                         List<string> combinedList = new List<string> { wikipedia, encubed, renai };
 
                         string combined = string.Join(", ", combinedList.Where(s => !string.IsNullOrEmpty(s)));
-                        await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.Links =
-                            combined)));
+                        VnMainModel.Links = combined;
                     }
 
 
@@ -242,14 +235,14 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
 
                     foreach (VnInfoRelations relation in context.VnInfoRelations.Where(v => v.VnId == Globals.VnId))
                     {
-                        await Application.Current.Dispatcher.BeginInvoke(new Action((() => this.VnInfoRelation.Add(
+                        VnInfoRelation.Add(
                             new VnInfoRelation
                             {
                                 Title = relation.Title,
                                 Original = relation.Original,
                                 Relation = relation.Relation,
                                 Official = relation.Official
-                            }))));
+                            });
                     }
                     if (Globals.StatusBar.ProgressPercentage != null)
                         Globals.StatusBar.ProgressPercentage =
@@ -263,7 +256,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
                     {
                         if (string.IsNullOrEmpty(userData.LastPlayed))
                         {
-                            await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.LastPlayed ="Never")));
+                            VnMainModel.LastPlayed = "Never";
                         }
                         else
                         {
@@ -271,21 +264,20 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
                             {
                                 if (Convert.ToDateTime(userData.LastPlayed) == DateTime.Today)
                                 {
-                                    await Application.Current.Dispatcher.BeginInvoke(
-                                        new Action((() => VnMainModel.LastPlayed = "Today")));
+                                    VnMainModel.LastPlayed = "Today";
                                 }
                                 else if ((Convert.ToDateTime(userData.LastPlayed) - DateTime.Today).Days > -2 &&(Convert.ToDateTime(userData.LastPlayed) - DateTime.Today).Days < 0)
                                 {
-                                    await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.LastPlayed = "Yesterday")));
+                                    VnMainModel.LastPlayed = "Yesterday";
                                 }
                                 else
                                 {
-                                    await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.LastPlayed = Convert.ToDateTime(userData.LastPlayed).DayOfWeek.ToString())));
+                                    VnMainModel.LastPlayed = Convert.ToDateTime(userData.LastPlayed).DayOfWeek.ToString();
                                 }
                             }
                             else
                             {
-                                await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.LastPlayed = userData.LastPlayed)));
+                                VnMainModel.LastPlayed = userData.LastPlayed;
                             }
                         }
 
@@ -298,13 +290,11 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
 
                         if (timeSpan < new TimeSpan(0, 0, 0, 1))
                         {
-                            await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.PlayTime =
-                                "Never")));
+                            VnMainModel.PlayTime = "Never";
                         }
                         if (timeSpan < new TimeSpan(0, 0, 0, 60))
                         {
-                            await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.PlayTime =
-                                "Less than 1 minute")));
+                            VnMainModel.PlayTime = "Less than 1 minute";
                         }
                         else
                         {
@@ -312,8 +302,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
                                 $"{(timeSpan.Duration().Days > 0 ? $"{timeSpan.Days:0} day{(timeSpan.Days == 1 ? string.Empty : "s")}, " : string.Empty)}" +
                                 $"{(timeSpan.Duration().Hours > 0 ? $"{timeSpan.Hours:0} hour{(timeSpan.Hours == 1 ? string.Empty : "s")}, " : string.Empty)}" +
                                 $"{(timeSpan.Duration().Minutes > 0 ? $"{timeSpan.Minutes:0} minute{(timeSpan.Minutes == 1 ? string.Empty : "s")} " : string.Empty)}";
-                            await Application.Current.Dispatcher.BeginInvoke(new Action((() => VnMainModel.PlayTime =
-                                formatted)));
+                            VnMainModel.PlayTime = formatted;
                         }
                     }
                     if (Globals.StatusBar.ProgressPercentage != null)
@@ -332,10 +321,9 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
             {
                 if (Globals.StatusBar.ProgressPercentage != null)
                     Globals.StatusBar.ProgressPercentage = 100;
-                await Application.Current.Dispatcher.BeginInvoke(new Action((() => Globals.StatusBar.ProgressStatus =
-                    new BitmapImage(new Uri($@"{Globals.DirectoryPath}\Data\res\icons\statusbar\ok.png")))));
+                Globals.StatusBar.ProgressStatus = new BitmapImage(new Uri($@"{Globals.DirectoryPath}\Data\res\icons\statusbar\ok.png"));
                 Globals.StatusBar.ProgressText = "Done";
-                await Task.Delay(1500);
+                Task.Delay(1500).Wait();
                 Globals.StatusBar.ProgressStatus = null;
                 Globals.StatusBar.ProgressPercentage = null;
                 Globals.StatusBar.IsDbProcessing = false;

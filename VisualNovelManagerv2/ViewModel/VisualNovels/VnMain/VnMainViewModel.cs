@@ -220,17 +220,19 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
                 var ssvm = ServiceLocator.Current.GetInstance<VnScreenshotViewModel>();
                 var rvm = ServiceLocator.Current.GetInstance<VnReleaseViewModel>();
 
-                await Task.Run(BindVnData);
+                await Task.Run((DownloadCoverImage));
+                BindVnData();
                 await Task.Run((() => cvm.DownloadCharacterImagesPublic()));
                 await Task.Run((() => ssvm.DonwloadScreenshotImagesPublic()));
 
-                while (IsMainBinding==true && cvm.IsCharacterDownloading ==true && ssvm.IsScreenshotDownloading== true)
+                while (IsMainBinding && cvm.IsCharacterDownloading && ssvm.IsScreenshotDownloading)
                 {
                     await Task.Delay(100);
                 }
 
                 //await Task.WhenAll(BindVnData(), cvm.DownloadCharacterImagesPublic(),
                 //    ssvm.DonwloadScreenshotImagesPublic());
+                
                 cvm.ClearCharacterDataCommand.Execute(null);
                 cvm.LoadCharacterCommand.Execute(null);
 
@@ -294,53 +296,61 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
             
         }
 
-        private async void DownloadCoverImage(string url, bool nsfw)
+        private async Task DownloadCoverImage()
         {
-            string pathNoExt = $@"{Globals.DirectoryPath}\Data\images\cover\{Globals.VnId}";
-            string path = $@"{Globals.DirectoryPath}\Data\images\cover\{Globals.VnId}.jpg";
+            using (var context = new DatabaseContext())
+            {
+                VnInfo vnData = context.VnInfo.FirstOrDefault(t => t.Title == (_selectedVn));
+                if (vnData == null) return;
+                string url = vnData.ImageLink;
+                bool nsfw = Convert.ToBoolean(vnData.ImageNsfw);
 
-            try
-            {
-                switch (nsfw)
+                string pathNoExt = $@"{Globals.DirectoryPath}\Data\images\cover\{Globals.VnId}";
+                string path = $@"{Globals.DirectoryPath}\Data\images\cover\{Globals.VnId}.jpg";
+
+                try
                 {
-                    case true:
-                        if (!File.Exists(pathNoExt))
-                        {
-                            Globals.StatusBar.IsDownloading = true;
-                            WebClient client = new WebClient();
-                            using (MemoryStream stream = new MemoryStream(await client.DownloadDataTaskAsync(new Uri(url))))
+                    switch (nsfw)
+                    {
+                        case true:
+                            if (!File.Exists(pathNoExt))
                             {
-                                string base64Img =
-                                    Base64Converter.ImageToBase64(Image.FromStream(stream), ImageFormat.Jpeg);
-                                File.WriteAllText(pathNoExt, base64Img);
+                                Globals.StatusBar.IsDownloading = true;
+                                Thread.Sleep(150);//to be nice to the server
+                                WebClient client = new WebClient();
+                                using (MemoryStream stream = new MemoryStream(await client.DownloadDataTaskAsync(new Uri(url))))
+                                {
+                                    string base64Img = Base64Converter.ImageToBase64(Image.FromStream(stream), ImageFormat.Jpeg);
+                                    File.WriteAllText(pathNoExt, base64Img);
+                                }
+                                client.Dispose();
                             }
-                            client.Dispose();
-                        }
-                        break;
-                    case false:
-                        if (!File.Exists(path))
-                        {
-                            Globals.StatusBar.IsDownloading = true;
-                            Thread.Sleep(1500);
-                            WebClient client = new WebClient();
-                            await client.DownloadFileTaskAsync(new Uri(url), path);
-                            client.Dispose();
-                        }
-                        break;
+                            break;
+                        case false:
+                            if (!File.Exists(path))
+                            {
+                                Globals.StatusBar.IsDownloading = true;
+                                Thread.Sleep(150);//to be nice to the server
+                                WebClient client = new WebClient();
+                                await client.DownloadFileTaskAsync(new Uri(url), path);
+                                client.Dispose();
+                            }
+                            break;
+                    }
+                    Globals.StatusBar.IsDownloading = false;
                 }
-                Globals.StatusBar.IsDownloading = false;
-                await Application.Current.Dispatcher.BeginInvoke(new Action((() => BindCoverImage(url, nsfw))));
+                catch (WebException ex)
+                {
+                    DebugLogging.WriteDebugLog(ex);
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    DebugLogging.WriteDebugLog(ex);
+                    throw;
+                }
             }
-            catch (WebException ex)
-            {
-                DebugLogging.WriteDebugLog(ex);
-                throw;
-            }
-            catch (Exception ex)
-            {
-                DebugLogging.WriteDebugLog(ex);
-                throw;
-            }
+            
         }
 
         private void StartVn()

@@ -162,7 +162,7 @@ namespace VisualNovelManagerv2.ViewModel.Settings
             var rvm = ServiceLocator.Current.GetInstance<VnReleaseViewModel>();
             var mvm = ServiceLocator.Current.GetInstance<VnMainViewModel>();
 
-            await mvm.BindVnDataPublic();
+            mvm.BindVnDataPublic();
             cvm.ClearCharacterDataCommand.Execute(null);
             cvm.LoadCharacterCommand.Execute(null);
             rvm.ClearReleaseDataCommand.Execute(null);
