@@ -32,8 +32,9 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
                 {
                     case true:
                     {
-                        BitmapImage bImage = Base64Converter.GetBitmapImageFromBytes(File.ReadAllText(pathNoExt));
-                        VnMainModel.Image = bImage;
+                        BitmapImage bImage = Globals.NsfwEnabled ? Base64Converter.GetBitmapImageFromBytes(File.ReadAllText(pathNoExt))
+                            : new BitmapImage(new Uri($@"{Globals.DirectoryPath}\Data\res\nsfw\cover.jpg"));
+                            VnMainModel.Image = bImage;
                         break;
                     }
                     case false:
