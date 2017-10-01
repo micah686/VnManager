@@ -24,6 +24,19 @@ namespace VisualNovelManagerv2.ViewModel.Settings
 
         #region Properties
 
+        #region SelectedSpoilerLevelIndex
+        private byte _selectedSpoilerLevelIndex;
+        public byte SelectedSpoilerLevelIndex
+        {
+            get { return _selectedSpoilerLevelIndex; }
+            set
+            {
+                _selectedSpoilerLevelIndex = value;
+                RaisePropertyChanged(nameof(SelectedSpoilerLevelIndex));
+            }
+        }
+        #endregion
+
         #region SelectedSpoilerLevel
         private string _selectedSpoilerLevel;
         public string SelectedSpoilerLevel
@@ -61,6 +74,19 @@ namespace VisualNovelManagerv2.ViewModel.Settings
             {
                 _spoilerLevelCollection = value;
                 RaisePropertyChanged(nameof(SpoilerLevelCollection));
+            }
+        }
+        #endregion
+
+        #region SelectedNsfwIndex
+        private byte _selectedNsfwIndex;
+        public byte SelectedNsfwIndex
+        {
+            get { return _selectedNsfwIndex; }
+            set
+            {
+                _selectedNsfwIndex = value;
+                RaisePropertyChanged(nameof(SelectedNsfwIndex));
             }
         }
         #endregion
@@ -103,6 +129,20 @@ namespace VisualNovelManagerv2.ViewModel.Settings
             SpoilerLevelCollection.Add("None");
             SpoilerLevelCollection.Add("Minor");
             SpoilerLevelCollection.Add("Major");
+
+            SelectedSpoilerLevelIndex = Globals.MaxSpoiler;
+            switch (Globals.NsfwEnabled)
+            {
+                case true:
+                    SelectedNsfwIndex = 1;
+                    break;
+                case false:
+                    SelectedNsfwIndex = 0;
+                    break;
+                default:
+                    SelectedNsfwIndex = 0;
+                    break;
+            }
         }
         
         private async void SaveSettings()

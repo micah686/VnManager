@@ -31,12 +31,12 @@
                     </Grid.RowDefinitions>
 
                     <TextBlock Text="Enable NSFW Content:" VerticalAlignment="Center" Margin="0,0,16,4" />
-                    <ComboBox Grid.Row="0" Grid.Column="1" ItemsSource="{Binding NsfwEnabledCollection}" SelectedValue="{Binding SelectedNsfwEnabled, Mode=TwoWay}" SelectedIndex="0"
+                    <ComboBox Grid.Row="0" Grid.Column="1" ItemsSource="{Binding NsfwEnabledCollection}" SelectedValue="{Binding SelectedNsfwEnabled, Mode=TwoWay}" SelectedIndex="{Binding SelectedNsfwIndex}"
                               VerticalAlignment="Center" Margin="0,0,0,10"/>
                     
 
                     <TextBlock Grid.Row="1" Grid.Column="0" Text="Maximum Spoiler Level :" VerticalAlignment="Center" Margin="0,0,16,0" />
-                    <ComboBox Grid.Row="1" Grid.Column="1" ItemsSource="{Binding SpoilerLevelCollection}" SelectedValue="{Binding SelectedSpoilerLevel, Mode=TwoWay}" SelectedIndex="0"
+                    <ComboBox Grid.Row="1" Grid.Column="1" ItemsSource="{Binding SpoilerLevelCollection}" SelectedValue="{Binding SelectedSpoilerLevel, Mode=TwoWay}" SelectedIndex="{Binding SelectedSpoilerLevelIndex}"
                               VerticalAlignment="Center" Margin="0,0,0,10" />
 
                     <Button Grid.Row="2" Grid.Column="0" Width="100" Height="30" Content="Save" Command="{Binding SaveSettingsCommand}"/>
