@@ -64,25 +64,18 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnListViewModel
         
         private async void Login()
         {
-            IsUserInputEnabled = false;
-            bool didErrorOccur = false;
-            using (Vndb client = new Vndb(Username, Password))
+            if (!IsVnListSelected && !IsVoteListSelected && !IsWishlistSelected)
             {
-                var users = await client.GetUserAsync(VndbFilters.Username.Equals(Username));
-                if (users != null)
-                {
-                    _userId = users.Items[0].Id;
-                }
-                if (users == null)
-                {
-                    HandleError.HandleErrors(client.GetLastError(), 0);
-                    didErrorOccur = true;
-                    IsUserInputEnabled = true;
-                }
+                return;
             }
-            if (didErrorOccur != true)
+            IsUserInputEnabled = false;
+            ConfigureValidationRules();
+            Validator.ResultChanged += OnValidationResultChanged;
+            await ValidateAsync();
+            if (IsValid == true)
             {
                 _userListCollection.Clear();
+                ClearInfo();
                 //Set a userID here for testing
                 //_userId = 7887;
 
@@ -95,6 +88,20 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnListViewModel
 
                 SetMaxWidth();
             }
+            else
+            {
+                IsUserInputEnabled = true;
+            }
+        }
+
+        private void ClearInfo()
+        {
+            VnLinksModel.Image = new BitmapImage();
+            InfoAdded = String.Empty;
+            InfoNote = String.Empty;
+            InfoPriority = String.Empty;
+            InfoStatus = String.Empty;
+            InfoVote = 0;
         }
 
         private async void GetVoteList()
@@ -631,8 +638,56 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnListViewModel
             string longestString = UserListCollection.OrderByDescending(s => s.Length).First();
             MaxWidth = MeasureStringSize.GetMaxStringWidth(longestString);;
         }
+
+        private async Task<bool> IsValidLogin()
+        {
+            if (string.IsNullOrEmpty(Username) || Password.Length <= 0) return false;
+            using (var client = new Vndb(Username, Password))
+            {
+                var users = await client.GetUserAsync(VndbFilters.Username.Equals(Username));
+                if (users == null) return false;
+                _userId = users.Items[0].Id;
+                return true;
+            }
+        }
+
+
+
+        #region Validation
+
+        private void ConfigureValidationRules()
+        {
+            Validator.AddRequiredRule(() => Username, "Username is required");
+            //due to passwordbox restrictions, this won't show on the UI
+            Validator.AddRequiredRule(() => Password, "Password is required");
+            Validator.AddAsyncRule(nameof(Username),
+                async () => RuleResult.Assert(await IsValidLogin(), "Bad Username or Password"));
+        }
+
+        private async Task ValidateAsync()
+        {
+            ValidationResult result = await Validator.ValidateAllAsync();
+
+            UpdateValidationSummary(result);
+        }
+        private void OnValidationResultChanged(object sender, ValidationResultChangedEventArgs e)
+        {
+            if (!IsValid.GetValueOrDefault(true))
+            {
+                ValidationResult validationResult = Validator.GetResult();
+                Debug.WriteLine(" validation updated: " + validationResult);
+                UpdateValidationSummary(validationResult);
+            }
+        }
+        private void UpdateValidationSummary(ValidationResult validationResult)
+        {
+            IsValid = validationResult.IsValid;
+            ValidationErrorsString = validationResult.ToString();
+        }
+
+        #endregion
     }
 
-    
+
 
 }

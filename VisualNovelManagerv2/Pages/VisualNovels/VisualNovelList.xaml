@@ -79,7 +79,7 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <Label Content="User Name:" Width="80" />
-                        <TextBox Grid.Column="1" Width="150"  MaxLength="64" Height="25" Text="{Binding Username}" IsEnabled="{Binding IsUserInputEnabled}"/>
+                        <TextBox Grid.Column="1" Width="150"  MaxLength="64" Height="25" Text="{Binding Username, Mode=TwoWay, ValidatesOnDataErrors=True}" IsEnabled="{Binding IsUserInputEnabled}"/>
                                                
                     </Grid>
 

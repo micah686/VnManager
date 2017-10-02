@@ -219,29 +219,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnListViewModel
                     Regex regex = new Regex(@"^(10|[1-9]{1,2}){1}(\.[0-9]{1,2})?$");
                     return RuleResult.Assert(regex.IsMatch(VotelistVote), "Not a valid vote");
                 });
-        }
-
-        private async Task ValidateAsync()
-        {
-            ValidationResult result = await Validator.ValidateAllAsync();
-
-            UpdateValidationSummary(result);
-        }
-        private void OnValidationResultChanged(object sender, ValidationResultChangedEventArgs e)
-        {
-            if (!IsValid.GetValueOrDefault(true))
-            {
-                ValidationResult validationResult = Validator.GetResult();
-                Debug.WriteLine(" validation updated: " + validationResult);
-                UpdateValidationSummary(validationResult);
-            }
-        }
-        private void UpdateValidationSummary(ValidationResult validationResult)
-        {
-            IsValid = validationResult.IsValid;
-            ValidationErrorsString = validationResult.ToString();
-        }
-
+        }        
         #endregion
     }
 }
