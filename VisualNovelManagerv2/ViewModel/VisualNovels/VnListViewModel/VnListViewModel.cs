@@ -853,9 +853,12 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnListViewModel
                     int counter = 0;
                     foreach (var vn in localVoteList)
                     {
-                        vn.Vote = onlineVoteList[counter].Vote;
-                        vn.Added = onlineVoteList[counter].Added;
-                        counter++;
+                        if (onlineVoteList.Count > 0)
+                        {
+                            vn.Vote = onlineVoteList[counter].Vote;
+                            vn.Added = onlineVoteList[counter].Added;
+                            counter++;
+                        }                        
                     }
                 }
 
