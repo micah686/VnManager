@@ -90,12 +90,13 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
         private void BindVnData()
         {
             IsMainBinding = true;
-            Globals.StatusBar.ProgressText = "Loading Main Data";
-            double ProgressIncrement = 11.11111111111111;
-            Globals.StatusBar.ProgressPercentage = 0;
-            Globals.StatusBar.IsWorkProcessing = true;
+            
             try
             {
+                Globals.StatusBar.ProgressText = "Loading Main Data";
+                double ProgressIncrement = 11.11111111111111;
+                Globals.StatusBar.ProgressPercentage = 0;
+                Globals.StatusBar.IsWorkProcessing = true;
                 using (var context = new DatabaseContext())
                 {
 
@@ -321,14 +322,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
 
                     #endregion
                 }
-            }
-            catch (Exception exception)
-            {
-                DebugLogging.WriteDebugLog(exception);
-                throw;
-            }
-            finally
-            {
                 if (Globals.StatusBar.ProgressPercentage != null)
                     Globals.StatusBar.ProgressPercentage = 100;
                 Globals.StatusBar.ProgressStatus = new BitmapImage(new Uri($@"{Globals.DirectoryPath}\Data\res\icons\statusbar\ok.png"));
@@ -339,6 +332,15 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
                 Globals.StatusBar.IsDbProcessing = false;
                 Globals.StatusBar.IsWorkProcessing = false;
                 Globals.StatusBar.ProgressText = string.Empty;
+            }
+            catch (Exception exception)
+            {
+                DebugLogging.WriteDebugLog(exception);
+                throw;
+            }
+            finally
+            {
+                
                 IsMainBinding = false;
             }
         }

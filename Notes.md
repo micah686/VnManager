@@ -18,6 +18,7 @@ These are just personal reminders for me to keep track of what I need to fix/add
 - [X] Load default spoiler/nsfw settings on load, and change settings page to selected settings
 - [X] Make the code check for usersettings, and load appropriate settings
 - [X] Fix the Length on VnMain for two words
+- [ ] Set up virtualizing lists for large results
 
 
 ## Entity Framework Notes

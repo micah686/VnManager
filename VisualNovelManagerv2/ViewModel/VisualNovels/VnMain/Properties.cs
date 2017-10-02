@@ -175,24 +175,12 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
         }
         #endregion
 
-        #region IsUserInputEnabled
-        private bool _isUserInputEnabled = true;
-        public bool IsUserInputEnabled
-        {
-            get { return _isUserInputEnabled; }
-            set
-            {
-                _isUserInputEnabled = value;
-                RaisePropertyChanged(nameof(IsUserInputEnabled));
-            }
-        }
-        #endregion
 
-        public static bool IsDownloading = false;
         private readonly Stopwatch _stopwatch = new Stopwatch();
         private string _selectedVn= String.Empty;
         private string _selectedCategory = String.Empty;
         public bool IsMainBinding = false;
+        private bool _isUserInputEnabled = true;
 
         public ICommand StartVnCommand => new GalaSoft.MvvmLight.CommandWpf.RelayCommand(StartVn);
         public ICommand OpenContextMenuCommand => new GalaSoft.MvvmLight.CommandWpf.RelayCommand(CreateContextMenu);

@@ -54,20 +54,10 @@
 
                     <Separator Grid.Row="2" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
 
-                    <!--<ListBox Grid.Row="4" Name="NoteList" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" ItemsSource="{Binding VnNameCollection}" Margin="0,5,5,5"
-                             Width="{Binding MaxListWidth}" MaxWidth="{Binding MaxListWidth}" MinWidth="150" SelectedItem="{Binding SelectedVn}">
-                        <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="MouseRightButtonUp">
-                                <i:InvokeCommandAction Command="{Binding OpenContextMenuCommand}"/>
-                            </i:EventTrigger>
-                        </i:Interaction.Triggers>
-                    </ListBox>-->
-                    <TreeView x:Name="CategoryTreeView" Grid.Row="3" ItemsSource="{Binding TreeVnCategories}" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" 
-                               IsEnabled="{Binding IsUserInputEnabled}">
+                    <TreeView x:Name="CategoryTreeView" Grid.Row="3" ItemsSource="{Binding TreeVnCategories}" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" >
                         <TreeView.ItemContainerStyle>
                             <Style TargetType="{x:Type TreeViewItem}">
                                 <Setter Property="IsExpanded" Value="True"/>
-                                <Setter Property="IsEnabled" Value="{Binding IsUserInputEnabled}"/>
                             </Style>
                         </TreeView.ItemContainerStyle>
                         <i:Interaction.Triggers>

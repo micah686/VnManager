@@ -225,7 +225,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                 IsScreenshotDownloading = true;
                 Globals.StatusBar.IsWorkProcessing = true;
                 Globals.StatusBar.ProgressText = "Downloading Screenshots";
-                VnMainViewModel.IsDownloading = true;
                 List<Screenshot> screenshotList = LoadScreenshotList();
                 foreach (Screenshot screenshot in screenshotList)
                 {
@@ -323,9 +322,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                         DebugLogging.WriteDebugLog(ex);
                     }
                 }
-                VnMainViewModel.IsDownloading = false;
-                Globals.StatusBar.IsWorkProcessing = false;
                 Globals.StatusBar.ProgressText = string.Empty;
+                Globals.StatusBar.IsWorkProcessing = false;
                 IsScreenshotDownloading = false;
             }
             catch (Exception exception)

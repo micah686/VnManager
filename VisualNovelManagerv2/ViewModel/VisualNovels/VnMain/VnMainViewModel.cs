@@ -167,43 +167,35 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
             }
         }
 
-        private async void GetVnData()
+        private void GetVnData()
         {
-            while (IsDownloading== true)
+            try
             {
-                await Task.Delay(100);
+                LanguageCollection.Clear();
+                PlatformCollection.Clear();
+                OriginalLanguagesCollection.Clear();
+                VnInfoRelation.Clear();
+                VnInfoTagCollection.Clear();
+                VnInfoAnimeCollection.Clear();
+                TagDescription = String.Empty;
+
+                using (var context = new DatabaseContext())
+                {
+                    Globals.VnId = context.VnInfo.Where(t => t.Title == (_selectedVn)).Select(v => v.VnId).FirstOrDefault();
+                }
+
+                if (Globals.VnId > 0)
+                {
+
+                    UpdateViews();
+                }
+
             }
-            if (IsDownloading == false)
+            catch (Exception ex)
             {
-                try
-                {
-                    LanguageCollection.Clear();
-                    PlatformCollection.Clear();
-                    OriginalLanguagesCollection.Clear();
-                    VnInfoRelation.Clear();
-                    VnInfoTagCollection.Clear();
-                    VnInfoAnimeCollection.Clear();
-                    TagDescription = String.Empty;
-
-                    using (var context = new DatabaseContext())
-                    {
-                        Globals.VnId = context.VnInfo.Where(t => t.Title == (_selectedVn)).Select(v => v.VnId).FirstOrDefault();
-                    }
-
-                    if (Globals.VnId > 0)
-                    {
-                        
-                        UpdateViews();
-                    }
-                    
-                }
-                catch (Exception ex)
-                {
-                    DebugLogging.WriteDebugLog(ex);
-                    throw;
-                }
+                DebugLogging.WriteDebugLog(ex);
+                throw;
             }
-            
         }
 
         
@@ -211,9 +203,9 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
         private async void UpdateViews()
         {
             //only load when user input is enabled
-            if (IsUserInputEnabled)
+            if (_isUserInputEnabled)
             {
-                IsUserInputEnabled = false;
+                _isUserInputEnabled = false;
                 IsPlayEnabled = false;
 
                 var cvm = ServiceLocator.Current.GetInstance<VnCharacterViewModel>();
@@ -229,9 +221,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
                 {
                     await Task.Delay(100);
                 }
-
-                //await Task.WhenAll(BindVnData(), cvm.DownloadCharacterImagesPublic(),
-                //    ssvm.DonwloadScreenshotImagesPublic());
                 
                 cvm.ClearCharacterDataCommand.Execute(null);
                 cvm.LoadCharacterCommand.Execute(null);
@@ -240,7 +229,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
                 rvm.LoadReleaseNamesCommand.Execute(null);
 
                 ssvm.BindScreenshotsCommand.Execute(null);
-                IsUserInputEnabled = true;
+                _isUserInputEnabled = true;
                 IsPlayEnabled = true;
             }
             
@@ -298,9 +287,11 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
         }
 
         private async Task DownloadCoverImage()
-        {
+        {           
             using (var context = new DatabaseContext())
             {
+                Globals.StatusBar.IsWorkProcessing = true;
+                Globals.StatusBar.ProgressText = "Downloading cover image";
                 VnInfo vnData = context.VnInfo.FirstOrDefault(t => t.Title == (_selectedVn));
                 if (vnData == null) return;
                 string url = vnData.ImageLink;
@@ -353,8 +344,9 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
                     DebugLogging.WriteDebugLog(ex);
                     throw;
                 }
-            }
-            
+                Globals.StatusBar.IsWorkProcessing = false;
+                Globals.StatusBar.ProgressText = String.Empty;
+            }                        
         }
 
         private void StartVn()
