@@ -33,7 +33,7 @@
             <RadioButton x:Name="AddRadio" Content="Add Category" IsChecked="True"/>
             <RadioButton x:Name="RemoveRadio" Content="Remove Category" Margin="10,0,0,0" IsChecked="{Binding IsChecked}" Command="{Binding LoadCategoryListCommand}"/>
         </StackPanel>
-        <TextBox x:Name="AddCategoryText" Grid.Column="1" Grid.Row="1" Width="150" HorizontalAlignment="Left"
+        <TextBox x:Name="AddCategoryText" Grid.Column="1" Grid.Row="1" Width="150" HorizontalAlignment="Left" MaxLength="30"
                  Text="{Binding AddCategoryText, Mode=TwoWay, ValidatesOnDataErrors=True}" Visibility="{Binding IsChecked, ElementName=AddRadio, Converter={StaticResource BooleanToVisibilityConverter}}"/>
         <ComboBox x:Name="RemoveCategoryDrop" Grid.Column="1" Grid.Row="1" SelectedItem="{Binding RemoveCategoryText}" IsDropDownOpen="{Binding IsDropdownOpen}"
                   Visibility="{Binding IsChecked, ElementName=RemoveRadio, Converter={StaticResource BooleanToVisibilityConverter}}" ItemsSource="{Binding CategoriesCollection}"/>
