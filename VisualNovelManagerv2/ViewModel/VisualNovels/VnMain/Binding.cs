@@ -90,10 +90,10 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
         private void BindVnData()
         {
             IsMainBinding = true;
+            Globals.StatusBar.ProgressText = "Loading Main Data";
             double ProgressIncrement = 11.11111111111111;
             Globals.StatusBar.ProgressPercentage = 0;
             Globals.StatusBar.IsWorkProcessing = true;
-            Globals.StatusBar.ProgressText = "Loading Main Data";
             try
             {
                 using (var context = new DatabaseContext())

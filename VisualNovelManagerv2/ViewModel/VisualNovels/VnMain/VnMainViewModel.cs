@@ -256,7 +256,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
             {
                 using (var context = new DatabaseContext())
                 {
-                    foreach (VnUserData userData in context.VnUserData.Where(v=>v.VnId == Globals.VnId))
+                    VnUserData userData = context.VnUserData.FirstOrDefault(v => v.VnId == Globals.VnId);
+                    if (userData != null)
                     {
                         //checks for existance of Iconpath first, then ExePath. If both are null/empty, it returns a null image
                         return !string.IsNullOrEmpty(userData.IconPath) ? CreateIcon(userData.IconPath) : CreateIcon(!string.IsNullOrEmpty(userData.ExePath) ? userData.ExePath : null);
