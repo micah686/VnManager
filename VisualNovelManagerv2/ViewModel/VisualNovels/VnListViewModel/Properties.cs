@@ -358,6 +358,20 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnListViewModel
         }
         #endregion
 
+        #region MaxWidth
+
+        private double _maxWidth = 250;
+        public double MaxWidth
+        {
+            get { return _maxWidth; }
+            set
+            {
+                _maxWidth = value;
+                RaisePropertyChanged(nameof(MaxWidth));
+            }
+        }
+        #endregion
+
         private uint _userId = 0;
         private uint _vnId = 0;
 

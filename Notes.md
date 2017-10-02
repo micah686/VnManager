@@ -3,7 +3,7 @@ These are just personal reminders for me to keep track of what I need to fix/add
 - [ ] Dispose of views and viewmodels/free up memory
 - [ ] Load long lists of names into tables, to deal with lists of 1000+ entries.
 - [ ] Need to work on VnListViewModel for checking edge cases
-- [ ] Check VnUserList where big images make the list look weird
+- [X] Check VnUserList where big images make the list look weird
 - [X] add a bool to prevent users from adding a gaame while another is processing.
 - [X]  reload screenshot viewmodel after changing nsfw status
 - [X] Set up some sort of wait timer/pause bool to prevent trying to load another Vn once one is selected(for use when someone holds down, aand it tries to load a large amount)

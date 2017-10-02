@@ -32,7 +32,7 @@
                         <RowDefinition Height="5.5*"/>
                         <RowDefinition Height="4.5*"/>
                     </Grid.RowDefinitions>
-                    <ListBox Grid.Row="0"  Name="NoteList" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Visible" Margin="0,0,5,5" MaxWidth="250"
+                    <ListBox Grid.Row="0"  Name="NoteList" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Visible" Margin="0,0,5,5" MaxWidth="{Binding MaxWidth}"
                              ItemsSource="{Binding UserListCollection}"  SelectedItem="{Binding SelectedItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                     </ListBox>
                     <Grid Grid.Row="1" ShowGridLines="True" Margin="0,5,5,5">

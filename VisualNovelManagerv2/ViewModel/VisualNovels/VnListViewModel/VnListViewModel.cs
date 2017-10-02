@@ -92,6 +92,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnListViewModel
                     GetVisualNovelList();
                 else if (IsWishlistSelected)
                     GetWishlist();
+
+                SetMaxWidth();
             }
         }
 
@@ -624,7 +626,11 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnListViewModel
             }
         }
 
-        
+        private void SetMaxWidth()
+        {
+            string longestString = UserListCollection.OrderByDescending(s => s.Length).First();
+            MaxWidth = MeasureStringSize.GetMaxStringWidth(longestString);;
+        }
     }
 
     

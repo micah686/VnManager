@@ -30,12 +30,14 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnListViewModel
                         if (!File.Exists($@"{Globals.DirectoryPath}\Data\images\userlist\{id}.jpg"))
                         {
                             Globals.StatusBar.IsDownloading = true;
+                            Globals.StatusBar.ProgressText = "Loading Image";
                             Thread.Sleep(500);
                             WebClient webclient = new WebClient();
                             await webclient.DownloadFileTaskAsync(new Uri(data.Items[0].Image), $@"{Globals.DirectoryPath}\Data\images\userlist\{id}.jpg");
                             webclient.Dispose();
                             VnLinksModel.Image = new BitmapImage(new Uri($@"{Globals.DirectoryPath}\Data\images\userlist\{id}.jpg"));
                             Globals.StatusBar.IsDownloading = false;
+                            Globals.StatusBar.ProgressText = String.Empty;
                         }
                         else if (File.Exists($@"{Globals.DirectoryPath}\Data\images\userlist\{id}.jpg"))
                         {
