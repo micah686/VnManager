@@ -260,6 +260,8 @@
     <Compile Include="ViewModel\VisualNovels\AddVn\Properties.cs" />
     <Compile Include="ViewModel\VisualNovels\VnCharacter\Properties.cs" />
     <Compile Include="ViewModel\VisualNovels\VnCharacter\VnCharacterViewModel.cs" />
+    <Compile Include="ViewModel\VisualNovels\VnListViewModel\AddListToDb.cs" />
+    <Compile Include="ViewModel\VisualNovels\VnListViewModel\Binding.cs" />
     <Compile Include="ViewModel\VisualNovels\VnListViewModel\Properties.cs" />
     <Compile Include="ViewModel\VisualNovels\VnListViewModel\VndbSet.cs" />
     <Compile Include="ViewModel\VisualNovels\VnListViewModel\VnListViewModel.cs" />
