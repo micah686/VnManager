@@ -152,8 +152,18 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
                         VnMainModel.Original = vnInfo.Original;
                         VnMainModel.Released = vnInfo.Released;
                         VnMainModel.Aliases = vnInfo.Aliases;
-                        //TODO: Fix the names here
-                        VnMainModel.Length = vnInfo.Length;
+                        switch (vnInfo.Length)
+                        {
+                            case "VeryShort":
+                                VnMainModel.Length = "Very short";
+                                break;
+                            case "VeryLong":
+                                VnMainModel.Length = "Very long";
+                                break;
+                            default:
+                                VnMainModel.Length = vnInfo.Length;
+                                break;
+                        }
                         VnMainModel.Popularity = Math.Round(Convert.ToDouble(vnInfo.Popularity), 2);
                         VnMainModel.Rating = Convert.ToInt32(vnInfo.Rating);
                         break;

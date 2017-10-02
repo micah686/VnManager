@@ -17,7 +17,7 @@ These are just personal reminders for me to keep track of what I need to fix/add
 - [ ] Fix the style on the treeview disabled(currently a weird gray color)
 - [X] Load default spoiler/nsfw settings on load, and change settings page to selected settings
 - [X] Make the code check for usersettings, and load appropriate settings
-- [ ] Fix the Length on VnMain for two words
+- [X] Fix the Length on VnMain for two words
 
 
 ## Entity Framework Notes
