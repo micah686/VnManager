@@ -10,7 +10,6 @@
              DataContext="{Binding UserSettings, Source={StaticResource Locator}}">
     <UserControl.Resources>
         <vm:UserSettingsViewModel x:Key="vm"/>
-        <local:YesNoBoolConverter x:Key="YesNoBoolConverter"/>
     </UserControl.Resources>
     <Grid>
         <ScrollViewer>

@@ -6,7 +6,7 @@ namespace VisualNovelManagerv2.EF.Entity.VnRelease
     {        
         public int Id { get; set; }
         public uint? VnId { get; set; }
-        public int? ReleaseId { get; set; }
+        public uint ReleaseId { get; set; }
         public string Title { get; set; }
         public string Original { get; set; }
         public string Released { get; set; }
@@ -17,7 +17,7 @@ namespace VisualNovelManagerv2.EF.Entity.VnRelease
         public string Languages { get; set; }
         public string Website { get; set; }
         public string Notes { get; set; }
-        public int? MinAge { get; set; }
+        public byte MinAge { get; set; }
         public string Gtin { get; set; }
         public string Catalog { get; set; }
         public string Platforms { get; set; }

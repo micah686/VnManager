@@ -51,7 +51,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
             ClearCollectionsCommand = new RelayCommand(ClearVnData);
             AddToCategoryCommand = new RelayCommand<string>(AddToCategory);
             RemoveFromCategoryCommand = new RelayCommand<string>(RemoveFromCategory);
-            //_vnMainModel = new VnMainModel();
             LoadCategories();
             
         }
@@ -81,6 +80,11 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
             VnMainModel.Rating = 0;
             VnMainModel.Links = string.Empty;
 
+        }
+
+        public void LoadCategoriesPublic()
+        {
+            LoadCategories();
         }
 
         private void LoadCategories()
@@ -121,10 +125,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
                 DebugLogging.WriteDebugLog(ex);
                 throw;
             }
-            finally
-            {
-            }
-            
         }
 
 
@@ -138,33 +138,40 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
 
         private void CheckMenuItemName(object obj)
         {
-            MenuItem menuItem = (MenuItem)obj;
-            if (obj == null) return;
-            if (obj.GetType() == typeof(MenuItem))
+            try
             {
-                string name = menuItem.Header.ToString();                
-                _selectedVn = name;
-                if (menuItem.Parent != null)
+                MenuItem menuItem = (MenuItem)obj;
+                if (obj == null) return;
+                if (obj.GetType() == typeof(MenuItem))
                 {
-                    if (menuItem.Parent.GetType() == typeof(MenuItem))
+                    string name = menuItem.Header.ToString();
+                    _selectedVn = name;
+                    if (menuItem.Parent != null)
                     {
-                        MenuItem parent = (MenuItem)menuItem.Parent;
-                        DatabaseContext context = new DatabaseContext();
-                        if (!context.Categories.Select(x => x.CategoryName).Contains(name) && name != "Visual Novels")
-                        {                            
-                            _selectedCategory = parent.Header.ToString();
-                            GetVnData();
-                        }
-                        else
+                        if (menuItem.Parent.GetType() == typeof(MenuItem))
                         {
-                            _selectedVn = String.Empty;
+                            MenuItem parent = (MenuItem)menuItem.Parent;
+                            DatabaseContext context = new DatabaseContext();
+                            if (!context.Categories.Select(x => x.CategoryName).Contains(name) && name != "Visual Novels")
+                            {
+                                _selectedCategory = parent.Header.ToString();
+                                GetVnData();
+                            }
+                            else
+                            {
+                                _selectedVn = String.Empty;
+                            }
+                            context.Dispose();
                         }
-                        context.Dispose();
                     }
                 }
-                
-                
             }
+            catch (Exception ex)
+            {
+                DebugLogging.WriteDebugLog(ex);
+                throw;
+            }
+            
         }
 
         private void GetVnData()
@@ -351,47 +358,60 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
 
         private void StartVn()
         {
-            _stopwatch.Reset();
-            Process process = null;
-            using (var context = new DatabaseContext())
+            try
             {
-                VnInfo idList = context.VnInfo.FirstOrDefault(x => x.Title.Equals(_selectedVn));
-                VnUserData vnUserData = context.VnUserData.FirstOrDefault(x => x.VnId.Equals(idList.VnId));
-                if (vnUserData?.ExePath != null)
+                //TODO: add a dialog box for this
+                if (_isGameRunning == false)
                 {
-                    string exepath = vnUserData.ExePath;
-                    string dirpath = Path.GetDirectoryName(exepath);
-                    if (dirpath != null) Directory.SetCurrentDirectory(dirpath);
-                    process = Process.Start(exepath);
-                    _stopwatch.Start();
-                    IsPlayEnabled = false;
-                }
-            }
-            Directory.SetCurrentDirectory(Directory.GetCurrentDirectory());
-            List<Process> children = process.GetChildProcesses();
-            int initialChildrenCount = children.Count;
-            if (process != null)
-            {
-                process.EnableRaisingEvents = true;
-                process.Exited += delegate(object o, EventArgs args)
-                {
-                    //Only allows the HasExited event to trigger when there are no child processes
-                    if (children.Count < 1 && initialChildrenCount == 0)
+                    _stopwatch.Reset();
+                    Process process = null;
+                    using (var context = new DatabaseContext())
                     {
-                        _stopwatch.Stop();
-                        VnOrChildProcessExited(null, null);
+                        VnInfo idList = context.VnInfo.FirstOrDefault(x => x.Title.Equals(_selectedVn));
+                        VnUserData vnUserData = context.VnUserData.FirstOrDefault(x => x.VnId.Equals(idList.VnId));
+                        if (vnUserData?.ExePath != null)
+                        {
+                            string exepath = vnUserData.ExePath;
+                            string dirpath = Path.GetDirectoryName(exepath);
+                            if (dirpath != null) Directory.SetCurrentDirectory(dirpath);
+                            process = Process.Start(exepath);
+                            _isGameRunning = true;
+                            _stopwatch.Start();
+                            IsPlayEnabled = false;
+                        }
                     }
-                };
-            }
+                    Directory.SetCurrentDirectory(Directory.GetCurrentDirectory());
+                    List<Process> children = process.GetChildProcesses();
+                    int initialChildrenCount = children.Count;
+                    if (process != null)
+                    {
+                        process.EnableRaisingEvents = true;
+                        process.Exited += delegate (object o, EventArgs args)
+                        {
+                            //Only allows the HasExited event to trigger when there are no child processes
+                            if (children.Count < 1 && initialChildrenCount == 0)
+                            {
+                                _stopwatch.Stop();
+                                VnOrChildProcessExited(null, null);
+                            }
+                        };
+                    }
 
-            //this may break if the parent spawns multiple child processes.
-            //TODO: check against programs that spawn multiple processes, like chrome
-            foreach (Process proc in children)
+                    //this may break if the parent spawns multiple child processes.
+                    //TODO: check against programs that spawn multiple processes, like chrome
+                    foreach (Process proc in children)
+                    {
+                        proc.EnableRaisingEvents = true;
+                        proc.Exited += VnOrChildProcessExited;
+                    }
+                }
+                
+            }
+            catch (Exception exception)
             {
-                proc.EnableRaisingEvents = true;
-                proc.Exited += VnOrChildProcessExited;
-            }
-
+                DebugLogging.WriteDebugLog(exception);
+                throw;
+            }            
         }
 
         private void VnOrChildProcessExited(object sender, EventArgs eventArgs)
@@ -399,6 +419,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
             try
             {
                 _stopwatch.Stop();
+                _isGameRunning = false;
                 VnUserData vnUserData;
                 using (var context = new DatabaseContext())
                 {

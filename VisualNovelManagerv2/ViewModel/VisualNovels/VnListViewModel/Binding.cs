@@ -31,7 +31,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnListViewModel
                         {
                             Globals.StatusBar.IsDownloading = true;
                             Globals.StatusBar.ProgressText = "Loading Image";
-                            Thread.Sleep(500);
+                            Thread.Sleep(100);
                             WebClient webclient = new WebClient();
                             await webclient.DownloadFileTaskAsync(new Uri(data.Items[0].Image), $@"{Globals.DirectoryPath}\Data\images\userlist\{id}.jpg");
                             webclient.Dispose();

@@ -45,14 +45,9 @@ namespace VisualNovelManagerv2.Pages.VisualNovels
                 Title = "Browse for Visual Novel Application"
             };
             bool? result = dialog.ShowDialog();
-            if (result.HasValue && result.Value)
-            {
-                service.PickedFileName = dialog.FileName;
-                if (service.FilePicked != null)
-                {
-                    service.FilePicked.Invoke();
-                }
-            }
+            if (!result.HasValue || !result.Value) return;
+            service.PickedFileName = dialog.FileName;
+            service.FilePicked?.Invoke();
         }
 
         private void OpenIconFilePickerDialog(AddVnViewModelService service)

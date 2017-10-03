@@ -34,18 +34,18 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
         public AddVnViewModel()
         {
             //for openFileDialog
-            this.GetFile = new RelayCommand(() => Messenger.Default.Send(_exeService));
-            this.GetIcon = new RelayCommand(() => AddVisualNovel.IconMessenger.Send(_iconService));
-            _exeService = new AddVnViewModelService {FilePicked = this.FilePicked};
-            _iconService = new AddVnViewModelService { FilePicked = this.IconPicked};
+            GetFile = new RelayCommand(() => Messenger.Default.Send(_exeService));
+            GetIcon = new RelayCommand(() => AddVisualNovel.IconMessenger.Send(_iconService));
+            _exeService = new AddVnViewModelService {FilePicked = FilePicked};
+            _iconService = new AddVnViewModelService { FilePicked = IconPicked};
             //for mvvmValidation
-            this.SuggestedNamesCollection = new ObservableCollection<string>();
+            SuggestedNamesCollection = new ObservableCollection<string>();
             DropdownIndex = 0;
         }
         
         private void FilePicked()
         {
-            this.FileName = _exeService.PickedFileName;
+            FileName = _exeService.PickedFileName;
         }
 
         private void IconPicked()
@@ -140,7 +140,9 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                 {
                     bool filepath = File.Exists(FileName);
                     string ext = Path.GetExtension(FileName) ?? string.Empty;
-                    return RuleResult.Assert(filepath && ext.EndsWith(".exe"), "Not a valid file path");
+                    string[] extensions = {".exe", ".EXE"};
+                    //return RuleResult.Assert(filepath && ext.EndsWith(".exe"), "Not a valid file path");
+                    return RuleResult.Assert(filepath && extensions.Any(x => ext.EndsWith(x)), "Not a valid file path");
                 });
 
             if (IsIconEnabled == true)
@@ -229,7 +231,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                 Validator.ResultChanged += OnValidationResultChanged;
                 await ValidateAsync();
                 if (IsValid == true)
-                {                    
+                {
+                    //TODO:maybe runa check on radio buttons
                     if (!string.IsNullOrEmpty(VnName))
                     {                        
                         _vnid = _vnNameList.Items[DropdownIndex].Id;

@@ -5,6 +5,23 @@ These are just personal reminders for me to keep track of what I need to fix/add
 - [ ] Fix the issue where adding categories keeps triggering the validation helper
 - [ ] Check clipboard before allowing user to paste
 - [ ] Set up virtualizing lists for large results
+- [ ] check for selected Vn before Play, possibly use isPlayEnabled
+- [ ] Reload list after adding a category
+- [ ] remove extras from context menu
+- [ ] see about spoilered characters
+
+
+
+2:06 PM - $1: I can't seem to remove a category ("romance" in this case)
+2:06 PM - $1: The Main and Character tabs have trouble scrolling up using the scroll wheel
+2:06 PM - $1: Scrolling down is fine
+2:07 PM - $1: The releases page scrolls fine
+2:12 PM - $1: The colour theme does not save upon program exit. The colour defaults to light blue when I open the program.
+3:25 PM - $1: I don't know if you plan on supporting collection .exes, but I wan't able to add the JAST USA Memorial Collection
+3:25 PM - $2: what do you mean?
+3:27 PM - $1: The JAST collection has 3 VNs tied to one .exe. I've tried adding it with both the collection vn ID and the IDs of the individual VNs
+
+
 
 
 ## Entity Framework Notes
@@ -28,3 +45,22 @@ Microsoft.EntityFrameworkCore.Tools
 - [ ] Add a producers section, like list all Vns from KEY, Nitro+,...
 - [ ] Advanced Category filters(sort by relase date,...)
 - [ ] Be able to sort visual novels, and name categories, also being able to create sub categories would be nice. Example: sort by translated, or untranslated. Then further sort by producer/genre
+
+### Cleanup notes:
+NullImageConverter not used
+BindableRichTextBox still exists
+VnMainMODEL has some possible null referenceexceptions
+Come back to EfEntity
+check on UserSettings.xaml about DataContext
+possibly add a template for the statusbar
+see about a global style for hyperlink
+unload other views?
+move as many images to svg/xaml, like in StatusBarViewModel
+Add a handle method for vndb response
+AddVnViewModel check radio buttons before adding
+check the progress percentage
+possibly work on cleaning up VnLinks on Binding
+ContextMenu RemoveFromCategory possibly remove categoryJunction
+deal with multiple child processes
+deal with that once exe that breaks StartVn()
+prevent multiple games from running at once

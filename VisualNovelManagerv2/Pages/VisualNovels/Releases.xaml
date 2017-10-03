@@ -376,6 +376,6 @@
                 </Grid>
             </ScrollViewer>
         </Grid>
-        <!--<local:BottomStatusBar/>-->
+        <local:BottomStatusBar/>
     </Grid>
 </UserControl>

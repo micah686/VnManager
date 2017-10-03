@@ -145,7 +145,7 @@ namespace VisualNovelManagerv2.ViewModel.Settings
             }
         }
         
-        private async void SaveSettings()
+        private void SaveSettings()
         {
             Globals.NsfwEnabled = SelectedNsfwEnabled;
             Globals.MaxSpoiler = SpoilerLevel;

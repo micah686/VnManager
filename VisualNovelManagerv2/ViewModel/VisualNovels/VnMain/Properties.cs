@@ -181,6 +181,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
         private string _selectedCategory = String.Empty;
         public bool IsMainBinding = false;
         private bool _isUserInputEnabled = true;
+        private bool _isGameRunning = false;
 
         public ICommand StartVnCommand => new GalaSoft.MvvmLight.CommandWpf.RelayCommand(StartVn);
         public ICommand OpenContextMenuCommand => new GalaSoft.MvvmLight.CommandWpf.RelayCommand(CreateContextMenu);

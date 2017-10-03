@@ -114,6 +114,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
             catch (Exception ex)
             {
                 DebugLogging.WriteDebugLog(ex);
+                throw;
             }
         }
 

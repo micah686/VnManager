@@ -277,19 +277,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnListViewModel
         {
             using (var context = new DatabaseContext())
             {
-                //List<VnIdList> vnData = new List<VnIdList>();
-                //var idlist = context.VnIdList.Select(x => x.VnId);
-                //foreach (var item in itemsToAdd)
-                //{
-                //    if (!idlist.Contains(item.Item1))
-                //    {
-                //        vnData.Add(new VnIdList()
-                //        {
-                //            VnId = item.Item1,
-                //            Title = item.Item2
-                //        });
-                //    }
-                //}
 
                 //add items that aren't in the VnIdList to the table
                 var idlist = context.VnIdList.Select(x => x.VnId);

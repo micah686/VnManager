@@ -35,6 +35,7 @@
         </StackPanel>
         <TextBox x:Name="AddCategoryText" Grid.Column="1" Grid.Row="1" Width="150" HorizontalAlignment="Left" MaxLength="30"
                  Text="{Binding AddCategoryText, Mode=TwoWay, ValidatesOnDataErrors=True}" Visibility="{Binding IsChecked, ElementName=AddRadio, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+        
         <ComboBox x:Name="RemoveCategoryDrop" Grid.Column="1" Grid.Row="1" SelectedItem="{Binding RemoveCategoryText}" IsDropDownOpen="{Binding IsDropdownOpen}"
                   Visibility="{Binding IsChecked, ElementName=RemoveRadio, Converter={StaticResource BooleanToVisibilityConverter}}" ItemsSource="{Binding CategoriesCollection}"/>
         <!--<TextBox Name="txtAnswer" Grid.Column="1" Grid.Row="1" MinWidth="250">Answer</TextBox>-->

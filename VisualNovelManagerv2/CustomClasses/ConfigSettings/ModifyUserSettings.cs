@@ -53,7 +53,7 @@ namespace VisualNovelManagerv2.CustomClasses.ConfigSettings
                 using (FileStream fileStream = new FileStream(Globals.DirectoryPath + @"/Data/config/config.xml", FileMode.Open, FileAccess.Read, FileShare.Read))
                 {
                     doc.Load(fileStream);
-                    string node = "/UserSettings/VnSetting[Id=" + id + "]";
+                    string node = $"/UserSettings/VnSetting[Id={id}]";
                     XmlNode nodeToDelete = doc.SelectSingleNode(node);
                     nodeToDelete?.ParentNode?.RemoveChild(nodeToDelete);
                     fileStream.Dispose();

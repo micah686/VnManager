@@ -11,7 +11,7 @@
              DataContext="{Binding VnScreenshot, Source={StaticResource Locator}}">
 
     <UserControl.Resources>
-        <local:NullImageConverter x:Key="nullImageConverter"/>
+        <local:NullImageConverter x:Key="NullImageConverter"/>
         <DataTemplate x:Key="ImageDataTemplate">
             <Image Source="{Binding ScreenshotModel.Screenshot}" Stretch="UniformToFill" RenderOptions.BitmapScalingMode="HighQuality"/>
         </DataTemplate>
@@ -25,18 +25,13 @@
             </Grid.RowDefinitions>
 
             <Grid>
-                <Image x:Name="main_img" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" Stretch="Uniform" Source="{Binding MainImage, Converter={StaticResource nullImageConverter}, UpdateSourceTrigger=PropertyChanged}" />
+                <Image x:Name="MainImg" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" Stretch="Uniform" Source="{Binding MainImage, Converter={StaticResource NullImageConverter}, UpdateSourceTrigger=PropertyChanged}" />
             </Grid>
 
 
             <Grid Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0,5,0,0">
-                <ListBox x:Name="ListThumbs"  HorizontalAlignment="Center"    VerticalAlignment="Top" ScrollViewer.HorizontalScrollBarVisibility="Auto" Margin="2"
+                <ListBox x:Name="ListThumbs"  HorizontalAlignment="Center"  VerticalAlignment="Top" ScrollViewer.HorizontalScrollBarVisibility="Auto" Margin="2"
                          ItemsSource="{Binding ScreenshotCollection, UpdateSourceTrigger=PropertyChanged}" ItemTemplate="{StaticResource ImageDataTemplate}" SelectedIndex="{Binding SelectedScreenIndex}">
-                    <!--<i:Interaction.Triggers>
-                        <i:EventTrigger EventName="SelectionChanged">
-                            <i:InvokeCommandAction Command="{Binding LoadLargeScreenshotCommand}"/>
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>-->
                     <ListBox.ItemsPanel>
                         <ItemsPanelTemplate>
                             <StackPanel Orientation="Horizontal"/>

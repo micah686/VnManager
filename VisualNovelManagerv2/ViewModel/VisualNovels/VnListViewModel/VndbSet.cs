@@ -59,7 +59,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnListViewModel
                             await ValidateAsync();
                             if (IsValid == true)
                             {
-                                var test = Convert.ToByte(VotelistVote.Replace(".", String.Empty));
                                 await client.SetVoteListAsync(_vnId, Convert.ToByte(VotelistVote.Replace(".", String.Empty)));
                             }
                         }

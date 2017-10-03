@@ -68,10 +68,5 @@ namespace VisualNovelManagerv2.ViewModel
         public VnMainCategoryOptionsViewModel VnMainCategoryOptionsViewModel =>
             ServiceLocator.Current.GetInstance<VnMainCategoryOptionsViewModel>();
 
-        public static void CleanupScreenshotViewModel()
-        {
-            SimpleIoc.Default.Unregister<VnScreenshotViewModel>();
-            SimpleIoc.Default.Register<VnScreenshotViewModel>();
-        }
     }
 }

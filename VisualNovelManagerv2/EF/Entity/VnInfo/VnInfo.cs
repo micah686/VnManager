@@ -19,7 +19,7 @@ namespace VisualNovelManagerv2.EF.Entity.VnInfo
         public string ImageLink { get; set; }
         public string ImageNsfw { get; set; }
         public double? Popularity { get; set; }
-        public int? Rating { get; set; }
+        public uint Rating { get; set; }
         public virtual VnInfoAnime VnInfoAnime { get; set; }
         public virtual VnInfoLinks VnInfoLinks { get; set; }
         public virtual VnInfoRelations VnInfoRelations { get; set; }

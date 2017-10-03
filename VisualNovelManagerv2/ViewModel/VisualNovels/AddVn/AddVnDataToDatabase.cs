@@ -57,7 +57,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                             ImageLink = visualNovel.Image,
                             ImageNsfw = visualNovel.IsImageNsfw.ToString(),
                             Popularity = visualNovel.Popularity,
-                            Rating = Convert.ToInt32(visualNovel.Rating)
+                            Rating = visualNovel.Rating
                         });
                         #endregion
 
@@ -66,7 +66,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                         {
                             context.VnInfoAnime.Add(new EF.Entity.VnInfo.VnInfoAnime
                             {
-                                VnId = Convert.ToInt32(visualNovel.Id),
+                                VnId = visualNovel.Id,
                                 AniDbId = anime.AniDbId,
                                 AnnId = anime.AnimeNewsNetworkId,
                                 AniNfoId = anime.AnimeNfoId,
@@ -81,7 +81,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                         #region VnInfoLinks
                         context.VnInfoLinks.Add(new VnInfoLinks
                         {
-                            VnId = Convert.ToInt32(visualNovel.Id),
+                            VnId = visualNovel.Id,
                             Wikipedia = visualNovel.VisualNovelLinks.Wikipedia,
                             Encubed = visualNovel.VisualNovelLinks.Encubed,
                             Renai = visualNovel.VisualNovelLinks.Renai
@@ -113,7 +113,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                             {
                                 context.VnInfoRelations.Add(new VnInfoRelations
                                 {
-                                    VnId = Convert.ToInt32(visualNovel.Id),
+                                    VnId = visualNovel.Id,
                                     RelationId = relation.Id,
                                     Relation = relation.Type.ToString(),
                                     Title = relation.Title,
@@ -132,8 +132,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                                 context.VnInfoStaff.Add(new VnInfoStaff
                                 {
                                     VnId = visualNovel.Id,
-                                    StaffId = Convert.ToInt32(staff.StaffId),
-                                    AliasId = Convert.ToInt32(staff.AliasId),
+                                    StaffId = staff.StaffId,
+                                    AliasId = staff.AliasId,
                                     Name = staff.Name,
                                     Original = staff.Kanji,
                                     Role = staff.Role,
@@ -191,9 +191,9 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                         {
                             context.VnCharacterVns.Add(new VnCharacterVns
                             {
-                                CharacterId = Convert.ToInt32(character.Id),
+                                CharacterId = character.Id,
                                 VnId = vn.Id,
-                                ReleaseId = Convert.ToInt32(vn.ReleaseId),
+                                ReleaseId = vn.ReleaseId,
                                 SpoilerLevel = vn.SpoilerLevel.ToString() ?? null,
                                 Role = vn.Role.ToString()
                             });
@@ -228,7 +228,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                         context.VnRelease.Add(new EF.Entity.VnRelease.VnRelease
                         {
                             VnId = _vnid,
-                            ReleaseId = Convert.ToInt32(release.Id),
+                            ReleaseId = release.Id,
                             Title = release.Name,
                             Original = release.OriginalName,
                             Released = release.Released.ToString(),
@@ -239,7 +239,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                             Languages = ConvertToCsv(release.Languages),
                             Website = release.Website,
                             Notes = release.Notes,
-                            MinAge = Convert.ToInt32(release.MinimumAge),
+                            MinAge = Convert.ToByte(release.MinimumAge),
                             Gtin = release.Gtin,
                             Catalog = release.Catalog,
                             Platforms = ConvertToCsv(release.Platforms),
@@ -255,9 +255,9 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                         {
                             context.VnReleaseMedia.Add(new VnReleaseMedia
                             {
-                                ReleaseId = Convert.ToInt32(release.Id),
+                                ReleaseId = release.Id,
                                 Medium = media.Medium,
-                                Quantity = Convert.ToInt32(media.Quantity)
+                                Quantity = media.Quantity
                             });
                         }
                         #endregion
@@ -268,8 +268,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                         {
                             context.VnReleaseProducers.Add(new VnReleaseProducers
                             {
-                                ReleaseId = Convert.ToInt32(release.Id),
-                                ProducerId = Convert.ToInt32(producer.Id),
+                                ReleaseId = release.Id,
+                                ProducerId = producer.Id,
                                 Developer = producer.IsDeveloper.ToString(),
                                 Publisher = producer.IsPublisher.ToString(),
                                 Name = producer.Name,
@@ -285,7 +285,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                         {
                             context.VnReleaseVn.Add(new VnReleaseVn
                             {
-                                ReleaseId = Convert.ToInt32(release.Id),
+                                ReleaseId = release.Id,
                                 VnId = _vnid,
                                 Name = vn.Name,
                                 Original = vn.OriginalName

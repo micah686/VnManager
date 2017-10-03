@@ -5,12 +5,14 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Microsoft.Practices.ServiceLocation;
 using MvvmValidation;
 using VisualNovelManagerv2.CustomClasses;
 using VisualNovelManagerv2.CustomClasses.TinyClasses;
 using VisualNovelManagerv2.EF.Context;
 using VisualNovelManagerv2.EF.Entity.VnOther;
 using VisualNovelManagerv2.Infrastructure;
+using VisualNovelManagerv2.ViewModel.VisualNovels.VnMain;
 
 namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMainCategoryOptions
 {
@@ -99,6 +101,9 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMainCategoryOptions
                     {
                         context.Categories.Add(data);
                         context.SaveChanges();
+
+                        var mvm = ServiceLocator.Current.GetInstance<VnMainViewModel>();
+                        mvm.LoadCategoriesPublic();
                     }
                 }
             }
