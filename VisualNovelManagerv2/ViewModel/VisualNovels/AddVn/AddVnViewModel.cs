@@ -250,16 +250,20 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                 await ValidateAsync();
                 if (IsValid == true)
                 {
-                    //TODO:maybe runa check on radio buttons
-                    if (!string.IsNullOrEmpty(VnName))
-                    {                        
-                        _vnid = _vnNameList.Items[DropdownIndex].Id;
-                        GetData();
-                    }
-                    else
+                    var bts = new BoolToStringConverter();
+                    string idOrName = (string) bts.Convert(IsNameChecked, null, null, CultureInfo.InvariantCulture);
+                    switch (idOrName)
                     {
-                        _vnid = Convert.ToUInt32(InputVnId);
-                        GetData();
+                        case "Vn Name" when SuggestedNamesCollection.Any(x => x.Contains(VnName)) && SuggestedNamesCollection.Count >0:
+                            _vnid = _vnNameList.Items[DropdownIndex].Id;
+                            GetData();
+                            break;
+                        case "Vn ID" when InputVnId >0:
+                            _vnid = Convert.ToUInt32(InputVnId);
+                            GetData();
+                            break;
+                        default:
+                            break;
                     }
                 }
                 else

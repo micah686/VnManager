@@ -42,6 +42,7 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <Label Content="{Binding Path=IsNameChecked, Converter={StaticResource BoolToStringConverter}}" Width="120" />
+                        
                         <TextBox x:Name="TextVnId" Grid.Column="1" Width="150" MaxLength="9" custom:TextBoxService.IsNumericOnly="True" Height="25" IsEnabled="{Binding IsUserInputEnabled}"
                             Text="{Binding InputVnId, Mode=TwoWay, ValidatesOnDataErrors=True}" Visibility="{Binding IsChecked, ElementName=VnIdRadio, Converter={StaticResource ConvVisibility}}" />
 
