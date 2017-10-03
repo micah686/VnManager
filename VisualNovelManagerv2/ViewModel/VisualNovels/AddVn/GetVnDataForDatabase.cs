@@ -52,11 +52,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                         return;
                     }
 
-                    //set progress percentage to a set value until I get the values for each, then I get the real double I need
-                    //TODO: make it so the max percentage is 100, not over
-                    if (Globals.StatusBar.ProgressPercentage != null)
-                        Globals.StatusBar.ProgressPercentage = 3;
-
                     hasMore = true;
                     pageCount = 1;
                     //do progress here
@@ -67,8 +62,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                         HandleError.HandleErrors(client.GetLastError(), 0);
                         return;
                     }
-                    if (Globals.StatusBar.ProgressPercentage != null)
-                        Globals.StatusBar.ProgressPercentage = 6;
+
 
 
                     List<Release> releaseList = new List<Release>();
@@ -86,11 +80,9 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                         releasesCount = releasesCount + releases.Count;
                         pageCount++;
                     }
-                    if (Globals.StatusBar.ProgressPercentage != null)
-                        Globals.StatusBar.ProgressPercentage = 9;
 
 
-                    _progressIncrement = (double) 91 / (2 + characterCount + releasesCount);
+                    _progressIncrement = (double) 100 / (1 + characterCount);
                     //await save vn data here
                     Globals.StatusBar.ProgressText = "Processing Data";
                     Globals.StatusBar.IsDbProcessing = true;

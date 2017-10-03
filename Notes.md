@@ -53,7 +53,6 @@ check on UserSettings.xaml about DataContext
 possibly add a template for the statusbar
 unload other views?
 move as many images to svg/xaml, like in StatusBarViewModel
-check the progress percentage
 possibly work on cleaning up VnLinks on Binding
 ContextMenu RemoveFromCategory possibly remove categoryJunction
 deal with multiple child processes

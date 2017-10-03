@@ -143,8 +143,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                         }
                         #endregion
                         context.SaveChanges();
-                        if (Globals.StatusBar.ProgressPercentage != null)
-                            Globals.StatusBar.ProgressPercentage = (double)Globals.StatusBar.ProgressPercentage + _progressIncrement;
                     }
 
                     #region VnTags
@@ -200,8 +198,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                         }
                         #endregion
                         context.SaveChanges();
-                        if (Globals.StatusBar.ProgressPercentage != null)
-                            Globals.StatusBar.ProgressPercentage = (double)Globals.StatusBar.ProgressPercentage + _progressIncrement;
                     }
 
 
@@ -293,8 +289,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                         }
                         #endregion
                         context.SaveChanges();
-                        if (Globals.StatusBar.ProgressPercentage != null)
-                            Globals.StatusBar.ProgressPercentage = (double)Globals.StatusBar.ProgressPercentage + _progressIncrement;
                     }
 
                 }
@@ -315,8 +309,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                         PlayTime = "0,0,0,0"
                     });
                     context.SaveChanges();
-                    if (Globals.StatusBar.ProgressPercentage != null)
-                        Globals.StatusBar.ProgressPercentage = (double)Globals.StatusBar.ProgressPercentage + _progressIncrement;
                 }
 
                 #endregion
