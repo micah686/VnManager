@@ -5,8 +5,6 @@ These are just personal reminders for me to keep track of what I need to fix/add
 - [ ] Fix the issue where adding categories keeps triggering the validation helper
 - [ ] Check clipboard before allowing user to paste
 - [ ] Set up virtualizing lists for large results
-- [ ] check for selected Vn before Play, possibly use isPlayEnabled
-- [ ] remove extras from context menu
 - [ ] see about spoilered characters
 
 

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using GalaSoft.MvvmLight.Messaging;
+using Microsoft.Practices.ServiceLocation;
 using VisualNovelManagerv2.CustomClasses;
 using VisualNovelManagerv2.CustomClasses.TinyClasses;
 using VisualNovelManagerv2.EF.Context;
@@ -77,6 +78,9 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
                         var categoryEntry = new VnUserCategoryTitle{Title = header, VnId = Globals.VnId};
                         context.VnUserCategoryTitles.Add(categoryEntry);
                         context.SaveChanges();
+
+                        var mvm = ServiceLocator.Current.GetInstance<VnMainViewModel>();
+                        mvm.LoadCategoriesPublic();
                     }
                 }
             }
@@ -103,6 +107,9 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
                         {
                             context.CategoryJunction.Remove(data);
                             context.SaveChanges();
+
+                            var mvm = ServiceLocator.Current.GetInstance<VnMainViewModel>();
+                            mvm.LoadCategoriesPublic();
                         }
                     }
                 }

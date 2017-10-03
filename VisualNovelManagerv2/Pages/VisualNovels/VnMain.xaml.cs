@@ -51,6 +51,7 @@ namespace VisualNovelManagerv2.Pages.VisualNovels
                 var result = ModernDialog.ShowMessage("Are you SURE you want to delete this visual novel and all associated data?", "Delete Visual Novel?", MessageBoxButton.YesNo);
                 msg.Execute(result);
             }
+            
         }
         
     }
