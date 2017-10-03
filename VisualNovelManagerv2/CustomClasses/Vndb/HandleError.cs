@@ -38,7 +38,7 @@ namespace VisualNovelManagerv2.CustomClasses.Vndb
                     Debug.WriteLine(
                         $"A Throttled Error occured, you need to wait at minimum \"{minSeconds}\" seconds, " +
                         $"and preferably \"{fullSeconds}\" before issuing commands.");
-                    TimeSpan timeSpan = new TimeSpan();
+                    TimeSpan timeSpan;
                     //double sleepTime = 0;
                     //set seconds to sleep
                     if (counter == 0)

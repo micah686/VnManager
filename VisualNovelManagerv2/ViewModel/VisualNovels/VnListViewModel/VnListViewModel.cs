@@ -622,12 +622,20 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnListViewModel
                 {
                     Vndb client = new Vndb(true);
                     var response = await client.GetVisualNovelAsync(VndbFilters.Title.Equals(SelectedItem));
-                    VisualNovel firstOrDefault = response?.Items.FirstOrDefault();
-                    if (firstOrDefault != null)
-                        data = firstOrDefault.Id;
-                    client.Logout();
-                    client.Dispose();
-                    return data;
+                    if (response == null)
+                    {
+                        HandleError.HandleErrors(client.GetLastError(), 0);
+                    }
+                    else
+                    {
+                        VisualNovel firstOrDefault = response?.Items.FirstOrDefault();
+                        if (firstOrDefault != null)
+                            data = firstOrDefault.Id;
+                        client.Logout();
+                        client.Dispose();
+                        return data;
+                    }
+                    
                 }
                 return 0;
             }
@@ -645,9 +653,17 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnListViewModel
             using (var client = new Vndb(Username, Password))
             {
                 var users = await client.GetUserAsync(VndbFilters.Username.Equals(Username));
-                if (users == null) return false;
-                _userId = users.Items[0].Id;
-                return true;
+                if (users == null)
+                {
+                    HandleError.HandleErrors(client.GetLastError(), 0);
+                    return false;
+                }
+                else
+                {
+                    _userId = users.Items[0].Id;
+                    return true;
+                }
+               
             }
         }
 

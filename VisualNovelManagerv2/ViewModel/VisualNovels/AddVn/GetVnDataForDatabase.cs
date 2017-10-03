@@ -40,10 +40,16 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                     {
                         ro.Page = pageCount;
                         VndbResponse<Character> characters = await client.GetCharacterAsync(VndbFilters.VisualNovel.Equals(_vnid), VndbFlags.FullCharacter, ro);
-                        hasMore = characters.HasMore;
-                        characterList.AddRange(characters.Items);
-                        characterCount = characterCount + characters.Count;
-                        pageCount++;
+                        if (characters != null)
+                        {
+                            hasMore = characters.HasMore;
+                            characterList.AddRange(characters.Items);
+                            characterCount = characterCount + characters.Count;
+                            pageCount++;
+                        }
+                        if (characters != null) continue;
+                        HandleError.HandleErrors(client.GetLastError(), 0);
+                        return;
                     }
 
                     //set progress percentage to a set value until I get the values for each, then I get the real double I need
@@ -56,6 +62,11 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                     //do progress here
 
                     VndbResponse<VisualNovel> visualNovels = await client.GetVisualNovelAsync(VndbFilters.Id.Equals(_vnid), VndbFlags.FullVisualNovel);
+                    if (visualNovels == null)
+                    {
+                        HandleError.HandleErrors(client.GetLastError(), 0);
+                        return;
+                    }
                     if (Globals.StatusBar.ProgressPercentage != null)
                         Globals.StatusBar.ProgressPercentage = 6;
 
@@ -65,6 +76,11 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                     {
                         ro.Page = pageCount;
                         VndbResponse<Release> releases = await client.GetReleaseAsync(VndbFilters.VisualNovel.Equals(_vnid), VndbFlags.FullRelease, ro);
+                        if (releases == null)
+                        {
+                            HandleError.HandleErrors(client.GetLastError(), 0);
+                            break;
+                        }
                         hasMore = releases.HasMore;
                         releaseList.AddRange(releases.Items);
                         releasesCount = releasesCount + releases.Count;

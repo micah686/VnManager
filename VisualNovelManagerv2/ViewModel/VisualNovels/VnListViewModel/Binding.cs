@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using VisualNovelManagerv2.CustomClasses.TinyClasses;
+using VisualNovelManagerv2.CustomClasses.Vndb;
 using VisualNovelManagerv2.EF.Context;
 using VisualNovelManagerv2.EF.Entity.VnUserList;
 using VndbSharp;
@@ -43,6 +44,10 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnListViewModel
                         {
                             VnLinksModel.Image = new BitmapImage(new Uri($@"{Globals.DirectoryPath}\Data\images\userlist\{id}.jpg"));
                         }
+                    }
+                    else
+                    {
+                        HandleError.HandleErrors(client.GetLastError(), 0);
                     }
                     client.Dispose();
                 }

@@ -96,6 +96,10 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                     SuggestedNamesCollection.Clear();
                     _vnNameList = null;
                     _vnNameList = await client.GetVisualNovelAsync(VndbFilters.Search.Fuzzy(VnName));
+                    if (_vnNameList == null)
+                    {
+                        HandleError.HandleErrors(client.GetLastError(), 0);
+                    }
                     //namelist gets a  list of english names if text input was english, or japanese names if input was japanese
                     List<string> nameList = IsJapaneseText(VnName) == true ? _vnNameList.Select(item => item.OriginalName).ToList() : _vnNameList.Select(item => item.Name).ToList();
                     foreach (string name in nameList)
@@ -171,7 +175,15 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                         Count = 1
                     };
                     VndbResponse<VisualNovel> response = await client.GetVisualNovelAsync(VndbFilters.Id.GreaterThan(1), VndbFlags.Basic, ro);
-                    return response.Items[0].Id;
+                    if (response != null)
+                    {
+                        return response.Items[0].Id;
+                    }
+                    else
+                    {
+                        HandleError.HandleErrors(client.GetLastError(), 0);
+                        return 0;
+                    }
                 }
             }
             catch (Exception ex)
@@ -189,9 +201,15 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                 {
                     uint vnid = Convert.ToUInt32(InputVnId);
                     VndbResponse<VisualNovel> response = await client.GetVisualNovelAsync(VndbFilters.Id.Equals(vnid));
-
-                    client.Logout();
-                    return response.Count < 1;
+                    if (response != null)
+                    {
+                        return response.Count < 1;
+                    }
+                    else
+                    {
+                        HandleError.HandleErrors(client.GetLastError(), 0);
+                        return true;
+                    }
                 }
             }
             catch (Exception ex)
