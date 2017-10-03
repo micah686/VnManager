@@ -70,17 +70,18 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMainCategoryOptions
                 using (var context = new DatabaseContext())
                 {
                     //get the category element to remove
-                    CategoryJunction data = context.CategoryJunction.FirstOrDefault(x =>
-                        x.Category.CategoryName == RemoveCategoryText);
+
+                    var data = context.Categories.FirstOrDefault(x => x.CategoryName == RemoveCategoryText);
                     if (data != null)
                     {
-                        context.CategoryJunction.Remove(data);
+                        context.Categories.Remove(data);
+                        context.VnUserCategoryTitles.RemoveRange(context.VnUserCategoryTitles.Where(x => x.Title == RemoveCategoryText));
                         context.SaveChanges();
 
                         //reload category list
                         CategoriesCollection.Clear();
                         LoadCategoryList();
-                    }                    
+                    }                   
                 }
             }
             catch (Exception ex)
@@ -118,25 +119,39 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMainCategoryOptions
         {
             try
             {
-                Validate();
-                if (AddCategoryText != null  && _isValid)
+                ConfigureValidationRules();
+                Validator.ResultChanged += OnValidationResultChanged;
+                await ValidateAsync();
+                if (_isValid)
                 {
-                    AddCategory();
-                    BbCodeTextDone = "[color=#0f0]Done[/color]";
+                    if (AddCategoryText != null && _isValid)
+                    {
+                        AddCategory();
+                        BbCodeTextDone = "[color=#0f0]Done[/color]";
+                        await Task.Delay(1500);
+                        BbCodeTextDone = null;
+                        AddCategoryText = null;
+                        RemoveCategoryText = null;
+                        Validator.Reset();
+                    }
+                    else if (RemoveCategoryText != null)
+                    {
+                        RemoveCategory();
+                        BbCodeTextDone = "[color=#0f0]Done[/color]";
+                        await Task.Delay(1500);
+                        BbCodeTextDone = null;
+                        AddCategoryText = null;
+                        RemoveCategoryText = null;
+                        Validator.Reset();
+                    }
+                }                
+                else
+                {
+                    BbCodeTextDone = "[color=#FF4500]Failed[/color]";
                     await Task.Delay(1500);
                     BbCodeTextDone = null;
-                    AddCategoryText = null;
-                    RemoveCategoryText = null;
-
-                }
-                else if (RemoveCategoryText != null)
-                {
-                    RemoveCategory();
-                    BbCodeTextDone = "[color=#0f0]Done[/color]";
-                    await Task.Delay(1500);
-                    BbCodeTextDone = null;
-                    AddCategoryText = null;
-                    RemoveCategoryText = null;
+                    await Task.Delay(4500);
+                    Validator.Reset();
                 }
             }
             catch (Exception ex)
@@ -157,10 +172,22 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMainCategoryOptions
 
         private void ConfigureValidationRules()
         {
-            Validator.AddRule(nameof(AddCategoryText),
-                () => RuleResult.Assert(!string.IsNullOrEmpty(AddCategoryText), "Cannot be empty"));
-            Validator.AddRule(nameof(AddCategoryText),
-                () => RuleResult.Assert(CheckAddCategoryName() != true, "Category already exists"));
+            //false for AddCategory, True for RemoveCategory
+            switch (IsChecked)
+            {
+                case false:
+                    Validator.AddRule(nameof(AddCategoryText),
+                        () => RuleResult.Assert(!string.IsNullOrEmpty(AddCategoryText), "Cannot be empty"));
+                    Validator.AddRule(nameof(AddCategoryText),
+                        () => RuleResult.Assert(CheckAddCategoryName() != true, "Category already exists"));
+                    Validator.AddRule(nameof(AddCategoryText),
+                        () => RuleResult.Assert(AddCategoryText != "All", "Invalid category title"));
+                    break;
+                case true:
+                    Validator.AddRule(nameof(RemoveCategoryText),
+                        () => RuleResult.Assert(!string.IsNullOrEmpty(RemoveCategoryText), "No category selected"));
+                    break;
+            }
         }
 
         #region Validation Methods

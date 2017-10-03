@@ -6,7 +6,6 @@ These are just personal reminders for me to keep track of what I need to fix/add
 - [ ] Check clipboard before allowing user to paste
 - [ ] Set up virtualizing lists for large results
 - [ ] see about spoilered characters
-- [ ] Fix the bugs with Add/Remove categories
 
 
 
