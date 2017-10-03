@@ -195,25 +195,7 @@
 
                     <Grid Grid.Row="13" Margin="10,10,10,0">
                         <ScrollViewer MinHeight="70" MaxHeight="350">
-                            <bb:BBCodeBlock BBCode="{Binding VnCharacterModel.Description}" TextWrapping="Wrap">
-                                <bb:BBCodeBlock.Resources>
-                                    <Style x:Key="{x:Type Hyperlink}" TargetType="{x:Type Hyperlink}">
-                                        <Setter Property="Foreground" Value="Orange"/>
-                                        <Setter Property="TextDecorations" Value="Underline"/>
-                                        <Style.Triggers>
-                                            <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter Property="Foreground" Value="Red"/>
-                                            </Trigger>
-                                            <Trigger Property="IsEnabled" Value="False">
-                                                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
-                                            </Trigger>
-                                            <Trigger Property="IsEnabled" Value="True">
-                                                <Setter Property="Cursor" Value="Hand"/>
-                                            </Trigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </bb:BBCodeBlock.Resources>
-                            </bb:BBCodeBlock>
+                            <bb:BBCodeBlock BBCode="{Binding VnCharacterModel.Description}" TextWrapping="Wrap"/>
                         </ScrollViewer>
                     </Grid>
 
@@ -230,25 +212,7 @@
                             <!--change listbox to use max width of largest string, so it doesn't dynamically adjust -->
                             <ListBox Grid.Column="0"   ItemsSource="{Binding TraitsCollection}" Height="250" SelectedIndex="{Binding SelectedTraitIndex}" SelectedItem="{Binding SelectedTrait}"/>
                             <ScrollViewer Grid.Column="1" Margin="15,0,15,0" MinHeight="70">
-                                <bb:BBCodeBlock BBCode="{Binding TraitDescription}" TextWrapping="Wrap">
-                                    <bb:BBCodeBlock.Resources>
-                                        <Style x:Key="{x:Type Hyperlink}" TargetType="{x:Type Hyperlink}">
-                                            <Setter Property="Foreground" Value="Orange"/>
-                                            <Setter Property="TextDecorations" Value="Underline"/>
-                                            <Style.Triggers>
-                                                <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter Property="Foreground" Value="Red"/>
-                                                </Trigger>
-                                                <Trigger Property="IsEnabled" Value="False">
-                                                    <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
-                                                </Trigger>
-                                                <Trigger Property="IsEnabled" Value="True">
-                                                    <Setter Property="Cursor" Value="Hand"/>
-                                                </Trigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </bb:BBCodeBlock.Resources>
-                                </bb:BBCodeBlock>
+                                <bb:BBCodeBlock BBCode="{Binding TraitDescription}" TextWrapping="Wrap"/>
                             </ScrollViewer>
                         </Grid>
                     </Grid>

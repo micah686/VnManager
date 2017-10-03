@@ -114,25 +114,7 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Label Grid.Column="0" Content="Website:"/>
-                            <bb:BBCodeBlock Grid.Column="1" BBCode="{Binding VnReleaseModel.Website}" Margin="15,0,0,0" TextWrapping="Wrap">
-                                <bb:BBCodeBlock.Resources>
-                                    <Style x:Key="{x:Type Hyperlink}" TargetType="{x:Type Hyperlink}">
-                                        <Setter Property="Foreground" Value="Orange"/>
-                                        <Setter Property="TextDecorations" Value="Underline"/>
-                                        <Style.Triggers>
-                                            <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter Property="Foreground" Value="Red"/>
-                                            </Trigger>
-                                            <Trigger Property="IsEnabled" Value="False">
-                                                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
-                                            </Trigger>
-                                            <Trigger Property="IsEnabled" Value="True">
-                                                <Setter Property="Cursor" Value="Hand"/>
-                                            </Trigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </bb:BBCodeBlock.Resources>
-                            </bb:BBCodeBlock>
+                            <bb:BBCodeBlock Grid.Column="1" BBCode="{Binding VnReleaseModel.Website}" Margin="15,0,0,0" TextWrapping="Wrap"/>
                         </Grid>
                     </Grid>
 
@@ -293,25 +275,7 @@
 
                     <Grid Grid.Row="18" Margin="10,10,10,0">
                         <ScrollViewer MinHeight="70" Margin="15,0,15,0">
-                            <bb:BBCodeBlock BBCode="{Binding VnReleaseModel.Notes}" TextWrapping="Wrap">
-                                <bb:BBCodeBlock.Resources>
-                                    <Style x:Key="{x:Type Hyperlink}" TargetType="{x:Type Hyperlink}">
-                                        <Setter Property="Foreground" Value="Orange"/>
-                                        <Setter Property="TextDecorations" Value="Underline"/>
-                                        <Style.Triggers>
-                                            <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter Property="Foreground" Value="Red"/>
-                                            </Trigger>
-                                            <Trigger Property="IsEnabled" Value="False">
-                                                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
-                                            </Trigger>
-                                            <Trigger Property="IsEnabled" Value="True">
-                                                <Setter Property="Cursor" Value="Hand"/>
-                                            </Trigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </bb:BBCodeBlock.Resources>
-                            </bb:BBCodeBlock>
+                            <bb:BBCodeBlock BBCode="{Binding VnReleaseModel.Notes}" TextWrapping="Wrap"/>
                         </ScrollViewer>
                     </Grid>
 

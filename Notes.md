@@ -51,10 +51,8 @@ VnMainMODEL has some possible null referenceexceptions
 Come back to EfEntity
 check on UserSettings.xaml about DataContext
 possibly add a template for the statusbar
-see about a global style for hyperlink
 unload other views?
 move as many images to svg/xaml, like in StatusBarViewModel
-Add a handle method for vndb response
 AddVnViewModel check radio buttons before adding
 check the progress percentage
 possibly work on cleaning up VnLinks on Binding
