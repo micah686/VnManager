@@ -360,7 +360,12 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
         {
             try
             {
-                //TODO: add a dialog box for this
+                if(Globals.VnId <1)
+                    return;
+                if (_isGameRunning)
+                {
+                    Messenger.Default.Send(new NotificationMessage("Game Already Running"));
+                }
                 if (_isGameRunning == false)
                 {
                     _stopwatch.Reset();
@@ -374,7 +379,16 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
                             string exepath = vnUserData.ExePath;
                             string dirpath = Path.GetDirectoryName(exepath);
                             if (dirpath != null) Directory.SetCurrentDirectory(dirpath);
-                            process = Process.Start(exepath);
+                            process = new Process
+                            {
+                                StartInfo =
+                                {
+                                    FileName = exepath, UseShellExecute = false, RedirectStandardOutput = true, RedirectStandardError = true
+                                },
+                                EnableRaisingEvents = true
+                                
+                            };
+                            process.Start();
                             _isGameRunning = true;
                             _stopwatch.Start();
                             IsPlayEnabled = false;

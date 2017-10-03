@@ -6,7 +6,6 @@ These are just personal reminders for me to keep track of what I need to fix/add
 - [ ] Check clipboard before allowing user to paste
 - [ ] Set up virtualizing lists for large results
 - [ ] check for selected Vn before Play, possibly use isPlayEnabled
-- [ ] Reload list after adding a category
 - [ ] remove extras from context menu
 - [ ] see about spoilered characters
 
@@ -62,5 +61,3 @@ check the progress percentage
 possibly work on cleaning up VnLinks on Binding
 ContextMenu RemoveFromCategory possibly remove categoryJunction
 deal with multiple child processes
-deal with that once exe that breaks StartVn()
-prevent multiple games from running at once

@@ -35,7 +35,13 @@ namespace VisualNovelManagerv2.Pages.VisualNovels
             {
                 var view2 = new VnMainCategoryOptions();
                 view2.ShowDialog();
-            }                        
+            }
+            if (msg.Notification == "Game Already Running")
+            {
+               ModernDialog.ShowMessage(
+                    "A game is already running. Please close any other running games, then try again", "Game Already Running",
+                    MessageBoxButton.OK);
+            }
         }
 
         private void NotificationMessageBoxResultRecieved(NotificationMessageAction<MessageBoxResult> msg)
