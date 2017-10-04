@@ -9,7 +9,6 @@ These are just personal reminders for me to keep track of what I need to fix/add
 
 
 
-2:06 PM - $1: I can't seem to remove a category ("romance" in this case)
 2:06 PM - $1: The Main and Character tabs have trouble scrolling up using the scroll wheel
 2:06 PM - $1: Scrolling down is fine
 2:07 PM - $1: The releases page scrolls fine
@@ -48,7 +47,6 @@ NullImageConverter not used
 BindableRichTextBox still exists
 VnMainMODEL has some possible null referenceexceptions
 Come back to EfEntity
-check on UserSettings.xaml about DataContext
 possibly add a template for the statusbar
 unload other views?
 move as many images to svg/xaml, like in StatusBarViewModel

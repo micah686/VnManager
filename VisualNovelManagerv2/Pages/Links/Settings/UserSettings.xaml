@@ -8,12 +8,9 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              DataContext="{Binding UserSettings, Source={StaticResource Locator}}">
-    <UserControl.Resources>
-        <vm:UserSettingsViewModel x:Key="vm"/>
-    </UserControl.Resources>
     <Grid>
         <ScrollViewer>
-            <StackPanel x:Name="Panel" MinWidth="150" DataContext="{Binding Source={StaticResource vm}}">
+            <StackPanel x:Name="Panel" MinWidth="150" >
                 <TextBlock Text="Settings" Style="{StaticResource Heading2}" Margin="0,0,0,8" />
 
 
