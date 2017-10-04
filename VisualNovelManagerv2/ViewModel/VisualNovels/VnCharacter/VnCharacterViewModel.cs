@@ -141,7 +141,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
 
                 using (var context = new DatabaseContext())
                 {
-                    foreach (var character in context.VnCharacter.Where(n => n.Name == SelectedCharacter).Where(i => i.VnId == Globals.VnId))
+                    foreach (var character in context.VnCharacter.Where(x => x.Id == context.VnCharacter
+                    .Where(v => v.VnId == Globals.VnId).ToArray()[SelectedCharacterIndex].Id).Where(i => i.VnId == Globals.VnId))
                     {
                         VnCharacterModel.Name = character.Name;
                         VnCharacterModel.OriginalName = character.Original;
