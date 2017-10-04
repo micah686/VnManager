@@ -40,12 +40,12 @@ Microsoft.EntityFrameworkCore.Tools
 - [ ] Be able to sort visual novels, and name categories, also being able to create sub categories would be nice. Example: sort by translated, or untranslated. Then further sort by producer/genre
 
 ### Cleanup notes:
--NullImageConverter not used
--BindableRichTextBox still exists
--VnMainMODEL has some possible null referenceexceptions
--Come back to EfEntity
--possibly add a template for the statusbar
--unload other views?
--move as many images to svg/xaml, like in StatusBarViewModel
--possibly work on cleaning up VnLinks on Binding
--deal with multiple child processes
+- NullImageConverter not used
+- BindableRichTextBox still exists
+- VnMainMODEL has some possible null referenceexceptions
+- Come back to EfEntity
+- possibly add a template for the statusbar
+- unload other views?
+- move as many images to svg/xaml, like in StatusBarViewModel
+- possibly work on cleaning up VnLinks on Binding
+- deal with multiple child processes
