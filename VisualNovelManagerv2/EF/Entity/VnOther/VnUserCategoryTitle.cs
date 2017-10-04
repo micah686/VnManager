@@ -11,7 +11,5 @@ namespace VisualNovelManagerv2.EF.Entity.VnOther
         public int VnUserCategoryTitleId { get; set; }
         public uint VnId { get; set; }
         public string Title { get; set; }
-
-        public List<CategoryJunction> CategoryJunctions { get; set; }
     }
 }

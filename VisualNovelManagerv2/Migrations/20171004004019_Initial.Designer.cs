@@ -10,7 +10,7 @@ using VisualNovelManagerv2.EF.Context;
 namespace VisualNovelManagerv2.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20171001205448_Initial")]
+    [Migration("20171004004019_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -74,7 +74,7 @@ namespace VisualNovelManagerv2.Migrations
 
                     b.Property<uint>("CharacterId");
 
-                    b.Property<string>("SpoilerLevel");
+                    b.Property<byte>("SpoilerLevel");
 
                     b.Property<uint>("TraitId");
 
@@ -92,15 +92,15 @@ namespace VisualNovelManagerv2.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int?>("CharacterId");
+                    b.Property<uint>("CharacterId");
 
-                    b.Property<int?>("ReleaseId");
+                    b.Property<uint>("ReleaseId");
 
                     b.Property<string>("Role");
 
                     b.Property<string>("SpoilerLevel");
 
-                    b.Property<uint?>("VnId");
+                    b.Property<uint>("VnId");
 
                     b.HasKey("Id");
 
@@ -132,7 +132,7 @@ namespace VisualNovelManagerv2.Migrations
 
                     b.Property<double?>("Popularity");
 
-                    b.Property<int?>("Rating");
+                    b.Property<uint>("Rating");
 
                     b.Property<string>("Released");
 
@@ -182,7 +182,7 @@ namespace VisualNovelManagerv2.Migrations
 
                     b.Property<string>("TitleJpn");
 
-                    b.Property<int?>("VnId");
+                    b.Property<uint>("VnId");
 
                     b.Property<string>("Year");
 
@@ -200,7 +200,7 @@ namespace VisualNovelManagerv2.Migrations
 
                     b.Property<string>("Renai");
 
-                    b.Property<int?>("VnId");
+                    b.Property<uint>("VnId");
 
                     b.Property<string>("Wikipedia");
 
@@ -224,7 +224,7 @@ namespace VisualNovelManagerv2.Migrations
 
                     b.Property<string>("Title");
 
-                    b.Property<int?>("VnId");
+                    b.Property<uint>("VnId");
 
                     b.HasKey("Id");
 
@@ -262,7 +262,7 @@ namespace VisualNovelManagerv2.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int?>("AliasId");
+                    b.Property<uint>("AliasId");
 
                     b.Property<string>("Name");
 
@@ -272,7 +272,7 @@ namespace VisualNovelManagerv2.Migrations
 
                     b.Property<string>("Role");
 
-                    b.Property<int?>("StaffId");
+                    b.Property<uint>("StaffId");
 
                     b.Property<uint?>("VnId");
 
@@ -313,19 +313,6 @@ namespace VisualNovelManagerv2.Migrations
                     b.HasKey("CategoryId");
 
                     b.ToTable("Categories");
-                });
-
-            modelBuilder.Entity("VisualNovelManagerv2.EF.Entity.VnOther.CategoryJunction", b =>
-                {
-                    b.Property<int>("CategoryId");
-
-                    b.Property<int>("VnUserCategoryTitleId");
-
-                    b.HasKey("CategoryId", "VnUserCategoryTitleId");
-
-                    b.HasIndex("VnUserCategoryTitleId");
-
-                    b.ToTable("CategoryJunction");
                 });
 
             modelBuilder.Entity("VisualNovelManagerv2.EF.Entity.VnOther.VnIdList", b =>
@@ -461,7 +448,7 @@ namespace VisualNovelManagerv2.Migrations
 
                     b.Property<string>("Languages");
 
-                    b.Property<int?>("MinAge");
+                    b.Property<byte>("MinAge");
 
                     b.Property<string>("Notes");
 
@@ -471,7 +458,7 @@ namespace VisualNovelManagerv2.Migrations
 
                     b.Property<string>("Platforms");
 
-                    b.Property<int?>("ReleaseId");
+                    b.Property<uint>("ReleaseId");
 
                     b.Property<string>("ReleaseType");
 
@@ -515,9 +502,9 @@ namespace VisualNovelManagerv2.Migrations
 
                     b.Property<string>("Medium");
 
-                    b.Property<int?>("Quantity");
+                    b.Property<uint?>("Quantity");
 
-                    b.Property<int?>("ReleaseId");
+                    b.Property<uint>("ReleaseId");
 
                     b.HasKey("Id");
 
@@ -535,13 +522,13 @@ namespace VisualNovelManagerv2.Migrations
 
                     b.Property<string>("Original");
 
-                    b.Property<int?>("ProducerId");
+                    b.Property<uint>("ProducerId");
 
                     b.Property<string>("ProducerType");
 
                     b.Property<string>("Publisher");
 
-                    b.Property<int?>("ReleaseId");
+                    b.Property<uint>("ReleaseId");
 
                     b.HasKey("Id");
 
@@ -557,7 +544,7 @@ namespace VisualNovelManagerv2.Migrations
 
                     b.Property<string>("Original");
 
-                    b.Property<int?>("ReleaseId");
+                    b.Property<uint>("ReleaseId");
 
                     b.Property<uint?>("VnId");
 
@@ -795,19 +782,6 @@ namespace VisualNovelManagerv2.Migrations
                     b.HasOne("VisualNovelManagerv2.EF.Entity.VnInfo.VnInfo")
                         .WithMany("VnInfoTags")
                         .HasForeignKey("VnInfoId");
-                });
-
-            modelBuilder.Entity("VisualNovelManagerv2.EF.Entity.VnOther.CategoryJunction", b =>
-                {
-                    b.HasOne("VisualNovelManagerv2.EF.Entity.VnOther.Category", "Category")
-                        .WithMany("CategoryJunctions")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("VisualNovelManagerv2.EF.Entity.VnOther.VnUserCategoryTitle", "VnUserCategoryTitle")
-                        .WithMany("CategoryJunctions")
-                        .HasForeignKey("VnUserCategoryTitleId")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("VisualNovelManagerv2.EF.Entity.VnProducer.VnProducer", b =>

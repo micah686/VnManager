@@ -58,8 +58,7 @@ namespace VisualNovelManagerv2.Pages
             {
                 using (var context = new DatabaseContext())
                 {
-                    var test = context.Categories.Where(x => x.CategoryName == "New Category")
-                        .SelectMany(x => x.CategoryJunctions.Select(y => y.VnUserCategoryTitle)).ToList();
+                    
 
                     #region AddM2M
 

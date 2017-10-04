@@ -150,11 +150,9 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
                     {
                         if (menuItem.Parent.GetType() == typeof(MenuItem))
                         {
-                            MenuItem parent = (MenuItem)menuItem.Parent;
                             DatabaseContext context = new DatabaseContext();
                             if (!context.Categories.Select(x => x.CategoryName).Contains(name) && name != "Visual Novels")
                             {
-                                _selectedCategory = parent.Header.ToString();
                                 GetVnData();
                             }
                             else

@@ -30,21 +30,6 @@ namespace VisualNovelManagerv2.EF.Context
             optionsBuilder.UseSqlite($@"Filename={directoryPath}\Data\Database\Database.db");
         }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<CategoryJunction>()
-                .HasKey(k => new {k.CategoryId, k.VnUserCategoryTitleId});
-
-            modelBuilder.Entity<CategoryJunction>()
-                .HasOne(cj => cj.Category)
-                .WithMany(j => j.CategoryJunctions)
-                .HasForeignKey(f => f.CategoryId);
-
-            modelBuilder.Entity<CategoryJunction>()
-                .HasOne(cj => cj.VnUserCategoryTitle)
-                .WithMany(j => j.CategoryJunctions)
-                .HasForeignKey(f => f.VnUserCategoryTitleId);
-        }
 
         internal DbSet<VnCharacter> VnCharacter { get; set; }
         internal DbSet<VnCharacterTraits> VnCharacterTraits { get; set; }
@@ -75,6 +60,5 @@ namespace VisualNovelManagerv2.EF.Context
         internal DbSet<VnIdList> VnIdList { get; set; }
         internal DbSet<Category> Categories { get; set; }
         internal DbSet<VnUserCategoryTitle> VnUserCategoryTitles { get; set; }
-        internal DbSet<CategoryJunction> CategoryJunction { get; set; }
     }
 }

@@ -27,11 +27,11 @@ namespace VisualNovelManagerv2.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    CharacterId = table.Column<int>(type: "INTEGER", nullable: true),
-                    ReleaseId = table.Column<int>(type: "INTEGER", nullable: true),
+                    CharacterId = table.Column<uint>(type: "INTEGER", nullable: false),
+                    ReleaseId = table.Column<uint>(type: "INTEGER", nullable: false),
                     Role = table.Column<string>(type: "TEXT", nullable: true),
                     SpoilerLevel = table.Column<string>(type: "TEXT", nullable: true),
-                    VnId = table.Column<uint>(type: "INTEGER", nullable: true)
+                    VnId = table.Column<uint>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -64,7 +64,7 @@ namespace VisualNovelManagerv2.Migrations
                     AnnId = table.Column<int>(type: "INTEGER", nullable: true),
                     TitleEng = table.Column<string>(type: "TEXT", nullable: true),
                     TitleJpn = table.Column<string>(type: "TEXT", nullable: true),
-                    VnId = table.Column<int>(type: "INTEGER", nullable: true),
+                    VnId = table.Column<uint>(type: "INTEGER", nullable: false),
                     Year = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
@@ -80,7 +80,7 @@ namespace VisualNovelManagerv2.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     Encubed = table.Column<string>(type: "TEXT", nullable: true),
                     Renai = table.Column<string>(type: "TEXT", nullable: true),
-                    VnId = table.Column<int>(type: "INTEGER", nullable: true),
+                    VnId = table.Column<uint>(type: "INTEGER", nullable: false),
                     Wikipedia = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
@@ -99,7 +99,7 @@ namespace VisualNovelManagerv2.Migrations
                     Relation = table.Column<string>(type: "TEXT", nullable: true),
                     RelationId = table.Column<int>(type: "INTEGER", nullable: true),
                     Title = table.Column<string>(type: "TEXT", nullable: true),
-                    VnId = table.Column<int>(type: "INTEGER", nullable: true)
+                    VnId = table.Column<uint>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -112,12 +112,12 @@ namespace VisualNovelManagerv2.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    AliasId = table.Column<int>(type: "INTEGER", nullable: true),
+                    AliasId = table.Column<uint>(type: "INTEGER", nullable: false),
                     Name = table.Column<string>(type: "TEXT", nullable: true),
                     Note = table.Column<string>(type: "TEXT", nullable: true),
                     Original = table.Column<string>(type: "TEXT", nullable: true),
                     Role = table.Column<string>(type: "TEXT", nullable: true),
-                    StaffId = table.Column<int>(type: "INTEGER", nullable: true),
+                    StaffId = table.Column<uint>(type: "INTEGER", nullable: false),
                     VnId = table.Column<uint>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
@@ -164,8 +164,8 @@ namespace VisualNovelManagerv2.Migrations
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Medium = table.Column<string>(type: "TEXT", nullable: true),
-                    Quantity = table.Column<int>(type: "INTEGER", nullable: true),
-                    ReleaseId = table.Column<int>(type: "INTEGER", nullable: true)
+                    Quantity = table.Column<uint>(type: "INTEGER", nullable: true),
+                    ReleaseId = table.Column<uint>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -181,10 +181,10 @@ namespace VisualNovelManagerv2.Migrations
                     Developer = table.Column<string>(type: "TEXT", nullable: true),
                     Name = table.Column<string>(type: "TEXT", nullable: true),
                     Original = table.Column<string>(type: "TEXT", nullable: true),
-                    ProducerId = table.Column<int>(type: "INTEGER", nullable: true),
+                    ProducerId = table.Column<uint>(type: "INTEGER", nullable: false),
                     ProducerType = table.Column<string>(type: "TEXT", nullable: true),
                     Publisher = table.Column<string>(type: "TEXT", nullable: true),
-                    ReleaseId = table.Column<int>(type: "INTEGER", nullable: true)
+                    ReleaseId = table.Column<uint>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -199,7 +199,7 @@ namespace VisualNovelManagerv2.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(type: "TEXT", nullable: true),
                     Original = table.Column<string>(type: "TEXT", nullable: true),
-                    ReleaseId = table.Column<int>(type: "INTEGER", nullable: true),
+                    ReleaseId = table.Column<uint>(type: "INTEGER", nullable: false),
                     VnId = table.Column<uint>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
@@ -426,37 +426,13 @@ namespace VisualNovelManagerv2.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CategoryJunction",
-                columns: table => new
-                {
-                    CategoryId = table.Column<int>(type: "INTEGER", nullable: false),
-                    VnUserCategoryTitleId = table.Column<int>(type: "INTEGER", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CategoryJunction", x => new { x.CategoryId, x.VnUserCategoryTitleId });
-                    table.ForeignKey(
-                        name: "FK_CategoryJunction_Categories_CategoryId",
-                        column: x => x.CategoryId,
-                        principalTable: "Categories",
-                        principalColumn: "CategoryId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_CategoryJunction_VnUserCategoryTitles_VnUserCategoryTitleId",
-                        column: x => x.VnUserCategoryTitleId,
-                        principalTable: "VnUserCategoryTitles",
-                        principalColumn: "VnUserCategoryTitleId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "VnCharacterTraits",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     CharacterId = table.Column<uint>(type: "INTEGER", nullable: false),
-                    SpoilerLevel = table.Column<string>(type: "TEXT", nullable: true),
+                    SpoilerLevel = table.Column<byte>(type: "INTEGER", nullable: false),
                     TraitId = table.Column<uint>(type: "INTEGER", nullable: false),
                     VnCharacterId = table.Column<int>(type: "INTEGER", nullable: true)
                 },
@@ -535,7 +511,7 @@ namespace VisualNovelManagerv2.Migrations
                     OriginalLanguage = table.Column<string>(type: "TEXT", nullable: true),
                     Platforms = table.Column<string>(type: "TEXT", nullable: true),
                     Popularity = table.Column<double>(type: "REAL", nullable: true),
-                    Rating = table.Column<int>(type: "INTEGER", nullable: true),
+                    Rating = table.Column<uint>(type: "INTEGER", nullable: false),
                     Released = table.Column<string>(type: "TEXT", nullable: true),
                     Title = table.Column<string>(type: "TEXT", nullable: true),
                     VnId = table.Column<uint>(type: "INTEGER", nullable: false),
@@ -615,12 +591,12 @@ namespace VisualNovelManagerv2.Migrations
                     Freeware = table.Column<string>(type: "TEXT", nullable: true),
                     Gtin = table.Column<string>(type: "TEXT", nullable: true),
                     Languages = table.Column<string>(type: "TEXT", nullable: true),
-                    MinAge = table.Column<int>(type: "INTEGER", nullable: true),
+                    MinAge = table.Column<byte>(type: "INTEGER", nullable: false),
                     Notes = table.Column<string>(type: "TEXT", nullable: true),
                     Original = table.Column<string>(type: "TEXT", nullable: true),
                     Patch = table.Column<string>(type: "TEXT", nullable: true),
                     Platforms = table.Column<string>(type: "TEXT", nullable: true),
-                    ReleaseId = table.Column<int>(type: "INTEGER", nullable: true),
+                    ReleaseId = table.Column<uint>(type: "INTEGER", nullable: false),
                     ReleaseType = table.Column<string>(type: "TEXT", nullable: true),
                     Released = table.Column<string>(type: "TEXT", nullable: true),
                     Resolution = table.Column<string>(type: "TEXT", nullable: true),
@@ -661,11 +637,6 @@ namespace VisualNovelManagerv2.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_CategoryJunction_VnUserCategoryTitleId",
-                table: "CategoryJunction",
-                column: "VnUserCategoryTitleId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_VnCharacter_VnCharacterVnsId",
@@ -789,7 +760,7 @@ namespace VisualNovelManagerv2.Migrations
                 table: "VnInfoScreens");
 
             migrationBuilder.DropTable(
-                name: "CategoryJunction");
+                name: "Categories");
 
             migrationBuilder.DropTable(
                 name: "VnCharacterTraits");
@@ -816,6 +787,9 @@ namespace VisualNovelManagerv2.Migrations
                 name: "VnTraitData");
 
             migrationBuilder.DropTable(
+                name: "VnUserCategoryTitles");
+
+            migrationBuilder.DropTable(
                 name: "VnUserData");
 
             migrationBuilder.DropTable(
@@ -826,12 +800,6 @@ namespace VisualNovelManagerv2.Migrations
 
             migrationBuilder.DropTable(
                 name: "VnWishList");
-
-            migrationBuilder.DropTable(
-                name: "Categories");
-
-            migrationBuilder.DropTable(
-                name: "VnUserCategoryTitles");
 
             migrationBuilder.DropTable(
                 name: "VnCharacter");

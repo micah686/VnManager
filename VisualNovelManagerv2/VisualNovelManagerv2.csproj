@@ -206,7 +206,6 @@
     <Compile Include="EF\Entity\VnInfo\VnInfoStaff.cs" />
     <Compile Include="EF\Entity\VnInfo\VnInfoTags.cs" />
     <Compile Include="EF\Entity\VnOther\Category.cs" />
-    <Compile Include="EF\Entity\VnOther\CategoryJunction.cs" />
     <Compile Include="EF\Entity\VnOther\VnIdList.cs" />
     <Compile Include="EF\Entity\VnOther\VnUserCategoryTitle.cs" />
     <Compile Include="EF\Entity\VnOther\VnUserData.cs" />
@@ -227,11 +226,6 @@
     <Compile Include="EF\Entity\VnUserList\VnWishList.cs" />
     <Compile Include="Globals.cs" />
     <Compile Include="Infrastructure\ValidatableViewModelBase.cs" />
-    <Compile Include="Migrations\20171001205448_Initial.cs" />
-    <Compile Include="Migrations\20171001205448_Initial.designer.cs">
-      <DependentUpon>20171001205448_Initial.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\DatabaseContextModelSnapshot.cs" />
     <Compile Include="Pages\Links\About\FullText.xaml.cs">
       <DependentUpon>FullText.xaml</DependentUpon>
     </Compile>

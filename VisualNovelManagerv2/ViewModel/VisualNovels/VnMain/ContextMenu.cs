@@ -20,11 +20,15 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
     {
         private void CreateContextMenu()
         {
-            var contextMenu = new ContextMenu();
-            contextMenu.Items.Add(CreateAddSubMenu("Add To Category"));
-            contextMenu.Items.Add(CreateRemoveSubMenu("Remove Category"));
-            contextMenu.Items.Add(new MenuItem { Header = "Delete Vn", Command = DeleteVnCommand });
-            contextMenu.IsOpen = true;
+            if (Globals.VnId > 0)
+            {
+                var contextMenu = new ContextMenu();
+                contextMenu.Items.Add(CreateAddSubMenu("Add To Category"));
+                contextMenu.Items.Add(CreateRemoveSubMenu("Remove From Category"));
+                contextMenu.Items.Add(new MenuItem { Header = "Delete Vn", Command = DeleteVnCommand });
+                contextMenu.IsOpen = true;
+            }
+            
         }
 
         private MenuItem CreateAddSubMenu(string header)
@@ -34,12 +38,11 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
             using (var context = new DatabaseContext())
             {
                 //get a list of all category names that are linked to the selected Vn
-                List<string> data = context.VnUserCategoryTitles.Where(x => x.Title == _selectedVn)
-                    .SelectMany(x => x.CategoryJunctions.Select(y => y.Category.CategoryName)).ToList();
+                var data = context.VnUserCategoryTitles.Where(x => x.VnId == Globals.VnId).Select(x => x.Title).ToList();
                 foreach (var categories in context.Categories)
                 {
                     //prevents adding to All or the category currently loaded, or any categories already added
-                    if (categories.CategoryName != "All" && categories.CategoryName != _selectedCategory && !data.Contains(categories.CategoryName))
+                    if (categories.CategoryName != "All"  && !data.Contains(categories.CategoryName))
                     {
                         item.Items.Add(new MenuItem { Header = categories.CategoryName, Command = AddToCategoryCommand, CommandParameter = categories.CategoryName });
                     }
@@ -53,8 +56,9 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
             var item = new MenuItem { Header = header };
             using (var context = new DatabaseContext())
             {
-                List<Category> data = context.VnUserCategoryTitles.Where(x => x.Title == _selectedVn)
-                    .SelectMany(x => x.CategoryJunctions.Select(y => y.Category)).ToList();
+                var data = context.Categories.Where(cat => context.VnUserCategoryTitles
+                .Where(x => x.VnId == Globals.VnId).Select(x => x.Title)
+                        .Contains(cat.CategoryName)).ToArray();
                 foreach (var categories in data)
                 {
                     if (categories.CategoryName != "All")
@@ -101,11 +105,11 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
                 {
                     if (!string.IsNullOrEmpty(header))
                     {
-                        CategoryJunction data = context.CategoryJunction
-                            .FirstOrDefault(x => x.Category.CategoryName == header && x.VnUserCategoryTitle.Title == _selectedVn);
-                        if (data != null)
+                        var data = context.VnUserCategoryTitles.Where(x => x.Title == header && x.VnId == Globals.VnId)
+                            .ToArray();
+                        if (data.Length>0)
                         {
-                            context.CategoryJunction.Remove(data);
+                            context.VnUserCategoryTitles.RemoveRange(data);
                             context.SaveChanges();
 
                             var mvm = ServiceLocator.Current.GetInstance<VnMainViewModel>();
