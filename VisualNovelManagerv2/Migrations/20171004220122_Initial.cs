@@ -30,7 +30,7 @@ namespace VisualNovelManagerv2.Migrations
                     CharacterId = table.Column<uint>(type: "INTEGER", nullable: false),
                     ReleaseId = table.Column<uint>(type: "INTEGER", nullable: false),
                     Role = table.Column<string>(type: "TEXT", nullable: true),
-                    SpoilerLevel = table.Column<string>(type: "TEXT", nullable: true),
+                    SpoilerLevel = table.Column<byte>(type: "INTEGER", nullable: false),
                     VnId = table.Column<uint>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>

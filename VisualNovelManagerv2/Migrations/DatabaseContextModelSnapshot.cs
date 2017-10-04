@@ -97,7 +97,7 @@ namespace VisualNovelManagerv2.Migrations
 
                     b.Property<string>("Role");
 
-                    b.Property<string>("SpoilerLevel");
+                    b.Property<byte>("SpoilerLevel");
 
                     b.Property<uint>("VnId");
 

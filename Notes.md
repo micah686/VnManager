@@ -5,7 +5,6 @@ These are just personal reminders for me to keep track of what I need to fix/add
 - [ ] Fix the issue where adding categories keeps triggering the validation helper
 - [ ] Check clipboard before allowing user to paste
 - [ ] Set up virtualizing lists for large results
-- [ ] see about spoilered characters
 - [ ] check for database cancellation before quitting
 
 

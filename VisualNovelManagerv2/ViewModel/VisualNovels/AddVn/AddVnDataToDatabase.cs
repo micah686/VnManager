@@ -192,7 +192,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
                                 CharacterId = character.Id,
                                 VnId = vn.Id,
                                 ReleaseId = vn.ReleaseId,
-                                SpoilerLevel = vn.SpoilerLevel.ToString() ?? null,
+                                SpoilerLevel = (byte)vn.SpoilerLevel,
                                 Role = vn.Role.ToString()
                             });
                         }

@@ -36,7 +36,10 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
             {
                 using (var context = new DatabaseContext())
                 {
-                    foreach (EF.Entity.VnCharacter.VnCharacter character in context.VnCharacter.Where(x => x.VnId == Globals.VnId))
+                    var nonSpoiledCharacters = context.VnCharacterVns
+                        .Where(x => x.SpoilerLevel <= Globals.MaxSpoiler && x.VnId == Globals.VnId)
+                        .Select(x => x.CharacterId).ToArray();
+                    foreach (EF.Entity.VnCharacter.VnCharacter character in context.VnCharacter.Where(x => nonSpoiledCharacters.Contains(x.CharacterId)))
                     {
                         _characterNameCollection.Add(character.Name);
                     }
