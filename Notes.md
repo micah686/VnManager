@@ -9,13 +9,10 @@ These are just personal reminders for me to keep track of what I need to fix/add
 
 
 
-2:06 PM - $1: The Main and Character tabs have trouble scrolling up using the scroll wheel
-2:06 PM - $1: Scrolling down is fine
-2:07 PM - $1: The releases page scrolls fine
-2:12 PM - $1: The colour theme does not save upon program exit. The colour defaults to light blue when I open the program.
-3:25 PM - $1: I don't know if you plan on supporting collection .exes, but I wan't able to add the JAST USA Memorial Collection
-3:25 PM - $2: what do you mean?
-3:27 PM - $1: The JAST collection has 3 VNs tied to one .exe. I've tried adding it with both the collection vn ID and the IDs of the individual VNs
+
+- $1: The colour theme does not save upon program exit. The colour defaults to light blue when I open the program.
+- $1: I don't know if you plan on supporting collection .exes, where it has 3 VNs tied to one .exe
+
 
 
 
@@ -43,12 +40,12 @@ Microsoft.EntityFrameworkCore.Tools
 - [ ] Be able to sort visual novels, and name categories, also being able to create sub categories would be nice. Example: sort by translated, or untranslated. Then further sort by producer/genre
 
 ### Cleanup notes:
-NullImageConverter not used
-BindableRichTextBox still exists
-VnMainMODEL has some possible null referenceexceptions
-Come back to EfEntity
-possibly add a template for the statusbar
-unload other views?
-move as many images to svg/xaml, like in StatusBarViewModel
-possibly work on cleaning up VnLinks on Binding
-deal with multiple child processes
+-NullImageConverter not used
+-BindableRichTextBox still exists
+-VnMainMODEL has some possible null referenceexceptions
+-Come back to EfEntity
+-possibly add a template for the statusbar
+-unload other views?
+-move as many images to svg/xaml, like in StatusBarViewModel
+-possibly work on cleaning up VnLinks on Binding
+-deal with multiple child processes
