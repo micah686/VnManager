@@ -41,6 +41,6 @@
             </Grid>
 
         </Grid>
-        <pages:BottomStatusBar/>
+        <pages:BottomStatusBar  d:IsHidden="true"/>
     </Grid>
 </UserControl>

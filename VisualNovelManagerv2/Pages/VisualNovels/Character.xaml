@@ -223,6 +223,6 @@
                 </Grid>
             </ScrollViewer>
         </Grid>
-        <!--<local:BottomStatusBar></local:BottomStatusBar>-->
+        <local:BottomStatusBar  d:IsHidden="true"/>
     </Grid>
 </UserControl>

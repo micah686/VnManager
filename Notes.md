@@ -44,8 +44,6 @@ Microsoft.EntityFrameworkCore.Tools
 - BindableRichTextBox still exists
 - VnMainMODEL has some possible null referenceexceptions
 - Come back to EfEntity
-- possibly add a template for the statusbar
 - unload other views?
-- move as many images to svg/xaml, like in StatusBarViewModel
 - possibly work on cleaning up VnLinks on Binding
 - deal with multiple child processes
