@@ -1,0 +1,53 @@
+﻿<UserControl x:Class="VisualNovelManagerv2.Pages.Links.About.LicenseText.BSD_3"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:VisualNovelManagerv2.Pages.Links.About.LicenseText"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid>
+        <RichTextBox IsReadOnly="True">
+            <FlowDocument>
+                <Paragraph>
+                    Copyright (c) 2004-2017 Jaroslaw Kowalski &lt;jaak@jkowalski.net&gt;, Kim Christensen, Julian Verdurmen
+                </Paragraph>
+                <Paragraph>
+                    All rights reserved.
+                </Paragraph>
+                <Paragraph>
+                    Redistribution and use in source and binary forms, with or without 
+                    modification, are permitted provided that the following conditions 
+                    are met:
+                </Paragraph>
+                <Paragraph>
+                    * Redistributions of source code must retain the above copyright notice, 
+                    this list of conditions and the following disclaimer.
+                </Paragraph>
+                <Paragraph>
+                    * Redistributions in binary form must reproduce the above copyright notice,
+                    this list of conditions and the following disclaimer in the documentation
+                    and/or other materials provided with the distribution.
+                </Paragraph>
+                <Paragraph>
+                    * Neither the name of Jaroslaw Kowalski nor the names of its 
+                    contributors may be used to endorse or promote products derived from this
+                    software without specific prior written permission.
+                </Paragraph>
+                <Paragraph>
+                    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+                    AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+                    IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+                    ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
+                    LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+                    CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+                    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS 
+                    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN 
+                    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
+                    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF 
+                    THE POSSIBILITY OF SUCH DAMAGE.
+                </Paragraph>
+            </FlowDocument>
+        </RichTextBox>
+    </Grid>
+</UserControl>

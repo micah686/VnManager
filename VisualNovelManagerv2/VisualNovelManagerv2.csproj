@@ -236,6 +236,9 @@
     <Compile Include="Pages\Links\About\FullText.xaml.cs">
       <DependentUpon>FullText.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Links\About\LicenseText\BSD-3.xaml.cs">
+      <DependentUpon>BSD-3.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Links\About\LicenseText\MicrosoftProprietary.xaml.cs">
       <DependentUpon>MicrosoftProprietary.xaml</DependentUpon>
     </Compile>
@@ -297,6 +300,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\Links\About\Licenses.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Links\About\LicenseText\BSD-3.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

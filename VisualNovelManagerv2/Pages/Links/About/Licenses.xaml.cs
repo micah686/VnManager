@@ -125,6 +125,13 @@ namespace VisualNovelManagerv2.Pages.Links.About
                     Info = "1900+ Material Design Icons from the Community",
                     Url = "https://github.com/Templarian/MaterialDesign",
                     License = "OFL"
+                },
+                new LicenseData
+                {
+                    Software = "NLog",
+                    Info = "Advanced .NET, .NET Standard, Silverlight and Xamarin Logging",
+                    Url = "http://nlog-project.org",
+                    License = "BSD-3"
                 }
             };
 

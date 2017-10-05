@@ -9,10 +9,10 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid Margin="{StaticResource RootMargin}">
         <Grid Style="{StaticResource ContentRoot}" Margin="10,10,10,35">
-            <mui:ModernTab Layout="List" SelectedSource="../../../Pages/Links/Settings/Appearance.xaml">
+            <mui:ModernTab Layout="List" SelectedSource="../../../Pages/Links/Settings/UserSettings.xaml">
                 <mui:ModernTab.Links>
-                    <mui:Link DisplayName="Appearance" Source="../../../Pages/Links/Settings/Appearance.xaml"/>
                     <mui:Link DisplayName="Settings" Source="../../../Pages/Links/Settings/UserSettings.xaml"/>
+                    <mui:Link DisplayName="Appearance" Source="../../../Pages/Links/Settings/Appearance.xaml"/>
                 </mui:ModernTab.Links>
             </mui:ModernTab>
         </Grid>
