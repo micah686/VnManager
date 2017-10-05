@@ -28,6 +28,12 @@ namespace VisualNovelManagerv2.Pages
         public Test()
         {
             InitializeComponent();
+            Globals.StatusBar.IsWorkProcessing = true;
+            Globals.StatusBar.IsDownloading = true;
+            Globals.StatusBar.IsUploading = true;
+            Globals.StatusBar.ProgressPercentage = 30.5;
+            Globals.StatusBar.ProgressText = "testing123";
+            Globals.StatusBar.Message = "msgtest";
         }
 
         private async void Button_Click(object sender, RoutedEventArgs e)

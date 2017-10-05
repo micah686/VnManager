@@ -243,6 +243,9 @@
     <Compile Include="Pages\Links\Settings\UserSettings.xaml.cs">
       <DependentUpon>UserSettings.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\TEST2.xaml.cs">
+      <DependentUpon>TEST2.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\VisualNovels\VisualNovelList.xaml.cs">
       <DependentUpon>VisualNovelList.xaml</DependentUpon>
     </Compile>
@@ -375,6 +378,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\Test.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\TEST2.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
