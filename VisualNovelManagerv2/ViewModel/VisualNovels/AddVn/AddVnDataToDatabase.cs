@@ -321,10 +321,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
 
                 if (Globals.StatusBar.ProgressPercentage != null)
                     Globals.StatusBar.ProgressPercentage = 100;
-                Globals.StatusBar.ProgressStatus = new BitmapImage(new Uri($@"{Globals.DirectoryPath}\Data\res\icons\statusbar\ok.png"));
                 Globals.StatusBar.ProgressText = "Done";
                 await Task.Delay(1500);
-                Globals.StatusBar.ProgressStatus = null;
                 Globals.StatusBar.ProgressPercentage = null;
                 Globals.StatusBar.IsDbProcessing = false;
                 Globals.StatusBar.IsWorkProcessing = false;

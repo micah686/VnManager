@@ -93,8 +93,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
             catch (Exception ex)
             {
                 DebugLogging.WriteDebugLog(ex);
-                Globals.StatusBar.ProgressStatus = new BitmapImage(new Uri($@"{Globals.DirectoryPath}\Data\res\icons\statusbar\error.png"));
-                Globals.StatusBar.ProgressText = "An Error Occured! Check log for details";
                 throw;
             }
             

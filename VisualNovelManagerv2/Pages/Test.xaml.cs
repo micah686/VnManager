@@ -34,6 +34,8 @@ namespace VisualNovelManagerv2.Pages
             Globals.StatusBar.ProgressPercentage = 30.5;
             Globals.StatusBar.ProgressText = "testing123";
             Globals.StatusBar.Message = "msgtest";
+            Globals.StatusBar.IsShowOnlineStatusEnabled = true;
+            Globals.StatusBar.SetOnlineStatusColor(true);
         }
 
         private async void Button_Click(object sender, RoutedEventArgs e)

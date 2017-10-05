@@ -258,12 +258,10 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnListViewModel
             AddVotelistToDb(voteListItems, removeItems);
 
             Globals.StatusBar.ProgressText = "Done";
-            Globals.StatusBar.ProgressStatus = new BitmapImage(new Uri($@"{Globals.DirectoryPath}\Data\res\icons\statusbar\ok.png"));
             Globals.StatusBar.IsDbProcessing = false;
             Globals.StatusBar.IsWorkProcessing = false;
             await Task.Delay(1500);
             Globals.StatusBar.ProgressText = string.Empty;
-            Globals.StatusBar.ProgressStatus = null;
             IsUserInputEnabled = true;
         }
 
@@ -424,12 +422,10 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnListViewModel
                 AddWishlistToDb(wishListItems, removeItems);
 
                 Globals.StatusBar.ProgressText = "Done";
-                Globals.StatusBar.ProgressStatus = new BitmapImage(new Uri($@"{Globals.DirectoryPath}\Data\res\icons\statusbar\ok.png"));
                 Globals.StatusBar.IsDbProcessing = false;
                 Globals.StatusBar.IsWorkProcessing = false;
                 await Task.Delay(1500);
                 Globals.StatusBar.ProgressText = string.Empty;
-                Globals.StatusBar.ProgressStatus = null;
                 IsUserInputEnabled = true;
             }
         }
@@ -593,12 +589,10 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnListViewModel
             AddVnListToDb(visualNovelListItems, removeItems);
 
             Globals.StatusBar.ProgressText = "Done";
-            Globals.StatusBar.ProgressStatus = new BitmapImage(new Uri($@"{Globals.DirectoryPath}\Data\res\icons\statusbar\ok.png"));
             Globals.StatusBar.IsDbProcessing = false;
             Globals.StatusBar.IsWorkProcessing = false;
             await Task.Delay(1500);
             Globals.StatusBar.ProgressText = string.Empty;
-            Globals.StatusBar.ProgressStatus = null;
             IsUserInputEnabled = true;
         }                
 

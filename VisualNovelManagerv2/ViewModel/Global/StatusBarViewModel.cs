@@ -70,19 +70,32 @@ namespace VisualNovelManagerv2.ViewModel.Global
         }
         #endregion
 
-        #region ProgressStatus
-
-        private static BitmapImage _progressStatus;
-        public BitmapImage ProgressStatus
+        #region IsShowOnlineStatusEnabled
+        private bool _isShowOnlineStatusEnabled;
+        public bool IsShowOnlineStatusEnabled
         {
-            get { return _progressStatus; }
+            get { return _isShowOnlineStatusEnabled; }
             set
             {
-                _progressStatus = value;
-                RaisePropertyChanged(nameof(ProgressStatus));
+                _isShowOnlineStatusEnabled = value;
+                RaisePropertyChanged(nameof(IsShowOnlineStatusEnabled));
             }
         }
-        #endregion        
+        #endregion
+
+        #region OnlineStatusColor
+        private string _onlineStatusColor;
+        public string OnlineStatusColor
+        {
+            get { return _onlineStatusColor; }
+            set
+            {
+                //OrangeRed for offline, DeepSkyBlue for online
+                _onlineStatusColor = value;
+                RaisePropertyChanged(nameof(OnlineStatusColor));
+            }
+        }
+        #endregion
 
         #region ProgressPercentage
         private double? _progressPercentage;
@@ -131,5 +144,21 @@ namespace VisualNovelManagerv2.ViewModel.Global
             }
         }
         #endregion
+
+        public void SetOnlineStatusColor(bool value)
+        {
+            switch (value)
+            {
+                case true:
+                    OnlineStatusColor = "DeepSkyBlue";
+                    break;
+                case false:
+                    OnlineStatusColor = "OrangeRed";
+                    break;
+                default:
+                    OnlineStatusColor = String.Empty;
+                    break;
+            }
+        }
     }
 }
