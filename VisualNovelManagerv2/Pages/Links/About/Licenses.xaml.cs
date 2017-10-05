@@ -132,6 +132,13 @@ namespace VisualNovelManagerv2.Pages.Links.About
                     Info = "Advanced .NET, .NET Standard, Silverlight and Xamarin Logging",
                     Url = "http://nlog-project.org",
                     License = "BSD-3"
+                },
+                new LicenseData
+                {
+                    Software = "Microsoft.EntityFrameworkCore",
+                    Info = "Microsoft.EntityFrameworkCore.Sqlite",
+                    Url = "https://www.nuget.org/packages/Microsoft.EntityFrameworkCore",
+                    License = "Apache"
                 }
             };
 

@@ -16,6 +16,7 @@
                     <mui:Link DisplayName="Microsoft Proprietary" Source="../../../Pages/Links/About/LicenseText/MicrosoftProprietary.xaml"/>
                     <mui:Link DisplayName="OFL" Source="../../../Pages/Links/About/LicenseText/OFL.xaml"/>
                     <mui:Link DisplayName="BSD-3" Source="../../../Pages/Links/About/LicenseText/BSD-3.xaml"/>
+                    <mui:Link DisplayName="Apache-2" Source="../../../Pages/Links/About/LicenseText/Apache-2.xaml"/>
                 </mui:ModernTab.Links>
             </mui:ModernTab>
         </Grid>
