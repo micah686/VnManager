@@ -296,7 +296,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
             using (var context = new DatabaseContext())
             {
                 Globals.StatusBar.IsWorkProcessing = true;
-                Globals.StatusBar.ProgressText = "Downloading cover image";
+                Globals.StatusBar.ProgressText = "Loading cover image";
                 VnInfo vnData = context.VnInfo.FirstOrDefault(t => t.Title == (_selectedVn));
                 if (vnData == null) return;
                 string url = vnData.ImageLink;
