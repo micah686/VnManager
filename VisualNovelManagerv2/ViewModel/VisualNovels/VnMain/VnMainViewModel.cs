@@ -386,6 +386,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
                                 EnableRaisingEvents = true
                                 
                             };
+                            _processList.Add(process);
                             process.Start();
                             _isGameRunning = true;
                             _stopwatch.Start();
@@ -394,6 +395,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
                     }
                     Directory.SetCurrentDirectory(Directory.GetCurrentDirectory());
                     List<Process> children = process.GetChildProcesses();
+                    _processList.AddRange(children);
                     int initialChildrenCount = children.Count;
                     if (process != null)
                     {
@@ -409,8 +411,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
                         };
                     }
 
-                    //this may break if the parent spawns multiple child processes.
-                    //TODO: check against programs that spawn multiple processes, like chrome
                     foreach (Process proc in children)
                     {
                         proc.EnableRaisingEvents = true;
@@ -428,52 +428,58 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
 
         private void VnOrChildProcessExited(object sender, EventArgs eventArgs)
         {
-            try
+            //checks if the parent and all children have exited
+            bool haveAllProcessesExited = _processList.All(x => x.HasExited);
+            if (haveAllProcessesExited)
             {
-                _stopwatch.Stop();
-                _isGameRunning = false;
-                VnUserData vnUserData;
-                using (var context = new DatabaseContext())
+                try
                 {
-                    vnUserData = context.VnUserData.FirstOrDefault(x => x.VnId.Equals(Globals.VnId));
-                }
-
-                if (vnUserData != null)
-                {
-                    vnUserData.LastPlayed = DateTime.Now.ToString(CultureInfo.InvariantCulture);
-
-                    if (!string.IsNullOrEmpty(vnUserData.PlayTime))
+                    _stopwatch.Stop();
+                    _isGameRunning = false;
+                    VnUserData vnUserData;
+                    using (var context = new DatabaseContext())
                     {
-                        //check if matches #,#,#,# format
-                        if (new Regex(@"^[0-9]+\,[0-9]+\,[0-9]+\,[0-9]+$").IsMatch(vnUserData.PlayTime))
+                        vnUserData = context.VnUserData.FirstOrDefault(x => x.VnId.Equals(Globals.VnId));
+                    }
+
+                    if (vnUserData != null)
+                    {
+                        vnUserData.LastPlayed = DateTime.Now.ToString(CultureInfo.InvariantCulture);
+
+                        if (!string.IsNullOrEmpty(vnUserData.PlayTime))
                         {
-                            var lastPlayTime = vnUserData.PlayTime.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-                            List<int> timecount = new List<int>();
-                            for (int i = 0; i < lastPlayTime.Length; i++)
+                            //check if matches #,#,#,# format
+                            if (new Regex(@"^[0-9]+\,[0-9]+\,[0-9]+\,[0-9]+$").IsMatch(vnUserData.PlayTime))
                             {
-                                timecount.Add(new int());
-                                timecount[i] = Convert.ToInt32(lastPlayTime[i]);
+                                var lastPlayTime = vnUserData.PlayTime.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                                List<int> timecount = new List<int>();
+                                for (int i = 0; i < lastPlayTime.Length; i++)
+                                {
+                                    timecount.Add(new int());
+                                    timecount[i] = Convert.ToInt32(lastPlayTime[i]);
+                                }
+                                TimeSpan timeSpan = new TimeSpan(timecount[0], timecount[1], timecount[2], timecount[3]);
+                                TimeSpan currentplaytime = new TimeSpan(_stopwatch.Elapsed.Days, _stopwatch.Elapsed.Hours, _stopwatch.Elapsed.Minutes, _stopwatch.Elapsed.Seconds);
+                                timeSpan = timeSpan.Add(currentplaytime);
+                                vnUserData.PlayTime = $"{timeSpan.Days},{timeSpan.Hours},{timeSpan.Minutes},{timeSpan.Seconds}";
                             }
-                            TimeSpan timeSpan = new TimeSpan(timecount[0], timecount[1], timecount[2], timecount[3]);
-                            TimeSpan currentplaytime = new TimeSpan(_stopwatch.Elapsed.Days, _stopwatch.Elapsed.Hours, _stopwatch.Elapsed.Minutes, _stopwatch.Elapsed.Seconds);
-                            timeSpan = timeSpan.Add(currentplaytime);
-                            vnUserData.PlayTime = $"{timeSpan.Days},{timeSpan.Hours},{timeSpan.Minutes},{timeSpan.Seconds}";
-                        }                        
+                        }
+                    }
+
+                    using (var context = new DatabaseContext())
+                    {
+                        if (vnUserData == null) return;
+                        context.Entry(vnUserData).State = EntityState.Modified;
+                        context.SaveChanges();
                     }
                 }
-
-                using (var context = new DatabaseContext())
+                catch (Exception ex)
                 {
-                    if (vnUserData == null) return;
-                    context.Entry(vnUserData).State = EntityState.Modified;
-                    context.SaveChanges();
+                    DebugLogging.WriteDebugLog(ex);
+                    throw;
                 }
             }
-            catch (Exception ex)
-            {
-                DebugLogging.WriteDebugLog(ex);
-                throw;
-            }
+            
             IsPlayEnabled = true;
         }
     }

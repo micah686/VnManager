@@ -43,7 +43,5 @@ Microsoft.EntityFrameworkCore.Tools
 - NullImageConverter not used
 - BindableRichTextBox still exists
 - VnMainMODEL has some possible null referenceexceptions
-- Come back to EfEntity
 - unload other views?
 - possibly work on cleaning up VnLinks on Binding
-- deal with multiple child processes
