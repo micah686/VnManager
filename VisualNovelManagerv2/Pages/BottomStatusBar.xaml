@@ -56,20 +56,14 @@
                       Visibility="{Binding IsDownloading, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                 <Path x:Name="DatabaseImage" Grid.Column="4" Fill="WhiteSmoke" Data="M12,3C7.58,3 4,4.79 4,7C4,9.21 7.58,11 12,11C16.42,11 20,9.21 20,7C20,4.79 16.42,3 12,3M4,9V12C4,14.21 7.58,16 12,16C16.42,16 20,14.21 20,12V9C20,11.21 16.42,13 12,13C7.58,13 4,11.21 4,9M4,14V17C4,19.21 7.58,21 12,21C16.42,21 20,19.21 20,17V14C20,16.21 16.42,18 12,18C7.58,18 4,16.21 4,14Z"
                       Margin="10,0,10,0" Visibility="{Binding IsDownloading, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                <!--<Image Grid.Column="2" x:Name="Downloading" Margin="10,0,10,0" MaxHeight="18" MaxWidth="18" Source="{Binding DownloadingImage}" Style="{StaticResource FlashImageStyle}"
-                           Visibility="{Binding IsDownloading, Converter={StaticResource BooleanToVisibilityConverter}}"/>-->
-                <!--<Image Grid.Column="3" x:Name="Uploading" Margin="10,0,10,0" MaxHeight="18" MaxWidth="18" Source="{Binding UploadingImage}" Style="{StaticResource FlashImageStyle}"
-                           Visibility="{Binding IsUploading, Converter={StaticResource BooleanToVisibilityConverter}}"/>-->
-                <!--<Image Grid.Column="4" x:Name="DatabaseImage" Source="{Binding DatabaseImage}" Width="17" MaxHeight="17" MaxWidth="19" Margin="10,0,10,0" 
-                           Visibility="{Binding IsDbProcessing, Converter={StaticResource BooleanToVisibilityConverter}}" Style="{StaticResource FlashImageStyle}"/>-->
                 <Image x:Name="ProgressStatus" Grid.Column="5" MaxHeight="18" MaxWidth="18" Source="{Binding ProgressStatus}" Margin="10,0,10,0"/>
                 <Label x:Name="ProgressPercent" Grid.Column="6" Margin="10,0,10,0" Content="{Binding Path=ProgressPercentage}" HorizontalAlignment="Center" VerticalAlignment="Center" ContentStringFormat="{}{0}%" Width="45"/>
                 <mui:ModernProgressRing Grid.Column="7" IsActive="{Binding IsWorkProcessing}" />
 
             </Grid>
-
-            <!--Don't Delete this Grid, as it keeps all items at the bottom-->
+            <!--Don't Delete this ▼ Grid, as it keeps all items at the bottom-->
             <Grid/>
+            <!--Don't Delete this ▲ Grid, as it keeps all items at the bottom-->
 
         </DockPanel>
     </Grid>

@@ -24,10 +24,6 @@ namespace VisualNovelManagerv2.Pages.Links.About
         public Info()
         {
             InitializeComponent();
-            Github.Source = new BitmapImage(new Uri($@"{Globals.DirectoryPath}\Data\res\icons\assorted\github.png"));
-            CSharp.Source = new BitmapImage(new Uri($@"{Globals.DirectoryPath}\Data\res\icons\assorted\csharp.png"));
-            Xaml.Source = new BitmapImage(new Uri($@"{Globals.DirectoryPath}\Data\res\icons\assorted\xaml.png"));
-            VisualStudio.Source = new BitmapImage(new Uri($@"{Globals.DirectoryPath}\Data\res\icons\assorted\visualstudio.png"));
         }
 
         private void Hyperlink_OnRequestNavigate(object sender, RequestNavigateEventArgs e)

@@ -13,16 +13,26 @@
             <Label Content="Copyright 2017"/>
             <Label Content="Licensed under MIT License"/>
             <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                <Image x:Name="Github" Margin="0,0,10,0" Height="18" Width="18"/>
+                <!--<Image x:Name="Github" Margin="0,0,10,0" Height="18" Width="18"/>-->
+                
                 <TextBlock>
                     <Hyperlink NavigateUri="https://github.com/micah686/Visual-Novel-Manager-v2" RequestNavigate="Hyperlink_OnRequestNavigate">https://github.com/micah686/Visual-Novel-Manager-v2</Hyperlink>
                 </TextBlock>
             </StackPanel>
             
             <StackPanel Orientation="Horizontal">
-                <Image x:Name="CSharp" Margin="0,0,5,0" Height="18" Width="18"/>
-                <Image x:Name="Xaml" Margin="0,0,5,0" Height="18" Width="18"/>
-                <Image x:Name="VisualStudio" Margin="0,0,5,0" Height="18" Width="18"/>
+                <Path x:Name="Github" Fill="SlateGray" Data="M12,2A10,10 0 0,0 2,12C2,16.42 4.87,20.17 8.84,21.5C9.34,21.58 9.5,21.27 9.5,21C9.5,20.77 9.5,20.14 9.5,19.31C6.73,19.91 6.14,17.97 6.14,17.97C5.68,16.81 5.03,16.5 5.03,16.5C4.12,15.88 5.1,15.9 5.1,15.9C6.1,15.97 6.63,16.93 6.63,16.93C7.5,18.45 8.97,18 9.54,17.76C9.63,17.11 9.89,16.67 10.17,16.42C7.95,16.17 5.62,15.31 5.62,11.5C5.62,10.39 6,9.5 6.65,8.79C6.55,8.54 6.2,7.5 6.75,6.15C6.75,6.15 7.59,5.88 9.5,7.17C10.29,6.95 11.15,6.84 12,6.84C12.85,6.84 13.71,6.95 14.5,7.17C16.41,5.88 17.25,6.15 17.25,6.15C17.8,7.5 17.45,8.54 17.35,8.79C18,9.5 18.38,10.39 18.38,11.5C18.38,15.32 16.04,16.16 13.81,16.41C14.17,16.72 14.5,17.33 14.5,18.26C14.5,19.6 14.5,20.68 14.5,21C14.5,21.27 14.66,21.59 15.17,21.5C19.14,20.16 22,16.42 22,12A10,10 0 0,0 12,2Z"
+                    Margin="5"/>
+                <Path x:Name="CSharp" Fill="BlueViolet" Data="M11.5,15.97L11.91,18.41C11.65,18.55 11.23,18.68 10.67,18.8C10.1,18.93 9.43,19 8.66,19C6.45,18.96 4.79,18.3 3.68,17.04C2.56,15.77 2,14.16 2,12.21C2.05,9.9 2.72,8.13 4,6.89C5.32,5.64 6.96,5 8.94,5C9.69,5 10.34,5.07 10.88,5.19C11.42,5.31 11.82,5.44 12.08,5.59L11.5,8.08L10.44,7.74C10.04,7.64 9.58,7.59 9.05,7.59C7.89,7.58 6.93,7.95 6.18,8.69C5.42,9.42 5.03,10.54 5,12.03C5,13.39 5.37,14.45 6.08,15.23C6.79,16 7.79,16.4 9.07,16.41L10.4,16.29C10.83,16.21 11.19,16.1 11.5,15.97M13.89,19L14.5,15H13L13.34,13H14.84L15.16,11H13.66L14,9H15.5L16.11,5H18.11L17.5,9H18.5L19.11,5H21.11L20.5,9H22L21.66,11H20.16L19.84,13H21.34L21,15H19.5L18.89,19H16.89L17.5,15H16.5L15.89,19H13.89M16.84,13H17.84L18.16,11H17.16L16.84,13Z"
+                      Margin="5"/>
+                <Path x:Name="VisualStudio" Fill="MediumSlateBlue" Data="M17,8.5L12.25,12.32L17,16V8.5M4.7,18.4L2,16.7V7.7L5,6.7L9.3,10.03L18,2L22,4.5V20L17,22L9.34,14.66L4.7,18.4M5,14L6.86,12.28L5,10.5V14Z"
+                      Margin="5"/>
+                <Grid x:Name="Xaml" Margin="5">
+                    <Polygon Points="18.928,12 15.464,18 8.536,18 5.072,12 8.536,6 15.464,6  " FillRule="NonZero" Fill="#FF1087FD"/>
+                    <Polygon Points="0.227,12 4.268,5 6,6 2.536,12 6,18 4.268,19  "  FillRule="NonZero" Fill="#FFCACCCC"/>
+                    <Polygon Points="23.773,12 19.732,19 18,18 21.464,12 18,6 19.732,5  " FillRule="NonZero" Fill="#FFCACCCC"/>
+                </Grid>
+
             </StackPanel>
             
             
