@@ -179,7 +179,6 @@
     <Compile Include="CustomClasses\FirstFloorMui\BBCode\Parser.cs" />
     <Compile Include="CustomClasses\FirstFloorMui\BBCode\Token.cs" />
     <Compile Include="CustomClasses\FirstFloorMui\BBCode\TokenBuffer.cs" />
-    <Compile Include="CustomClasses\TinyClasses\DebugLogging.cs" />
     <Compile Include="CustomClasses\TinyClasses\MeasureStringSize.cs" />
     <Compile Include="Converters\NullImageConverter.cs" />
     <Compile Include="CustomClasses\ConfigSettings\ModifyUserSettings.cs" />
