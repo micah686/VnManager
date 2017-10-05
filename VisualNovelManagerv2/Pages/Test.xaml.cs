@@ -66,31 +66,14 @@ namespace VisualNovelManagerv2.Pages
             {
                 using (var context = new DatabaseContext())
                 {
-                    
-
-                    #region AddM2M
-
-                    //Category category = new Category
-                    //{
-                    //    CategoryName = "New Category"
-                    //};
-
-                    //VnUserCategoryTitle uc = new VnUserCategoryTitle { VnId = 4, Title = "Vn01" };
-                    //VnUserCategoryTitle uc2 = new VnUserCategoryTitle { VnId = 5, Title = "Vn02" };
-                    //VnUserCategoryTitle uc3 = new VnUserCategoryTitle { VnId = 46, Title = "Vn03" };
-
-                    //context.CategoryJunction.Add(new CategoryJunction { Category = category, VnUserCategoryTitle = uc });
-                    //context.CategoryJunction.Add(new CategoryJunction { Category = category, VnUserCategoryTitle = uc2 });
-                    //context.CategoryJunction.Add(new CategoryJunction { Category = category, VnUserCategoryTitle = uc3 });
-                    //context.SaveChanges();
-
-                    #endregion
-
+                    byte[] foo = new byte[2];
+                    var bar = foo[999];
                 }
             }
             catch (Exception exception)
             {
                 Console.WriteLine(exception);
+                Globals.Logger.Error(exception);
                 throw;
             }
         }

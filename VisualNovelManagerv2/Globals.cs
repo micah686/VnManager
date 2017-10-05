@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using NLog;
 using VisualNovelManagerv2.ViewModel;
 using VisualNovelManagerv2.ViewModel.Global;
 
@@ -17,5 +18,6 @@ namespace VisualNovelManagerv2
         public static readonly StatusBarViewModel StatusBar = (new ViewModelLocator()).StatusBar;
         public static bool NsfwEnabled = false;
         public static byte MaxSpoiler = 0;
+        public static readonly Logger Logger = LogManager.GetCurrentClassLogger();
     }
 }

@@ -67,7 +67,7 @@ namespace VisualNovelManagerv2.CustomClasses.Vndb
                 }
                 catch (Exception ex)
                 {
-                    DebugLogging.WriteDebugLog(ex);
+                    Globals.Logger.Error(ex);
                     throw;
                 }
             }

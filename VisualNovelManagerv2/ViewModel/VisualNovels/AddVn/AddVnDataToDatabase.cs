@@ -332,7 +332,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
             }
             catch (Exception ex)
             {
-                DebugLogging.WriteDebugLog(ex);
+                Globals.Logger.Error(ex);
                 throw;
             }
             finally
@@ -429,7 +429,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
             }
             catch (Exception ex)
             {
-                DebugLogging.WriteDebugLog(ex);
+                Globals.Logger.Error(ex);
                 throw;
             }                        
         }
@@ -510,7 +510,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
             }
             catch (Exception ex)
             {
-                DebugLogging.WriteDebugLog(ex);
+                Globals.Logger.Error(ex);
                 throw;
             }            
         }

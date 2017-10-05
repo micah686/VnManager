@@ -19,7 +19,7 @@ namespace VisualNovelManagerv2.CustomClasses.TinyClasses
             }
             catch (Exception ex)
             {
-                DebugLogging.WriteDebugLog(ex);
+                Globals.Logger.Error(ex);
                 throw;
             }            
         }

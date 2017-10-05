@@ -122,7 +122,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
             }
             catch (Exception ex)
             {
-                DebugLogging.WriteDebugLog(ex);
+                Globals.Logger.Error(ex);
                 throw;
             }
         }
@@ -166,7 +166,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
             }
             catch (Exception ex)
             {
-                DebugLogging.WriteDebugLog(ex);
+                Globals.Logger.Error(ex);
                 throw;
             }
             
@@ -198,7 +198,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
             }
             catch (Exception ex)
             {
-                DebugLogging.WriteDebugLog(ex);
+                Globals.Logger.Error(ex);
                 throw;
             }
         }
@@ -261,7 +261,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
             }
             catch (Exception ex)
             {
-                DebugLogging.WriteDebugLog(ex);
+                Globals.Logger.Error(ex);
                 throw;
             }            
         }
@@ -285,7 +285,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
             }
             catch (Exception ex)
             {
-                DebugLogging.WriteDebugLog(ex);
+                Globals.Logger.Error(ex);
                 throw;
             }
             
@@ -341,12 +341,12 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
                 }
                 catch (WebException ex)
                 {
-                    DebugLogging.WriteDebugLog(ex);
+                    Globals.Logger.Error(ex);
                     throw;
                 }
                 catch (Exception ex)
                 {
-                    DebugLogging.WriteDebugLog(ex);
+                    Globals.Logger.Error(ex);
                     throw;
                 }
                 Globals.StatusBar.IsWorkProcessing = false;
@@ -421,7 +421,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
             }
             catch (Exception exception)
             {
-                DebugLogging.WriteDebugLog(exception);
+                Globals.Logger.Error(exception);
                 throw;
             }            
         }
@@ -475,7 +475,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
                 }
                 catch (Exception ex)
                 {
-                    DebugLogging.WriteDebugLog(ex);
+                    Globals.Logger.Error(ex);
                     throw;
                 }
             }

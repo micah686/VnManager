@@ -69,7 +69,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnListViewModel
             }
             catch (Exception exception)
             {
-                DebugLogging.WriteDebugLog(exception);
+                Globals.Logger.Error(exception);
                 throw;
             }
         }
@@ -136,7 +136,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnListViewModel
             }
             catch (Exception exception)
             {
-                DebugLogging.WriteDebugLog(exception);
+                Globals.Logger.Error(exception);
                 throw;
             }
         }
@@ -196,7 +196,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnListViewModel
             }
             catch (Exception exception)
             {
-                DebugLogging.WriteDebugLog(exception);
+                Globals.Logger.Error(exception);
                 throw;
             }
         }

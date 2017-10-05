@@ -52,7 +52,7 @@ namespace VisualNovelManagerv2.Converters
             }
             catch (Exception ex)
             {
-                DebugLogging.WriteDebugLog(ex);
+                Globals.Logger.Error(ex);
                 throw;
             }            
         }
@@ -82,7 +82,7 @@ namespace VisualNovelManagerv2.Converters
             }
             catch (Exception ex)
             {
-                DebugLogging.WriteDebugLog(ex);
+                Globals.Logger.Error(ex);
                 throw;
             }            
         }

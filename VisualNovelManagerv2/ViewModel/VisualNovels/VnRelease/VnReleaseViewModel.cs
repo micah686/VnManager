@@ -62,7 +62,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnRelease
 
             catch (Exception ex)
             {
-                DebugLogging.WriteDebugLog(ex);
+                Globals.Logger.Error(ex);
                 throw;
             }
         }
@@ -198,12 +198,12 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnRelease
             }
             catch (System.IndexOutOfRangeException ex)
             {
-                DebugLogging.WriteDebugLog(ex);
+                Globals.Logger.Error(ex);
                 throw;
             }
             catch (Exception ex)
             {
-                DebugLogging.WriteDebugLog(ex);
+                Globals.Logger.Error(ex);
                 throw;
             }
             
@@ -243,12 +243,12 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnRelease
             }
             catch (IndexOutOfRangeException ex)
             {
-                DebugLogging.WriteDebugLog(ex);
+                Globals.Logger.Error(ex);
                 throw;
             }
             catch (Exception ex)
             {
-                DebugLogging.WriteDebugLog(ex);
+                Globals.Logger.Error(ex);
                 throw;
             }
             

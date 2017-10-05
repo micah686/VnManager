@@ -21,7 +21,7 @@ namespace VisualNovelManagerv2.CustomClasses.ConfigSettings
             }
             catch (Exception ex)
             {
-                DebugLogging.WriteDebugLog(ex);
+                Globals.Logger.Error(ex);
                 throw;
             }
         }
@@ -40,7 +40,7 @@ namespace VisualNovelManagerv2.CustomClasses.ConfigSettings
             }
             catch (Exception ex)
             {
-                DebugLogging.WriteDebugLog(ex);
+                Globals.Logger.Error(ex);
                 throw;
             }
         }
@@ -62,7 +62,7 @@ namespace VisualNovelManagerv2.CustomClasses.ConfigSettings
             }
             catch (Exception e)
             {
-                DebugLogging.WriteDebugLog(e);
+                Globals.Logger.Error(e);
                 throw;
             }
             

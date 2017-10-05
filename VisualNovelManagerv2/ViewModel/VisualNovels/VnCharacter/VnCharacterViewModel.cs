@@ -47,7 +47,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
             }
             catch (Exception ex)
             {
-                DebugLogging.WriteDebugLog(ex);
+                Globals.Logger.Error(ex);
                 throw;
             }
             SetMaxWidth();
@@ -111,12 +111,12 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
             }
             catch (System.Net.WebException ex)
             {
-                DebugLogging.WriteDebugLog(ex);
+                Globals.Logger.Error(ex);
                 throw;
             }
             catch (Exception ex)
             {
-                DebugLogging.WriteDebugLog(ex);
+                Globals.Logger.Error(ex);
                 throw;
             }
         }
@@ -189,7 +189,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
             }
             catch (Exception exception)
             {
-                DebugLogging.WriteDebugLog(exception);
+                Globals.Logger.Error(exception);
                 throw;
             }            
         }
@@ -204,7 +204,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
                 }
                 catch (Exception ex)
                 {
-                    DebugLogging.WriteDebugLog(ex);
+                    Globals.Logger.Error(ex);
                     throw;
                 }
         }

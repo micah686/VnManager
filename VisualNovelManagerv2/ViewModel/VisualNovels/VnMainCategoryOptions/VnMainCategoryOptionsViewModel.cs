@@ -57,7 +57,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMainCategoryOptions
             }
             catch (Exception e)
             {
-                DebugLogging.WriteDebugLog(e);
+                Globals.Logger.Error(e);
                 throw;
             }
             
@@ -86,7 +86,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMainCategoryOptions
             }
             catch (Exception ex)
             {
-                DebugLogging.WriteDebugLog(ex);
+                Globals.Logger.Error(ex);
                 throw;
             }
         }
@@ -110,7 +110,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMainCategoryOptions
             }
             catch (Exception ex)
             {
-                DebugLogging.WriteDebugLog(ex);
+                Globals.Logger.Error(ex);
                 throw;
             }
         }        
@@ -156,7 +156,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMainCategoryOptions
             }
             catch (Exception ex)
             {
-                DebugLogging.WriteDebugLog(ex);
+                Globals.Logger.Error(ex);
                 throw;
             } 
         }
@@ -202,7 +202,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMainCategoryOptions
             }
             catch (Exception ex)
             {
-                DebugLogging.WriteDebugLog(ex);
+                Globals.Logger.Error(ex);
                 throw;
             }
         }

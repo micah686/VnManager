@@ -111,7 +111,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             }
             catch (Exception ex)
             {
-                DebugLogging.WriteDebugLog(ex);
+                Globals.Logger.Error(ex);
                 throw;
             }
             
@@ -163,7 +163,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             }
             catch (Exception ex)
             {
-                DebugLogging.WriteDebugLog(ex);
+                Globals.Logger.Error(ex);
                 throw;
             }            
         }
@@ -207,7 +207,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             }
             catch (Exception ex)
             {
-                DebugLogging.WriteDebugLog(ex);
+                Globals.Logger.Error(ex);
                 throw;
             }            
         }
@@ -313,12 +313,12 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
                     }
                     catch (System.Net.WebException ex)
                     {
-                        DebugLogging.WriteDebugLog(ex);
+                        Globals.Logger.Error(ex);
                         throw;
                     }
                     catch (Exception ex)
                     {
-                        DebugLogging.WriteDebugLog(ex);
+                        Globals.Logger.Error(ex);
                     }
                 }
                 Globals.StatusBar.ProgressText = string.Empty;
@@ -327,7 +327,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             }
             catch (Exception exception)
             {
-                DebugLogging.WriteDebugLog(exception);
+                Globals.Logger.Error(exception);
                 throw;
             }
             
