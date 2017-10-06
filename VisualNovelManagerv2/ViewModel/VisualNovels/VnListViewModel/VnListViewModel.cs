@@ -64,6 +64,11 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnListViewModel
         
         private async void Login()
         {
+            if (ConnectionTest.VndbTcpSocketTest() == false)
+            {
+                Globals.Logger.Warn("Could not connect to Vndb API over SSL");
+                return;
+            }
             if (!IsVnListSelected && !IsVoteListSelected && !IsWishlistSelected)
             {
                 return;

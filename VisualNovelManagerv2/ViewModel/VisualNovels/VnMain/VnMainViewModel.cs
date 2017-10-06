@@ -219,13 +219,13 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
 
                 await Task.Run((DownloadCoverImage));
                 BindVnData();
-                await Task.Run((() => cvm.DownloadCharacterImagesPublic()));
-                await Task.Run((() => ssvm.DonwloadScreenshotImagesPublic()));
+                //await Task.Run((() => cvm.DownloadCharacterImagesPublic()));
+                //await Task.Run((() => ssvm.DonwloadScreenshotImagesPublic()));
 
-                while (IsMainBinding && cvm.IsCharacterDownloading && ssvm.IsScreenshotDownloading)
-                {
-                    await Task.Delay(100);
-                }
+                //while (IsMainBinding && cvm.IsCharacterDownloading && ssvm.IsScreenshotDownloading)
+                //{
+                //    await Task.Delay(100);
+                //}
                 
                 cvm.ClearCharacterDataCommand.Execute(null);
                 cvm.LoadCharacterCommand.Execute(null);
@@ -292,7 +292,13 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
         }
 
         private async Task DownloadCoverImage()
-        {           
+        {
+            if (ConnectionTest.VndbTcpSocketTest() == false)
+            {
+                //TODO: add a default cover image for when it can't connect online
+                Globals.Logger.Warn("Could not connect to Vndb API over SSL");
+                return;
+            }
             using (var context = new DatabaseContext())
             {
                 Globals.StatusBar.IsWorkProcessing = true;

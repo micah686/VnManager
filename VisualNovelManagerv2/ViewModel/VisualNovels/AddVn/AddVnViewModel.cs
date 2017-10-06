@@ -86,6 +86,11 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
 
         public async void SearchName()
         {
+            if (ConnectionTest.VndbTcpSocketTest() == false)
+            {
+                Globals.Logger.Warn("Could not connect to Vndb API over SSL");
+                return;
+            }
             try
             {
                 if (VnName == null || VnName.Length <= 2) return;
@@ -238,6 +243,11 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.AddVn
         #region Validation Methods
         private async void Validate()
         {
+            if (ConnectionTest.VndbTcpSocketTest() == false)
+            {
+                Globals.Logger.Warn("Could not connect to Vndb API over SSL");
+                return;
+            }
             try
             {
                 IsUserInputEnabled = false;

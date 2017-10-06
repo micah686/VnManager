@@ -219,6 +219,11 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
 
         private async Task DownloadScreenshots()
         {
+            if (ConnectionTest.VndbTcpSocketTest() == false)
+            {
+                Globals.Logger.Warn("Could not connect to Vndb API over SSL");
+                return;
+            }
             try
             {
                 IsScreenshotDownloading = true;

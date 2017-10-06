@@ -78,6 +78,11 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
 
         private async Task DownloadCharacters()
         {
+            if (ConnectionTest.VndbTcpSocketTest() == false)
+            {
+                Globals.Logger.Warn("Could not connect to Vndb API over SSL");
+                return;
+            }
             try
             {
                 IsCharacterDownloading = true;
