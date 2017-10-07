@@ -297,6 +297,10 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
             {
                 //TODO: add a default cover image for when it can't connect online
                 Globals.Logger.Warn("Could not connect to Vndb API over SSL");
+                Globals.StatusBar.SetOnlineStatusColor(false);
+                Globals.StatusBar.IsShowOnlineStatusEnabled = true;
+                await Task.Delay(3500);
+                Globals.StatusBar.IsShowOnlineStatusEnabled = false;
                 return;
             }
             using (var context = new DatabaseContext())
@@ -319,7 +323,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
                             if (!File.Exists(pathNoExt))
                             {
                                 Globals.StatusBar.IsDownloading = true;
-                                Globals.StatusBar.ProgressText = "Downloading cover image";
+                                Globals.StatusBar.ProgressText = "Loading cover image";
                                 Thread.Sleep(150);//to be nice to the server
                                 WebClient client = new WebClient();
                                 using (MemoryStream stream = new MemoryStream(await client.DownloadDataTaskAsync(new Uri(url))))
@@ -334,7 +338,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
                             if (!File.Exists(path))
                             {
                                 Globals.StatusBar.IsDownloading = true;
-                                Globals.StatusBar.ProgressText = "Downloading cover image";
+                                Globals.StatusBar.ProgressText = "Loading cover image";
                                 Thread.Sleep(150);//to be nice to the server
                                 WebClient client = new WebClient();
                                 await client.DownloadFileTaskAsync(new Uri(url), path);

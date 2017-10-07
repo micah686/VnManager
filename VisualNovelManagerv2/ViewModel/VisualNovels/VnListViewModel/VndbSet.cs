@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using MvvmValidation;
@@ -206,6 +207,10 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnListViewModel
             if (ConnectionTest.VndbTcpSocketTest() == false)
             {
                 Globals.Logger.Warn("Could not connect to Vndb API over SSL");
+                Globals.StatusBar.SetOnlineStatusColor(false);
+                Globals.StatusBar.IsShowOnlineStatusEnabled = true;
+                Thread.Sleep(3500);
+                Globals.StatusBar.IsShowOnlineStatusEnabled = false;
                 return;
             }
             SetVoteList();

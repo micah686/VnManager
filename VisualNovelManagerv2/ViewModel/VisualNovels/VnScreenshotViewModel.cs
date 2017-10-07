@@ -222,6 +222,10 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels
             if (ConnectionTest.VndbTcpSocketTest() == false)
             {
                 Globals.Logger.Warn("Could not connect to Vndb API over SSL");
+                Globals.StatusBar.SetOnlineStatusColor(false);
+                Globals.StatusBar.IsShowOnlineStatusEnabled = true;
+                await Task.Delay(3500);
+                Globals.StatusBar.IsShowOnlineStatusEnabled = false;
                 return;
             }
             try
