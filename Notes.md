@@ -3,7 +3,8 @@ These are just personal reminders for me to keep track of what I need to fix/add
 - [ ] Dispose of views and viewmodels/free up memory
 - [ ] Need to work on VnListViewModel for checking edge cases
 - [ ] Set up virtualizing lists for large results
-
+- [ ] Add "Update VN" to context menu
+- [ ] Perhaps drop the VnTags/Traits table and use the local copies instead?
 
 
 

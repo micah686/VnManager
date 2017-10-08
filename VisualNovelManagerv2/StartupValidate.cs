@@ -11,7 +11,7 @@ using GalaSoft.MvvmLight.CommandWpf;
 using Microsoft.Win32;
 using VisualNovelManagerv2.CustomClasses;
 using VisualNovelManagerv2.CustomClasses.ConfigSettings;
-using VisualNovelManagerv2.Design.Settings;
+using VisualNovelManagerv2.Model.Settings;
 using DatabaseContext = VisualNovelManagerv2.EF.Context.DatabaseContext;
 
 namespace VisualNovelManagerv2

@@ -9,10 +9,10 @@ using System.Windows;
 using System.Windows.Controls;
 using Microsoft.EntityFrameworkCore;
 using VisualNovelManagerv2.CustomClasses.ConfigSettings;
-using VisualNovelManagerv2.Design.Settings;
 using VisualNovelManagerv2.EF.Context;
 using VisualNovelManagerv2.EF.Entity.VnInfo;
 using VisualNovelManagerv2.EF.Entity.VnOther;
+using VisualNovelManagerv2.Model.Settings;
 using VndbSharp;
 using VndbSharp.Models;
 #pragma warning disable 1998

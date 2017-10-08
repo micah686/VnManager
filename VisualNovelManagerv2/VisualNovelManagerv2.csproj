@@ -190,12 +190,12 @@
     <Compile Include="CustomClasses\Vndb\HandleError.cs" />
     <Compile Include="CustomClasses\Vndb\RequestOptions.cs" />
     <Compile Include="CustomClasses\TextBoxService.cs" />
-    <Compile Include="Design\Settings\UserSettings.cs" />
-    <Compile Include="Design\VisualNovel\VnCharacterModel.cs" />
-    <Compile Include="Design\VisualNovel\VnLinksModel.cs" />
-    <Compile Include="Design\VisualNovel\VnMainModel.cs" />
-    <Compile Include="Design\VisualNovel\VnReleaseModel.cs" />
-    <Compile Include="Design\VisualNovel\VnScreenshotModel.cs" />
+    <Compile Include="Model\Settings\UserSettings.cs" />
+    <Compile Include="Model\VisualNovel\VnCharacterModel.cs" />
+    <Compile Include="Model\VisualNovel\VnLinksModel.cs" />
+    <Compile Include="Model\VisualNovel\VnMainModel.cs" />
+    <Compile Include="Model\VisualNovel\VnReleaseModel.cs" />
+    <Compile Include="Model\VisualNovel\VnScreenshotModel.cs" />
     <Compile Include="EF\Context\DatabaseContext.cs" />
     <Compile Include="EF\Entity\IEntity.cs" />
     <Compile Include="EF\Entity\VnCharacter\VnCharacter.cs" />
@@ -286,7 +286,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="Design\VisualNovel\AddVnViewModelService.cs" />
+    <Compile Include="Model\VisualNovel\AddVnViewModelService.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

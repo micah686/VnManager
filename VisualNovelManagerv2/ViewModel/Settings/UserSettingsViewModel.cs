@@ -10,7 +10,7 @@ using System.Windows.Input;
 using GalaSoft.MvvmLight;
 using Microsoft.Practices.ServiceLocation;
 using VisualNovelManagerv2.CustomClasses.ConfigSettings;
-using VisualNovelManagerv2.Design.Settings;
+using VisualNovelManagerv2.Model.Settings;
 using VisualNovelManagerv2.ViewModel.VisualNovels;
 using VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter;
 using VisualNovelManagerv2.ViewModel.VisualNovels.VnMain;

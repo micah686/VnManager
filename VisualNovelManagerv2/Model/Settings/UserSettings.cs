@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace VisualNovelManagerv2.Design.Settings
+﻿namespace VisualNovelManagerv2.Model.Settings
 {
     public class UserSettings
     {

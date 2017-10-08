@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using VisualNovelManagerv2.CustomClasses.ConfigSettings;
 using VisualNovelManagerv2.CustomClasses.TinyClasses;
-using VisualNovelManagerv2.Design.Settings;
+using VisualNovelManagerv2.Model.Settings;
 
 namespace VisualNovelManagerv2.Converters
 {
