@@ -10,6 +10,8 @@ using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using GalaSoft.MvvmLight;
 using VisualNovelManagerv2.Converters;
+using VisualNovelManagerv2.Converters.TraitConverter.Models;
+using VisualNovelManagerv2.Converters.TraitConverter.TraitService;
 using VisualNovelManagerv2.CustomClasses;
 using VisualNovelManagerv2.CustomClasses.TinyClasses;
 using VisualNovelManagerv2.Design.VisualNovel;
@@ -23,9 +25,9 @@ using VisualNovelManagerv2.ViewModel.VisualNovels.VnMain;
 namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
 {
     public partial class VnCharacterViewModel: ViewModelBase
-    {                
+    {        
         public VnCharacterViewModel()
-        {            
+        {
             LoadCharacterNameList();
         }
         
@@ -156,6 +158,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
                     foreach (var character in context.VnCharacter.Where(x => x.Id == context.VnCharacter
                     .Where(v => v.VnId == Globals.VnId).ToArray()[SelectedCharacterIndex].Id).Where(i => i.VnId == Globals.VnId))
                     {
+                        _characterId = character.CharacterId;
                         VnCharacterModel.Name = character.Name;
                         VnCharacterModel.OriginalName = character.Original;
                         VnCharacterModel.Gender = GetGenderIcon(character.Gender);
@@ -193,6 +196,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
                             where charactr.CharacterId.Equals(character.CharacterId) where charactr.SpoilerLevel <= Globals.MaxSpoiler
                             join trait in context.VnTraitData on charactr.TraitId equals trait.TraitId select trait).ToArray();
                         TraitsCollection.InsertRange(_traitArray.Select(x => x.Name));
+
                     }                    
                 }
             }

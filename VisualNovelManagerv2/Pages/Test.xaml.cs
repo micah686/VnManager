@@ -8,6 +8,9 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using Microsoft.EntityFrameworkCore;
+using VisualNovelManagerv2.Converters.TraitConverter;
+using VisualNovelManagerv2.Converters.TraitConverter.Models;
+using VisualNovelManagerv2.Converters.TraitConverter.TraitService;
 using VisualNovelManagerv2.CustomClasses.ConfigSettings;
 using VisualNovelManagerv2.EF.Context;
 using VisualNovelManagerv2.EF.Entity.VnInfo;
@@ -25,6 +28,16 @@ namespace VisualNovelManagerv2.Pages
     /// </summary>
     public partial class Test : UserControl
     {
+        private readonly ITraitService _TraitService= new TraitService();
+        //on viewmodel, use this:
+        /// <summary>
+        /// private ITraitService _TraitService;
+        /// public CharacterViewModel(ITraitService TraitService): base()
+        /// {
+        ///     _TraitService = TraitService;
+        /// }
+        /// </summary>
+
         public Test()
         {
             InitializeComponent();
@@ -64,11 +77,35 @@ namespace VisualNovelManagerv2.Pages
         {
             try
             {
+                List<TraitModel> traits = new List<TraitModel>();
+                var traitsWithParent = new Dictionary<TraitModel, List<string>>();
                 using (var context = new DatabaseContext())
                 {
-                    byte[] foo = new byte[2];
-                    var bar = foo[999];
+                    var traitArr = context.VnCharacterTraits
+                        .Where(x => x.CharacterId == 107 && x.SpoilerLevel < Globals.MaxSpoiler).Select(x => x.TraitId)
+                        .ToArray();
+                    traits.AddRange(traitArr.Select(trait => new TraitModel(Convert.ToInt32(trait), _TraitService)));
+
+
+                    foreach (var trait in traits)
+                    {
+                        TraitModel parenttrait = _TraitService.GetLastParentTrait(trait);
+
+                        if (traitsWithParent.Keys.Any(x => x.Name == parenttrait.Name))
+                        {
+                            traitsWithParent[traitsWithParent.Keys.First(x => x.Name == parenttrait.Name)].Add(trait.Name);
+                        }
+                        else
+                        {
+                            traitsWithParent.Add(parenttrait, new List<string>() { trait.Name });
+                        }
+                    }
                 }
+                                
+                var formatted = traitsWithParent
+                    .OrderBy(x => x.Key.Name)
+                    .ToDictionary(x => x.Key, y => string.Join(", ", y.Value.OrderBy(z => z).ToList()));
+
             }
             catch (Exception exception)
             {

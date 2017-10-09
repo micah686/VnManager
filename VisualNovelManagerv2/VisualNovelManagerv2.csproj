@@ -167,6 +167,13 @@
     </Compile>
     <Compile Include="Converters\Base64Converter.cs" />
     <Compile Include="Converters\ConvertTextBBcode.cs" />
+    <Compile Include="Converters\TraitConverter\EnumSpoiler\SpoilerLevel.cs" />
+    <Compile Include="Converters\TraitConverter\EnumSpoiler\SpoilerSetting.cs" />
+    <Compile Include="Converters\TraitConverter\Models\TraitModel.cs" />
+    <Compile Include="Converters\TraitConverter\TraitService\ITagsAndTraits.cs" />
+    <Compile Include="Converters\TraitConverter\TraitService\ITraitService.cs" />
+    <Compile Include="Converters\TraitConverter\TraitService\TraitService.cs" />
+    <Compile Include="Converters\TraitConverter\Models\TraitsLookUp.cs" />
     <Compile Include="Converters\YesNoBoolConverter.cs" />
     <Compile Include="CustomClasses\BindableRichTextBox.cs" />
     <Compile Include="CustomClasses\ConfigSettings\ValidateXml.cs" />

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Documents;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.CommandWpf;
+using VisualNovelManagerv2.Converters.TraitConverter.TraitService;
 using VisualNovelManagerv2.CustomClasses;
 using VisualNovelManagerv2.Design.VisualNovel;
 using VisualNovelManagerv2.EF.Entity.VnTagTrait;
@@ -133,6 +134,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
 
         private VnTraitData[] _traitArray;
         public bool IsCharacterDownloading = false;
+        private uint _characterId;
 
         public ICommand LoadCharacterCommand => new GalaSoft.MvvmLight.CommandWpf.RelayCommand(LoadCharacterNameList);
         public ICommand ClearCharacterDataCommand => new RelayCommand(ClearCharacterData);
