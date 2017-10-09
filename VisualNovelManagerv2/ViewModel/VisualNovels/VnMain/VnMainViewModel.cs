@@ -219,14 +219,14 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
 
                 await Task.Run((DownloadCoverImage));
                 BindVnData();
-                //await Task.Run((() => cvm.DownloadCharacterImagesPublic()));
-                //await Task.Run((() => ssvm.DonwloadScreenshotImagesPublic()));
+                await Task.Run((() => cvm.DownloadCharacterImagesPublic()));
+                await Task.Run((() => ssvm.DonwloadScreenshotImagesPublic()));
 
-                //while (IsMainBinding && cvm.IsCharacterDownloading && ssvm.IsScreenshotDownloading)
-                //{
-                //    await Task.Delay(100);
-                //}
-                
+                while (IsMainBinding && cvm.IsCharacterDownloading && ssvm.IsScreenshotDownloading)
+                {
+                    await Task.Delay(100);
+                }
+
                 cvm.ClearCharacterDataCommand.Execute(null);
                 cvm.LoadCharacterCommand.Execute(null);
 

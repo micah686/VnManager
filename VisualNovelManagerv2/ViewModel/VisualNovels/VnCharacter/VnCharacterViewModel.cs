@@ -25,7 +25,8 @@ using VisualNovelManagerv2.ViewModel.VisualNovels.VnMain;
 namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
 {
     public partial class VnCharacterViewModel: ViewModelBase
-    {        
+    {
+        private readonly ITraitService _TraitService = new TraitService();
         public VnCharacterViewModel()
         {
             LoadCharacterNameList();
@@ -197,6 +198,31 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
                             join trait in context.VnTraitData on charactr.TraitId equals trait.TraitId select trait).ToArray();
                         TraitsCollection.InsertRange(_traitArray.Select(x => x.Name));
 
+
+
+
+
+                        List<TraitModel> traits = new List<TraitModel>();
+                        var traitsWithParent = new Dictionary<TraitModel, List<string>>();
+                        var traitArr = context.VnCharacterTraits
+                            .Where(x => x.CharacterId == _characterId && x.SpoilerLevel < Globals.MaxSpoiler).Select(x => x.TraitId)
+                            .ToArray();
+                        traits.AddRange(traitArr.Select(trait => new TraitModel(Convert.ToInt32(trait), _TraitService)));
+
+
+                        foreach (var trait in traits)
+                        {
+                            TraitModel parenttrait = _TraitService.GetLastParentTrait(trait);
+
+                            if (traitsWithParent.Keys.Any(x => x.Name == parenttrait.Name))
+                            {
+                                traitsWithParent[traitsWithParent.Keys.First(x => x.Name == parenttrait.Name)].Add(trait.Name);
+                            }
+                            else
+                            {
+                                traitsWithParent.Add(parenttrait, new List<string>() { trait.Name });
+                            }
+                        }
                     }                    
                 }
             }
