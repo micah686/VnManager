@@ -15,9 +15,9 @@ using GalaSoft.MvvmLight.CommandWpf;
 using VisualNovelManagerv2.Converters;
 using VisualNovelManagerv2.CustomClasses;
 using VisualNovelManagerv2.CustomClasses.TinyClasses;
-using VisualNovelManagerv2.Design.VisualNovel;
 using VisualNovelManagerv2.EF.Context;
 using VisualNovelManagerv2.EF.Entity.VnInfo;
+using VisualNovelManagerv2.Model.VisualNovel;
 using VisualNovelManagerv2.ViewModel.VisualNovels.VnMain;
 
 namespace VisualNovelManagerv2.ViewModel.VisualNovels

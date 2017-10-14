@@ -6,7 +6,7 @@ using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 using VisualNovelManagerv2.CustomClasses;
-using VisualNovelManagerv2.Design.VisualNovel;
+using VisualNovelManagerv2.Model.VisualNovel;
 
 namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnListViewModel
 {

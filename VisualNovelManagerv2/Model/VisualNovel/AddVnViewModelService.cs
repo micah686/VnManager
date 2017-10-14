@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace VisualNovelManagerv2.Design.VisualNovel
+namespace VisualNovelManagerv2.Model.VisualNovel
 {
     public class AddVnViewModelService
     {

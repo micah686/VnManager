@@ -4,13 +4,14 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.CommandWpf;
 using VisualNovelManagerv2.Converters.TraitConverter.TraitService;
 using VisualNovelManagerv2.CustomClasses;
-using VisualNovelManagerv2.Design.VisualNovel;
 using VisualNovelManagerv2.EF.Entity.VnTagTrait;
+using VisualNovelManagerv2.Model.VisualNovel;
 
 namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
 {

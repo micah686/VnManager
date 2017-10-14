@@ -14,8 +14,8 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using GalaSoft.MvvmLight.Messaging;
 using Microsoft.Win32;
-using VisualNovelManagerv2.Design;
-using VisualNovelManagerv2.Design.VisualNovel;
+
+using VisualNovelManagerv2.Model.VisualNovel;
 
 namespace VisualNovelManagerv2.Pages.VisualNovels
 {

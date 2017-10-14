@@ -9,7 +9,7 @@ using System.Windows.Media.Imaging;
 using GalaSoft.MvvmLight.Command;
 using Microsoft.Expression.Interactivity.Core;
 using VisualNovelManagerv2.CustomClasses.TinyClasses;
-using VisualNovelManagerv2.Design.VisualNovel;
+using VisualNovelManagerv2.Model.VisualNovel;
 using VndbSharp.Models;
 using VndbSharp.Models.VisualNovel;
 

@@ -9,9 +9,9 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using VisualNovelManagerv2.CustomClasses;
-using VisualNovelManagerv2.Design.VisualNovel;
 using VisualNovelManagerv2.EF.Context;
 using VisualNovelManagerv2.EF.Entity.VnOther;
+using VisualNovelManagerv2.Model.VisualNovel;
 
 namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
 {
