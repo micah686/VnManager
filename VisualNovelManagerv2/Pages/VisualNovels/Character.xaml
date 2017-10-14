@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:VisualNovelManagerv2.Pages"
              xmlns:custom="clr-namespace:VisualNovelManagerv2.CustomClasses"
              xmlns:bb="clr-namespace:VisualNovelManagerv2.CustomClasses.FirstFloorMui.BBCode"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              mc:Ignorable="d" 
              d:DesignHeight="900" d:DesignWidth="600"
              DataContext="{Binding VnCharacter, Source={StaticResource Locator}}">
@@ -210,7 +211,26 @@
                                 <ColumnDefinition Width="7*"/>
                             </Grid.ColumnDefinitions>
                             <!--change listbox to use max width of largest string, so it doesn't dynamically adjust -->
-                            <ListBox Grid.Column="0"   ItemsSource="{Binding TraitsCollection}" Height="250" SelectedIndex="{Binding SelectedTraitIndex}" SelectedItem="{Binding SelectedTrait}"/>
+                            <!--<ListBox Grid.Column="0"   ItemsSource="{Binding TraitsCollection}" Height="250" SelectedIndex="{Binding SelectedTraitIndex}" SelectedItem="{Binding SelectedTrait}"/>-->
+                            
+                            <TreeView Grid.Column="0" x:Name="TraitsTreeView" ItemsSource="{Binding TraitCollection}">
+                                <TreeView.ItemContainerStyle>
+                                    <Style TargetType="{x:Type TreeViewItem}">
+                                        <Setter Property="IsExpanded" Value="True"/>
+                                    </Style>
+                                </TreeView.ItemContainerStyle>
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="SelectedItemChanged">
+                                        <i:InvokeCommandAction Command="{Binding GetVnTraitCommand}" CommandParameter="{Binding ElementName=TraitsTreeView, Path=SelectedItem}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                                <TreeView.ItemTemplate>
+                                    <HierarchicalDataTemplate  ItemsSource="{Binding Items}">
+                                        <Label Content="{Binding Header}"/>
+                                    </HierarchicalDataTemplate>
+                                </TreeView.ItemTemplate>
+                            </TreeView>
+                            
                             <ScrollViewer Grid.Column="1" Margin="15,0,15,0" MinHeight="70">
                                 <bb:BBCodeBlock BBCode="{Binding TraitDescription}" TextWrapping="Wrap"/>
                             </ScrollViewer>

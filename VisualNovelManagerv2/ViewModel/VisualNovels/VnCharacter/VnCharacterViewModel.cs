@@ -193,36 +193,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
                         VnCharacterModel.Height = character.Height.ToString();
                         VnCharacterModel.Weight = character.Weight.ToString();
 
-                        _traitArray = (from charactr in context.VnCharacterTraits
-                            where charactr.CharacterId.Equals(character.CharacterId) where charactr.SpoilerLevel <= Globals.MaxSpoiler
-                            join trait in context.VnTraitData on charactr.TraitId equals trait.TraitId select trait).ToArray();
-                        TraitsCollection.InsertRange(_traitArray.Select(x => x.Name));
 
-
-
-
-
-                        List<TraitModel> traits = new List<TraitModel>();
-                        var traitsWithParent = new Dictionary<TraitModel, List<string>>();
-                        var traitArr = context.VnCharacterTraits
-                            .Where(x => x.CharacterId == _characterId && x.SpoilerLevel < Globals.MaxSpoiler).Select(x => x.TraitId)
-                            .ToArray();
-                        traits.AddRange(traitArr.Select(trait => new TraitModel(Convert.ToInt32(trait), _TraitService)));
-
-
-                        foreach (var trait in traits)
-                        {
-                            TraitModel parenttrait = _TraitService.GetLastParentTrait(trait);
-
-                            if (traitsWithParent.Keys.Any(x => x.Name == parenttrait.Name))
-                            {
-                                traitsWithParent[traitsWithParent.Keys.First(x => x.Name == parenttrait.Name)].Add(trait.Name);
-                            }
-                            else
-                            {
-                                traitsWithParent.Add(parenttrait, new List<string>() { trait.Name });
-                            }
-                        }
+                        LoadTraits();
                     }                    
                 }
             }
@@ -233,13 +205,106 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
             }            
         }
 
+        private void LoadTraits()
+        {
+            try
+            {
+                using (var context = new DatabaseContext())
+                {
+                    List<TraitModel> traits = new List<TraitModel>();
+                    var traitsWithParent = new Dictionary<TraitModel, List<string>>();
+                    var traitArr = context.VnCharacterTraits
+                        .Where(x => x.CharacterId == _characterId && x.SpoilerLevel < Globals.MaxSpoiler).Select(x => x.TraitId)
+                        .ToArray();
+                    traits.AddRange(traitArr.Select(trait => new TraitModel(Convert.ToInt32(trait), _TraitService)));
+
+
+                    foreach (var trait in traits)
+                    {
+                        TraitModel parenttrait = _TraitService.GetLastParentTrait(trait);
+
+                        if (traitsWithParent.Keys.Any(x => x.Name == parenttrait.Name))
+                        {
+                            traitsWithParent[traitsWithParent.Keys.First(x => x.Name == parenttrait.Name)].Add(trait.Name);
+                        }
+                        else
+                        {
+                            traitsWithParent.Add(parenttrait, new List<string>() { trait.Name });
+                        }
+                    }
+
+                    string[] rootTraits = traitsWithParent.Select(parent => parent.Key.Name).ToArray();
+
+                    MenuItem root = new MenuItem() { Header = "Traits" };
+                    foreach (var mainTrait in rootTraits)
+                    {
+                        var menuItem = new MenuItem() { Header = mainTrait };
+                        var childTraitList = traitsWithParent.Where(x => x.Key.Name == mainTrait).Select(x => x.Value)
+                            .First();
+
+                        foreach (var trait in childTraitList)
+                        {
+                            menuItem.Items.Add(new MenuItem() { Header = trait });
+                        }
+                        root.Items.Add(menuItem);
+                    }
+                    TraitCollection.Add(root);
+                }
+            }
+            catch (Exception exception)
+            {
+                Globals.Logger.Error(exception);
+                throw;
+            }
+        }
+
+        private void CheckMenuItemName(object obj)
+        {
+            try
+            {
+                MenuItem menuItem = (MenuItem)obj;
+                if (obj == null) return;
+                if (obj.GetType() == typeof(MenuItem))
+                {
+                    string name = menuItem.Header.ToString();
+                    SelectedTrait = name;
+                    if (menuItem.Parent != null)
+                    {
+                        if (menuItem.Parent.GetType() == typeof(MenuItem))
+                        {
+                            DatabaseContext context = new DatabaseContext();
+                            if (SelectedTrait != "Traits")
+                            {
+                                BindTraitDescription();
+                            }
+                            else
+                            {
+                                SelectedTrait = String.Empty;
+                            }
+                            context.Dispose();
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Globals.Logger.Error(ex);
+                throw;
+            }
+
+        }
+
         private void BindTraitDescription()
         {
             if (SelectedTraitIndex >= 0)
                 try
                 {
-                    TraitDescription = ConvertTextBBcode.ConvertText(_traitArray
-                        .Where(n => n.Name == SelectedTrait).Select(d => d.Description).FirstOrDefault());
+                    using (var context = new DatabaseContext())
+                    {
+                        var desc = context.VnTraitData.Where(x => x.Name == SelectedTrait).Select(x => x.Description)
+                            .FirstOrDefault();
+                        TraitDescription = ConvertTextBBcode.ConvertText(desc);
+                    }
                 }
                 catch (Exception ex)
                 {

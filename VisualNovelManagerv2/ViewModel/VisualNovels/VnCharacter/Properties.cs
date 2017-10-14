@@ -29,14 +29,14 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
             }
         }
 
-        private static RangeEnabledObservableCollection<string> _traitsCollection = new RangeEnabledObservableCollection<string>();
-        public RangeEnabledObservableCollection<string> TraitsCollection
+        private ObservableCollection<MenuItem> _traitCollection = new ObservableCollection<MenuItem>();
+        public ObservableCollection<MenuItem> TraitCollection
         {
-            get { return _traitsCollection; }
+            get { return _traitCollection; }
             set
             {
-                _traitsCollection = value;
-                RaisePropertyChanged(nameof(TraitsCollection));
+                _traitCollection = value;
+                RaisePropertyChanged(nameof(TraitCollection));
             }
         }
 
@@ -132,12 +132,11 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
                 RaisePropertyChanged(nameof(GenderColor));
             }
         }
-
-        private VnTraitData[] _traitArray;
         public bool IsCharacterDownloading = false;
         private uint _characterId;
 
         public ICommand LoadCharacterCommand => new GalaSoft.MvvmLight.CommandWpf.RelayCommand(LoadCharacterNameList);
         public ICommand ClearCharacterDataCommand => new RelayCommand(ClearCharacterData);
+        public ICommand GetVnTraitCommand => new GalaSoft.MvvmLight.CommandWpf.RelayCommand<Object>(CheckMenuItemName);
     }
 }
