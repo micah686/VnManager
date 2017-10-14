@@ -148,7 +148,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
         {
             try
             {
-                TraitsCollection.Clear();
+                TraitCollection.Clear();
                 if (SelectedTraitIndex < 0 && !string.IsNullOrEmpty(TraitDescription))
                 {
                     TraitDescription = String.Empty;
@@ -235,7 +235,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
 
                     string[] rootTraits = traitsWithParent.Select(parent => parent.Key.Name).ToArray();
 
-                    MenuItem root = new MenuItem() { Header = "Traits" };
                     foreach (var mainTrait in rootTraits)
                     {
                         var menuItem = new MenuItem() { Header = mainTrait };
@@ -246,9 +245,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
                         {
                             menuItem.Items.Add(new MenuItem() { Header = trait });
                         }
-                        root.Items.Add(menuItem);
+                        TraitCollection.Add(menuItem);
                     }
-                    TraitCollection.Add(root);
                 }
             }
             catch (Exception exception)
