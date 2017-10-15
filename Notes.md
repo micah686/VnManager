@@ -5,7 +5,6 @@ These are just personal reminders for me to keep track of what I need to fix/add
 - [ ] Set up virtualizing lists for large results
 - [ ] Add "Update VN" to context menu
 - [ ] Perhaps drop the VnTags/Traits table and use the local copies instead?
-- [ ] Fix the scrollbars being wonky with multiple scrollbars and not scrolling properly
 
 
 

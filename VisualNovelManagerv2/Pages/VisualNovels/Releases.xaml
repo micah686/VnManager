@@ -274,9 +274,7 @@
                     </Grid>
 
                     <Grid Grid.Row="18" Margin="10,10,10,0">
-                        <ScrollViewer MinHeight="70" Margin="15,0,15,0">
-                            <bb:BBCodeBlock BBCode="{Binding VnReleaseModel.Notes}" TextWrapping="Wrap"/>
-                        </ScrollViewer>
+                        <bb:BBCodeBlock MinHeight="70" Margin="15,0,15,0" BBCode="{Binding VnReleaseModel.Notes}" TextWrapping="Wrap"/>
                     </Grid>
 
                     <Grid Grid.Row="19" Margin="10,30,0,0">
