@@ -286,9 +286,7 @@
                         <Label Grid.Row="4" Grid.Column="0" Margin="5,10,0,0" Content="Summary:"/>
 
                         <Grid Grid.Row="5" Grid.Column="0" Margin="10,10,25,0">
-                            <ScrollViewer  MaxHeight="250" >
-                                <bb:BBCodeBlock x:Name="VnDescription" BBCode="{Binding VnMainModel.Description}" TextWrapping="Wrap"/>
-                            </ScrollViewer>
+                            <bb:BBCodeBlock x:Name="VnDescription" MaxHeight="250" BBCode="{Binding VnMainModel.Description}" TextWrapping="Wrap"/>
                         </Grid>
 
                         <TextBlock Grid.Row="6" Text="Tags" Margin="10,20,0,0" Style="{StaticResource Heading2}"/>
@@ -301,9 +299,7 @@
                                 </Grid.ColumnDefinitions>
                                 <!--change listbox to use max width of largest string, so it doesn't dynamically adjust-->
                                 <ListBox Grid.Column="0"   ItemsSource="{Binding VnInfoTagCollection}" Height="250" SelectedItem="{Binding SelectedTag}" SelectedIndex="{Binding SelectedTagIndex}"/>
-                                <ScrollViewer Grid.Column="1" Margin="15,0,25,0" MinHeight="70">
-                                    <bb:BBCodeBlock  BBCode="{Binding TagDescription}" TextWrapping="Wrap"/>
-                                </ScrollViewer>
+                                <bb:BBCodeBlock Grid.Column="1" Margin="15,0,25,0" MinHeight="70" BBCode="{Binding TagDescription}" TextWrapping="Wrap"/>
                             </Grid>
                         </Grid>
 
