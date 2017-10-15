@@ -195,9 +195,7 @@
                     </Grid>
 
                     <Grid Grid.Row="13" Margin="10,10,10,0">
-                        <ScrollViewer MinHeight="70" MaxHeight="350">
-                            <bb:BBCodeBlock BBCode="{Binding VnCharacterModel.Description}" TextWrapping="Wrap"/>
-                        </ScrollViewer>
+                        <bb:BBCodeBlock MinHeight="70" MaxHeight="350" BBCode="{Binding VnCharacterModel.Description}" TextWrapping="Wrap"/>
                     </Grid>
 
                     <Grid Grid.Row="14" Margin="5,20,0,0">
@@ -230,10 +228,8 @@
                                     </HierarchicalDataTemplate>
                                 </TreeView.ItemTemplate>
                             </TreeView>
-                            
-                            <ScrollViewer Grid.Column="1" Margin="15,0,15,0" MinHeight="70">
-                                <bb:BBCodeBlock BBCode="{Binding TraitDescription}" TextWrapping="Wrap"/>
-                            </ScrollViewer>
+
+                            <bb:BBCodeBlock Grid.Column="1" Margin="15,0,15,0" MinHeight="70" BBCode="{Binding TraitDescription}" TextWrapping="Wrap"/>
                         </Grid>
                     </Grid>
 
