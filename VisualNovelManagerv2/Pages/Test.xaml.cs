@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
@@ -7,6 +8,8 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
+using GalaSoft.MvvmLight.Command;
 using Microsoft.EntityFrameworkCore;
 using VisualNovelManagerv2.Converters.TraitConverter;
 using VisualNovelManagerv2.Converters.TraitConverter.Models;
@@ -29,6 +32,7 @@ namespace VisualNovelManagerv2.Pages
     public partial class Test : UserControl
     {
         private readonly ITraitService _TraitService= new TraitService();
+        public ObservableCollection<Button> ButtonsList { get; private set; }
         //on viewmodel, use this:
         /// <summary>
         /// private ITraitService _TraitService;
@@ -49,8 +53,22 @@ namespace VisualNovelManagerv2.Pages
             Globals.StatusBar.Message = "msgtest";
             Globals.StatusBar.IsShowOnlineStatusEnabled = true;
             Globals.StatusBar.SetOnlineStatusColor(true);
+
+
+            ButtonsList = new ObservableCollection<Button>();
+
+            for (int i = 0; i < 5; i++)
+            {
+                ButtonsList.Add(new Button() { Content = $"Button {i}", Command = WriteObjectCommand, CommandParameter = i });
+            }
         }
 
+        public ICommand WriteObjectCommand => new RelayCommand<object>(WriteME);
+        private void WriteME(object obj)
+        {
+            var btn = (int)obj;
+            Console.WriteLine(btn);
+        }
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
             UserSettings userSettings = new UserSettings

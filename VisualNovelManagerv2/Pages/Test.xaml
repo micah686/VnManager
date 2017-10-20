@@ -7,10 +7,48 @@
              xmlns:bb="clr-namespace:VisualNovelManagerv2.CustomClasses.FirstFloorMui.BBCode"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <Style x:Key="MyButtonStyle" TargetType="Button">
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Foreground" Value="BlueViolet"></Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Name="border" 
+                                BorderThickness="1"
+                                Padding="4,2" 
+                                BorderBrush="{x:Null}" 
+                                CornerRadius="3" 
+                                Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="BorderBrush" Value="{x:Null}" />
+                                <Setter Property="FontWeight" Value="ExtraBold"/>
+                                <Setter Property="Foreground" Value="Blue"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Foreground" Value="OrangeRed"></Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
     <Grid Margin="{StaticResource RootMargin}" ShowGridLines="True">
         <Grid >
-           
-            
+            <ItemsControl ItemsSource="{Binding ButtonsList}" DataContext="{Binding RelativeSource={RelativeSource AncestorType=UserControl}}" ItemContainerStyle="{StaticResource MyButtonStyle}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel IsItemsHost="True">
+                        </WrapPanel>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
+
             <Button Content="Button" HorizontalAlignment="Left"  VerticalAlignment="Top" Width="75" Margin="40,124,0,0" Click="Button_Click"/>
             <Button Content="Button" HorizontalAlignment="Left" Margin="207,262,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_1"/>
         </Grid>
