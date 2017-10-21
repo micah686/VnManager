@@ -10,6 +10,45 @@
              mc:Ignorable="d" 
              d:DesignHeight="900" d:DesignWidth="600"
              DataContext="{Binding VnCharacter, Source={StaticResource Locator}}">
+    <UserControl.Resources>
+        <Style x:Key="MyButtonStyle" TargetType="Button">
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <!--<Setter Property="Margin" Value="5"/>-->
+            <Setter Property="Foreground" Value="BlueViolet"></Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <!--<Border Name="border" 
+                                BorderThickness="1"
+                                Padding="4,2" 
+                                BorderBrush="{x:Null}" 
+                                CornerRadius="3" 
+                                Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>-->
+                        <Border Name="border" 
+                                BorderThickness="1"
+                                Padding="4,2" 
+                                BorderBrush="{x:Null}" 
+                                CornerRadius="3" 
+                                Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="BorderBrush" Value="{x:Null}" />
+                                <Setter Property="FontWeight" Value="ExtraBold"/>
+                                <Setter Property="Foreground" Value="Blue"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Foreground" Value="OrangeRed"></Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
     <Grid Margin="{StaticResource RootMargin}">
         <Grid x:Name="CharacterControl" Margin="10,10,10,35">
             <Grid.ColumnDefinitions>
@@ -211,7 +250,7 @@
                             <!--change listbox to use max width of largest string, so it doesn't dynamically adjust -->
                             <!--<ListBox Grid.Column="0"   ItemsSource="{Binding TraitsCollection}" Height="250" SelectedIndex="{Binding SelectedTraitIndex}" SelectedItem="{Binding SelectedTrait}"/>-->
                             
-                            <TreeView Grid.Column="0" x:Name="TraitsTreeView" ItemsSource="{Binding TraitCollection}">
+                            <!--<TreeView Grid.Column="0" x:Name="TraitsTreeView" ItemsSource="{Binding TraitCollection}">
                                 <TreeView.ItemContainerStyle>
                                     <Style TargetType="{x:Type TreeViewItem}">
                                         <Setter Property="IsExpanded" Value="True"/>
@@ -227,7 +266,31 @@
                                         <Label Content="{Binding Header}"/>
                                     </HierarchicalDataTemplate>
                                 </TreeView.ItemTemplate>
-                            </TreeView>
+                            </TreeView>-->
+                            
+                            <ItemsControl ItemsSource="{Binding TraitCollection}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="10*" 
+                                                                  MaxWidth="120" 
+                                                                  MinWidth="120"/>
+                                                <ColumnDefinition Width="20*" />
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Grid.Column="0" Text="{Binding Path=RootParentTrait, Mode=TwoWay, StringFormat={}{0}:}"/>
+                                            <ItemsControl Grid.Column="1" ItemsSource="{Binding Path=TraitList}" ItemContainerStyle="{StaticResource MyButtonStyle}">
+                                                <ItemsControl.ItemsPanel>
+                                                    <ItemsPanelTemplate>
+                                                        <WrapPanel IsItemsHost="True">
+                                                        </WrapPanel>
+                                                    </ItemsPanelTemplate>
+                                                </ItemsControl.ItemsPanel>
+                                            </ItemsControl>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
 
                             <bb:BBCodeBlock Grid.Column="1" Margin="15,0,15,0" MinHeight="70" BBCode="{Binding TraitDescription}" TextWrapping="Wrap"/>
                         </Grid>

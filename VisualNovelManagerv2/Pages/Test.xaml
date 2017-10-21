@@ -40,13 +40,37 @@
     </UserControl.Resources>
     <Grid Margin="{StaticResource RootMargin}" ShowGridLines="True">
         <Grid >
-            <ItemsControl ItemsSource="{Binding ButtonsList}" DataContext="{Binding RelativeSource={RelativeSource AncestorType=UserControl}}" ItemContainerStyle="{StaticResource MyButtonStyle}">
+            <!--<ItemsControl ItemsSource="{Binding ButtonsList}" DataContext="{Binding RelativeSource={RelativeSource AncestorType=UserControl}}" ItemContainerStyle="{StaticResource MyButtonStyle}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel IsItemsHost="True">
                         </WrapPanel>
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
+            </ItemsControl>-->
+
+            <ItemsControl ItemsSource="{Binding ModListCollection}" DataContext="{Binding RelativeSource={RelativeSource AncestorType=UserControl}}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="10*" 
+                                                  MaxWidth="120" 
+                                                  MinWidth="120"/>
+                                <ColumnDefinition Width="20*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="{Binding Path=Name, Mode=TwoWay, StringFormat={}{0}:}"/>
+                            <ItemsControl Grid.Column="1" ItemsSource="{Binding Path=Traits}" ItemContainerStyle="{StaticResource MyButtonStyle}" Width="400">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel IsItemsHost="True">
+                                        </WrapPanel>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                            </ItemsControl>
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
             </ItemsControl>
 
             <Button Content="Button" HorizontalAlignment="Left"  VerticalAlignment="Top" Width="75" Margin="40,124,0,0" Click="Button_Click"/>

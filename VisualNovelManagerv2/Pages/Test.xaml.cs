@@ -33,6 +33,8 @@ namespace VisualNovelManagerv2.Pages
     {
         private readonly ITraitService _TraitService= new TraitService();
         public ObservableCollection<Button> ButtonsList { get; private set; }
+
+        public ObservableCollection<ZZZ> ModListCollection { get; set; }
         //on viewmodel, use this:
         /// <summary>
         /// private ITraitService _TraitService;
@@ -56,11 +58,13 @@ namespace VisualNovelManagerv2.Pages
 
 
             ButtonsList = new ObservableCollection<Button>();
+            ModListCollection = new ObservableCollection<ZZZ>();
 
-            for (int i = 0; i < 5; i++)
-            {
-                ButtonsList.Add(new Button() { Content = $"Button {i}", Command = WriteObjectCommand, CommandParameter = i });
-            }
+            //for (int i = 0; i < 5; i++)
+            //{
+            //    ButtonsList.Add(new Button() { Content = $"Button {i}", Command = WriteObjectCommand, CommandParameter = i });
+            //}
+            LoadTraits();
         }
 
         public ICommand WriteObjectCommand => new RelayCommand<object>(WriteME);
@@ -132,5 +136,77 @@ namespace VisualNovelManagerv2.Pages
                 throw;
             }
         }
+
+        private void LoadTraits()
+        {
+            uint _characterId = 20881;
+            try
+            {
+                using (var context = new DatabaseContext())
+                {
+                    List<TraitModel> traits = new List<TraitModel>();
+                    var traitsWithParent = new Dictionary<TraitModel, List<string>>();
+                    var traitArr = context.VnCharacterTraits
+                        .Where(x => x.CharacterId == _characterId && x.SpoilerLevel < Globals.MaxSpoiler).Select(x => x.TraitId)
+                        .ToArray();
+                    traits.AddRange(traitArr.Select(trait => new TraitModel(Convert.ToInt32(trait), _TraitService)));
+
+
+                    foreach (var trait in traits)
+                    {
+                        TraitModel parenttrait = _TraitService.GetLastParentTrait(trait);
+
+                        if (traitsWithParent.Keys.Any(x => x.Name == parenttrait.Name))
+                        {
+                            traitsWithParent[traitsWithParent.Keys.First(x => x.Name == parenttrait.Name)].Add(trait.Name);
+                        }
+                        else
+                        {
+                            traitsWithParent.Add(parenttrait, new List<string>() { trait.Name });
+                        }
+                    }
+
+                    string[] rootTraits = traitsWithParent.Select(parent => parent.Key.Name).ToArray();
+
+                    foreach (var mainTrait in rootTraits)
+                    {
+                       
+                        var childTraitList = traitsWithParent.Where(x => x.Key.Name == mainTrait).Select(x => x.Value)
+                            .First();
+
+                        List<Button> buttonList = childTraitList.Select(trait => new Button() {Content = trait, Command = WriteObjectCommand, CommandParameter = trait}).ToList();
+                        ModListCollection.Add(new ZZZ() { Name = mainTrait, Traits = buttonList });
+                        //TraitCollection.Add(menuItem);
+                    }
+
+
+                    //string[] rootTraits = traitsWithParent.Select(parent => parent.Key.Name).ToArray();
+
+                    //foreach (var mainTrait in rootTraits)
+                    //{
+                    //    var menuItem = new MenuItem() { Header = mainTrait };
+                    //    var childTraitList = traitsWithParent.Where(x => x.Key.Name == mainTrait).Select(x => x.Value)
+                    //        .First();
+
+                    //    foreach (var trait in childTraitList)
+                    //    {
+                    //        menuItem.Items.Add(new MenuItem() { Header = trait });
+                    //    }
+                    //    //TraitCollection.Add(menuItem);
+                    //}
+                }
+            }
+            catch (Exception exception)
+            {
+                Globals.Logger.Error(exception);
+                throw;
+            }
+        }
+    }
+
+    public class ZZZ
+    {
+        public string Name { get; set; }
+        public List<Button> Traits { get; set; }
     }
 }

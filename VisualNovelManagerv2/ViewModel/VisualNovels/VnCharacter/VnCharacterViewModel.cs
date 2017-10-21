@@ -237,15 +237,12 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
 
                     foreach (var mainTrait in rootTraits)
                     {
-                        var menuItem = new MenuItem() { Header = mainTrait };
+                        
                         var childTraitList = traitsWithParent.Where(x => x.Key.Name == mainTrait).Select(x => x.Value)
                             .First();
 
-                        foreach (var trait in childTraitList)
-                        {
-                            menuItem.Items.Add(new MenuItem() { Header = trait });
-                        }
-                        TraitCollection.Add(menuItem);
+                        List<Button> buttonList = childTraitList.Select(trait => new Button() { Content = trait, Command = SetSelectedTraitCommand, CommandParameter = trait }).ToList();
+                        TraitCollection.Add(new TraitNameClickable(){RootParentTrait = mainTrait, TraitList = buttonList});
                     }
                 }
             }
@@ -254,6 +251,13 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
                 Globals.Logger.Error(exception);
                 throw;
             }
+        }
+
+        private void SetSelectedTraitName(object obj)
+        {
+            var trait = (string) obj;
+            _selectedTrait = trait;
+            BindTraitDescription();
         }
 
         private void CheckMenuItemName(object obj)

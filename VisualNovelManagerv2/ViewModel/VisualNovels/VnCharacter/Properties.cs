@@ -29,8 +29,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
             }
         }
 
-        private ObservableCollection<MenuItem> _traitCollection = new ObservableCollection<MenuItem>();
-        public ObservableCollection<MenuItem> TraitCollection
+        private ObservableCollection<TraitNameClickable> _traitCollection = new ObservableCollection<TraitNameClickable>();
+        public ObservableCollection<TraitNameClickable> TraitCollection
         {
             get { return _traitCollection; }
             set
@@ -138,5 +138,12 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
         public ICommand LoadCharacterCommand => new GalaSoft.MvvmLight.CommandWpf.RelayCommand(LoadCharacterNameList);
         public ICommand ClearCharacterDataCommand => new RelayCommand(ClearCharacterData);
         public ICommand GetVnTraitCommand => new GalaSoft.MvvmLight.CommandWpf.RelayCommand<Object>(CheckMenuItemName);
+        public ICommand SetSelectedTraitCommand => new GalaSoft.MvvmLight.CommandWpf.RelayCommand<Object>(SetSelectedTraitName);
+    }
+
+    public class TraitNameClickable
+    {
+        public string RootParentTrait { get; set; }
+        public List<Button> TraitList { get; set; }
     }
 }
