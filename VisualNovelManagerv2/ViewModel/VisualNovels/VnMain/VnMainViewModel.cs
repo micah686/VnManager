@@ -176,6 +176,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
         {
             try
             {
+                Globals.StatusBar.ProgressText = "Processing";
                 LanguageCollection.Clear();
                 PlatformCollection.Clear();
                 OriginalLanguagesCollection.Clear();
@@ -199,6 +200,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
             catch (Exception ex)
             {
                 Globals.Logger.Error(ex);
+                Globals.StatusBar.ProgressText= String.Empty;
                 throw;
             }
         }
@@ -212,6 +214,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
             {
                 _isUserInputEnabled = false;
                 IsPlayEnabled = false;
+                Globals.StatusBar.ProgressText = "Loading Data";
+                Globals.StatusBar.IsWorkProcessing = true;
 
                 var cvm = ServiceLocator.Current.GetInstance<VnCharacterViewModel>();
                 var ssvm = ServiceLocator.Current.GetInstance<VnScreenshotViewModel>();
@@ -234,6 +238,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
                 rvm.LoadReleaseNamesCommand.Execute(null);
 
                 ssvm.BindScreenshotsCommand.Execute(null);
+                Globals.StatusBar.ProgressText = String.Empty;
+                //Globals.StatusBar.IsWorkProcessing = false;
                 _isUserInputEnabled = true;
                 IsPlayEnabled = true;
             }

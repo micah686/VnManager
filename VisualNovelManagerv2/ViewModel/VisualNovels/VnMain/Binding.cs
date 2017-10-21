@@ -204,8 +204,11 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
 
                     #region VnTags
 
-                    string[] tagNames = (from info in context.VnInfoTags where info.VnId.Equals(Globals.VnId) where info.Spoiler <= Globals.MaxSpoiler
-                        join tag in context.VnTagData on info.TagId equals tag.TagId select tag.Name).ToArray();
+                    string[] tagNames = (from info in context.VnInfoTags
+                        where info.VnId.Equals(Globals.VnId)
+                        where info.Spoiler <= Globals.MaxSpoiler
+                        join tag in context.VnTagData on info.TagId equals tag.TagId
+                        select tag.Name).Distinct().ToArray();
                     VnInfoTagCollection.InsertRange(tagNames);
 
                     if (Globals.StatusBar.ProgressPercentage != null)
