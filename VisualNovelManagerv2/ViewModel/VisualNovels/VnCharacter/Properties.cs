@@ -86,17 +86,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
         }
 
 
-        private int _selectedTraitIndex;
-        public int SelectedTraitIndex
-        {
-            get { return _selectedTraitIndex; }
-            set
-            {
-                _selectedTraitIndex = value;
-                RaisePropertyChanged(nameof(SelectedTraitIndex));
-            }
-        }
-
         private string _selectedTrait;
         public string SelectedTrait
         {
@@ -104,9 +93,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
             set
             {
                 _selectedTrait = value;
-                BindTraitDescription();
                 RaisePropertyChanged(nameof(SelectedTrait));
-
             }
         }
 
@@ -137,7 +124,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
 
         public ICommand LoadCharacterCommand => new GalaSoft.MvvmLight.CommandWpf.RelayCommand(LoadCharacterNameList);
         public ICommand ClearCharacterDataCommand => new RelayCommand(ClearCharacterData);
-        public ICommand GetVnTraitCommand => new GalaSoft.MvvmLight.CommandWpf.RelayCommand<Object>(CheckMenuItemName);
         public ICommand SetSelectedTraitCommand => new GalaSoft.MvvmLight.CommandWpf.RelayCommand<Object>(SetSelectedTraitName);
     }
 

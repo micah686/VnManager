@@ -13,19 +13,10 @@
     <UserControl.Resources>
         <Style x:Key="MyButtonStyle" TargetType="Button">
             <Setter Property="OverridesDefaultStyle" Value="True"/>
-            <!--<Setter Property="Margin" Value="5"/>-->
-            <Setter Property="Foreground" Value="BlueViolet"></Setter>
+            <Setter Property="Foreground" Value="Orange"></Setter>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <!--<Border Name="border" 
-                                BorderThickness="1"
-                                Padding="4,2" 
-                                BorderBrush="{x:Null}" 
-                                CornerRadius="3" 
-                                Background="{TemplateBinding Background}">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
-                        </Border>-->
                         <Border Name="border" 
                                 BorderThickness="1"
                                 Padding="4,2" 
@@ -37,11 +28,7 @@
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="border" Property="BorderBrush" Value="{x:Null}" />
-                                <Setter Property="FontWeight" Value="ExtraBold"/>
-                                <Setter Property="Foreground" Value="Blue"/>
-                            </Trigger>
-                            <Trigger Property="IsPressed" Value="True">
-                                <Setter Property="Foreground" Value="OrangeRed"></Setter>
+                                <Setter Property="Foreground" Value="Red"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -85,6 +72,8 @@
                 <Grid Height="{Binding ElementName=RootWindow, Path=ActualHeight}">
                     <!--#region RowDefinitions-->
                     <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
@@ -242,59 +231,32 @@
                     </Grid>
 
                     <Grid Grid.Row="15" Margin="5,10,0,0">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="3.5*"/>
-                                <ColumnDefinition Width="7*"/>
-                            </Grid.ColumnDefinitions>
-                            <!--change listbox to use max width of largest string, so it doesn't dynamically adjust -->
-                            <!--<ListBox Grid.Column="0"   ItemsSource="{Binding TraitsCollection}" Height="250" SelectedIndex="{Binding SelectedTraitIndex}" SelectedItem="{Binding SelectedTrait}"/>-->
-                            
-                            <!--<TreeView Grid.Column="0" x:Name="TraitsTreeView" ItemsSource="{Binding TraitCollection}">
-                                <TreeView.ItemContainerStyle>
-                                    <Style TargetType="{x:Type TreeViewItem}">
-                                        <Setter Property="IsExpanded" Value="True"/>
-                                    </Style>
-                                </TreeView.ItemContainerStyle>
-                                <i:Interaction.Triggers>
-                                    <i:EventTrigger EventName="SelectedItemChanged">
-                                        <i:InvokeCommandAction Command="{Binding GetVnTraitCommand}" CommandParameter="{Binding ElementName=TraitsTreeView, Path=SelectedItem}"/>
-                                    </i:EventTrigger>
-                                </i:Interaction.Triggers>
-                                <TreeView.ItemTemplate>
-                                    <HierarchicalDataTemplate  ItemsSource="{Binding Items}">
-                                        <Label Content="{Binding Header}"/>
-                                    </HierarchicalDataTemplate>
-                                </TreeView.ItemTemplate>
-                            </TreeView>-->
-                            
-                            <ItemsControl ItemsSource="{Binding TraitCollection}">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="10*" 
-                                                                  MaxWidth="120" 
-                                                                  MinWidth="120"/>
-                                                <ColumnDefinition Width="20*" />
-                                            </Grid.ColumnDefinitions>
-                                            <TextBlock Grid.Column="0" Text="{Binding Path=RootParentTrait, Mode=TwoWay, StringFormat={}{0}:}"/>
-                                            <ItemsControl Grid.Column="1" ItemsSource="{Binding Path=TraitList}" ItemContainerStyle="{StaticResource MyButtonStyle}">
-                                                <ItemsControl.ItemsPanel>
-                                                    <ItemsPanelTemplate>
-                                                        <WrapPanel IsItemsHost="True">
-                                                        </WrapPanel>
-                                                    </ItemsPanelTemplate>
-                                                </ItemsControl.ItemsPanel>
-                                            </ItemsControl>
-                                        </Grid>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-
-                            <bb:BBCodeBlock Grid.Column="1" Margin="15,0,15,0" MinHeight="70" BBCode="{Binding TraitDescription}" TextWrapping="Wrap"/>
-                        </Grid>
+                        <ItemsControl ItemsSource="{Binding TraitCollection}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="9*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="{Binding Path=RootParentTrait, Mode=TwoWay, StringFormat={}{0}:}"/>
+                                        <ItemsControl Grid.Column="1" ItemsSource="{Binding Path=TraitList}" ItemContainerStyle="{StaticResource MyButtonStyle}" Margin="0,-3,0,0">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <WrapPanel IsItemsHost="True">
+                                                    </WrapPanel>
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                        </ItemsControl>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
                     </Grid>
+                    <StackPanel Grid.Row="16" Orientation="Vertical"  Margin="10">
+                        <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
+                    </StackPanel>
+                    <bb:BBCodeBlock Grid.Row="17" Margin="15" MinHeight="70" BBCode="{Binding TraitDescription}" TextWrapping="Wrap"/>
 
 
 

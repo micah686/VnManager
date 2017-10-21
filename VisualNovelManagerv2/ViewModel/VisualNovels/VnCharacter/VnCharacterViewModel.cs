@@ -149,7 +149,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
             try
             {
                 TraitCollection.Clear();
-                if (SelectedTraitIndex < 0 && !string.IsNullOrEmpty(TraitDescription))
+                if (!string.IsNullOrEmpty(TraitDescription))
                 {
                     TraitDescription = String.Empty;
                 }
@@ -260,32 +260,16 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
             BindTraitDescription();
         }
 
-        private void CheckMenuItemName(object obj)
+
+        private void BindTraitDescription()
         {
             try
             {
-                MenuItem menuItem = (MenuItem)obj;
-                if (obj == null) return;
-                if (obj.GetType() == typeof(MenuItem))
+                using (var context = new DatabaseContext())
                 {
-                    string name = menuItem.Header.ToString();
-                    SelectedTrait = name;
-                    if (menuItem.Parent != null)
-                    {
-                        if (menuItem.Parent.GetType() == typeof(MenuItem))
-                        {
-                            DatabaseContext context = new DatabaseContext();
-                            if (SelectedTrait != "Traits")
-                            {
-                                BindTraitDescription();
-                            }
-                            else
-                            {
-                                SelectedTrait = String.Empty;
-                            }
-                            context.Dispose();
-                        }
-                    }
+                    var desc = context.VnTraitData.Where(x => x.Name == SelectedTrait).Select(x => x.Description)
+                        .FirstOrDefault();
+                    TraitDescription = ConvertTextBBcode.ConvertText(desc);
                 }
             }
             catch (Exception ex)
@@ -294,25 +278,6 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
                 throw;
             }
 
-        }
-
-        private void BindTraitDescription()
-        {
-            if (SelectedTraitIndex >= 0)
-                try
-                {
-                    using (var context = new DatabaseContext())
-                    {
-                        var desc = context.VnTraitData.Where(x => x.Name == SelectedTrait).Select(x => x.Description)
-                            .FirstOrDefault();
-                        TraitDescription = ConvertTextBBcode.ConvertText(desc);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Globals.Logger.Error(ex);
-                    throw;
-                }
         }
 
         private String GetGenderIcon(string gender)
