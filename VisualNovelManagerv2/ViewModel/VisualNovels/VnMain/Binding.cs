@@ -204,12 +204,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
 
                     #region VnTags
 
-                    string[] tagNames = (from info in context.VnInfoTags
-                        where info.VnId.Equals(Globals.VnId)
-                        where info.Spoiler <= Globals.MaxSpoiler
-                        join tag in context.VnTagData on info.TagId equals tag.TagId
-                        select tag.Name).Distinct().ToArray();
-                    VnInfoTagCollection.InsertRange(tagNames);
+                    SetTags();
 
                     if (Globals.StatusBar.ProgressPercentage != null)
                         Globals.StatusBar.ProgressPercentage =
@@ -344,6 +339,44 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
                 
                 IsMainBinding = false;
             }
+        }
+
+        private void SetTags()
+        {
+            using (var context = new DatabaseContext())
+            {
+                VnInfoTagCollection.Clear();
+                TagDescription= String.Empty;
+                if (IsAllTagsEnabled)
+                {
+                    string[] tagNames = (from info in context.VnInfoTags
+                        where info.VnId.Equals(Globals.VnId)
+                        where info.Spoiler <= Globals.MaxSpoiler
+                        join tag in context.VnTagData on info.TagId equals tag.TagId
+                        select tag.Name).Distinct().ToArray();
+                    VnInfoTagCollection.InsertRange(tagNames);
+                }
+                else
+                {
+                    List<string> tagCategories = new List<string>();
+                    if (IsContentTagsEnabled)
+                        tagCategories.Add("Content");
+                    if (IsSexualTagsEnabled)
+                        tagCategories.Add("Sexual");
+                    if (IsTechnicalTagsEnabled)
+                        tagCategories.Add("Technical");
+
+                    string[] tagNames = (from info in context.VnInfoTags
+                        where info.VnId.Equals(Globals.VnId)
+                        where info.Spoiler <= Globals.MaxSpoiler
+                        join tag in context.VnTagData on info.TagId equals tag.TagId
+                        where tagCategories.Any(tc => tc.Contains(tag.Cat))
+                        select tag.Name).Distinct().ToArray();
+                    VnInfoTagCollection.InsertRange(tagNames);
+                }
+            }
+
+            
         }
 
         private IEnumerable<string> GetLangauges(string csv)

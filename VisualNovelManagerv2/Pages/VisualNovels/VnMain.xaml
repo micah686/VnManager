@@ -291,19 +291,28 @@
 
                         <TextBlock Grid.Row="6" Text="Tags" Margin="10,20,0,0" Style="{StaticResource Heading2}"/>
 
-                        <Grid Grid.Row="7" Grid.Column="0" Margin="5,10,0,0">
+                        <StackPanel Orientation="Horizontal" Grid.Row="7">
+                            <CheckBox Content="All" Margin="15,0,0,0" IsChecked="{Binding IsAllTagsEnabled}"/>
+                            <CheckBox Content="Content" Margin="15,0,0,0" IsChecked="{Binding IsContentTagsEnabled}"/>
+                            <CheckBox Content="Sexual Content" Margin="15,0,0,0" IsChecked="{Binding IsSexualTagsEnabled}"/>
+                            <CheckBox Content="Technical" Margin="15,0,0,0" IsChecked="{Binding IsTechnicalTagsEnabled}"/>
+                        </StackPanel>
+                        
+                        <Grid Grid.Row="8" Grid.Column="0" Margin="5,10,0,0">
                             <Grid>
+
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="3.5*"/>
-                                    <ColumnDefinition Width="7*"/>
+                                    <ColumnDefinition Width="4*"/>
+                                    <ColumnDefinition Width="6.5*"/>
                                 </Grid.ColumnDefinitions>
-                                <!--change listbox to use max width of largest string, so it doesn't dynamically adjust-->
-                                <ListBox Grid.Column="0"   ItemsSource="{Binding VnInfoTagCollection}" Height="250" SelectedItem="{Binding SelectedTag}" SelectedIndex="{Binding SelectedTagIndex}"/>
+                                <ListBox Grid.Column="0"   ItemsSource="{Binding VnInfoTagCollection}" Height="250" MinWidth="{Binding MinWidthTags}"
+                                         SelectedItem="{Binding SelectedTag}" SelectedIndex="{Binding SelectedTagIndex}"/>
+                                                                                                
                                 <bb:BBCodeBlock Grid.Column="1" Margin="15,0,25,0" MinHeight="70" BBCode="{Binding TagDescription}" TextWrapping="Wrap"/>
                             </Grid>
                         </Grid>
 
-                        <Grid Grid.Row="8" Margin="5,20,25,0">
+                        <Grid Grid.Row="9" Margin="5,20,25,0">
                             <StackPanel>
                                 <TextBlock DockPanel.Dock="Top" Text="Anime" Style="{StaticResource Heading2}" Margin="0,10,0,0" />
                                 <DataGrid Name="AnimeGrid" ItemsSource="{Binding VnInfoAnimeCollection}" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False" 
@@ -322,7 +331,7 @@
 
                         </Grid>
 
-                        <Grid Grid.Row="9" Margin="5,20,25,0">
+                        <Grid Grid.Row="10" Margin="5,20,25,0">
                             <StackPanel>
                                 <TextBlock DockPanel.Dock="Top" Text="Relation" Style="{StaticResource Heading2}" Margin="0,10,0,0" />
                                 <DataGrid Name="RelationsGrid" ItemsSource="{Binding VnInfoRelation}" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False" 

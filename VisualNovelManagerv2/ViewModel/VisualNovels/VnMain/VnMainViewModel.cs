@@ -246,9 +246,16 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
             
         }
 
-        
-        
-        
+        private void SetMaxWidth()
+        {
+            if (VnInfoTagCollection.Count > 0)
+            {
+                string longestString = VnInfoTagCollection.OrderByDescending(s => s.Length).First();
+                MinWidthTags = MeasureStringSize.GetMaxStringWidth(longestString);
+            }
+        }
+
+
 
         private BitmapSource LoadIcon()
         {

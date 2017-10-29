@@ -175,6 +175,86 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
         }
         #endregion
 
+        #region IsAllTagsEnabled
+        private bool _isAllTagsEnabled = true;
+        public bool IsAllTagsEnabled
+        {
+            get { return _isAllTagsEnabled; }
+            set
+            {
+                _isAllTagsEnabled = value;
+                if (_isAllTagsEnabled == true)
+                {
+                    IsContentTagsEnabled = false;
+                    IsSexualTagsEnabled = false;
+                    IsTechnicalTagsEnabled = false;
+                }
+                SetTags();
+                RaisePropertyChanged(nameof(IsAllTagsEnabled));
+            }
+        }
+        #endregion
+
+        #region IsContentTagsEnabled
+        private bool _isContentTagsEnabled= false;
+        public bool IsContentTagsEnabled
+        {
+            get { return _isContentTagsEnabled; }
+            set
+            {
+                _isContentTagsEnabled = value;
+                if (IsAllTagsEnabled)
+                    IsAllTagsEnabled = false;
+                SetTags();
+                RaisePropertyChanged(nameof(IsContentTagsEnabled));
+            }
+        }
+        #endregion
+
+        #region IsSexualTagsEnabled
+        private bool _isSexualTagsEnabled = false;
+        public bool IsSexualTagsEnabled
+        {
+            get { return _isSexualTagsEnabled; }
+            set
+            {
+                _isSexualTagsEnabled = value;
+                if (IsAllTagsEnabled)
+                    IsAllTagsEnabled = false;
+                SetTags();
+                RaisePropertyChanged(nameof(IsSexualTagsEnabled));
+            }
+        }
+        #endregion
+
+        #region IsTechnicalTagsEnabled
+        private bool _isTechnicalTagsEnabled = false;
+        public bool IsTechnicalTagsEnabled
+        {
+            get { return _isTechnicalTagsEnabled; }
+            set
+            {
+                _isTechnicalTagsEnabled = value;
+                if (IsAllTagsEnabled)
+                    IsAllTagsEnabled = false;
+                SetTags();
+                RaisePropertyChanged(nameof(IsTechnicalTagsEnabled));
+            }
+        }
+        #endregion
+
+        #region MinWidthTags
+        private double _minWidthTags = 250;
+        public double MinWidthTags
+        {
+            get { return _minWidthTags; }
+            set
+            {
+                _minWidthTags = value;
+                RaisePropertyChanged(nameof(MinWidthTags));
+            }
+        }
+        #endregion
 
         private readonly Stopwatch _stopwatch = new Stopwatch();
         private string _selectedVn= String.Empty;
