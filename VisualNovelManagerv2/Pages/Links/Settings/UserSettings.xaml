@@ -24,6 +24,7 @@
                         <RowDefinition />
                         <RowDefinition />
                         <RowDefinition />
+                        <RowDefinition />
                     </Grid.RowDefinitions>
 
                     <TextBlock Text="Enable NSFW Content:" VerticalAlignment="Center" Margin="0,0,16,4" />
@@ -36,6 +37,7 @@
                               VerticalAlignment="Center" Margin="0,0,0,10" />
 
                     <Button Grid.Row="2" Grid.Column="0" Width="100" Height="30" Content="Save" Command="{Binding SaveSettingsCommand}"/>
+                    <Button Grid.Row="3" Grid.Column="0" Width="100" Height="20" Content="Reset Settings" Command="{Binding ResetSettingsCommand}" Margin="10" FontSize="12" Padding="0"/>
                 </Grid>
             </StackPanel>
         </ScrollViewer>            

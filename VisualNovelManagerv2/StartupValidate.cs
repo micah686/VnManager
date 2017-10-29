@@ -5,14 +5,17 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using GalaSoft.MvvmLight.CommandWpf;
+using System.Windows.Media;
+using FirstFloor.ModernUI.Presentation;
 using Microsoft.Win32;
 using VisualNovelManagerv2.CustomClasses;
 using VisualNovelManagerv2.CustomClasses.ConfigSettings;
 using VisualNovelManagerv2.Model.Settings;
 using DatabaseContext = VisualNovelManagerv2.EF.Context.DatabaseContext;
+using RelayCommand = GalaSoft.MvvmLight.CommandWpf.RelayCommand;
 
 namespace VisualNovelManagerv2
 {
@@ -77,6 +80,15 @@ namespace VisualNovelManagerv2
         {
             Globals.NsfwEnabled = ModifyUserSettings.LoadUserSettings().NsfwEnabled;
             Globals.MaxSpoiler = ModifyUserSettings.LoadUserSettings().MaxSpoilerLevel;
+
+            LoadAccentColor();
+        }
+
+        private void LoadAccentColor()
+        {
+            string colorString = ModifyUserSettings.LoadUserSettings().AccentColor;
+            if (!string.IsNullOrEmpty(colorString)&& Regex.IsMatch(colorString, "#[0-9A-F]{3,8}"))
+                AppearanceManager.Current.AccentColor = (Color)ColorConverter.ConvertFromString(colorString);
         }
 
     }

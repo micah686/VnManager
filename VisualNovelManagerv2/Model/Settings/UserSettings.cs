@@ -4,6 +4,7 @@
     {
         public bool NsfwEnabled { get; set; }
         public byte MaxSpoilerLevel { get; set; }
+        public string AccentColor { get; set; }
         public VnSetting VnSetting { get; set; }
     }
 

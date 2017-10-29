@@ -26,6 +26,7 @@ namespace VisualNovelManagerv2.Pages.Links.Settings
         {
             InitializeComponent();
             Messenger.Default.Register<NotificationMessage>(this, NotificationMessageReceived);
+            Messenger.Default.Register<NotificationMessageAction<MessageBoxResult>>(this, NotificationMessageBoxResultRecieved);
         }
         private void NotificationMessageReceived(NotificationMessage msg)
         {
@@ -35,6 +36,21 @@ namespace VisualNovelManagerv2.Pages.Links.Settings
                     "Your settings were saved", "Saved Settings",
                     MessageBoxButton.OK);
             }
+            if (msg.Notification == "Reset Settings")
+            {
+                ModernDialog.ShowMessage(
+                    "Settings were reset to defaults", "Reset Settings",
+                    MessageBoxButton.OK);
+            }
+        }
+        private void NotificationMessageBoxResultRecieved(NotificationMessageAction<MessageBoxResult> msg)
+        {
+            if (msg.Notification == "Reset Settings")
+            {
+                var result = ModernDialog.ShowMessage("Are you sure you want to reset your settings to default?", "Reset settings to default",MessageBoxButton.YesNo);
+                msg.Execute(result);
+            }
+
         }
     }
 }

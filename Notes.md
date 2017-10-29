@@ -8,7 +8,6 @@ These are just personal reminders for me to keep track of what I need to fix/add
 
 
 
-- $1: The colour theme does not save upon program exit. The colour defaults to light blue when I open the program.
 - $1: I don't know if you plan on supporting collection .exes, where it has 3 VNs tied to one .exe
 
 

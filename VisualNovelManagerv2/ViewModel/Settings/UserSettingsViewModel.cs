@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
+using FirstFloor.ModernUI.Presentation;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Messaging;
 using Microsoft.Practices.ServiceLocation;
@@ -22,6 +25,7 @@ namespace VisualNovelManagerv2.ViewModel.Settings
     public class UserSettingsViewModel: ViewModelBase
     {
         public ICommand SaveSettingsCommand => new GalaSoft.MvvmLight.CommandWpf.RelayCommand(SaveSettings);
+        public ICommand ResetSettingsCommand => new GalaSoft.MvvmLight.CommandWpf.RelayCommand(ResetSettings);
 
         #region Properties
 
@@ -154,7 +158,8 @@ namespace VisualNovelManagerv2.ViewModel.Settings
             UserSettings userSettings = new UserSettings
             {
                 NsfwEnabled = SelectedNsfwEnabled,
-                MaxSpoilerLevel = SpoilerLevel
+                MaxSpoilerLevel = SpoilerLevel,
+                AccentColor = AppearanceManager.Current.AccentColor.ToString()
             };
             ModifyUserSettings.SaveUserSettings(userSettings);
 
@@ -171,6 +176,36 @@ namespace VisualNovelManagerv2.ViewModel.Settings
             ssvm.BindScreenshotsCommand.Execute(null);
 
             Messenger.Default.Send(new NotificationMessage("Saved Settings"));
+        }
+
+        private void ResetSettings()
+        {
+            var msg = new NotificationMessageAction<MessageBoxResult>(this, "Reset Settings", (r) =>
+            {
+                if (r == MessageBoxResult.Yes)
+                {
+                    UserSettings userSettings = new UserSettings();
+                    File.Delete(Globals.DirectoryPath + @"/Data/config/config.xml");
+                    userSettings.NsfwEnabled = false;
+                    userSettings.MaxSpoilerLevel = 0;
+                    ModifyUserSettings.SaveUserSettings(userSettings);
+
+                    var cvm = ServiceLocator.Current.GetInstance<VnCharacterViewModel>();
+                    var ssvm = ServiceLocator.Current.GetInstance<VnScreenshotViewModel>();
+                    var rvm = ServiceLocator.Current.GetInstance<VnReleaseViewModel>();
+                    var mvm = ServiceLocator.Current.GetInstance<VnMainViewModel>();
+
+                    mvm.BindVnDataPublic();
+                    cvm.ClearCharacterDataCommand.Execute(null);
+                    cvm.LoadCharacterCommand.Execute(null);
+                    rvm.ClearReleaseDataCommand.Execute(null);
+                    rvm.LoadReleaseNamesCommand.Execute(null);
+                    ssvm.BindScreenshotsCommand.Execute(null);
+
+                    Messenger.Default.Send(new NotificationMessage("Reset Settings"));
+                }
+            });
+            Messenger.Default.Send(msg);
         }
 
     }
