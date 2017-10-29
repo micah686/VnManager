@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Messaging;
 using Microsoft.Practices.ServiceLocation;
 using VisualNovelManagerv2.CustomClasses.ConfigSettings;
 using VisualNovelManagerv2.Model.Settings;
@@ -168,6 +169,8 @@ namespace VisualNovelManagerv2.ViewModel.Settings
             rvm.ClearReleaseDataCommand.Execute(null);
             rvm.LoadReleaseNamesCommand.Execute(null);
             ssvm.BindScreenshotsCommand.Execute(null);
+
+            Messenger.Default.Send(new NotificationMessage("Saved Settings"));
         }
 
     }

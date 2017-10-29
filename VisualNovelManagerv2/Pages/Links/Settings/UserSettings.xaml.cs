@@ -12,6 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using FirstFloor.ModernUI.Windows.Controls;
+using GalaSoft.MvvmLight.Messaging;
 
 namespace VisualNovelManagerv2.Pages.Links.Settings
 {
@@ -23,6 +25,16 @@ namespace VisualNovelManagerv2.Pages.Links.Settings
         public UserSettings()
         {
             InitializeComponent();
+            Messenger.Default.Register<NotificationMessage>(this, NotificationMessageReceived);
+        }
+        private void NotificationMessageReceived(NotificationMessage msg)
+        {
+            if (msg.Notification == "Saved Settings")
+            {
+                ModernDialog.ShowMessage(
+                    "Your settings were saved", "Saved Settings",
+                    MessageBoxButton.OK);
+            }
         }
     }
 }
