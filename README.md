@@ -6,6 +6,8 @@ A complete rework of my old visual novel manager, found here:
 Information and the latest downloads can be found here:
 [https://micah686.github.io/Visual-Novel-Manager-v2/](https://micah686.github.io/Visual-Novel-Manager-v2/)
 
+If you have bugs to report, please include the .log files from ```Data\logs\```
+
 If there are features you want added, PLEASE add an issue, as I can't add a feature if I don't know if people want it.
 
 if you have feature suggestions, please put create an Issue or comment on this google doc:
