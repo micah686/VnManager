@@ -35,6 +35,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>logo.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="FirstFloor.ModernUI, Version=1.0.9.0, Culture=neutral, PublicKeyToken=bc9b0c37bf06c6a9, processorArchitecture=MSIL">
       <HintPath>..\packages\ModernUI.WPF.1.0.9\lib\net45\FirstFloor.ModernUI.dll</HintPath>
@@ -433,6 +436,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <Content Include="logo.ico" />
     <Content Include="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -505,8 +509,6 @@ DEL *.dll *.pdb *.xml
 
 
 ROBOCOPY "$(TargetDir)..\..\Resources\Flags " "$(TargetDir)Data\res\icons\country_flags " *.png 
-ROBOCOPY "$(TargetDir)..\..\Resources\Assorted " "$(TargetDir)Data\res\icons\assorted " *.png
-ROBOCOPY "$(TargetDir)..\..\Resources\StatusBar " "$(TargetDir)Data\res\icons\statusbar " *.png
 ROBOCOPY "$(TargetDir)..\..\Resources\Platforms " "$(TargetDir)Data\res\icons\platforms " *.png
 ROBOCOPY "$(TargetDir)..\..\Resources\Nsfw " "$(TargetDir)Data\res\nsfw " *.jpg
 

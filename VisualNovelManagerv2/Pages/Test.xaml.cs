@@ -34,7 +34,7 @@ namespace VisualNovelManagerv2.Pages
         private readonly ITraitService _TraitService= new TraitService();
         public ObservableCollection<Button> ButtonsList { get; private set; }
 
-        public ObservableCollection<ZZZ> ModListCollection { get; set; }
+        public ObservableCollection<ClickableTraits> ModListCollection { get; set; }
         //on viewmodel, use this:
         /// <summary>
         /// private ITraitService _TraitService;
@@ -58,7 +58,7 @@ namespace VisualNovelManagerv2.Pages
 
 
             ButtonsList = new ObservableCollection<Button>();
-            ModListCollection = new ObservableCollection<ZZZ>();
+            ModListCollection = new ObservableCollection<ClickableTraits>();
 
             //for (int i = 0; i < 5; i++)
             //{
@@ -175,7 +175,7 @@ namespace VisualNovelManagerv2.Pages
                             .First();
 
                         List<Button> buttonList = childTraitList.Select(trait => new Button() {Content = trait, Command = WriteObjectCommand, CommandParameter = trait}).ToList();
-                        ModListCollection.Add(new ZZZ() { Name = mainTrait, Traits = buttonList });
+                        ModListCollection.Add(new ClickableTraits() { Name = mainTrait, Traits = buttonList });
                         //TraitCollection.Add(menuItem);
                     }
 
@@ -204,7 +204,7 @@ namespace VisualNovelManagerv2.Pages
         }
     }
 
-    public class ZZZ
+    public class ClickableTraits
     {
         public string Name { get; set; }
         public List<Button> Traits { get; set; }
