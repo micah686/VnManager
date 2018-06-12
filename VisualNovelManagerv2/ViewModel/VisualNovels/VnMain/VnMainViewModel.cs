@@ -264,7 +264,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
                 using (var context = new DatabaseContext())
                 {
                     VnUserData userData = context.VnUserData.FirstOrDefault(v => v.VnId == Globals.VnId);
-                    if (userData != null)
+                    if (userData != null && Directory.Exists(userData.ExePath))
                     {
                         //checks for existance of Iconpath first, then ExePath. If both are null/empty, it returns a null image
                         return !string.IsNullOrEmpty(userData.IconPath) ? CreateIcon(userData.IconPath) : CreateIcon(!string.IsNullOrEmpty(userData.ExePath) ? userData.ExePath : null);
@@ -395,7 +395,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
                     {
                         VnInfo idList = context.VnInfo.FirstOrDefault(x => x.Title.Equals(_selectedVn));
                         VnUserData vnUserData = context.VnUserData.FirstOrDefault(x => x.VnId.Equals(idList.VnId));
-                        if (vnUserData?.ExePath != null)
+                        if (vnUserData?.ExePath != null && Directory.Exists(vnUserData?.ExePath))
                         {
                             string exepath = vnUserData.ExePath;
                             string dirpath = Path.GetDirectoryName(exepath);
