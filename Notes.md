@@ -5,7 +5,7 @@ These are just personal reminders for me to keep track of what I need to fix/add
 - [ ] Set up virtualizing lists for large results
 - [ ] Add "Update VN" to context menu
 - [ ] Perhaps drop the VnTags/Traits table and use the local copies instead?
-
+- [ ] Move the gear for add/remove categories to below the games, and have it be a context menu. At the top, have a box for filtering by category
 
 
 - $1: I don't know if you plan on supporting collection .exes, where it has 3 VNs tied to one .exe
