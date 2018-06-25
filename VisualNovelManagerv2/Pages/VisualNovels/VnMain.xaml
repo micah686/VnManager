@@ -41,8 +41,8 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
+                        <!--<RowDefinition Height="Auto"/>-->
                         <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <TextBlock Grid.Row="0" Style="{StaticResource Emphasis}" Text="Categories" Margin="0,0,5,5" TextAlignment="Center"/>
                     <StackPanel Grid.Row="1" Margin="7" Orientation="Horizontal">
@@ -54,21 +54,13 @@
                     <Separator Grid.Row="2" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
 
 
-                    <ScrollViewer Name="sv" Grid.Row="3"  
-                                  ClipToBounds="True"
-                                  >
-
-                        <Canvas Width="{Binding Path=ViewportWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ScrollViewer}}"
+                    <ScrollViewer Grid.Row="3" ClipToBounds="True" >
+                        <Canvas Width="{Binding MaxListWidth}" 
                                 Height="{Binding Path=ViewportHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ScrollViewer}}">
-                            <!--<WebBrowser Canvas.Top="0" Canvas.Left="0" 
-                                        Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Canvas}}"
-                                        Height="{Binding Path=ActualHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Canvas}}"
-                                        Source="http://www.microsoft.com"/>-->
                             <ListBox Canvas.Top="0" Canvas.Left="0" x:Name="NoteList"  ItemsSource="{Binding VnNameCollection}" Margin="0,5,5,5"
                                      MinWidth="150"  SelectedItem="{Binding SelectedVn}"
                                      Height="{Binding Path=ActualHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Canvas}}"
-                                     Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Canvas}}"
-                                     >
+                                     Width="{Binding MaxListWidth}">
                                 <i:Interaction.Triggers>
                                     <i:EventTrigger EventName="SelectedItemChanged">
                                         <i:InvokeCommandAction Command="{Binding GetVnDataCommand}" CommandParameter="{Binding ElementName=NoteList, Path=SelectedItem}"/>

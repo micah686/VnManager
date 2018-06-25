@@ -13,7 +13,7 @@ namespace VisualNovelManagerv2.CustomClasses.TinyClasses
                 new Typeface(new System.Windows.Media.FontFamily("Segoe UI"), FontStyles.Normal, FontWeights.Bold, FontStretches.Normal),
                 13, Brushes.Black);
             //add 10 for some extra padding
-            return (formattedText.Width + 10);
+            return (formattedText.Width + 25);
         }
     }
 }

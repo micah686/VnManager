@@ -265,6 +265,12 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
 
         private void SetMaxWidth()
         {
+            if (VnNameCollection.Count > 0)
+            {
+                string longestString = VnNameCollection.OrderByDescending(s => s.Length).First();
+                MaxListWidth = MeasureStringSize.GetMaxStringWidth(longestString);
+            }
+
             if (VnInfoTagCollection.Count > 0)
             {
                 string longestString = VnInfoTagCollection.OrderByDescending(s => s.Length).First();
