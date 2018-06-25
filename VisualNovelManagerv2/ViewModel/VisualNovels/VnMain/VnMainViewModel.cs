@@ -87,43 +87,60 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
             LoadCategories();
         }
 
+
+
         private void LoadCategories()
         {
             TreeVnCategories.Clear();
-            
+
             try
             {
                 using (var context = new DatabaseContext())
                 {
-                    MenuItem root = new MenuItem(){Header = "Visual Novels"};
-                    MenuItem all= new MenuItem(){Header = "All", IsSubmenuOpen = true};
-                    foreach (var item in context.VnInfo.Select(x => x.Title))
+                    if (context.VnInfo != null)
                     {
-                        all.Items.Add(new MenuItem(){Header = item});
+                        VnNameCollection.InsertRange(context.VnInfo.Select(x => x.Title).ToList());
+                        return;
                     }
-                    root.Items.Add(all);
 
-                    foreach (var category in context.Categories.Where(x => x.CategoryName != "All").Select(x => x.CategoryName))
-                    {
-                        var menuItem = new MenuItem(){Header = category};
-
-                        string[] names = context.VnInfo.Where(v => context.VnUserCategoryTitles.Where(c => c.Title == category).Select(x => x.VnId)
-                                .Contains(v.VnId)).Select(t => t.Title).ToArray();
-
-                        foreach (var vn in names)
-                        {
-                            menuItem.Items.Add(new MenuItem() {Header = vn});
-                        }
-                        root.Items.Add(menuItem);
-                    }
-                    TreeVnCategories.Add(root);
-                    
                 }
+
+
+                //using (var context = new DatabaseContext())
+                //{
+                //    MenuItem root = new MenuItem(){Header = "Visual Novels"};
+                //    MenuItem all= new MenuItem(){Header = "All", IsSubmenuOpen = true};
+                //    foreach (var item in context.VnInfo.Select(x => x.Title))
+                //    {
+                //        all.Items.Add(new MenuItem(){Header = item});
+                //    }
+                //    root.Items.Add(all);
+
+                //    foreach (var category in context.Categories.Where(x => x.CategoryName != "All").Select(x => x.CategoryName))
+                //    {
+                //        var menuItem = new MenuItem(){Header = category};
+
+                //        string[] names = context.VnInfo.Where(v => context.VnUserCategoryTitles.Where(c => c.Title == category).Select(x => x.VnId)
+                //                .Contains(v.VnId)).Select(t => t.Title).ToArray();
+
+                //        foreach (var vn in names)
+                //        {
+                //            menuItem.Items.Add(new MenuItem() {Header = vn});
+                //        }
+                //        root.Items.Add(menuItem);
+                //    }
+                //    TreeVnCategories.Add(root);
+
+                //}
             }
             catch (Exception ex)
             {
                 Globals.Logger.Error(ex);
                 throw;
+            }
+            finally
+            {
+                SetMaxWidth();
             }
         }
 

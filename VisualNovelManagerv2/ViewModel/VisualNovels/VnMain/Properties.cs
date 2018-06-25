@@ -107,7 +107,20 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
                 RaisePropertyChanged(nameof(TreeVnCategories));
             }
         }
-        #endregion        
+        #endregion
+
+        #region ObservableVnNameCollection
+        private RangeEnabledObservableCollection<string> _vnNameCollection = new RangeEnabledObservableCollection<string>();
+        public RangeEnabledObservableCollection<string> VnNameCollection
+        {
+            get { return _vnNameCollection; }
+            set
+            {
+                _vnNameCollection = value;
+                RaisePropertyChanged(nameof(VnNameCollection));
+            }
+        }
+        #endregion
 
         #region VnMainModel
         private VnMainModel _vnMainModel = new VnMainModel();
@@ -118,6 +131,20 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
             {
                 _vnMainModel = value;
                 RaisePropertyChanged(nameof(VnMainModel));
+            }
+        }
+        #endregion
+
+        #region SelectedVn
+        private string _selectedVn = String.Empty;
+        public string SelectedVn
+        {
+            get { return _selectedVn; }
+            set
+            {
+                _selectedVn = value;
+                RaisePropertyChanged(nameof(SelectedVn));
+                GetVnData();
             }
         }
         #endregion
@@ -256,8 +283,20 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
         }
         #endregion
 
+        #region MaxWidth
+        private double _maxListWidth;
+        public double MaxListWidth
+        {
+            get { return _maxListWidth; }
+            set
+            {
+                _maxListWidth = value;
+                RaisePropertyChanged(nameof(MaxListWidth));
+            }
+        }
+        #endregion
+
         private readonly Stopwatch _stopwatch = new Stopwatch();
-        private string _selectedVn= String.Empty;
         public bool IsMainBinding = false;
         private bool _isUserInputEnabled = true;
         private bool _isGameRunning = false;
