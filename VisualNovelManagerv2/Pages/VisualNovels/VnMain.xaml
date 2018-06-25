@@ -53,46 +53,35 @@
 
                     <Separator Grid.Row="2" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
 
-                    <ListBox Grid.Row="3" x:Name="NoteList"  ItemsSource="{Binding VnNameCollection}" Margin="0,5,5,5"
-                              MinWidth="150"  SelectedItem="{Binding SelectedVn}">
-                        <ListBox.Template>
-                            <ControlTemplate>
-                                <Border BorderBrush="Red" BorderThickness="3" CornerRadius="5">
-                                    <ScrollViewer CanContentScroll="True" VerticalScrollBarVisibility="Visible">
-                                        <ItemsPresenter/>
-                                    </ScrollViewer>
-                                </Border>
-                            </ControlTemplate>
-                        </ListBox.Template>
-                        <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="SelectedItemChanged">
-                                <i:InvokeCommandAction Command="{Binding GetVnDataCommand}" CommandParameter="{Binding ElementName=NoteList, Path=SelectedItem}"/>
-                            </i:EventTrigger>
-                            <i:EventTrigger EventName="MouseRightButtonUp">
-                                <i:InvokeCommandAction Command="{Binding OpenContextMenuCommand}"/>
-                            </i:EventTrigger>
-                        </i:Interaction.Triggers>
-                    </ListBox>
-                    <!--<TreeView x:Name="CategoryTreeView" Grid.Row="3" ItemsSource="{Binding TreeVnCategories}" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" >
-                        <TreeView.ItemContainerStyle>
-                            <Style TargetType="{x:Type TreeViewItem}">
-                                <Setter Property="IsExpanded" Value="True"/>
-                            </Style>
-                        </TreeView.ItemContainerStyle>
-                        <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="SelectedItemChanged">
-                                <i:InvokeCommandAction Command="{Binding GetVnDataCommand}" CommandParameter="{Binding ElementName=CategoryTreeView, Path=SelectedItem}"/>
-                            </i:EventTrigger>
-                            <i:EventTrigger EventName="MouseRightButtonUp">
-                                <i:InvokeCommandAction Command="{Binding OpenContextMenuCommand}"/>
-                            </i:EventTrigger>
-                        </i:Interaction.Triggers>
-                        <TreeView.ItemTemplate>
-                            <HierarchicalDataTemplate  ItemsSource="{Binding Items}">
-                                <Label Content="{Binding Header}"/>
-                            </HierarchicalDataTemplate>
-                        </TreeView.ItemTemplate>
-                    </TreeView>-->
+
+                    <ScrollViewer Name="sv" Grid.Row="3"  
+                                  ClipToBounds="True"
+                                  >
+
+                        <Canvas Width="{Binding Path=ViewportWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ScrollViewer}}"
+                                Height="{Binding Path=ViewportHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ScrollViewer}}">
+                            <!--<WebBrowser Canvas.Top="0" Canvas.Left="0" 
+                                        Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Canvas}}"
+                                        Height="{Binding Path=ActualHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Canvas}}"
+                                        Source="http://www.microsoft.com"/>-->
+                            <ListBox Canvas.Top="0" Canvas.Left="0" x:Name="NoteList"  ItemsSource="{Binding VnNameCollection}" Margin="0,5,5,5"
+                                     MinWidth="150"  SelectedItem="{Binding SelectedVn}"
+                                     Height="{Binding Path=ActualHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Canvas}}"
+                                     Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Canvas}}"
+                                     >
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="SelectedItemChanged">
+                                        <i:InvokeCommandAction Command="{Binding GetVnDataCommand}" CommandParameter="{Binding ElementName=NoteList, Path=SelectedItem}"/>
+                                    </i:EventTrigger>
+                                    <i:EventTrigger EventName="MouseRightButtonUp">
+                                        <i:InvokeCommandAction Command="{Binding OpenContextMenuCommand}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </ListBox>
+                        </Canvas>
+                    </ScrollViewer>
+
+                    
                 </Grid>
 
                 <!--#region Divider-->
