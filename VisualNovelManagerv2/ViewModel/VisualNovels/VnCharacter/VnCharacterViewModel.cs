@@ -174,7 +174,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
                                 : character.Aliases;
 
                         string path = $@"{Globals.DirectoryPath}\Data\images\characters\{Globals.VnId}\{Path.GetFileName(character.ImageLink)}";
-                        if (!string.IsNullOrEmpty(path))
+                        if (!string.IsNullOrEmpty(character.ImageLink))
                         {
                             BitmapImage bitmap = new BitmapImage();
                             using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
@@ -186,7 +186,11 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
                                 bitmap.Freeze();
                                 VnCharacterModel.Image = bitmap;
                             }
-                        }                        
+                        }
+                        else
+                        {
+                            VnCharacterModel.Image = new BitmapImage();
+                        }
                         VnCharacterModel.Bust = character.Bust.ToString();
                         VnCharacterModel.Waist = character.Waist.ToString();
                         VnCharacterModel.Hip = character.Hip.ToString();
