@@ -216,6 +216,8 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnMain
                     IsSexualTagsEnabled = false;
                     IsTechnicalTagsEnabled = false;
                 }
+                if (IsContentTagsEnabled == false && IsSexualTagsEnabled == false && IsTechnicalTagsEnabled == false)
+                    _isAllTagsEnabled = true;
                 SetTags();
                 RaisePropertyChanged(nameof(IsAllTagsEnabled));
             }
