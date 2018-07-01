@@ -29,6 +29,10 @@ namespace VisualNovelManagerv2.Converters.TraitConverter.TraitService
 
         public TraitModel GetLastParentTrait(TraitModel trait)
         {
+            if (trait.ParentTraits == null)
+            {
+                return trait;
+            }
             if (trait.ParentTraits.Any())
             {
                 return GetLastParentTrait(trait.ParentTraits.Last());

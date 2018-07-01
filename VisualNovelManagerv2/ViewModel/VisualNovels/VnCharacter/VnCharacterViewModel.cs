@@ -218,7 +218,7 @@ namespace VisualNovelManagerv2.ViewModel.VisualNovels.VnCharacter
                     List<TraitModel> traits = new List<TraitModel>();
                     var traitsWithParent = new Dictionary<TraitModel, List<string>>();
                     var traitArr = context.VnCharacterTraits
-                        .Where(x => x.CharacterId == _characterId && x.SpoilerLevel < Globals.MaxSpoiler).Select(x => x.TraitId)
+                        .Where(x => x.CharacterId == _characterId && x.SpoilerLevel <= Globals.MaxSpoiler).Select(x => x.TraitId)
                         .ToArray();
                     traits.AddRange(traitArr.Select(trait => new TraitModel(Convert.ToInt32(trait), _TraitService)));
 
