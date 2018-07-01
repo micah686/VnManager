@@ -12,3 +12,5 @@ If there are features you want added, PLEASE add an issue, as I can't add a feat
 
 if you have feature suggestions, please put create an Issue or comment on this google doc:
 [https://docs.google.com/document/d/1mzovyY6C18YTbGmSP6DhQLiXFSrw7UoN-sq6IRhzy0A/edit](https://docs.google.com/document/d/1mzovyY6C18YTbGmSP6DhQLiXFSrw7UoN-sq6IRhzy0A/edit)
+
+This project relies on the VndbSharp submodule, so be sure to clone the submodules in order to build the project.
