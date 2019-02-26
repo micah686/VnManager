@@ -14,3 +14,4 @@ if you have feature suggestions, please put create an Issue or comment on this g
 [https://docs.google.com/document/d/1mzovyY6C18YTbGmSP6DhQLiXFSrw7UoN-sq6IRhzy0A/edit](https://docs.google.com/document/d/1mzovyY6C18YTbGmSP6DhQLiXFSrw7UoN-sq6IRhzy0A/edit)
 
 This project relies on the VndbSharp submodule, so be sure to clone the submodules in order to build the project.
+I haven't updated the library to work with the latest API, so it may fail to build.
