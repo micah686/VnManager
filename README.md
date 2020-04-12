@@ -1,7 +1,6 @@
 # Visual-Novel-Manager-v2 [![Build status](https://ci.appveyor.com/api/projects/status/github/micah686/visual-novel-manager-v2?svg=true)](https://ci.appveyor.com/api/projects/status/github/micah686/)
 
-A complete rework of my old visual novel manager, found here:
-[https://github.com/micah686/Visual-Novel-Manager](https://github.com/micah686/Visual-Novel-Manager)
+##V2 Of my Visual Novel Manager
 
 Information and the latest downloads can be found here:
 [https://micah686.github.io/Visual-Novel-Manager-v2/](https://micah686.github.io/Visual-Novel-Manager-v2/)
