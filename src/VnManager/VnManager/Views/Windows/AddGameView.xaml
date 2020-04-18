@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VnManager.Views.Windows"
         xmlns:s="https://github.com/canton7/Stylet"
+        xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
         xmlns:controls="clr-namespace:AdonisUI.Controls;assembly=AdonisUI"
         mc:Ignorable="d"
         Title="AddGameView" Height="400" Width="500">
@@ -53,6 +54,11 @@
                     </StackPanel>
                 </Grid>
 
+                <Grid Grid.Row="2">
+                    <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.Magnify}" Width="24" Height="24"/>
+                </Grid>
+                
+                <!-- end of root -->
             </Grid>
 
             
