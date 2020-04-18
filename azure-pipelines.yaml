@@ -1,0 +1,45 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- v3
+- master
+
+pool:
+  vmImage: 'windows-2019'
+
+steps:
+- task: UseDotNet@2
+  inputs:
+    version: '3.1.x'
+    
+- task: DotNetCoreCLI@2
+  displayName: Restore Nuget packages
+  inputs:
+    command: restore
+    projects: '**/*.csproj'
+
+- task: DotNetCoreCLI@2
+  displayName: Build and Publish
+  inputs:
+    command: publish
+    projects: '**/*.csproj'
+    publishWebProjects: false
+    arguments: '-c Release --output ./$(Build.SourcesDirectory)' # Update this to match your need
+    zipAfterPublish: True
+
+- task: CopyFiles@2
+  displayName: 'Copy Files to: Staging Directory'
+  inputs:
+    SourceFolder: '$(Build.SourcesDirectory)'
+    Contents: '$(Build.SourcesDirectory)\*.zip'
+    TargetFolder: '$(build.artifactstagingdirectory)'
+  condition: succeededOrFailed()
+  
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: drop'
+  inputs:
+    PathtoPublish: '$(build.artifactstagingdirectory)'
+  condition: succeededOrFailed()
