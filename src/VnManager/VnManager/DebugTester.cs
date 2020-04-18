@@ -12,7 +12,7 @@ namespace VnManager
         public void Tester()
         {
             //RaiseException(13, 0, 0, new IntPtr(1));
-            Globals.Logger.Error("something happened");
+            ///Globals.Logger.Error("something happened");
         }
         
 
