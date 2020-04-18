@@ -17,6 +17,8 @@ namespace VnManager.ViewModels
 
         public void Click()
         {
+            var dbg = new DebugTester();
+            dbg.Tester();
             var vm = new AddGameViewModel(_windowManager);
             _windowManager.ShowWindow(vm);
         }
