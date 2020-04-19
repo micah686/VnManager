@@ -14,14 +14,8 @@ namespace VnManager.ViewModels.Windows
         public string VnName { get; set; }
         public string ExePath { get; set; }
         public string IconPath { get; set; }
+        public bool IsNameChecked { get; set; }
 
-
-        private bool _isNameChecked;
-        public bool IsNameChecked
-        {
-            get { return this._isNameChecked; }
-            set { SetAndNotify(ref this._isNameChecked, value); }
-        }
 
 
         private readonly IWindowManager _windowManager;
