@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vmw="clr-namespace:VnManager.ViewModels.Windows"
         xmlns:local="clr-namespace:VnManager.Views.Windows"
         xmlns:s="https://github.com/canton7/Stylet"
         xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
@@ -10,7 +11,7 @@
         xmlns:adonisUi="clr-namespace:AdonisUI;assembly=AdonisUI"
         xmlns:ex="clr-namespace:VnManager.Extensions"
         mc:Ignorable="d"
-        Title="AddGameView" Height="400" Width="500">
+        Title="Add Game" Height="400" Width="500">
     <Grid>
         <Grid x:Name="AddVnRoot" Margin="20,10,10,35" MinWidth="200">
             <Grid.RowDefinitions>
@@ -52,24 +53,34 @@
                     <TextBlock Grid.Column="0" Text="Vndb Id or Name:" Width="100" FontStyle="Normal"/>
                     <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="5,0,0,0" >
                         <RadioButton x:Name="VnIdRadio" Content="Id" Margin="0,0,5,0"  IsChecked="True"/>
-                        <RadioButton x:Name="VnNameRadio" Content="Name" Margin="10,0,0,0" />
+                        <RadioButton x:Name="VnNameRadio" Content="Name" Margin="10,0,0,0" IsChecked="{Binding IsNameChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                     </StackPanel>
                 </Grid>
 
                 <Grid Grid.Row="2" Margin="0,0,0,15">
+                    <Grid.Resources>
+                        <s:BoolToVisibilityConverter x:Key="boolToVisConverter" TrueVisibility="Visible" FalseVisibility="Hidden"/>
+                        <vmw:VnIdNameBoolToStringConverter x:Key="VnIdStringConverter"/>
+                    </Grid.Resources>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" Text="Bind Str" Margin="0,5,0,0"/>
-                    
-                    <TextBox Grid.Column="1" x:Name="txtVnId" Width="150" MaxLength="10" Height="25" ex:TextBoxExtensions.IsNumericOnly="True" Grid.ColumnSpan="2" Margin="46,0,5,1" Visibility="Hidden"/>
-                    <ComboBox Grid.Column="1" x:Name="cmbVnName" Width="150" IsEditable="True"/>
-                    <Button>
-                        <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.Magnify}" Grid.Column="3" Width="24" Height="24"/>
-                    </Button>
-                    <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.Magnify}" Grid.Column="3" Width="24" Height="24"/>
+
+                    <StackPanel Orientation="Horizontal" Visibility="{Binding IsChecked, ElementName=VnIdRadio, Converter={StaticResource boolToVisConverter}}">
+                        <TextBlock Text="{Binding IsNameChecked, Converter={StaticResource VnIdStringConverter}}" Margin="0,5,0,0"/>
+                        <TextBox x:Name="txtVnId" Width="150" MaxLength="10" Height="25" ex:TextBoxExtensions.IsNumericOnly="True" Grid.ColumnSpan="2" Margin="10,0,0,0" />
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Visibility="{Binding IsChecked, ElementName=VnNameRadio, Converter={StaticResource boolToVisConverter}}">
+                        <TextBlock Grid.Column="0" Text="{Binding IsNameChecked, Converter={StaticResource VnIdStringConverter}}" Margin="0,5,0,0"/>
+                        <ComboBox x:Name="cmbVnName" Width="150" Height="25" IsEditable="True" Margin="10,0,0,0" />
+                        <Button Margin="5,0,0,0">
+                            <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.Magnify}"  />
+                        </Button>
+                    </StackPanel>
+
                 </Grid>
 
                 <Grid Grid.Row="3" Margin="0,0,0,15">
@@ -91,7 +102,7 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <Label Content="Path" Width="120"/>
+                    <TextBlock Text="Path" Width="120"/>
                     <TextBox Grid.Column="1" x:Name="TextPath"  Width="150" />
                     <Button Grid.Column="2" Content="Browse" />
                 </Grid>
@@ -111,7 +122,7 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <Label Content="IconPath" Width="120"/>
+                    <TextBlock Text="IconPath" Width="120"/>
                     <TextBox Grid.Column="1"  Width="150" />
                     <Button Grid.Column="2" Content="Browse" />
                 </Grid>
