@@ -59,4 +59,4 @@ steps:
 - task: SonarCloudPublish@1
   displayName: 'Publish results on build summary'
   inputs:
-pollingTimeoutSec: '300'
+  pollingTimeoutSec: '300'
