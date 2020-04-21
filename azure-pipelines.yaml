@@ -21,6 +21,15 @@ steps:
     command: restore
     projects: '**/*.csproj'
 
+- task: SonarCloudPrepare@1
+  displayName: 'Prepare for SonarCloud Scan'
+  inputs:
+    SonarCloud: 'SonarCloud'
+    organization: 'micah686'
+    scannerMode: 'MSBuild'
+    projectKey: '$(SONAR_CLOUD_KEY)'
+    projectName: 'VnManager'
+
 - task: DotNetCoreCLI@2
   displayName: Build and Publish
   inputs:
@@ -43,3 +52,11 @@ steps:
   inputs:
     PathtoPublish: '$(build.artifactstagingdirectory)'
   condition: succeededOrFailed()
+
+- task: SonarCloudAnalyze@1
+  displayName: 'Run SonarCloud analysis'
+
+- task: SonarCloudPublish@1
+  displayName: 'Publish results on build summary'
+  inputs:
+    pollingTimeoutSec: '300'
