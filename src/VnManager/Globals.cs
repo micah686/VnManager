@@ -10,15 +10,6 @@ namespace VnManager
     public static class Globals
     {
         public static readonly string DirectoryPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-        public static bool NsfwEnabled = false;
-        public static LogLevel Loglevel = LogLevel.Normal;
-        public static ILogger Logger;// created in boostrapper
-    }
-
-    public enum LogLevel
-    {
-        Normal,
-        Debug,
-        Verbose
+        public static bool IsNsfwEnabled { get; set; } = false;
     }
 }

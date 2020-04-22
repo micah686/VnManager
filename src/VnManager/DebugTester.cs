@@ -4,6 +4,7 @@ using System.Text;
 using System.Runtime.InteropServices;
 using System.IO;
 using System.Threading;
+using VnManager.Services;
 
 namespace VnManager
 {
@@ -13,6 +14,9 @@ namespace VnManager
         {
             //RaiseException(13, 0, 0, new IntPtr(1));
             ///Globals.Logger.Error("something happened");
+
+            LogManager.SetLogLevel(Services.LogLevel.Verbose);
+            LogManager.Logger.Error("test DebugTester Entry");
         }
         
 

@@ -1,29 +1,50 @@
-﻿using Serilog.Events;
-using Serilog.Formatting;
+﻿
 using System;
 using System.Collections.Generic;
+using System.Text;
+using Serilog.Core;
+using Serilog.Events;
+using Serilog.Formatting;
 using System.IO;
+using Serilog;
 
-namespace VnManager.Converters
+namespace VnManager.Services
 {
-    public class SerilogFormatter: ITextFormatter
+    internal class LogManager
+    {
+        public static LogLevel LogLevel { get; private set; } = LogLevel.Normal;
+        
+        internal static readonly ILogger Logger = new LoggerConfiguration().WriteTo.File(new SerilogFormatter(),
+            string.Format(@"{0}\Data\logs\{1}-{2}-{3}_{4}.log", Globals.DirectoryPath, DateTime.Now.Day, DateTime.Now.Month, DateTime.Now.Year, LogLevel.ToString())).CreateLogger();
+
+
+        private readonly LogManager _logManager;
+        public LogManager(LogManager logManager)
+        {
+            _logManager = logManager ?? throw new ArgumentNullException(nameof(logManager));
+            Logger.Information("Logger Startup Initialized");
+        }
+
+        public static void SetLogLevel(LogLevel logLevel)
+        {
+            LogLevel = logLevel;
+        }
+
+
+    }
+
+    public class SerilogFormatter : ITextFormatter
     {
         public void Format(LogEvent logEvent, TextWriter output)
         {
-            //output.Write("Timestamp - {0} | Level - {1} | Message {2} {3}", logEvent.Timestamp.DateTime.ToLongDateString(), logEvent.Level, logEvent.MessageTemplate, output.NewLine);
-            //if (logEvent.Exception != null)
-            //{
-            //    output.Write("Exception - {0}", logEvent.Exception);
-            //}
-
             string datestr = logEvent.Timestamp.Date.ToLongDateString();
             string timestr = logEvent.Timestamp.DateTime.ToLongTimeString();
-            if (Globals.Loglevel == LogLevel.Normal)
+            if (LogManager.LogLevel == LogLevel.Normal)
             {
                 output.Write("[ {0} | {1} {2}] Msg: {3}\n", logEvent.Level, datestr, timestr, logEvent.MessageTemplate); //don't log exceptions
 
             }
-            else if (Globals.Loglevel == LogLevel.Debug)
+            else if (LogManager.LogLevel == LogLevel.Debug)
             {
                 if (logEvent.Exception != null)
                 {
@@ -35,7 +56,7 @@ namespace VnManager.Converters
                 }
 
             }
-            else if (Globals.Loglevel == LogLevel.Verbose)
+            else if (LogManager.LogLevel == LogLevel.Verbose)
             {
                 string outstr = string.Empty;
                 string s1 = string.Empty;
@@ -66,5 +87,12 @@ namespace VnManager.Converters
                 throw new NotImplementedException();
             }
         }
+    }
+
+    public enum LogLevel
+    {
+        Normal,
+        Debug,
+        Verbose
     }
 }

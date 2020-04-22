@@ -6,7 +6,8 @@ using System.Windows.Threading;
 using Serilog;
 using Stylet;
 using StyletIoC;
-using VnManager.Converters;
+using VnManager.Services;
+//using VnManager.Converters;
 using VnManager.ViewModels;
 
 namespace VnManager
@@ -18,13 +19,15 @@ namespace VnManager
             // This is called just after the application is started, but before the IoC container is set up.
             // Set up things like logging, etc
             Initializers.Startup.CreatFolders();
-            Globals.Logger = new LoggerConfiguration().WriteTo.File(new SerilogFormatter(), string.Format(@"{0}\Data\logs\{1}-{2}-{3}_{4}.log", Globals.DirectoryPath, DateTime.Now.Day, DateTime.Now.Month, DateTime.Now.Year, Globals.Loglevel.ToString())).CreateLogger();
         }
 
         protected override void ConfigureIoC(IStyletIoCBuilder builder)
         {
             // Bind your own types. Concrete types are automatically self-bound.
             //builder.Bind<IMyInterface>().To<MyType>();
+
+            base.ConfigureIoC(builder);
+            builder.Bind<LogManager>().ToSelf().InSingletonScope();            
         }
 
         protected override void Configure()
@@ -48,8 +51,8 @@ namespace VnManager
         protected override void OnUnhandledException(DispatcherUnhandledExceptionEventArgs e)
         {
             //always want a verbose log if the program crashes
-            Globals.Loglevel = LogLevel.Verbose;
-            Globals.Logger.Fatal(e.Exception, "Program Crashed!");
+            LogManager.SetLogLevel(LogLevel.Verbose);
+            LogManager.Logger.Fatal(e.Exception, "Program Crashed!");
             // Called on Application.DispatcherUnhandledException
         }
     }
