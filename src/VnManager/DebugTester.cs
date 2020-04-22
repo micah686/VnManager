@@ -5,9 +5,11 @@ using System.Runtime.InteropServices;
 using System.IO;
 using System.Threading;
 using VnManager.Services;
+using System.Diagnostics.CodeAnalysis;
 
 namespace VnManager
 {
+    [ExcludeFromCodeCoverage]
     public class DebugTester
     {
         public void Tester()
