@@ -7,7 +7,6 @@ using Serilog;
 using Stylet;
 using StyletIoC;
 using VnManager.Services;
-//using VnManager.Converters;
 using VnManager.ViewModels;
 
 namespace VnManager
