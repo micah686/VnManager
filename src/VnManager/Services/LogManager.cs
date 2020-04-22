@@ -1,8 +1,4 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Serilog.Core;
+﻿using System;
 using Serilog.Events;
 using Serilog.Formatting;
 using System.IO;

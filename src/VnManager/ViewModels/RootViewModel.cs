@@ -1,7 +1,4 @@
 ﻿using Stylet;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using VnManager.ViewModels.Windows;
 
 namespace VnManager.ViewModels
