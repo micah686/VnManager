@@ -2,7 +2,8 @@
 using System.Windows.Threading;
 using Stylet;
 using StyletIoC;
-using VnManager.Services;
+using VnManager.Converters;
+using VnManager.Utilities;
 using VnManager.ViewModels;
 
 namespace VnManager
@@ -20,9 +21,7 @@ namespace VnManager
         {
             // Bind your own types. Concrete types are automatically self-bound.
             //builder.Bind<IMyInterface>().To<MyType>();
-
-            base.ConfigureIoC(builder);
-            builder.Bind<LogManager>().ToSelf().InSingletonScope();            
+           
         }
 
         protected override void Configure()
