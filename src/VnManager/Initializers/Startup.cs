@@ -8,9 +8,10 @@ namespace VnManager.Initializers
     {
         public static void SetDirectories()
         {
-            if(App.ExecutableDirPath.Contains(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles)) || App.ExecutableDirPath.Contains(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86)))
+            if(App.ExecutableDirPath.Contains(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles)) || App.ExecutableDirPath.Contains(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86))
+                || App.ExecutableDirPath.Contains(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)))
             {
-                //prog files
+                //prog files or appdata local
                 bool canReadWrite = (CheckWriteAccess(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)) && CheckWriteAccess(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)));
                 if (canReadWrite)
                 {
@@ -25,25 +26,7 @@ namespace VnManager.Initializers
                     AdonisUI.Controls.MessageBox.Show($"Could not read/write to user data directories!\nExiting Application", "Failed to start!", AdonisUI.Controls.MessageBoxButton.OK);
                     Environment.Exit(1);
                 }
-            }
-            else if (App.ExecutableDirPath.Contains(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)))
-            {
-                //appdata
-                bool canReadWrite = (CheckWriteAccess(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)) && CheckWriteAccess(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)));
-                if (canReadWrite)
-                {
-                    App.AssetDirPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "VnManager");
-                    App.ConfigDirPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "VnManager");
-                    App.IsPortable = false;
-                }
-                else
-                {
-                    App.AssetDirPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-                    LogManager.Logger.Error("Could not read/write to asset/config directories");
-                    AdonisUI.Controls.MessageBox.Show($"Could not read/write to user data directories!\nExiting Application", "Failed to start!", AdonisUI.Controls.MessageBoxButton.OK);
-                    Environment.Exit(1);
-                }
-            }
+            }            
             else
             {
                 //instance
