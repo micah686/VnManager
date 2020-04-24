@@ -7,6 +7,8 @@ A program to keep track of your visual novels
 [![Gitter Chat](https://badges.gitter.im/micah686/VnManager.svg)](https://gitter.im/micah686/VnManager)
 ![Commits](https://img.shields.io/github/commit-activity/w/micah686/VnManager)
 
+[![Build history](https://buildstats.info/azurepipelines/chart/legendofzeldafan3/VnManager/16)](https://buildstats.info/azurepipelines/chart/legendofzeldafan3/VnManager/16/history)
+
 
 
 ### Please note that all work on v2 of the program has ceased (Visual-Novel-Manager-v2) 
