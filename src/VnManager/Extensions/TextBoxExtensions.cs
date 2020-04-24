@@ -4,7 +4,7 @@ using System.Windows.Input;
 
 namespace VnManager.Extensions
 {
-    public class TextBoxExtensions
+    public static class TextBoxExtensions
     {
         #region NumericOnly
         /// <summary>
