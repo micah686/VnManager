@@ -31,12 +31,12 @@
                 </Grid.ColumnDefinitions>
                 <Label Grid.Column="0" Content="Source:" MinWidth="50"/>
                 <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="5,0,0,0">
-                    <RadioButton Content="Vndb" IsChecked="True" Margin="0,0,5,0"/>
-                    <RadioButton Content="DLSite" Margin="10,0,0,0"/>
+                    <RadioButton x:Name="VndbSource" Content="Vndb" IsChecked="True" Margin="0,0,5,0"/>
+                    <RadioButton x:Name="DlSiteSource" Content="DLSite" Margin="10,0,0,0"/>
                 </StackPanel>
             </Grid>
 
-            <Grid Grid.Row="1" x:Name="AddVndb">
+            <Grid Grid.Row="1" x:Name="AddVndb" Visibility="{Binding IsChecked, ElementName=VndbSource, Converter={StaticResource boolToVisConverter}}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
@@ -112,9 +112,29 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Text="Path" Width="40"/>
-                    <TextBox Grid.Column="1" x:Name="TextPath"  Width="300" IsReadOnly="True" IsReadOnlyCaretVisible="True"/>
-                    <Button Grid.Column="2" Content="Browse" Margin="5,0,0,0"/>
+
+                    <StackPanel Orientation="Horizontal" >
+                        <StackPanel.Style>
+                            <Style TargetType="StackPanel">
+                                <Setter Property="Visibility" Value="Hidden"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsChecked, ElementName=ExeNormalRadio}" Value="True">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding IsChecked, ElementName=ExeLauncherRadio}" Value="True">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </StackPanel.Style>
+                        <TextBlock Text="Path:" Width="40"/>
+                        <TextBox Grid.Column="1" x:Name="TextPath"  Width="300" IsReadOnly="True" IsReadOnlyCaretVisible="True"/>
+                        <Button Grid.Column="2" Content="Browse" Margin="5,0,0,0"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Visibility="{Binding IsChecked, ElementName=ExeCollectionRadio, Converter={StaticResource boolToVisConverter}}">
+                        <Button Content="Manage Executables" Width="150"/>
+                    </StackPanel>
+
                 </Grid>
 
                 <Grid Grid.Row="5" Margin="0,0,0,15">
@@ -128,8 +148,6 @@
                               IsEnabled="{Binding IsNotExeCollection}"/>
                 </Grid>
 
-                
-                
                 <Grid Grid.Row="6" Margin="0,0,0,15" Visibility="{Binding IsChecked, ElementName=chkCustomArg, Converter={StaticResource boolToVisConverter}}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
@@ -143,9 +161,7 @@
 
                 </Grid>
 
-             
-
-            <Grid Grid.Row="7" Margin="0,0,0,15" Visibility="{Binding IsChecked, ElementName=chkCustomIco, Converter={StaticResource boolToVisConverter}}">
+                <Grid Grid.Row="7" Margin="0,0,0,15" Visibility="{Binding IsChecked, ElementName=chkCustomIco, Converter={StaticResource boolToVisConverter}}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
@@ -160,7 +176,7 @@
 
 
 
-                <Grid Grid.Row="8" Margin="0,10,0,0">
+                <Grid Grid.Row="8" Margin="0,5,0,10">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
@@ -173,8 +189,8 @@
 
 
 
-            <Grid Grid.Row="1" x:Name="AddDlSite" Visibility="Hidden" IsEnabled="False">
-                <Label Content="test2"/>
+            <Grid Grid.Row="1" x:Name="AddDlSite" Visibility="{Binding IsChecked, ElementName=DlSiteSource, Converter={StaticResource boolToVisConverter}}">
+                <TextBlock Text="Support for DLSite or other sources is not planned until issues with vndb are fixed" Margin="5,25,5,0"/>
             </Grid>
         </Grid>
     </Grid>
