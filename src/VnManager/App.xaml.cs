@@ -19,7 +19,7 @@ namespace VnManager
 
         public static string ExecutableDirPath { get; } = AppDomain.CurrentDomain.BaseDirectory!;
 
-        #region AssetDirPath
+        #region AssetDirPath 
         private static bool wasSetAssetDirPath = false;
         private static string _assetDirPath;
         public static string AssetDirPath

@@ -1,13 +1,15 @@
 ﻿using System;
 using System.IO;
+using System.IO.Abstractions;
 using VnManager.Utilities;
 
 namespace VnManager.Initializers
 {
     public class Startup
     {
+        private static readonly IFileSystem fs = new FileSystem();
         public static void SetDirectories()
-        {
+        {            
             if(App.ExecutableDirPath.Contains(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles)) || App.ExecutableDirPath.Contains(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86))
                 || App.ExecutableDirPath.Contains(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)))
             {
@@ -15,8 +17,8 @@ namespace VnManager.Initializers
                 bool canReadWrite = (CheckWriteAccess(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)) && CheckWriteAccess(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)));
                 if (canReadWrite)
                 {
-                    App.AssetDirPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "VnManager");
-                    App.ConfigDirPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "VnManager");
+                    App.AssetDirPath = fs.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "VnManager");
+                    App.ConfigDirPath = fs.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "VnManager");
                     App.IsPortable = false;
                 }
                 else
@@ -33,8 +35,8 @@ namespace VnManager.Initializers
                 bool canReadWrite = CheckWriteAccess(App.ExecutableDirPath);
                 if (canReadWrite)
                 {
-                    App.AssetDirPath = Path.Combine(App.ExecutableDirPath, "Data");
-                    App.ConfigDirPath = Path.Combine(App.ExecutableDirPath, "Data");
+                    App.AssetDirPath = fs.Path.Combine(App.ExecutableDirPath, "Data");
+                    App.ConfigDirPath = fs.Path.Combine(App.ExecutableDirPath, "Data");
                     App.IsPortable = true;
                 }
                 else
@@ -46,33 +48,33 @@ namespace VnManager.Initializers
                 }
             }
 
-            CreatFolders();            
+            CreateFolders();            
         }
         
-        private static void CreatFolders()
+        private static void CreateFolders()
         {
             //Assets folder ( images, logs,...)
-            Directory.CreateDirectory(Path.Combine(App.AssetDirPath, @"res\icons\countryflags"));
+            fs.Directory.CreateDirectory(Path.Combine(App.AssetDirPath, @"res\icons\countryflags"));
 
-            Directory.CreateDirectory(Path.Combine(App.AssetDirPath, @"vndb\images\cover"));
-            Directory.CreateDirectory(Path.Combine(App.AssetDirPath, @"vndb\images\screenshots"));
-            Directory.CreateDirectory(Path.Combine(App.AssetDirPath, @"vndb\images\characters"));
+            fs.Directory.CreateDirectory(Path.Combine(App.AssetDirPath, @"vndb\images\cover"));
+            fs.Directory.CreateDirectory(Path.Combine(App.AssetDirPath, @"vndb\images\screenshots"));
+            fs.Directory.CreateDirectory(Path.Combine(App.AssetDirPath, @"vndb\images\characters"));
 
-            Directory.CreateDirectory(Path.Combine(App.AssetDirPath, @"logs"));
+            fs.Directory.CreateDirectory(Path.Combine(App.AssetDirPath, @"logs"));
 
             //Config
-            Directory.CreateDirectory(Path.Combine(App.ConfigDirPath, @"database"));
-            Directory.CreateDirectory(Path.Combine(App.AssetDirPath, @"config"));
+            fs.Directory.CreateDirectory(Path.Combine(App.ConfigDirPath, @"database"));
+            fs.Directory.CreateDirectory(Path.Combine(App.AssetDirPath, @"config"));
         }
 
         private static bool CheckWriteAccess(string dirPath)
         {
-            var testFilePath = Path.Combine(dirPath, Guid.NewGuid().ToString());
+            var testFilePath = fs.Path.Combine(dirPath, Guid.NewGuid().ToString());
 
             try
             {
-                File.WriteAllText(testFilePath, "");
-                File.Delete(testFilePath);
+                fs.File.WriteAllText(testFilePath, "");
+                fs.File.Delete(testFilePath);
 
                 return true;
             }
