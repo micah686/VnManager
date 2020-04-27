@@ -16,8 +16,6 @@
         <Grid x:Name="AddVnRoot" Margin="15,10,10,10" MinWidth="200">
             <Grid.Resources>
                 <s:BoolToVisibilityConverter x:Key="boolToVisConverter" TrueVisibility="Visible" FalseVisibility="Hidden"/>
-                <ex:BooleanAndConverter x:Key="boolAndConverter"/>
-                <ex:BooleanOrConverter x:Key="boolOrConverter"/>
             </Grid.Resources>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>

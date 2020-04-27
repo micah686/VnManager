@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Extensions\BooleanAndOrConverter.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AdonisUI.ClassicTheme" Version="1.14.0" />
     <PackageReference Include="MahApps.Metro.IconPacks.Material" Version="4.0.0" />
     <PackageReference Include="PropertyChanged.Fody" Version="3.2.8" />

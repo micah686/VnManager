@@ -16,8 +16,9 @@ namespace VnManager.ViewModels
         {
             var dbg = new DebugTester();
             dbg.Tester();
-            var vm = new AddGameViewModel(_windowManager);
-            _windowManager.ShowWindow(vm);
+            var vm = new AddGameMultiViewModel(_windowManager);
+            //_windowManager.ShowWindow(vm);
+            _windowManager.ShowDialog(vm);
         }
     }
 }
