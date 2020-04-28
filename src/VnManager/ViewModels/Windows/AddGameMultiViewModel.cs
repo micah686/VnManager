@@ -43,10 +43,10 @@ namespace VnManager.ViewModels.Windows
 
 
         private readonly IWindowManager _windowManager;
-        public AddGameMultiViewModel(IWindowManager windowManager)
+        public AddGameMultiViewModel(IWindowManager windowManager, IModelValidator<AddGameMultiViewModel> validator) : base(validator)
         {
             _windowManager = windowManager;
-
+            this.Validate();
             for (int i = 0; i < 25; i++)
             {
                 GameCollection.Add(new MultiExeGamePaths { ExePath = "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis p", IconPath = "testico", ArgumentsString = "testarg" });

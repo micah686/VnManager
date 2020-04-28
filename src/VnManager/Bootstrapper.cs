@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Threading;
+using FluentValidation;
 using Stylet;
 using StyletIoC;
 using VnManager.Converters;
@@ -19,9 +20,13 @@ namespace VnManager
 
         protected override void ConfigureIoC(IStyletIoCBuilder builder)
         {
+            base.ConfigureIoC(builder);
             // Bind your own types. Concrete types are automatically self-bound.
             //builder.Bind<IMyInterface>().To<MyType>();
-           
+            builder.Bind<IViewModelFactory>().ToAbstractFactory();
+            
+            builder.Bind(typeof(IModelValidator<>)).To(typeof(FluentModelValidator<>));
+            builder.Bind(typeof(IValidator<>)).ToAllImplementations();
         }
 
         protected override void Configure()
