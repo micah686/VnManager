@@ -23,7 +23,7 @@ namespace VnManager
             base.ConfigureIoC(builder);
             // Bind your own types. Concrete types are automatically self-bound.
             //builder.Bind<IMyInterface>().To<MyType>();
-            builder.Bind<IViewModelFactory>().ToAbstractFactory();
+            //builder.Bind<IViewModelFactory>().ToAbstractFactory();
             
             builder.Bind(typeof(IModelValidator<>)).To(typeof(FluentModelValidator<>));
             builder.Bind(typeof(IValidator<>)).ToAllImplementations();
