@@ -30,7 +30,7 @@
                 <Label Grid.Column="0" Content="Source:" MinWidth="50"/>
                 <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="5,0,0,0">
                     <RadioButton x:Name="VndbSource" Content="Vndb" IsChecked="True" Margin="0,0,5,0"/>
-                    <RadioButton x:Name="DlSiteSource" Content="DLSite" Margin="10,0,0,0"/>
+                    <!--<RadioButton x:Name="DlSiteSource" Content="DLSite" Margin="10,0,0,0"/>-->
                 </StackPanel>
             </Grid>
 
@@ -126,7 +126,7 @@
                             </Style>
                         </StackPanel.Style>
                         <TextBlock Text="Path:" Width="40"/>
-                        <TextBox Grid.Column="1" x:Name="TextPath"  Width="300" IsReadOnly="True" IsReadOnlyCaretVisible="True"/>
+                        <TextBox Grid.Column="1" x:Name="TextPath"  Width="300" IsReadOnly="True" IsReadOnlyCaretVisible="True" Text="{Binding ExePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                         <Button Grid.Column="2" Content="Browse" Margin="5,0,0,0"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Visibility="{Binding IsChecked, ElementName=ExeCollectionRadio, Converter={StaticResource boolToVisConverter}}">
@@ -187,9 +187,9 @@
 
 
 
-            <Grid Grid.Row="1" x:Name="AddDlSite" Visibility="{Binding IsChecked, ElementName=DlSiteSource, Converter={StaticResource boolToVisConverter}}">
+            <!--<Grid Grid.Row="1" x:Name="AddDlSite" Visibility="{Binding IsChecked, ElementName=DlSiteSource, Converter={StaticResource boolToVisConverter}}">
                 <TextBlock Text="Support for DLSite or other sources is not planned until issues with vndb are fixed" Margin="5,25,5,0"/>
-            </Grid>
+            </Grid>-->
         </Grid>
     </Grid>
 </controls:AdonisWindow>

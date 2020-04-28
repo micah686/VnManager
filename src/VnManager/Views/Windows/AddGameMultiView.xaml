@@ -74,7 +74,7 @@
                 </Grid.ColumnDefinitions>
 
                 <TextBlock Text="Path:" Width="40"/>
-                <TextBox Grid.Column="1" x:Name="ExePath"  Width="300" IsReadOnly="True" IsReadOnlyCaretVisible="True"/>
+                <TextBox Grid.Column="1" x:Name="ExePath"  Width="300" IsReadOnly="True" IsReadOnlyCaretVisible="True" Text="{Binding ExePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                 <Button Grid.Column="2" Content="Browse" Margin="5,0,0,0"/>
             </Grid>
 
@@ -84,29 +84,29 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <CheckBox x:Name="chkEnableIcon" Grid.Column="0" Content="Enable Custom Icon"/>
-                <CheckBox x:Name="chkEnableArgs" Grid.Column="1" Content="Enable Custom Icon" Margin="10,0,0,0"/>
+                    <CheckBox x:Name="chkEnableIcon" Grid.Column="0" Content="Enable Custom Icon" IsChecked="{Binding IsIconChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <CheckBox x:Name="chkEnableArgs" Grid.Column="1" Content="Enable Custom Arguments" Margin="10,0,0,0" IsChecked="{Binding IsArgsChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
             </Grid>
 
-            <Grid Grid.Row="3" Margin="0,10,0,0">
+            <Grid Grid.Row="3" Margin="0,10,0,0" IsEnabled="{Binding ElementName=chkEnableIcon, Path=IsChecked}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <TextBlock Text="Icon:" Width="40"/>
-                <TextBox Grid.Column="1" x:Name="IconPath"  Width="300" IsReadOnly="True" IsReadOnlyCaretVisible="True"/>
+                    <TextBox Grid.Column="1" x:Name="IconPath"  Width="300" IsReadOnly="True" IsReadOnlyCaretVisible="True" Text="{Binding IconPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                 <Button Grid.Column="2" Content="Browse" Margin="5,0,0,0"/>
             </Grid>
 
-            <Grid Grid.Row="4" Margin="0,10,0,0">
+            <Grid Grid.Row="4" Margin="0,10,0,0" IsEnabled="{Binding ElementName=chkEnableArgs, Path=IsChecked}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Text="Arguments:" Width="70" Margin="0,2,0,0" IsEnabled="False"/>
-                <TextBox Grid.Column="1"  Width="350" />
+                    <TextBlock Text="Arguments:" Width="70" Margin="0,2,0,0" IsEnabled="False" />
+                    <TextBox Grid.Column="1"  Width="350" Text="{Binding ExeArguments, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
             </Grid>
 
 
@@ -118,8 +118,8 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <Button Content="Add Games" Grid.Column="0" Width="100" Height="30" Style="{DynamicResource {x:Static adonisUi:Styles.AccentButton}}"/>
-                <Button Content="Cancel" Grid.Column="1" Width="70" Height="25" Margin="15,0,0,0"/>
+                <Button Content="Done" Grid.Column="0" Width="100" Height="30" Style="{DynamicResource {x:Static adonisUi:Styles.AccentButton}}" Command="{s:Action Submit}"/>
+                <Button Content="Cancel" Grid.Column="1" Width="70" Height="25" Margin="15,0,0,0" Command="{s:Action Cancel}"/>
 
             </Grid>
 
