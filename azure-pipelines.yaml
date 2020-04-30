@@ -9,6 +9,10 @@ trigger:
 
 pool:
   vmImage: 'windows-2019'
+  
+variables:
+  buildConfiguration: 'Release'
+  NUGET_PACKAGES: $(Pipeline.Workspace)/.nuget/packages
 
 steps:
 - task: UseDotNet@2
@@ -29,6 +33,16 @@ steps:
     scannerMode: 'MSBuild'
     projectKey: '$(SONAR_CLOUD_KEY)'
     projectName: 'VnManager'
+
+- task: Cache@2
+  displayName: Cache NuGet packages
+  inputs:
+    key: 'nuget | "$(Agent.OS)" | $(Build.SourcesDirectory)/packages.lock.json'
+    restoreKeys: |
+       nuget | "$(Agent.OS)"
+       nuget
+    path: $(NUGET_PACKAGES)
+
 
 - task: DotNetCoreCLI@2
   displayName: Build and Publish
