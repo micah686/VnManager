@@ -23,8 +23,17 @@ namespace VnManager.ViewModels
             //_windowManager.ShowWindow(vm);
 
 
+            //var multi = _container.Get<AddGameMultiViewModel>();
+            //var foo = _windowManager.ShowDialog(multi);
+
             var multi = _container.Get<AddGameMultiViewModel>();
-            var foo = _windowManager.ShowDialog(multi);
+            var test1 = _windowManager.ShowDialog(multi).Value;
+            if(test1 == true)
+            {
+                var foo1 = multi.GameCollection;
+                multi.Remove();
+            }
+            
 
         }
     }
