@@ -1,6 +1,7 @@
 ﻿using MvvmDialogs;
 using Stylet;
 using StyletIoC;
+using VnManager.ViewModels.Dialogs;
 using VnManager.ViewModels.Windows;
 
 namespace VnManager.ViewModels

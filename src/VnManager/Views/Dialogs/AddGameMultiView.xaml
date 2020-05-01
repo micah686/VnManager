@@ -1,4 +1,4 @@
-﻿<controls:AdonisWindow x:Class="VnManager.Views.Windows.AddGameMultiView"
+﻿<controls:AdonisWindow x:Class="VnManager.Views.Dialogs.AddGameMultiView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,8 +7,11 @@
         xmlns:s="https://github.com/canton7/Stylet"
         xmlns:controls="clr-namespace:AdonisUI.Controls;assembly=AdonisUI"
         xmlns:adonisUi="clr-namespace:AdonisUI;assembly=AdonisUI"
+        
+        xmlns:mvd="https://github.com/fantasticfiasco/mvvm-dialogs"
+        mvd:DialogServiceViews.IsRegistered="True"
         mc:Ignorable="d"
-        Title="Add Games for Collection" Height="450" Width="500">
+        Title="Add Games for Collection" Height="450" Width="500" ResizeMode="NoResize">
     <Grid>
         <Grid Margin="10">
             <Grid.RowDefinitions>
@@ -74,8 +77,8 @@
                 </Grid.ColumnDefinitions>
 
                 <TextBlock Text="Path:" Width="40"/>
-                <TextBox Grid.Column="1" x:Name="ExePath"  Width="300" IsReadOnly="True" IsReadOnlyCaretVisible="True" Text="{Binding ExePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                <Button Grid.Column="2" Content="Browse" Margin="5,0,0,0"/>
+                <TextBox Grid.Column="1" x:Name="ExePath"  Width="300" IsReadOnly="True" IsReadOnlyCaretVisible="True"  Text="{Binding ExePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                <Button Grid.Column="2" Content="Browse" Margin="5,0,0,0" Command="{s:Action BrowseExePath}"/>
             </Grid>
 
             <Grid Grid.Row="2" Margin="0,10,0,0">
@@ -96,7 +99,7 @@
                 </Grid.ColumnDefinitions>
                 <TextBlock Text="Icon:" Width="40"/>
                     <TextBox Grid.Column="1" x:Name="IconPath"  Width="300" IsReadOnly="True" IsReadOnlyCaretVisible="True" Text="{Binding IconPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                <Button Grid.Column="2" Content="Browse" Margin="5,0,0,0"/>
+                    <Button Grid.Column="2" Content="Browse" Margin="5,0,0,0" Command="{s:Action BrowseIconPath}"/>
             </Grid>
 
             <Grid Grid.Row="4" Margin="0,10,0,0" IsEnabled="{Binding ElementName=chkEnableArgs, Path=IsChecked}">

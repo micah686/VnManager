@@ -1,11 +1,13 @@
 ﻿using FluentValidation;
+using MvvmDialogs;
+using MvvmDialogs.FrameworkDialogs.OpenFile;
 using Stylet;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using VnManager.Utilities;
 
-namespace VnManager.ViewModels.Windows
+namespace VnManager.ViewModels.Dialogs
 {
     public class AddGameMultiViewModel: Screen
     {
@@ -44,9 +46,11 @@ namespace VnManager.ViewModels.Windows
 
 
         private readonly IWindowManager _windowManager;
-        public AddGameMultiViewModel(IWindowManager windowManager, IModelValidator<AddGameMultiViewModel> validator) : base(validator)
+        private readonly IDialogService _dialogService;
+        public AddGameMultiViewModel(IWindowManager windowManager, IModelValidator<AddGameMultiViewModel> validator, IDialogService dialogService) : base(validator)
         {
-            _windowManager = windowManager;                                  
+            _windowManager = windowManager;
+            _dialogService = dialogService;
         }
 
         public void Add()
@@ -72,6 +76,46 @@ namespace VnManager.ViewModels.Windows
             }
         }
         
+        public void BrowseExePath()
+        {
+            var settings = new OpenFileDialogSettings
+            {
+                Title = "Browse for Game", 
+                DefaultExt = ".exe", 
+                Filter = "Applications (*.exe)|*.exe", 
+                FileName = "", 
+                DereferenceLinks = true, 
+                CheckPathExists = true, 
+                CheckFileExists = true, 
+                ValidateNames = true
+            };
+            bool? result = _dialogService.ShowOpenFileDialog(this, settings);
+            if(result == true)
+            {
+                ExePath = settings.FileName;
+            }
+        }
+
+        public void BrowseIconPath()
+        {
+            var settings = new OpenFileDialogSettings
+            {
+                Title = "Browse for Game Icon",
+                DefaultExt = ".ico",
+                Filter = "Icons (*.ico,*.exe)|*.ico;*.exe",
+                FileName = "",
+                DereferenceLinks = true,
+                CheckPathExists = true,
+                CheckFileExists = true,
+                ValidateNames = true
+            };
+            bool? result = _dialogService.ShowOpenFileDialog(this, settings);
+            if (result == true)
+            {
+                IconPath = settings.FileName;
+            }
+        }
+
         public void Submit()
         {
             
