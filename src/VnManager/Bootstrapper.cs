@@ -6,6 +6,7 @@ using StyletIoC;
 using VnManager.Converters;
 using VnManager.Utilities;
 using VnManager.ViewModels;
+using MvvmDialogs;
 
 namespace VnManager
 {
@@ -27,6 +28,7 @@ namespace VnManager
             
             builder.Bind(typeof(IModelValidator<>)).To(typeof(FluentModelValidator<>));
             builder.Bind(typeof(IValidator<>)).ToAllImplementations();
+            builder.Bind(typeof(IDialogService)).To(typeof(DialogService));
         }
 
         protected override void Configure()

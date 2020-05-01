@@ -26,6 +26,12 @@
         "resolved": "4.0.0",
         "contentHash": "Vqka/LSwWa4W0WuJSFd/GKLdJWrk70sIQA3Hc4+iP94jLx7sWW23IpAEmXkqnPzSNKE1dW9gwQM0Bk1cdcNjYw=="
       },
+      "MvvmDialogs": {
+        "type": "Direct",
+        "requested": "[7.0.0, )",
+        "resolved": "7.0.0",
+        "contentHash": "x7QKRibJZ7FPoKyMIsTHda+Oi2wCFLtOHF/WDfE4j0XCzD8URtuza078M2vBGWyio5cWX9rX2qaq7B6Ah+a6PQ=="
+      },
       "PropertyChanged.Fody": {
         "type": "Direct",
         "requested": "[3.2.8, )",
@@ -65,11 +71,11 @@
       },
       "System.IO.Abstractions.TestingHelpers": {
         "type": "Direct",
-        "requested": "[11.0.2, )",
-        "resolved": "11.0.2",
-        "contentHash": "cAGCLDw2VYypMrt2kRUuGM7pneZHLOlkBhXQ6vWOIg7VhvT6yY+yhB2Yc4uNC/WcrV8afwUaTssrICwyfI8oQg==",
+        "requested": "[11.0.3, )",
+        "resolved": "11.0.3",
+        "contentHash": "9fgu11T+o8mquiqMOFJNLBHXTGo3Bi3yoCkcpqK8MzGHCw9xpubYxGjIjxnBK+2dnWtAkxJKF2EBHAZwdI7t4A==",
         "dependencies": {
-          "System.IO.Abstractions": "11.0.2"
+          "System.IO.Abstractions": "11.0.3"
         }
       },
       "AdonisUI": {
@@ -434,8 +440,8 @@
       },
       "System.IO.Abstractions": {
         "type": "Transitive",
-        "resolved": "11.0.2",
-        "contentHash": "/CWgnFThX78ec1COAmULa7o409HwVXXJSQNP0w7sGatVeGF2laQmlOttBy0hCi6pLY/+UR7gzPDET7NWbfaX2g==",
+        "resolved": "11.0.3",
+        "contentHash": "4O2DZhxJG2ZusDH5VQdLzqZmg/Zvg/f+GMwSwPC71kOfvEge+BCSp4Qk2DIew5jX0OjW7774DTSXp9YwvMaLHw==",
         "dependencies": {
           "System.IO.FileSystem.AccessControl": "4.7.0"
         }

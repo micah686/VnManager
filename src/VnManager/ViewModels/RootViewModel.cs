@@ -1,4 +1,5 @@
-﻿using Stylet;
+﻿using MvvmDialogs;
+using Stylet;
 using StyletIoC;
 using VnManager.ViewModels.Windows;
 
@@ -8,11 +9,13 @@ namespace VnManager.ViewModels
     {
         private readonly IContainer _container;
         private readonly IWindowManager _windowManager;
+        private readonly IDialogService _dialogService;
 
-        public RootViewModel(IContainer container, IWindowManager windowManager)
+        public RootViewModel(IContainer container, IWindowManager windowManager, IDialogService dialogService)
         {
             _container = container;
             _windowManager = windowManager;
+            _dialogService = dialogService;
         }
 
         public void Click()
