@@ -9,6 +9,7 @@ using VnManager.ViewModels.Dialogs;
 using System.Collections.Generic;
 using System.Linq;
 using MvvmDialogs.FrameworkDialogs.OpenFile;
+using VnManager.Helpers;
 
 namespace VnManager.ViewModels.Windows
 {
@@ -122,7 +123,7 @@ namespace VnManager.ViewModels.Windows
                 {
                     _exeCollection.Clear();
                     _exeCollection.AddRange(from item in multivm.GameCollection
-                                            select new MultiExeGamePaths { ExePath = item.ExePath, IconPath = item.IconPath, ArgumentsString = item.ArgumentsString });
+                         select new MultiExeGamePaths { ExePath = item.ExePath, IconPath = item.IconPath, ArgumentsString = item.ArgumentsString });
                 }
 
             }
@@ -151,7 +152,13 @@ namespace VnManager.ViewModels.Windows
 
         public void Submit()
         {
-            this.RequestClose();
+            var validator = new AddGameViewModelValidator();
+            this.Validate();
+            bool result = validator.Validate(this).IsValid;
+            if(result == true)
+            {
+                this.RequestClose();
+            }
         }
 
         public void Cancel()
@@ -167,6 +174,22 @@ namespace VnManager.ViewModels.Windows
         public AddGameViewModelValidator()
         {
             RuleFor(x => x.ExePath).NotEmpty().WithMessage("Exe Path cannot be empty");
+            RuleFor(x => x.ExePath).Must(ValidateFiles.EndsWithExe).When(x => !string.IsNullOrWhiteSpace(x.ExePath) || !string.IsNullOrEmpty(x.ExePath)).WithMessage("Not a valid path to exe");
+            RuleFor(x => x.ExePath).Must(ValidateFiles.ValidateExe).When(x => !string.IsNullOrWhiteSpace(x.ExePath) || !string.IsNullOrEmpty(x.ExePath)).WithMessage("Not a valid Executable");
+
+            RuleFor(x => x.ExeArguments).Must(AddGameMultiViewModelValidator.ContainsIllegalCharacters).When(x => !string.IsNullOrWhiteSpace(x.ExeArguments) || !string.IsNullOrEmpty(x.ExeArguments)).WithMessage("Illegal characters detected");
+
+            RuleFor(x => x.IconPath).Must(ValidateFiles.EndsWithIcoOrExe).When(x => !string.IsNullOrWhiteSpace(x.IconPath) || !string.IsNullOrEmpty(x.IconPath)).WithMessage("Not a valid path to icon");
+
+            When(x => x.IsCustomArgsChecked == true && x.ExeArguments == "", () =>
+            {
+                RuleFor(x => x.ExeArguments).NotEmpty().WithMessage("Arguments cannot be empty");
+            });
+
+            When(x => x.IsCustomArgsChecked == true, () =>
+            {
+                RuleFor(x => x.IconPath).NotEmpty().WithMessage("Icon Path cannot be empty");
+            });
         }
     }
 

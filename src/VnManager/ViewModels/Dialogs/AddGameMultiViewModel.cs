@@ -144,6 +144,8 @@ namespace VnManager.ViewModels.Dialogs
             RuleFor(x => x.ExePath).Must(ValidateFiles.EndsWithExe).When(x => !string.IsNullOrWhiteSpace(x.ExePath) || !string.IsNullOrEmpty(x.ExePath)).WithMessage("Not a valid path to exe");
             RuleFor(x => x.ExePath).Must(ValidateFiles.ValidateExe).When(x => !string.IsNullOrWhiteSpace(x.ExePath) || !string.IsNullOrEmpty(x.ExePath)).WithMessage("Not a valid Executable");
 
+            RuleFor(x => x.ExeArguments).Must(ContainsIllegalCharacters).When(x => !string.IsNullOrWhiteSpace(x.ExeArguments) || !string.IsNullOrEmpty(x.ExeArguments)).WithMessage("Illegal characters detected");
+
             RuleFor(x => x.IconPath).Must(ValidateFiles.EndsWithIcoOrExe).When(x => !string.IsNullOrWhiteSpace(x.IconPath) || !string.IsNullOrEmpty(x.IconPath)).WithMessage("Not a valid path to icon");
 
             When(x => x.IsArgsChecked == true && x.ExeArguments == "", () =>
@@ -156,6 +158,19 @@ namespace VnManager.ViewModels.Dialogs
                 RuleFor(x => x.IconPath).NotEmpty().WithMessage("Icon Path cannot be empty");
             });
 
+        }
+
+        public static bool ContainsIllegalCharacters(string format)
+        {
+            string allowableLetters = $"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890/-_ {'"'}";
+
+            foreach (char c in format)
+            {
+                if (!allowableLetters.Contains(c))
+                    return false;
+            }
+
+            return true;
         }
     }
 
