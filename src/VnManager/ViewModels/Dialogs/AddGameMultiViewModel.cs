@@ -27,6 +27,7 @@ namespace VnManager.ViewModels.Dialogs
                     IconPath = string.Empty;
                 }
                 SetAndNotify(ref _isIconChecked, value);
+                Validate();
             }
         }
 
@@ -41,6 +42,7 @@ namespace VnManager.ViewModels.Dialogs
                     ExeArguments = string.Empty;
                 }
                 SetAndNotify(ref _isArgsChecked, value);
+                Validate();
             }
         }
 
@@ -141,7 +143,7 @@ namespace VnManager.ViewModels.Dialogs
 
             RuleFor(x => x.IconPath).Must(ValidateFiles.EndsWithIcoOrExe).When(x => !string.IsNullOrWhiteSpace(x.IconPath) || !string.IsNullOrEmpty(x.IconPath)).WithMessage("Not a valid path to icon");
 
-            When(x => x.IsArgsChecked == true, () =>
+            When(x => x.IsArgsChecked == true && x.ExeArguments == "", () =>
               {
                   RuleFor(x => x.ExeArguments).NotEmpty().WithMessage("Arguments cannot be empty");
               });

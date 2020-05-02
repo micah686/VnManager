@@ -65,8 +65,8 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
-                    <Button Grid.Column="0" Content="Add" Width="50" Command="{s:Action Add}"/>
-                    <Button Grid.Column="1" Content="Remove" Width="70" Margin="10,0,0,0" Command="{s:Action Remove}"/>
+                    <Button Grid.Column="0" Content="Add" Width="60" Height="30" Style="{DynamicResource {x:Static adonisUi:Styles.AccentButton}}" Command="{s:Action Add}"/>
+                    <Button Grid.Column="1" Content="Remove" Width="70" Height="25" Margin="10,0,0,0" Command="{s:Action Remove}"/>
                 </Grid>
 
                 <Grid Grid.Row="1" Margin="0,10,0,0">
@@ -116,13 +116,13 @@
 
             </Grid>
 
-            <Grid Grid.Row="2" Margin="0,10,0,0">
+            <Grid Grid.Row="2" Margin="0,20,0,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <Button Content="Done" Grid.Column="0" Width="100" Height="30" Style="{DynamicResource {x:Static adonisUi:Styles.AccentButton}}" Command="{s:Action Submit}"/>
-                <Button Content="Cancel" Grid.Column="1" Width="70" Height="25" Margin="15,0,0,0" Command="{s:Action Cancel}"/>
+                <Button Content="Done" Grid.Column="0" Width="70"   Command="{s:Action Submit}"/>
+                <Button Content="Cancel" Grid.Column="1" Width="70"  Margin="15,0,0,0" Command="{s:Action Cancel}"/>
 
             </Grid>
 
