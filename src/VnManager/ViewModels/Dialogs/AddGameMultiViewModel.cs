@@ -5,7 +5,7 @@ using Stylet;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using VnManager.Utilities;
+using VnManager.Helpers;
 
 namespace VnManager.ViewModels.Dialogs
 {
@@ -134,14 +134,22 @@ namespace VnManager.ViewModels.Dialogs
     {
         public AddGameMultiViewModelValidator()
         {
-            RuleFor(x => x.ExePath).NotEmpty().WithMessage("Exe Path cannot be empty");
-            RuleFor(x => x.IconPath).NotEmpty().When(x => x.IsIconChecked == true).WithMessage("Icon Path cannot be empty");
-            RuleFor(x => x.ExeArguments).NotEmpty().When(x => x.IsArgsChecked == true).WithMessage("Arguments cannot be empty");
+            RuleFor(x => x.ExePath).NotEmpty().WithMessage("Exe Path cannot be empty");            
 
             RuleFor(x => x.ExePath).Must(ValidateFiles.EndsWithExe).When(x => !string.IsNullOrWhiteSpace(x.ExePath) || !string.IsNullOrEmpty(x.ExePath)).WithMessage("Not a valid path to exe");
             RuleFor(x => x.ExePath).Must(ValidateFiles.ValidateExe).When(x => !string.IsNullOrWhiteSpace(x.ExePath) || !string.IsNullOrEmpty(x.ExePath)).WithMessage("Not a valid Executable");
 
             RuleFor(x => x.IconPath).Must(ValidateFiles.EndsWithIcoOrExe).When(x => !string.IsNullOrWhiteSpace(x.IconPath) || !string.IsNullOrEmpty(x.IconPath)).WithMessage("Not a valid path to icon");
+
+            When(x => x.IsArgsChecked == true, () =>
+              {
+                  RuleFor(x => x.ExeArguments).NotEmpty().WithMessage("Arguments cannot be empty");
+              });
+
+            When(x => x.IsIconChecked == true, () =>
+            {
+                RuleFor(x => x.IconPath).NotEmpty().WithMessage("Icon Path cannot be empty");
+            });
 
         }
     }

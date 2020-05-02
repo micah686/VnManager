@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using VnManager.Utilities;
 
-namespace VnManager.Utilities
+namespace VnManager.Helpers
 {
     public static class ValidateFiles
     {

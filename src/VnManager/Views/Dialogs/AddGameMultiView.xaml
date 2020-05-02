@@ -7,7 +7,7 @@
         xmlns:s="https://github.com/canton7/Stylet"
         xmlns:controls="clr-namespace:AdonisUI.Controls;assembly=AdonisUI"
         xmlns:adonisUi="clr-namespace:AdonisUI;assembly=AdonisUI"
-        
+        xmlns:adonisExtensions="clr-namespace:AdonisUI.Extensions;assembly=AdonisUI"
         xmlns:mvd="https://github.com/fantasticfiasco/mvvm-dialogs"
         mvd:DialogServiceViews.IsRegistered="True"
         mc:Ignorable="d"
@@ -77,7 +77,7 @@
                 </Grid.ColumnDefinitions>
 
                 <TextBlock Text="Path:" Width="40"/>
-                <TextBox Grid.Column="1" x:Name="ExePath"  Width="300" IsReadOnly="True" IsReadOnlyCaretVisible="True"  Text="{Binding ExePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBox Grid.Column="1" x:Name="txtExePath"  Width="300" IsReadOnly="True" IsReadOnlyCaretVisible="True"  Text="{Binding ExePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                 <Button Grid.Column="2" Content="Browse" Margin="5,0,0,0" Command="{s:Action BrowseExePath}"/>
             </Grid>
 
@@ -98,7 +98,7 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <TextBlock Text="Icon:" Width="40"/>
-                    <TextBox Grid.Column="1" x:Name="IconPath"  Width="300" IsReadOnly="True" IsReadOnlyCaretVisible="True" Text="{Binding IconPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBox Grid.Column="1" x:Name="txtIconPath"  Width="300" IsReadOnly="True" IsReadOnlyCaretVisible="True" Text="{Binding IconPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                     <Button Grid.Column="2" Content="Browse" Margin="5,0,0,0" Command="{s:Action BrowseIconPath}"/>
             </Grid>
 
