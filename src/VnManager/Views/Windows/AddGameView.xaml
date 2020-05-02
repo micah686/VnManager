@@ -127,10 +127,10 @@
                         </StackPanel.Style>
                         <TextBlock Text="Path:" Width="40"/>
                         <TextBox Grid.Column="1" x:Name="TextPath"  Width="300" IsReadOnly="True" IsReadOnlyCaretVisible="True" Text="{Binding ExePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                        <Button Grid.Column="2" Content="Browse" Margin="5,0,0,0"/>
+                        <Button Grid.Column="2" Content="Browse" Margin="5,0,0,0" Command="{s:Action BrowseExe}"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Visibility="{Binding IsChecked, ElementName=ExeCollectionRadio, Converter={StaticResource boolToVisConverter}}">
-                        <Button Content="Manage Executables" Width="150"/>
+                        <Button Content="Manage Executables" Width="150" Command="{s:Action ManageExes}"/>
                     </StackPanel>
 
                 </Grid>
@@ -167,7 +167,7 @@
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="IconPath:" Width="60" Margin="0,3,0,0"/>
                     <TextBox Grid.Column="1"  Width="300" IsReadOnly="True" IsReadOnlyCaretVisible="True" IsEnabled="{Binding IsNotExeCollection, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
-                    <Button Grid.Column="2" Content="Browse" Margin="5,0,0,0" IsEnabled="{Binding IsNotExeCollection, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <Button Grid.Column="2" Content="Browse" Margin="5,0,0,0" Command="{s:Action BrowseIcon}" IsEnabled="{Binding IsNotExeCollection, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                 </Grid>
 
@@ -179,7 +179,8 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <Button Width="100" Height="30" Content="Submit" Style="{DynamicResource {x:Static adonisUi:Styles.AccentButton}}"/>
+                    <Button Width="100" Height="30" Content="Submit" Command="{s:Action Submit}" Style="{DynamicResource {x:Static adonisUi:Styles.AccentButton}}"/>
+                    <Button Width="85" Height="25" Grid.Column="1" Content="Cancel" Command="{s:Action Cancel}" Margin="10,0,0,0"/>
                 </Grid>
 
                 <!-- end of root -->

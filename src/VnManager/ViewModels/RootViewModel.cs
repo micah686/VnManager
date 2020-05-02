@@ -30,12 +30,12 @@ namespace VnManager.ViewModels
             //var multi = _container.Get<AddGameMultiViewModel>();
             //var foo = _windowManager.ShowDialog(multi);
 
-            var multi = _container.Get<AddGameMultiViewModel>();
+            var multi = _container.Get<AddGameViewModel>();
             var test1 = _windowManager.ShowDialog(multi).Value;
             if(test1 == true)
             {
-                var foo1 = multi.GameCollection;
-                multi.Remove();
+                //var foo1 = multi.GameCollection;
+                //multi.Remove();
             }
             
 

@@ -68,6 +68,9 @@ namespace VnManager.ViewModels.Dialogs
 
                 GameCollection.Add(new MultiExeGamePaths { ExePath = exe, IconPath = icon, ArgumentsString = args });
             }
+            ExePath = string.Empty;
+            IconPath = string.Empty;
+            ExeArguments = string.Empty;
         }
 
         public void Remove()
