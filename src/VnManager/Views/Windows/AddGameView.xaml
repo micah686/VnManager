@@ -10,12 +10,14 @@
         xmlns:controls="clr-namespace:AdonisUI.Controls;assembly=AdonisUI"
         xmlns:adonisUi="clr-namespace:AdonisUI;assembly=AdonisUI"
         xmlns:ex="clr-namespace:VnManager.Extensions"
+        xmlns:conv="clr-namespace:VnManager.Converters"
         mc:Ignorable="d"        
         Title="Add Game" Height="400" Width="500">
     <Grid>
         <Grid x:Name="AddVnRoot" Margin="15,10,10,10" MinWidth="200">
             <Grid.Resources>
                 <s:BoolToVisibilityConverter x:Key="boolToVisConverter" TrueVisibility="Visible" FalseVisibility="Hidden"/>
+                <conv:EnumToBooleanConverter x:Key="EnumToBooleanConverter"/>
             </Grid.Resources>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -95,11 +97,11 @@
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Column="0" Text="ExeType:"/>
                     <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="5,0,0,0">
-                        <RadioButton x:Name="ExeNormalRadio" Content="Normal" Margin="5,0,0,0" IsChecked="{Binding IsExeNormalChecked, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" ToolTip="Normal Exe"/>
+                        <RadioButton x:Name="ExeNormalRadio" Content="Normal" Margin="5,0,0,0" IsChecked="{Binding ExeTypes, Mode=TwoWay, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Normal}"/>
                         <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.HelpCircleOutline}" Margin="3,1,0,0" Height="14" Width="14" ToolTip="A single executable associated with a single ID"/>
-                        <RadioButton x:Name="ExeLauncherRadio" Content="Launcher" Margin="5,0,0,0" IsChecked="{Binding IsExeLauncherChecked, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                        <RadioButton x:Name="ExeLauncherRadio" Content="Launcher" Margin="5,0,0,0" IsChecked="{Binding ExeTypes, Mode=TwoWay, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Launcher}"/>
                         <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.HelpCircleOutline}" Margin="3,1,0,0" Height="14" Width="14" ToolTip="This executable has multiple game IDs associated with it"/>
-                        <RadioButton x:Name="ExeCollectionRadio" Content="Collection" Margin="5,0,0,0" IsChecked="{Binding IsExeCollectionChecked, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" />
+                        <RadioButton x:Name="ExeCollectionRadio" Content="Collection" Margin="5,0,0,0" IsChecked="{Binding ExeTypes, Mode=TwoWay, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Collection}" />
                         <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.HelpCircleOutline}" Margin="3,1,0,0" Height="14" Width="14" ToolTip="There are multiple executables associated with a single ID"/>
                     </StackPanel>
                 </Grid>
@@ -116,10 +118,10 @@
                             <Style TargetType="StackPanel">
                                 <Setter Property="Visibility" Value="Hidden"/>
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsChecked, ElementName=ExeNormalRadio}" Value="True">
+                                    <DataTrigger Binding="{Binding ExeTypes}" Value="Normal">
                                         <Setter Property="Visibility" Value="Visible"/>
                                     </DataTrigger>
-                                    <DataTrigger Binding="{Binding IsChecked, ElementName=ExeLauncherRadio}" Value="True">
+                                    <DataTrigger Binding="{Binding ExeTypes}" Value="Launcher">
                                         <Setter Property="Visibility" Value="Visible"/>
                                     </DataTrigger>
                                 </Style.Triggers>
@@ -156,7 +158,6 @@
                     <TextBox Grid.Column="1"  Width="350" Text="{Binding ExeArguments, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                              IsEnabled="{Binding IsNotExeCollection}"/>
 
-
                 </Grid>
 
                 <Grid Grid.Row="7" Margin="0,0,0,15" Visibility="{Binding IsChecked, ElementName=chkCustomIco, Converter={StaticResource boolToVisConverter}}">
@@ -170,9 +171,6 @@
                     <Button Grid.Column="2" Content="Browse" Margin="5,0,0,0" Command="{s:Action BrowseIcon}" IsEnabled="{Binding IsNotExeCollection, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                 </Grid>
-
-
-
 
                 <Grid Grid.Row="8" Margin="0,5,0,10">
                     <Grid.ColumnDefinitions>

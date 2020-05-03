@@ -23,49 +23,31 @@ namespace VnManager.ViewModels.Windows
         public bool IsNameChecked { get; set; }        
         public string ExePath { get; set; }
         public string IconPath { get; set; }
-        private bool _isExeNormalChecked;
-        public bool IsExeNormalChecked
+        public string ExeArguments { get; set; }
+
+
+        public bool IsCustomArgsChecked { get; set; }
+        public bool IsCustomIconChecked { get; set; }
+
+        private ExeTypesEnum _exeTypes;
+        public ExeTypesEnum ExeTypes
         {
-            get { return _isExeNormalChecked; }
+            get { return _exeTypes; }
             set
             {
-                if(value == true)
+                SetAndNotify(ref _exeTypes, value);
+                if(_exeTypes != ExeTypesEnum.Collection)
                 {
                     IsNotExeCollection = true;
                 }
-                
-                SetAndNotify(ref _isExeNormalChecked, value);
-            }
-        }
-        private bool _isExeLauncherChecked;
-        public bool IsExeLauncherChecked
-        {
-            get { return _isExeLauncherChecked; }
-            set
-            {
-                if (value == true)
-                {
-                    IsNotExeCollection = true;
-                }
-                SetAndNotify(ref _isExeLauncherChecked, value);
-            }
-        }
-        private bool _isExeCollectionChecked;
-        public bool IsExeCollectionChecked
-        {
-            get { return _isExeCollectionChecked; }
-            set
-            {
-                if (value == true)
+                else
                 {
                     IsNotExeCollection = false;
                 }
-                SetAndNotify(ref _isExeCollectionChecked, value);
             }
         }
-        public bool IsCustomArgsChecked { get; set; }
-        public bool IsCustomIconChecked { get; set; }
-        public string ExeArguments { get; set; }
+
+
 
         private bool _isNotExeCollection;
         public bool IsNotExeCollection
@@ -81,6 +63,7 @@ namespace VnManager.ViewModels.Windows
             }
         }
 
+        
 
 
         private readonly IWindowManager _windowManager;
@@ -91,6 +74,7 @@ namespace VnManager.ViewModels.Windows
             _container = container;
             _windowManager = windowManager;
             _dialogService = dialogService;
+            IsNotExeCollection = true;
         }
 
         public void BrowseExe()
@@ -168,6 +152,8 @@ namespace VnManager.ViewModels.Windows
 
 
     }
+
+    public enum ExeTypesEnum { Normal, Launcher, Collection}
 
     public class AddGameViewModelValidator : AbstractValidator<AddGameViewModel>
     {
