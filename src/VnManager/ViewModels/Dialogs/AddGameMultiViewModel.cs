@@ -175,7 +175,7 @@ namespace VnManager.ViewModels.Dialogs
 
         public static bool ContainsIllegalCharacters(string format)
         {
-            string allowableLetters = $@"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890/\-_ {'"'}";
+            string allowableLetters = $@"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890/\-_ !?;:'+={'"'}";
 
             foreach (char c in format)
             {
