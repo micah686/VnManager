@@ -21,13 +21,15 @@ namespace VnManager.ViewModels.Dialogs
         {
             get => _isIconChecked;
             set
-            {
-                if(value== false)
+            {                
+                SetAndNotify(ref _isIconChecked, value);
+                if (_isIconChecked == false)
                 {
                     IconPath = string.Empty;
+                    HideIconError = true;
+                    Validate();
+                    HideIconError = false;
                 }
-                SetAndNotify(ref _isIconChecked, value);
-                Validate();
             }
         }
 
@@ -36,16 +38,21 @@ namespace VnManager.ViewModels.Dialogs
         {
             get => _isArgsChecked;
             set
-            {
-                if(value == false)
+            {                
+                SetAndNotify(ref _isArgsChecked, value);
+                if (_isArgsChecked == false)
                 {
                     ExeArguments = string.Empty;
+                    HideArgumentsError = true;
+                    Validate();
+                    HideArgumentsError = false;
                 }
-                SetAndNotify(ref _isArgsChecked, value);
-                Validate();
             }
         }
 
+        public bool ShowValidationErrors { get; private set; } = true;
+        public bool HideArgumentsError { get; private set; } = false;
+        public bool HideIconError { get; private set; } = false;
 
         private readonly IWindowManager _windowManager;
         private readonly IDialogService _dialogService;
@@ -67,10 +74,16 @@ namespace VnManager.ViewModels.Dialogs
                 var args = ExeArguments;
 
                 GameCollection.Add(new MultiExeGamePaths { ExePath = exe, IconPath = icon, ArgumentsString = args });
+
+                ShowValidationErrors = false;//prevent validation errors from showing up after a sucessful Add
+                ExePath = string.Empty;
+                IconPath = string.Empty;
+                ExeArguments = string.Empty;
+                Validate();
+                ShowValidationErrors = true;
             }
-            ExePath = string.Empty;
-            IconPath = string.Empty;
-            ExeArguments = string.Empty;
+            
+            
         }
 
         public void Remove()
@@ -139,30 +152,30 @@ namespace VnManager.ViewModels.Dialogs
     {
         public AddGameMultiViewModelValidator()
         {
-            RuleFor(x => x.ExePath).NotEmpty().WithMessage("Exe Path cannot be empty");            
+            RuleFor(x => x.ExePath).NotEmpty().Unless(x => x.ShowValidationErrors == false).WithMessage("Exe Path cannot be empty");
 
-            RuleFor(x => x.ExePath).Must(ValidateFiles.EndsWithExe).When(x => !string.IsNullOrWhiteSpace(x.ExePath) || !string.IsNullOrEmpty(x.ExePath)).WithMessage("Not a valid path to exe");
-            RuleFor(x => x.ExePath).Must(ValidateFiles.ValidateExe).When(x => !string.IsNullOrWhiteSpace(x.ExePath) || !string.IsNullOrEmpty(x.ExePath)).WithMessage("Not a valid Executable");
+            RuleFor(x => x.ExePath).Must(ValidateFiles.EndsWithExe).Unless(x => x.ShowValidationErrors == false).When(x => !string.IsNullOrWhiteSpace(x.ExePath) || !string.IsNullOrEmpty(x.ExePath)).WithMessage("Not a valid path to exe");
+            RuleFor(x => x.ExePath).Must(ValidateFiles.ValidateExe).Unless(x => x.ShowValidationErrors == false).When(x => !string.IsNullOrWhiteSpace(x.ExePath) || !string.IsNullOrEmpty(x.ExePath)).WithMessage("Not a valid Executable");
 
-            RuleFor(x => x.ExeArguments).Must(ContainsIllegalCharacters).When(x => !string.IsNullOrWhiteSpace(x.ExeArguments) || !string.IsNullOrEmpty(x.ExeArguments)).WithMessage("Illegal characters detected");
+            RuleFor(x => x.ExeArguments).Must(ContainsIllegalCharacters).Unless(x => x.ShowValidationErrors == false).When(x => !string.IsNullOrWhiteSpace(x.ExeArguments) || !string.IsNullOrEmpty(x.ExeArguments)).WithMessage("Illegal characters detected");
 
-            RuleFor(x => x.IconPath).Must(ValidateFiles.EndsWithIcoOrExe).When(x => !string.IsNullOrWhiteSpace(x.IconPath) || !string.IsNullOrEmpty(x.IconPath)).WithMessage("Not a valid path to icon");
+            RuleFor(x => x.IconPath).Must(ValidateFiles.EndsWithIcoOrExe).Unless(x => x.ShowValidationErrors == false).When(x => !string.IsNullOrWhiteSpace(x.IconPath) || !string.IsNullOrEmpty(x.IconPath)).WithMessage("Not a valid path to icon");
 
             When(x => x.IsArgsChecked == true && x.ExeArguments == "", () =>
               {
-                  RuleFor(x => x.ExeArguments).NotEmpty().WithMessage("Arguments cannot be empty");
+                  RuleFor(x => x.ExeArguments).NotEmpty().Unless(x => x.ShowValidationErrors == false).Unless(x => x.HideArgumentsError == true).WithMessage("Arguments cannot be empty");
               });
 
             When(x => x.IsIconChecked == true, () =>
             {
-                RuleFor(x => x.IconPath).NotEmpty().WithMessage("Icon Path cannot be empty");
+                RuleFor(x => x.IconPath).NotEmpty().Unless(x => x.ShowValidationErrors == false).Unless(x => x.HideIconError == true).WithMessage("Icon Path cannot be empty");
             });
 
         }
 
         public static bool ContainsIllegalCharacters(string format)
         {
-            string allowableLetters = $"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890/-_ {'"'}";
+            string allowableLetters = $@"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890/\-_ {'"'}";
 
             foreach (char c in format)
             {
