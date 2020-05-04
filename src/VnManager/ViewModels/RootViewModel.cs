@@ -17,6 +17,9 @@ namespace VnManager.ViewModels
             _container = container;
             _windowManager = windowManager;
             _dialogService = dialogService;
+
+            var multi = _container.Get<AddGameViewModel>();
+            var test1 = _windowManager.ShowDialog(multi).Value;
         }
 
         public void Click()
