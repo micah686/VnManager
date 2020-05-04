@@ -18,7 +18,7 @@ namespace VnManager.ViewModels.Windows
         private List<MultiExeGamePaths> _exeCollection = new List<MultiExeGamePaths>();
         
         public string SourceSite { get; set; }
-        public int VnId { get; set; }        
+        public int? VnId { get; set; }        
         public string VnName { get; set; }
         public bool IsNameChecked { get; set; }        
         public string ExePath { get; set; }
@@ -166,6 +166,9 @@ namespace VnManager.ViewModels.Windows
     {
         public AddGameViewModelValidator()
         {
+            RuleFor(x => x.VnId).NotEmpty().WithMessage("VnId Cannot be Emtpy");
+
+            
             RuleFor(x => x.ExePath).NotEmpty().WithMessage("Exe Path cannot be empty");
             RuleFor(x => x.ExePath).Must(ValidateFiles.EndsWithExe).When(x => !string.IsNullOrWhiteSpace(x.ExePath) || !string.IsNullOrEmpty(x.ExePath)).WithMessage("Not a valid path to exe");
             RuleFor(x => x.ExePath).Must(ValidateFiles.ValidateExe).When(x => !string.IsNullOrWhiteSpace(x.ExePath) || !string.IsNullOrEmpty(x.ExePath)).WithMessage("Not a valid Executable");
