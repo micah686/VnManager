@@ -78,13 +78,13 @@
 
                     <StackPanel Orientation="Horizontal" Visibility="{Binding IsChecked, ElementName=VnIdRadio, Converter={StaticResource boolToVisConverter}}">
                         <TextBlock Text="{Binding IsNameChecked, Converter={StaticResource VnIdStringConverter}}" Margin="0,5,0,0"/>
-                        <TextBox x:Name="txtVnId" Width="150" MaxLength="10" Height="25" ex:TextBoxExtensions.IsNumericOnly="True" Grid.ColumnSpan="2" Margin="10,0,0,0" />
+                        <TextBox x:Name="txtVnId" Width="150" MaxLength="10" Height="25" ex:TextBoxExtensions.IsNumericOnly="True" Grid.ColumnSpan="2" Margin="10,0,0,0" Text="{Binding VnId}" />
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal" Visibility="{Binding IsChecked, ElementName=VnNameRadio, Converter={StaticResource boolToVisConverter}}">
                         <TextBlock Grid.Column="0" Text="{Binding IsNameChecked, Converter={StaticResource VnIdStringConverter}}" Margin="0,5,0,0"/>
-                        <ComboBox x:Name="cmbVnName" Width="150" Height="25" IsEditable="True" Margin="10,0,0,0" />
-                        <Button Margin="5,0,0,0">
+                        <ComboBox x:Name="cmbVnName" Width="150" Height="25" IsEditable="True" Margin="10,0,0,0" Text="{Binding VnName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        <Button Margin="5,0,0,0" Command="{s:Action Search}">
                             <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.Magnify}"  />
                         </Button>
                     </StackPanel>
@@ -178,7 +178,7 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="IconPath:" Width="60" Margin="0,3,0,0"/>
-                    <TextBox Grid.Column="1"  Width="300" IsReadOnly="True" IsReadOnlyCaretVisible="True" />
+                    <TextBox Grid.Column="1"  Width="300" IsReadOnly="True" IsReadOnlyCaretVisible="True" Text="{Binding ExeArguments, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                     <Button Grid.Column="2" Content="Browse" Margin="5,0,0,0" Command="{s:Action BrowseIcon}" />
 
                 </Grid>

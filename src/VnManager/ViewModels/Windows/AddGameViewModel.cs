@@ -77,6 +77,13 @@ namespace VnManager.ViewModels.Windows
             IsNotExeCollection = true;
         }
 
+        public void Search()
+        {
+            var validator = new AddGameViewModelValidator();
+            this.Validate();
+            bool result = validator.Validate(this).IsValid;
+        }
+
         public void BrowseExe()
         {
             var settings = new OpenFileDialogSettings
