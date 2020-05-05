@@ -23,4 +23,8 @@
     <PackageReference Include="System.IO.Abstractions.TestingHelpers" Version="11.0.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\VndbSharp\VndbSharp\VndbSharp.csproj" />
+  </ItemGroup>
+
 </Project>
