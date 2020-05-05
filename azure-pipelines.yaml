@@ -21,7 +21,7 @@ steps:
   displayName: Restore Nuget packages
   inputs:
     command: restore
-    projects: '**/*.csproj'
+    projects: '**/VnManager.csproj'
 
 - task: SonarCloudPrepare@1
   displayName: 'Prepare for SonarCloud Scan'
@@ -36,7 +36,7 @@ steps:
   displayName: Build and Publish
   inputs:
     command: publish
-    projects: '**/*.csproj'
+    projects: '**/*VnManager.csproj'
     publishWebProjects: false
     arguments: '-c Release --output ./$(Build.SourcesDirectory)' # Update this to match your need
     zipAfterPublish: True
