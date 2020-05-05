@@ -12,6 +12,7 @@ pool:
   
 steps:
 - task: UseDotNet@2
+  submodules: recursive
   inputs:
     version: '3.1.x'
     
