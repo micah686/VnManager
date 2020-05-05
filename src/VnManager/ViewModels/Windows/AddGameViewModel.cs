@@ -25,6 +25,10 @@ namespace VnManager.ViewModels.Windows
         public string IconPath { get; set; }
         public string ExeArguments { get; set; }
 
+        public bool CanChangeVnName { get; set; }
+        public bool HideArgumentsError { get; private set; } = false;
+        public bool HideIconError { get; private set; } = false;
+
 
         private bool _isIconChecked;
         public bool IsIconChecked
@@ -94,9 +98,7 @@ namespace VnManager.ViewModels.Windows
             }
         }
 
-        public bool CanChangeVnName { get; set; }
-        public bool HideArgumentsError { get; private set; } = false;
-        public bool HideIconError { get; private set; } = false;
+        
 
 
 
@@ -207,26 +209,40 @@ namespace VnManager.ViewModels.Windows
     {
         public AddGameViewModelValidator()
         {
-            //RuleFor(x => x.VnId).NotEmpty().WithMessage("VnId Cannot be Emtpy");
+            When(x => x.IsNameChecked == false, () =>
+            {
+                RuleFor(x => x.VnId).NotEmpty().WithMessage("VnId Cannot be Emtpy");
+                RuleFor(x => x.VnId).GreaterThan(0).WithMessage("VnId must be greater than 0");
+            });
 
-            
+            When(x => x.IsNameChecked == true, () =>
+            {
+                RuleFor(x => x.CanChangeVnName).NotEqual(true).WithMessage("A selection from the list of VN names is required");
+                RuleFor(x => x.VnName).NotEmpty().WithMessage("Vn Name cannot be empty");
+            });
+
+
             RuleFor(x => x.ExePath).NotEmpty().WithMessage("Exe Path cannot be empty");
-            //RuleFor(x => x.ExePath).Must(ValidateFiles.EndsWithExe).When(x => !string.IsNullOrWhiteSpace(x.ExePath) || !string.IsNullOrEmpty(x.ExePath)).WithMessage("Not a valid path to exe");
-            //RuleFor(x => x.ExePath).Must(ValidateFiles.ValidateExe).When(x => !string.IsNullOrWhiteSpace(x.ExePath) || !string.IsNullOrEmpty(x.ExePath)).WithMessage("Not a valid Executable");
-
-            //RuleFor(x => x.ExeArguments).Must(AddGameMultiViewModelValidator.ContainsIllegalCharacters).When(x => !string.IsNullOrWhiteSpace(x.ExeArguments) || !string.IsNullOrEmpty(x.ExeArguments)).WithMessage("Illegal characters detected");
-
-            //RuleFor(x => x.IconPath).Must(ValidateFiles.EndsWithIcoOrExe).When(x => !string.IsNullOrWhiteSpace(x.IconPath) || !string.IsNullOrEmpty(x.IconPath)).WithMessage("Not a valid path to icon");
-
-            //When(x => x.IsArgsChecked == true && x.ExeArguments == "", () =>
-            //{
-            //    RuleFor(x => x.ExeArguments).NotEmpty().Unless(x => x.HideArgumentsError==true).WithMessage("Arguments cannot be empty");
-            //});
+            RuleFor(x => x.ExePath).Must(ValidateFiles.EndsWithExe).When(x => !string.IsNullOrWhiteSpace(x.ExePath) || !string.IsNullOrEmpty(x.ExePath)).WithMessage("Not a valid path to exe");
+            RuleFor(x => x.ExePath).Must(ValidateFiles.ValidateExe).When(x => !string.IsNullOrWhiteSpace(x.ExePath) || !string.IsNullOrEmpty(x.ExePath)).WithMessage("Not a valid Executable");
 
             When(x => x.IsIconChecked == true, () =>
             {
                 RuleFor(x => x.IconPath).NotEmpty().Unless(x => x.HideIconError == true).WithMessage("Icon Path cannot be empty");
+                RuleFor(x => x.IconPath).Must(ValidateFiles.EndsWithIcoOrExe).Unless(x => x.HideIconError == true)
+                    .When(x => !string.IsNullOrWhiteSpace(x.IconPath) || !string.IsNullOrEmpty(x.IconPath)).WithMessage("Not a valid path to icon");
             });
+
+            When(x => x.IsArgsChecked == true && x.ExeArguments == "", () =>
+            {
+                RuleFor(x => x.ExeArguments).NotEmpty().Unless(x => x.HideArgumentsError == true).WithMessage("Arguments cannot be empty");
+                RuleFor(x => x.ExeArguments).Must(AddGameMultiViewModelValidator.ContainsIllegalCharacters).Unless(x => x.HideArgumentsError == true)
+                    .When(x => !string.IsNullOrWhiteSpace(x.ExeArguments) || !string.IsNullOrEmpty(x.ExeArguments)).WithMessage("Illegal characters detected");
+            });
+
+
+
+
         }
     }
 
