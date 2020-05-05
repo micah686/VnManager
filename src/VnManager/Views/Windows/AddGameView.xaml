@@ -86,9 +86,12 @@
 
                     <StackPanel Orientation="Horizontal" Visibility="{Binding IsChecked, ElementName=VnNameRadio, Converter={StaticResource boolToVisConverter}}">
                         <TextBlock Grid.Column="0" Text="{Binding IsNameChecked, Converter={StaticResource VnIdStringConverter}}" Margin="0,5,0,0"/>
-                        <ComboBox x:Name="cmbVnName" Width="150" Height="25" IsEditable="True" Margin="10,0,0,0" Text="{Binding VnName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        <ComboBox x:Name="cmbVnName" Width="150" Height="25" IsEditable="{Binding CanChangeVnName, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Margin="10,0,0,0" Text="{Binding VnName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                         <Button Margin="5,0,0,0" Command="{s:Action Search}">
                             <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.Magnify}"  />
+                        </Button>
+                        <Button Margin="5,0,0,0" Command="{s:Action ResetName}">
+                            <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.Restore}"  />
                         </Button>
                     </StackPanel>
 

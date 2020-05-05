@@ -63,7 +63,9 @@ namespace VnManager.ViewModels.Windows
             }
         }
 
-        
+        public bool CanChangeVnName { get; set; }
+
+
 
 
         private readonly IWindowManager _windowManager;
@@ -75,13 +77,20 @@ namespace VnManager.ViewModels.Windows
             _windowManager = windowManager;
             _dialogService = dialogService;
             IsNotExeCollection = true;
+            CanChangeVnName = true;
         }
 
         public void Search()
         {
+            CanChangeVnName = false;
             var validator = new AddGameViewModelValidator();
             this.Validate();
             bool result = validator.Validate(this).IsValid;
+        }
+
+        public void ResetName()
+        {
+            CanChangeVnName = true;
         }
 
         public void BrowseExe()
