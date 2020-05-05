@@ -26,8 +26,24 @@ namespace VnManager.ViewModels.Windows
         public string ExeArguments { get; set; }
 
 
-        public bool IsCustomArgsChecked { get; set; }
         public bool IsCustomIconChecked { get; set; }
+
+        private bool _isArgsChecked;
+        public bool IsArgsChecked
+        {
+            get => _isArgsChecked;
+            set
+            {
+                SetAndNotify(ref _isArgsChecked, value);
+                if (_isArgsChecked == false)
+                {
+                    ExeArguments = string.Empty;
+                    HideArgumentsError = true;
+                    Validate();
+                    HideArgumentsError = false;
+                }
+            }
+        }
 
         private ExeTypesEnum _exeTypes;
         public ExeTypesEnum ExeTypes
@@ -57,14 +73,15 @@ namespace VnManager.ViewModels.Windows
             {
                 ExeArguments = string.Empty;
                 IconPath = string.Empty;
-                IsCustomArgsChecked = false;
+                IsArgsChecked = false;
                 IsCustomIconChecked = false;
                 SetAndNotify(ref _isNotExeCollection, value);
             }
         }
 
         public bool CanChangeVnName { get; set; }
-
+        public bool HideArgumentsError { get; private set; } = false;
+        public bool HideIconError { get; private set; } = false;
 
 
 
@@ -186,12 +203,12 @@ namespace VnManager.ViewModels.Windows
 
             RuleFor(x => x.IconPath).Must(ValidateFiles.EndsWithIcoOrExe).When(x => !string.IsNullOrWhiteSpace(x.IconPath) || !string.IsNullOrEmpty(x.IconPath)).WithMessage("Not a valid path to icon");
 
-            When(x => x.IsCustomArgsChecked == true && x.ExeArguments == "", () =>
+            When(x => x.IsArgsChecked == true && x.ExeArguments == "", () =>
             {
-                RuleFor(x => x.ExeArguments).NotEmpty().WithMessage("Arguments cannot be empty");
+                RuleFor(x => x.ExeArguments).NotEmpty().Unless(x => x.HideArgumentsError==true).WithMessage("Arguments cannot be empty");
             });
 
-            When(x => x.IsCustomArgsChecked == true, () =>
+            When(x => x.IsCustomIconChecked == true, () =>
             {
                 RuleFor(x => x.IconPath).NotEmpty().WithMessage("Icon Path cannot be empty");
             });

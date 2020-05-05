@@ -149,13 +149,30 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <CheckBox Grid.Column="0" x:Name="chkCustomArg" Content="Custom Arguments" Margin="10,0,0,0" IsChecked="{Binding IsCustomArgsChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                    <CheckBox Grid.Column="0" x:Name="chkCustomIco" Content="Custom Icon" Margin="10,0,0,0" IsChecked="{Binding IsCustomIconChecked, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" 
                               IsEnabled="{Binding IsNotExeCollection}"/>
-                    <CheckBox Grid.Column="1" x:Name="chkCustomIco" Content="Custom Icon" Margin="10,0,0,0" IsChecked="{Binding IsCustomIconChecked, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" 
+                    <CheckBox Grid.Column="1" x:Name="chkCustomArg" Content="Custom Arguments" Margin="10,0,0,0" IsChecked="{Binding IsArgsChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                               IsEnabled="{Binding IsNotExeCollection}"/>
                 </Grid>
 
                 <Grid Grid.Row="6" Margin="0,0,0,15">
+                    <Grid.IsEnabled>
+                        <MultiBinding Converter="{StaticResource booleanAndConverter}">
+                            <Binding ElementName="chkCustomIco" Path="IsChecked"/>
+                        </MultiBinding>
+                    </Grid.IsEnabled>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Icon:" Width="60" Margin="0,3,0,0"/>
+                    <TextBox Grid.Column="1"  Width="300" IsReadOnly="True" IsReadOnlyCaretVisible="True" Text="{Binding IconPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <Button Grid.Column="2" Content="Browse" Margin="5,0,0,0" Command="{s:Action BrowseIcon}" />
+
+                </Grid>
+                
+                <Grid Grid.Row="7" Margin="0,0,0,15">
                     <Grid.IsEnabled>
                         <MultiBinding Converter="{StaticResource booleanAndConverter}">
                             <Binding ElementName="chkCustomArg" Path="IsChecked"/>
@@ -172,22 +189,7 @@
 
                 </Grid>
 
-                <Grid Grid.Row="7" Margin="0,0,0,15">
-                    <Grid.IsEnabled>
-                        <MultiBinding Converter="{StaticResource booleanAndConverter}">
-                            <Binding ElementName="chkCustomIco" Path="IsChecked"/>
-                        </MultiBinding>
-                    </Grid.IsEnabled>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Text="IconPath:" Width="60" Margin="0,3,0,0"/>
-                    <TextBox Grid.Column="1"  Width="300" IsReadOnly="True" IsReadOnlyCaretVisible="True" Text="{Binding ExeArguments, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                    <Button Grid.Column="2" Content="Browse" Margin="5,0,0,0" Command="{s:Action BrowseIcon}" />
-
-                </Grid>
+                
 
                 <Grid Grid.Row="8" Margin="0,5,0,10">
                     <Grid.ColumnDefinitions>
