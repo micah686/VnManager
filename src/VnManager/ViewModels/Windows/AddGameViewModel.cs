@@ -16,7 +16,8 @@ namespace VnManager.ViewModels.Windows
     public class AddGameViewModel: Screen
     {
         private List<MultiExeGamePaths> _exeCollection = new List<MultiExeGamePaths>();
-        
+
+        #region Properties
         public string SourceSite { get; set; }
         public int? VnId { get; set; }        
         public string VnName { get; set; }
@@ -98,7 +99,7 @@ namespace VnManager.ViewModels.Windows
             }
         }
 
-        
+        #endregion
 
 
 
