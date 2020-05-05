@@ -149,7 +149,7 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <CheckBox Grid.Column="0" x:Name="chkCustomIco" Content="Custom Icon" Margin="10,0,0,0" IsChecked="{Binding IsCustomIconChecked, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" 
+                    <CheckBox Grid.Column="0" x:Name="chkCustomIco" Content="Custom Icon" Margin="10,0,0,0" IsChecked="{Binding IsIconChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                               IsEnabled="{Binding IsNotExeCollection}"/>
                     <CheckBox Grid.Column="1" x:Name="chkCustomArg" Content="Custom Arguments" Margin="10,0,0,0" IsChecked="{Binding IsArgsChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                               IsEnabled="{Binding IsNotExeCollection}"/>
