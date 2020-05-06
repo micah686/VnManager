@@ -16,12 +16,15 @@ using VndbSharp;
 using VndbSharp.Models.VisualNovel;
 using VndbSharp.Models;
 using VnManager.Helpers.Vndb;
+using VnManager.Utilities;
+using System.Text.RegularExpressions;
 
 namespace VnManager.ViewModels.Windows
 {
     public class AddGameViewModel: Screen
     {
         private List<MultiExeGamePaths> _exeCollection = new List<MultiExeGamePaths>();
+        public BindableCollection<string> SuggestedNamesCollection { get; private set; }
 
         #region Properties
         public string SourceSite { get; set; }
@@ -35,6 +38,8 @@ namespace VnManager.ViewModels.Windows
         public bool CanChangeVnName { get; set; }
         public bool HideArgumentsError { get; private set; } = false;
         public bool HideIconError { get; private set; } = false;
+        public bool IsNameDropDownOpen { get; set; } = false;
+        public string SelectedName { get; set; }
 
 
         private bool _isIconChecked;
@@ -119,19 +124,62 @@ namespace VnManager.ViewModels.Windows
             _dialogService = dialogService;
             IsNotExeCollection = true;
             CanChangeVnName = true;
+            SuggestedNamesCollection = new BindableCollection<string>();
         }
 
-        public void Search()
+        public async void Search()
         {
+            if (string.IsNullOrEmpty(VnName) || string.IsNullOrWhiteSpace(VnName)) return;
             CanChangeVnName = false;
-            var validator = new AddGameViewModelValidator();
-            ValidateAsync();
-            bool result = validator.Validate(this).IsValid;
+            await ValidateAsync();
+            if (VndbConnectionTest.VndbTcpSocketTest() == false)
+            {
+                LogManager.Logger.Warning("Could not connect to the Vndb API over SSL");
+                await Task.Delay(3500);
+            }
+            try
+            {
+                if (VnName == null || VnName.Length < 2) return;
+                using (Vndb client = new Vndb(true))
+                {
+                    SuggestedNamesCollection.Clear();
+                    VndbResponse<VisualNovel> _vnNameList = null;
+                    _vnNameList = await client.GetVisualNovelAsync(VndbFilters.Search.Fuzzy(VnName), VndbFlags.Basic);
+                    if(_vnNameList == null)
+                    {
+                        //handle error
+                        return;
+                    }
+                    else if(_vnNameList.Count < 1)
+                    {
+                        //handle error
+                        return;
+                    }
+                    List<string> nameList = IsJapaneseText(VnName) == true ? _vnNameList.Select(item => item.OriginalName).ToList() : _vnNameList.Select(item => item.Name).ToList();
+                    SuggestedNamesCollection.AddRange(nameList.Where(x => !string.IsNullOrEmpty(x)).ToList());
+                    IsNameDropDownOpen = true;
+                    SelectedName = SuggestedNamesCollection.FirstOrDefault();
+                }
+            }
+            catch (Exception ex)
+            {
+                LogManager.Logger.Error(ex, "Failed to search VnName");
+                throw;
+            }
+        }
+
+        private bool IsJapaneseText(string text)
+        {
+            Regex regex = new Regex(@"/[\u3000-\u303F]|[\u3040-\u309F]|[\u30A0-\u30FF]|[\uFF00-\uFFEF]|[\u4E00-\u9FAF]|[\u2605-\u2606]|[\u2190-\u2195]|\u203B/g");
+            return regex.IsMatch(text);
         }
 
         public void ResetName()
         {
+            IsNameDropDownOpen = false;
+            SuggestedNamesCollection.Clear();
             CanChangeVnName = true;
+            
         }
 
         public void BrowseExe()
