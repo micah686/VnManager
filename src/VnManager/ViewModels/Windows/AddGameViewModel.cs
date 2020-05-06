@@ -10,6 +10,12 @@ using System.Collections.Generic;
 using System.Linq;
 using MvvmDialogs.FrameworkDialogs.OpenFile;
 using VnManager.Helpers;
+using System.Threading;
+using System.Threading.Tasks;
+using VndbSharp;
+using VndbSharp.Models.VisualNovel;
+using VndbSharp.Models;
+using VnManager.Helpers.Vndb;
 
 namespace VnManager.ViewModels.Windows
 {
@@ -19,7 +25,7 @@ namespace VnManager.ViewModels.Windows
 
         #region Properties
         public string SourceSite { get; set; }
-        public int? VnId { get; set; }        
+        public int VnId { get; set; }        
         public string VnName { get; set; }
         public bool IsNameChecked { get; set; }        
         public string ExePath { get; set; }
@@ -119,7 +125,7 @@ namespace VnManager.ViewModels.Windows
         {
             CanChangeVnName = false;
             var validator = new AddGameViewModelValidator();
-            this.Validate();
+            ValidateAsync();
             bool result = validator.Validate(this).IsValid;
         }
 
@@ -188,7 +194,7 @@ namespace VnManager.ViewModels.Windows
         public void Submit()
         {
             var validator = new AddGameViewModelValidator();
-            this.Validate();
+            ValidateAsync();
             bool result = validator.Validate(this).IsValid;
             if(result == true)
             {
@@ -214,6 +220,8 @@ namespace VnManager.ViewModels.Windows
             {
                 RuleFor(x => x.VnId).NotEmpty().WithMessage("VnId Cannot be Emtpy");
                 RuleFor(x => x.VnId).GreaterThan(0).WithMessage("VnId must be greater than 0");
+                RuleFor(x => x.VnId).MustAsync(IsNotDeletedVn).WithMessage("The VnId had been removed or does not exist");
+                RuleFor(x => x.VnId).MustAsync(IsNotAboveMaxId).WithMessage("ID entered is above current maximum VnId");
             });
 
             When(x => x.IsNameChecked == true, () =>
@@ -243,8 +251,67 @@ namespace VnManager.ViewModels.Windows
 
 
 
-
+            
         }
+
+
+        #region Validators
+
+        private async Task<bool> IsNotDeletedVn(int inputid, CancellationToken cancellation)
+        {
+            try
+            {
+                using (Vndb client = new Vndb(true))
+                {
+                    uint vnid = Convert.ToUInt32(inputid); //17725 is deleted vn
+                    VndbResponse<VisualNovel> response = await client.GetVisualNovelAsync(VndbFilters.Id.Equals(vnid));
+                    if (response != null)
+                    {
+                        return response.Count > 0;
+                    }
+                    else
+                    {
+                        //HandleError.HandleErrors(client.GetLastError(), 0);
+                        return false;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                //Globals.Logger.Error(ex, "check for deleted vn failed");
+                return false;
+            }
+        }
+
+        private async Task<bool> IsNotAboveMaxId(int id, CancellationToken cancellation)
+        {
+            try
+            {
+                using (Vndb client = new Vndb(true))
+                {
+                    RequestOptions ro = new RequestOptions { Reverse = true, Sort = "id",Count = 1 };
+                    VndbResponse<VisualNovel> response = await client.GetVisualNovelAsync(VndbFilters.Id.GreaterThan(1), VndbFlags.Basic, ro);
+                    if (response != null)
+                    {
+                        if (id < response.Items[0].Id) return true;
+                        else return false;
+                    }
+                    else
+                    {
+                        //HandleError.HandleErrors(client.GetLastError(), 0);
+                        return false;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                //Globals.Logger.Error(ex, "Could not check max vndb id", ex.Data);
+                return false;
+            }
+        }
+
+
+        #endregion
     }
 
     public class VnIdNameBoolToStringConverter : IValueConverter
