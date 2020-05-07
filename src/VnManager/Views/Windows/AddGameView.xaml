@@ -77,6 +77,7 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
                     <StackPanel Orientation="Horizontal" Visibility="{Binding IsChecked, ElementName=VnIdRadio, Converter={StaticResource boolToVisConverter}}">
@@ -89,12 +90,13 @@
                         <ComboBox x:Name="cmbVnName" Width="150" Height="25" IsEditable="{Binding CanChangeVnName, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Margin="10,0,0,0" Text="{Binding VnName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                   ItemsSource="{Binding SuggestedNamesCollection, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" IsDropDownOpen="{Binding IsNameDropDownOpen, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                                   SelectedItem="{Binding SelectedName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                        <Button Margin="5,0,0,0" Command="{s:Action Search}">
+                        <Button Margin="5,0,0,0" Command="{s:Action Search}" IsEnabled="{Binding IsSearchNameButtonEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                             <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.Magnify}"  />
                         </Button>
-                        <Button Margin="5,0,0,0" Command="{s:Action ResetName}">
+                        <Button Margin="5,0,0,0" Command="{s:Action ResetName}" IsEnabled="{Binding IsResetNameButtonEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                             <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.Restore}"  />
                         </Button>
+                        <ContentControl ContentTemplate="{DynamicResource {x:Static adonisUi:Templates.LoadingCircle}}" Width="16" Height="16" Focusable="False" Margin="5,0,0,0" Visibility="{Binding IsSearchingForNames, Converter={StaticResource boolToVisConverter}}"/>
                     </StackPanel>
 
                 </Grid>

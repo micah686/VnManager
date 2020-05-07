@@ -40,6 +40,9 @@ namespace VnManager.ViewModels.Windows
         public bool HideIconError { get; private set; } = false;
         public bool IsNameDropDownOpen { get; set; } = false;
         public string SelectedName { get; set; }
+        public bool IsSearchingForNames { get; set; } = false;
+        public bool IsSearchNameButtonEnabled { get; set; } = true;
+        public bool IsResetNameButtonEnabled { get; set; } = true;
 
 
         private bool _isIconChecked;
@@ -53,7 +56,7 @@ namespace VnManager.ViewModels.Windows
                 {
                     IconPath = string.Empty;
                     HideIconError = true;
-                    Validate();
+                    ValidateAsync();
                     HideIconError = false;
                 }
             }
@@ -70,7 +73,7 @@ namespace VnManager.ViewModels.Windows
                 {
                     ExeArguments = string.Empty;
                     HideArgumentsError = true;
-                    Validate();
+                    ValidateAsync();
                     HideArgumentsError = false;
                 }
             }
@@ -131,6 +134,8 @@ namespace VnManager.ViewModels.Windows
         {
             if (string.IsNullOrEmpty(VnName) || string.IsNullOrWhiteSpace(VnName)) return;
             CanChangeVnName = false;
+            IsSearchNameButtonEnabled = false;
+            IsResetNameButtonEnabled = false;
             await ValidateAsync();
             if (VndbConnectionTest.VndbTcpSocketTest() == false)
             {
@@ -160,6 +165,7 @@ namespace VnManager.ViewModels.Windows
                     IsNameDropDownOpen = true;
                     SelectedName = SuggestedNamesCollection.FirstOrDefault();
                 }
+                IsResetNameButtonEnabled = true;
             }
             catch (Exception ex)
             {
@@ -179,7 +185,7 @@ namespace VnManager.ViewModels.Windows
             IsNameDropDownOpen = false;
             SuggestedNamesCollection.Clear();
             CanChangeVnName = true;
-            
+            IsSearchNameButtonEnabled = true;
         }
 
         public void BrowseExe()
