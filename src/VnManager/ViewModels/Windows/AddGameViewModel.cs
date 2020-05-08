@@ -130,7 +130,7 @@ namespace VnManager.ViewModels.Windows
             SuggestedNamesCollection = new BindableCollection<string>();
         }
 
-        public async void Search()
+        public async Task Search()
         {
             if (string.IsNullOrEmpty(VnName) || string.IsNullOrWhiteSpace(VnName)) return;
             CanChangeVnName = false;
@@ -279,7 +279,7 @@ namespace VnManager.ViewModels.Windows
             When(x => x.IsNameChecked == true, () =>
             {
                 RuleFor(x => x.CanChangeVnName).NotEqual(true).WithMessage("A selection from the list of VN names is required");
-                RuleFor(x => x.VnName).NotEmpty().WithMessage("Vn Name cannot be empty");
+                RuleFor(x => x.VnName).NotEmpty().When(x => x.CanChangeVnName ==false).WithMessage("Vn Name cannot be empty");
             });
 
 
