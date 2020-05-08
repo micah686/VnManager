@@ -33,6 +33,9 @@
                                 </Setter.Value>
                             </Setter>
                         </Style>
+                        <Style TargetType="{x:Type GridViewColumnHeader}" BasedOn="{StaticResource {x:Type GridViewColumnHeader}}">
+                            <Setter Property="IsEnabled" Value="False"/>
+                        </Style>
                     </ListView.Resources>
                     <ListView.View>
                         <GridView>
