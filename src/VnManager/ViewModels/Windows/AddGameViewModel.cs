@@ -270,13 +270,11 @@ namespace VnManager.ViewModels.Windows
     {
         public AddGameViewModelValidator()
         {
-            When(x => x.IsNameChecked == false, () =>
-            {
-                RuleFor(x => x.VnId).NotEmpty().WithMessage("VnId Cannot be Emtpy");
-                RuleFor(x => x.VnId).GreaterThan(0).WithMessage("VnId must be greater than 0");
-                RuleFor(x => x.VnId).MustAsync(IsNotDeletedVn).WithMessage("The VnId had been removed or does not exist");
-                RuleFor(x => x.VnId).MustAsync(IsNotAboveMaxId).WithMessage("ID entered is above current maximum VnId");
-            });
+
+            RuleFor(x => x.VnId).Cascade(CascadeMode.StopOnFirstFailure)
+                .NotEmpty().When(x => x.IsNameChecked == false).WithMessage("Vndb ID must be greater than 0")
+                .MustAsync(IsNotAboveMaxId).When(x => x.IsNameChecked == false).WithMessage("ID entered is above maximum Vndb ID")
+                .MustAsync(IsNotDeletedVn).When(x => x.IsNameChecked == false).WithMessage("The Vndb ID entered has been removed or does not exist");
 
             When(x => x.IsNameChecked == true, () =>
             {
@@ -285,27 +283,20 @@ namespace VnManager.ViewModels.Windows
             });
 
 
-            RuleFor(x => x.ExePath).NotEmpty().WithMessage("Exe Path cannot be empty");
-            RuleFor(x => x.ExePath).Must(ValidateFiles.EndsWithExe).When(x => !string.IsNullOrWhiteSpace(x.ExePath) || !string.IsNullOrEmpty(x.ExePath)).WithMessage("Not a valid path to exe");
-            RuleFor(x => x.ExePath).Must(ValidateFiles.ValidateExe).When(x => !string.IsNullOrWhiteSpace(x.ExePath) || !string.IsNullOrEmpty(x.ExePath)).WithMessage("Not a valid Executable");
-
-            When(x => x.IsIconChecked == true, () =>
-            {
-                RuleFor(x => x.IconPath).NotEmpty().Unless(x => x.HideIconError == true).WithMessage("Icon Path cannot be empty");
-                RuleFor(x => x.IconPath).Must(ValidateFiles.EndsWithIcoOrExe).Unless(x => x.HideIconError == true)
-                    .When(x => !string.IsNullOrWhiteSpace(x.IconPath) || !string.IsNullOrEmpty(x.IconPath)).WithMessage("Not a valid path to icon");
-            });
-
-            When(x => x.IsArgsChecked == true && x.ExeArguments == "", () =>
-            {
-                RuleFor(x => x.ExeArguments).NotEmpty().Unless(x => x.HideArgumentsError == true).WithMessage("Arguments cannot be empty");
-                RuleFor(x => x.ExeArguments).Must(AddGameMultiViewModelValidator.ContainsIllegalCharacters).Unless(x => x.HideArgumentsError == true)
-                    .When(x => !string.IsNullOrWhiteSpace(x.ExeArguments) || !string.IsNullOrEmpty(x.ExeArguments)).WithMessage("Illegal characters detected");
-            });
+            RuleFor(x => x.ExePath).Cascade(CascadeMode.StopOnFirstFailure)
+                .NotEmpty().WithMessage("Exe Path cannot be empty")
+                .Must(ValidateFiles.EndsWithExe).WithMessage("Not a valid path to exe")
+                .Must(ValidateFiles.ValidateExe).WithMessage("Not a valid Executable");
 
 
+            RuleFor(x => x.IconPath).Cascade(CascadeMode.StopOnFirstFailure)
+                .NotEmpty().When(x => x.IsIconChecked == true).Unless(x => x.HideIconError == true).WithMessage("Icon path cannot be empty")
+                .Must(ValidateFiles.EndsWithIcoOrExe).When(x => x.IsIconChecked == true).Unless(x => x.HideIconError == true).WithMessage("Not a valid path to icon");
 
-            
+            RuleFor(x => x.ExeArguments).Cascade(CascadeMode.StopOnFirstFailure)
+                .NotEmpty().When(x => x.IsArgsChecked == true && x.ExeArguments == "").Unless(x => x.HideArgumentsError == true).WithMessage("Arguments cannot be empty")
+                .Must(AddGameMultiViewModelValidator.ContainsIllegalCharacters).When(x => x.IsArgsChecked == true && x.ExeArguments == "").Unless(x => x.HideArgumentsError == true).WithMessage("Illegal characters detected");
+
         }
 
 
