@@ -112,7 +112,7 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                     <TextBlock Text="Arguments:" Width="70" Margin="0,2,0,0" IsEnabled="False" />
-                    <TextBox Grid.Column="1"  Width="350" Text="{Binding ExeArguments, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBox Grid.Column="1" MaxLength="300" Width="350" Text="{Binding ExeArguments, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
             </Grid>
 
 
