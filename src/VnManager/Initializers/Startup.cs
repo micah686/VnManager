@@ -5,7 +5,7 @@ using VnManager.Utilities;
 
 namespace VnManager.Initializers
 {
-    public class Startup
+    public static class Startup
     {
         private static readonly IFileSystem fs = new FileSystem();
         public static void SetDirectories()

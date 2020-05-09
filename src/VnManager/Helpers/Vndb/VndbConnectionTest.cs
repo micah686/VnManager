@@ -5,7 +5,7 @@ using System.Text;
 
 namespace VnManager.Helpers.Vndb
 {
-    public class VndbConnectionTest
+    public static class VndbConnectionTest
     {
         public static bool VndbTcpSocketTest()
         {

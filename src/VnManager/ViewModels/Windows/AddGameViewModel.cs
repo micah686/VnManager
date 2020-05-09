@@ -23,7 +23,7 @@ namespace VnManager.ViewModels.Windows
 {
     public class AddGameViewModel: Screen
     {
-        private List<MultiExeGamePaths> _exeCollection = new List<MultiExeGamePaths>();
+        private readonly List<MultiExeGamePaths> _exeCollection = new List<MultiExeGamePaths>();
         public BindableCollection<string> SuggestedNamesCollection { get; private set; }
 
         #region Properties
@@ -215,15 +215,11 @@ namespace VnManager.ViewModels.Windows
         {
             var multivm = _container.Get<AddGameMultiViewModel>();
             var result = _windowManager.ShowDialog(multivm).Value;
-            if(result == true)
+            if(result == true && multivm.GameCollection != null)
             {
-                if(multivm.GameCollection != null)
-                {
-                    _exeCollection.Clear();
-                    _exeCollection.AddRange(from item in multivm.GameCollection
-                         select new MultiExeGamePaths { ExePath = item.ExePath, IconPath = item.IconPath, ArgumentsString = item.ArgumentsString });
-                }
-
+                _exeCollection.Clear();
+                _exeCollection.AddRange(from item in multivm.GameCollection
+                                        select new MultiExeGamePaths { ExePath = item.ExePath, IconPath = item.IconPath, ArgumentsString = item.ArgumentsString });
             }
             multivm.Remove();
         }
