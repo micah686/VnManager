@@ -26,38 +26,7 @@ namespace VnManager.Helpers.Vndb
                     LogManager.Logger.Warning($"A BadArgument Error occured, the field {badArg.Field} is invalid.");
                     break;
                 case ThrottledError throttled:
-                    try
-                    {
-                        if (throttled.MinimumWait.Year < 2000) return;
-                        var minsec = (throttled.MinimumWait - DateTime.Now).TotalSeconds;
-                        var maxsec = (throttled.FullWait - DateTime.Now).TotalSeconds;
-                        var minSeconds = TimeSpan.FromSeconds((throttled.MinimumWait - DateTime.Now).TotalSeconds); // Not sure if this is correct
-                        var fullSeconds = TimeSpan.FromSeconds((throttled.FullWait - DateTime.Now).TotalSeconds); // Not sure if this is correct
-                        TimeSpan timeSpan;
-                        Debug.WriteLine($"minsec {minsec}, maxsec: {maxsec}\nA Throttled Error occured, you need to wait at minimum {minSeconds} seconds and preferably {fullSeconds} before issuing commands.");
-                        LogManager.Logger.Warning($"minsec {minsec}, maxsec: {maxsec}\nA Throttled Error occured, you need to wait at minimum {minSeconds} seconds and preferably {fullSeconds} before issuing commands.");
-                        
-                        if(counter ==0) timeSpan = TimeSpan.FromSeconds(minSeconds.TotalSeconds);
-                        else if(counter >=1) timeSpan = TimeSpan.FromSeconds(minSeconds.TotalSeconds * counter);
-                        else timeSpan = TimeSpan.FromSeconds(5);
-
-                        if(timeSpan > fullSeconds)
-                        {
-                            timeSpan = TimeSpan.FromSeconds(fullSeconds.TotalSeconds);
-                        }
-
-                        if(timeSpan >= new TimeSpan(0, 0, 0, 0, 0))
-                        {
-                            LogManager.Logger.Warning($"Please wait {timeSpan.TotalMinutes} minutes and {timeSpan.TotalSeconds} seconds");
-                            Thread.Sleep(timeSpan); //does this need to be Thread.Sleep or Task.Delay?
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine("Throttled logic failed");
-                        LogManager.Logger.Error(ex, "Throttled logic failed");
-                        throw;
-                    }
+                    ThrottledCheck(throttled, counter);
                     break;
                 case GetInfoError getInfo:
                     Debug.WriteLine($"A GetInfo Error occured, the flag {getInfo.Flag} is not valid on the issued command.");
@@ -75,6 +44,45 @@ namespace VnManager.Helpers.Vndb
                     Debug.WriteLine($"A {error.Type} Error occured.\nMessage: {error.Message}");
                     LogManager.Logger.Warning($"A {error.Type} Error occured.\nMessage: {error.Message}");
                     break;
+            }
+        }
+
+        private static void ThrottledCheck(ThrottledError throttled, int counter)
+        {
+            try
+            {
+                if (throttled.MinimumWait.Year < 2000) return;
+                var minsec = (throttled.MinimumWait - DateTime.Now).TotalSeconds;
+                var maxsec = (throttled.FullWait - DateTime.Now).TotalSeconds;
+                var minSeconds = TimeSpan.FromSeconds((throttled.MinimumWait - DateTime.Now).TotalSeconds); // Not sure if this is correct
+                var fullSeconds = TimeSpan.FromSeconds((throttled.FullWait - DateTime.Now).TotalSeconds); // Not sure if this is correct
+                TimeSpan timeSpan;
+                Debug.WriteLine($"minsec {minsec}, maxsec: {maxsec}\nA Throttled Error occured, you need to wait at minimum {minSeconds} seconds and preferably {fullSeconds} before issuing commands.");
+                LogManager.Logger.Warning($"minsec {minsec}, maxsec: {maxsec}\nA Throttled Error occured, you need to wait at minimum {minSeconds} seconds and preferably {fullSeconds} before issuing commands.");
+
+                if (counter == 0) 
+                    timeSpan = TimeSpan.FromSeconds(minSeconds.TotalSeconds);
+                else if (counter >= 1) 
+                    timeSpan = TimeSpan.FromSeconds(minSeconds.TotalSeconds * counter);
+                else 
+                    timeSpan = TimeSpan.FromSeconds(5);
+
+                if (timeSpan > fullSeconds)
+                {
+                    timeSpan = TimeSpan.FromSeconds(fullSeconds.TotalSeconds);
+                }
+
+                if (timeSpan >= new TimeSpan(0, 0, 0, 0, 0))
+                {
+                    LogManager.Logger.Warning($"Please wait {timeSpan.TotalMinutes} minutes and {timeSpan.TotalSeconds} seconds");
+                    Thread.Sleep(timeSpan); //does this need to be Thread.Sleep or Task.Delay?
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Throttled logic failed");
+                LogManager.Logger.Error(ex, "Throttled logic failed");
+                throw;
             }
         }
     }
