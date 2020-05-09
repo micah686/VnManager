@@ -6,10 +6,42 @@
         xmlns:local="clr-namespace:VnManager.Views"
         xmlns:s="https://github.com/canton7/Stylet"
         xmlns:controls="clr-namespace:AdonisUI.Controls;assembly=AdonisUI"
+        xmlns:extensions="clr-namespace:AdonisUI.Extensions;assembly=AdonisUI"
+        xmlns:main="clr-namespace:VnManager.Views.UserControls"
+        xmlns:vm="clr-namespace:VnManager.ViewModels"
         mc:Ignorable="d"
-        Title="RootView" Height="450" Width="800">
+        d:DataContext="{d:DesignInstance vm:RootViewModel}"
+        Title="RootView" MinWidth="800" MinHeight="600" Width="1024" Height="768">
     <Grid>
-        <Button Content="Button" HorizontalAlignment="Left" Margin="223,189,0,0" VerticalAlignment="Top" Height="51" Width="92" Command="{s:Action Click}"/>
+        <!--<Button Content="Button" HorizontalAlignment="Left" Margin="223,189,0,0" VerticalAlignment="Top" Height="51" Width="92" Command="{s:Action Click}"/>-->
+        <DockPanel LastChildFill="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <Grid DockPanel.Dock="Top">
+                <main:TopInfoBar MinHeight="50" Background="BlueViolet"/>
+            </Grid>
+            <StatusBar DockPanel.Dock="Bottom">
+                <StatusBarItem Content="Ready"/>
+            </StatusBar>
 
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" MinWidth="147"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="70"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="90*"/>
+                    <RowDefinition Height="40"/>
+                </Grid.RowDefinitions>
+                <main:LastPlayed Grid.Row="0" Grid.Column="0" Margin="5,0,0,0"/>
+                
+                <main:CategoryList Grid.Row="1"  Grid.Column="0" Margin="5,0,0,0" extensions:LayerExtension.Layer="1"/>
+                <main:AddGameButton Grid.Row="2" Grid.Column="0" Margin="5,0,0,0" extensions:LayerExtension.Layer="3"/>
+
+                <main:GameGrid Grid.Row="0" Grid.Column="1" Grid.RowSpan="4" Margin="5"/>
+
+            </Grid>
+
+        </DockPanel>
     </Grid>
 </controls:AdonisWindow>
