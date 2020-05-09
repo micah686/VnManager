@@ -20,7 +20,7 @@
             <Grid.Resources>
                 <s:BoolToVisibilityConverter x:Key="boolToVisConverter" TrueVisibility="Visible" FalseVisibility="Hidden"/>
                 <conv:EnumToBooleanConverter x:Key="EnumToBooleanConverter"/>
-                <vmw:BooleanAndConverter x:Key="booleanAndConverter"/>
+                <conv:BooleanAndConverter x:Key="booleanAndConverter"/>
                 <conv:IntToStringConverter x:Key="intToStringConverter"/>
             </Grid.Resources>
             <Grid.RowDefinitions>
@@ -89,7 +89,13 @@
                         <TextBlock Grid.Column="0" Text="{Binding IsNameChecked, Converter={StaticResource VnIdStringConverter}}" Margin="0,5,0,0"/>
                         <ComboBox x:Name="cmbVnName" Width="150" Height="25" IsEditable="{Binding CanChangeVnName, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Margin="10,0,0,0" Text="{Binding VnName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                   ItemsSource="{Binding SuggestedNamesCollection, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" IsDropDownOpen="{Binding IsNameDropDownOpen, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                                  SelectedItem="{Binding SelectedName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                  SelectedItem="{Binding SelectedName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                            <ComboBox.Resources>
+                                <Style TargetType="{x:Type TextBox}">
+                                    <Setter Property="MaxLength" Value="70"/>
+                                </Style>
+                            </ComboBox.Resources>
+                        </ComboBox>
                         <Button Margin="5,0,0,0" Command="{s:Action Search}" IsEnabled="{Binding IsSearchNameButtonEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                             <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.Magnify}"  />
                         </Button>
@@ -188,7 +194,7 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="Arguments:" Width="70" Margin="0,2,0,0" IsEnabled="False"/>
-                    <TextBox Grid.Column="1"  Width="350" Text="{Binding ExeArguments, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                    <TextBox Grid.Column="1"  Width="350" MaxLength="300" Text="{Binding ExeArguments, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                              IsEnabled="{Binding IsNotExeCollection}"/>
 
                 </Grid>
@@ -268,7 +274,7 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="Arguments:" Width="70" Margin="0,2,0,0" IsEnabled="False"/>
-                    <TextBox Grid.Column="1"  Width="350" Text="{Binding ExeArguments, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBox Grid.Column="1"  Width="350" MaxLength="300" Text="{Binding ExeArguments, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                 </Grid>
 

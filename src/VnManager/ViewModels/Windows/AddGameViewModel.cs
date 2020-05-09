@@ -149,6 +149,7 @@ namespace VnManager.ViewModels.Windows
                 {
                     SuggestedNamesCollection.Clear();
                     VndbResponse<VisualNovel> _vnNameList = null;
+                    IsSearchingForNames = true;
                     _vnNameList = await client.GetVisualNovelAsync(VndbFilters.Search.Fuzzy(VnName), VndbFlags.Basic);
                     if(_vnNameList == null)
                     {
@@ -166,10 +167,12 @@ namespace VnManager.ViewModels.Windows
                     SelectedName = SuggestedNamesCollection.FirstOrDefault();
                 }
                 IsResetNameButtonEnabled = true;
+                IsSearchingForNames = false;
             }
             catch (Exception ex)
             {
                 LogManager.Logger.Error(ex, "Failed to search VnName");
+                IsSearchingForNames = false;
                 throw;
             }
         }
@@ -356,6 +359,10 @@ namespace VnManager.ViewModels.Windows
             }
         }
 
+        private bool IsNotDuplicateVn(int id)
+        {
+            throw new NotImplementedException("Need to add support for LiteDb");
+        }
 
         #endregion
     }
@@ -376,16 +383,5 @@ namespace VnManager.ViewModels.Windows
         }
     }
 
-    public class BooleanAndConverter : IMultiValueConverter
-    {
-        public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            return values.OfType<IConvertible>().All(System.Convert.ToBoolean);
-        }
-
-        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture)
-        {
-            throw new NotSupportedException();
-        }
-    }
+    
 }
