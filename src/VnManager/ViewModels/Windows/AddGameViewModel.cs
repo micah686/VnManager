@@ -153,18 +153,21 @@ namespace VnManager.ViewModels.Windows
                     _vnNameList = await client.GetVisualNovelAsync(VndbFilters.Search.Fuzzy(VnName), VndbFlags.Basic);
                     if(_vnNameList == null)
                     {
-                        //handle error
+                        HandleVndbErrors.HandleErrors(client.GetLastError(), 0);
                         return;
                     }
                     else if(_vnNameList.Count < 1)
                     {
-                        //handle error
+                        HandleVndbErrors.HandleErrors(client.GetLastError(), 0);
                         return;
                     }
-                    List<string> nameList = IsJapaneseText(VnName) == true ? _vnNameList.Select(item => item.OriginalName).ToList() : _vnNameList.Select(item => item.Name).ToList();
-                    SuggestedNamesCollection.AddRange(nameList.Where(x => !string.IsNullOrEmpty(x)).ToList());
-                    IsNameDropDownOpen = true;
-                    SelectedName = SuggestedNamesCollection.FirstOrDefault();
+                    else
+                    {
+                        List<string> nameList = IsJapaneseText(VnName) == true ? _vnNameList.Select(item => item.OriginalName).ToList() : _vnNameList.Select(item => item.Name).ToList();
+                        SuggestedNamesCollection.AddRange(nameList.Where(x => !string.IsNullOrEmpty(x)).ToList());
+                        IsNameDropDownOpen = true;
+                        SelectedName = SuggestedNamesCollection.FirstOrDefault();
+                    }                    
                 }
                 IsResetNameButtonEnabled = true;
                 IsSearchingForNames = false;
