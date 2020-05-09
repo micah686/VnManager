@@ -97,7 +97,7 @@ namespace VnManager.ViewModels.Windows
             }
         }
 
-
+        public AddGameSourceTypes SourceTypes { get; set; } = AddGameSourceTypes.Vndb;
 
         private bool _isNotExeCollection;
         public bool IsNotExeCollection
@@ -265,6 +265,7 @@ namespace VnManager.ViewModels.Windows
     }
 
     public enum ExeTypesEnum { Normal, Launcher, Collection}
+    public enum AddGameSourceTypes { NoSource, Vndb}
 
     public class AddGameViewModelValidator : AbstractValidator<AddGameViewModel>
     {
@@ -272,14 +273,14 @@ namespace VnManager.ViewModels.Windows
         {
 
             RuleFor(x => x.VnId).Cascade(CascadeMode.StopOnFirstFailure)
-                .NotEmpty().When(x => x.IsNameChecked == false).WithMessage("Vndb ID must be greater than 0")
-                .MustAsync(IsNotAboveMaxId).When(x => x.IsNameChecked == false).WithMessage("ID entered is above maximum Vndb ID")
-                .MustAsync(IsNotDeletedVn).When(x => x.IsNameChecked == false).WithMessage("The Vndb ID entered has been removed or does not exist");
+                .NotEmpty().Unless(x => x.SourceTypes != AddGameSourceTypes.Vndb).When(x => x.IsNameChecked == false).WithMessage("Vndb ID must be greater than 0")
+                .MustAsync(IsNotAboveMaxId).Unless(x => x.SourceTypes != AddGameSourceTypes.Vndb).When(x => x.IsNameChecked == false).WithMessage("ID entered is above maximum Vndb ID")
+                .MustAsync(IsNotDeletedVn).Unless(x => x.SourceTypes != AddGameSourceTypes.Vndb).When(x => x.IsNameChecked == false).WithMessage("The Vndb ID entered has been removed or does not exist");
 
             When(x => x.IsNameChecked == true, () =>
             {
-                RuleFor(x => x.CanChangeVnName).NotEqual(true).WithMessage("A selection from the list of VN names is required");
-                RuleFor(x => x.VnName).NotEmpty().When(x => x.CanChangeVnName ==false).WithMessage("Vn Name cannot be empty");
+                RuleFor(x => x.CanChangeVnName).NotEqual(true).Unless(x => x.SourceTypes != AddGameSourceTypes.Vndb).WithMessage("A selection from the list of VN names is required");
+                RuleFor(x => x.VnName).NotEmpty().Unless(x => x.SourceTypes != AddGameSourceTypes.Vndb).When(x => x.CanChangeVnName ==false).WithMessage("Vn Name cannot be empty");
             });
 
 

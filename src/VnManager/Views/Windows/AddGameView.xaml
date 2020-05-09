@@ -35,8 +35,8 @@
                 </Grid.ColumnDefinitions>
                 <Label Grid.Column="0" Content="Source:" MinWidth="50"/>
                 <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="5,0,0,0">
-                    <RadioButton x:Name="VndbSource" Content="Vndb" IsChecked="True" Margin="0,0,5,0"/>
-                    <!--<RadioButton x:Name="DlSiteSource" Content="DLSite" Margin="10,0,0,0"/>-->
+                    <RadioButton x:Name="VndbSource" Content="Vndb"  Margin="0,0,5,0" IsChecked="{Binding SourceTypes, Mode=TwoWay, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Vndb}"/>
+                    <RadioButton x:Name="NoSource" Content="No Source" Margin="10,0,0,0" IsChecked="{Binding SourceTypes, Mode=TwoWay, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=NoSource}"/>
                 </StackPanel>
             </Grid>
 
@@ -209,9 +209,84 @@
 
 
 
-            <!--<Grid Grid.Row="1" x:Name="AddDlSite" Visibility="{Binding IsChecked, ElementName=DlSiteSource, Converter={StaticResource boolToVisConverter}}">
-                <TextBlock Text="Support for DLSite or other sources is not planned until issues with vndb are fixed" Margin="5,25,5,0"/>
-            </Grid>-->
+            <Grid Grid.Row="1" x:Name="AddNoSource" Visibility="{Binding IsChecked, ElementName=NoSource, Converter={StaticResource boolToVisConverter}}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" Margin="0,10,0,0" Text="Choose a Game that is not associated with any Source"/>
+
+                <Grid Grid.Row="1" Margin="0,10,0,0">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Path:" Width="40" Margin="0,3,0,0"/>
+                        <TextBox Grid.Column="1"  Width="300" Height="25" IsReadOnly="True" IsReadOnlyCaretVisible="True" Text="{Binding ExePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        <Button Grid.Column="2" Content="Browse" Height="25" Margin="5,0,0,0" Command="{s:Action BrowseExe}"/>
+                    </StackPanel>
+                </Grid>
+
+
+                <Grid Grid.Row="2" Margin="0,10,0,15">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <CheckBox Grid.Column="0" x:Name="NoSrcIconChk" Content="Custom Icon" Margin="10,0,0,0" IsChecked="{Binding IsIconChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    <CheckBox Grid.Column="1" x:Name="NoSrcArgsChk" Content="Custom Arguments" Margin="10,0,0,0" IsChecked="{Binding IsArgsChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                </Grid>
+
+                <Grid Grid.Row="3" Margin="0,0,0,15">
+                    <Grid.IsEnabled>
+                        <MultiBinding Converter="{StaticResource booleanAndConverter}">
+                            <Binding ElementName="NoSrcIconChk" Path="IsChecked"/>
+                        </MultiBinding>
+                    </Grid.IsEnabled>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Icon:" Width="60" Margin="0,3,0,0"/>
+                    <TextBox Grid.Column="1"  Width="300" IsReadOnly="True" IsReadOnlyCaretVisible="True" Text="{Binding IconPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <Button Grid.Column="2" Content="Browse" Margin="5,0,0,0" Command="{s:Action BrowseIcon}" />
+
+                </Grid>
+
+                <Grid Grid.Row="4" Margin="0,0,0,15">
+                    <Grid.IsEnabled>
+                        <MultiBinding Converter="{StaticResource booleanAndConverter}">
+                            <Binding ElementName="NoSrcArgsChk" Path="IsChecked"/>
+                        </MultiBinding>
+                    </Grid.IsEnabled>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Arguments:" Width="70" Margin="0,2,0,0" IsEnabled="False"/>
+                    <TextBox Grid.Column="1"  Width="350" Text="{Binding ExeArguments, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                </Grid>
+
+
+
+                <Grid Grid.Row="5" Margin="0,5,0,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Button Width="100" Height="30" Content="Submit" Command="{s:Action Submit}" Style="{DynamicResource {x:Static adonisUi:Styles.AccentButton}}"/>
+                    <Button Width="85" Height="25" Grid.Column="1" Content="Cancel" Command="{s:Action Cancel}" Margin="10,0,0,0"/>
+                </Grid>
+
+
+
+                <!-- End-->
+            </Grid>
         </Grid>
     </Grid>
 </controls:AdonisWindow>
