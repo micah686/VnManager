@@ -316,14 +316,14 @@ namespace VnManager.ViewModels.Windows
                     }
                     else
                     {
-                        //HandleError.HandleErrors(client.GetLastError(), 0);
+                        HandleVndbErrors.HandleErrors(client.GetLastError(), 0);
                         return false;
                     }
                 }
             }
             catch (Exception ex)
             {
-                //Globals.Logger.Error(ex, "check for deleted vn failed");
+                LogManager.Logger.Error(ex, "check for deleted vn failed");
                 return false;
             }
         }
@@ -343,14 +343,14 @@ namespace VnManager.ViewModels.Windows
                     }
                     else
                     {
-                        //HandleError.HandleErrors(client.GetLastError(), 0);
+                        HandleVndbErrors.HandleErrors(client.GetLastError(), 0);
                         return false;
                     }
                 }
             }
             catch (Exception ex)
             {
-                //Globals.Logger.Error(ex, "Could not check max vndb id", ex.Data);
+                LogManager.Logger.Error(ex, "Could not check max vndb id", ex.Data);
                 return false;
             }
         }
