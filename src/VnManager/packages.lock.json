@@ -4,11 +4,11 @@
     ".NETCoreApp,Version=v3.1": {
       "AdonisUI.ClassicTheme": {
         "type": "Direct",
-        "requested": "[1.14.0, )",
-        "resolved": "1.14.0",
-        "contentHash": "zkQ8YAXB08unySAGY2q6EEe0Zpxz1bxaU3v5k+FtX8ksh42POB9GIFNAfmxEBI9MrLHFcvqiF0BqLj2gQ68cXQ==",
+        "requested": "[1.15.0, )",
+        "resolved": "1.15.0",
+        "contentHash": "z/7aNwFXK6Lpg6rA8Jn35tYQuWFnQRTPBK8U4ilQ6dmN72vj+xIuZZu3UyJP54qidlWkmx1q/tHKjzzWeWjz/w==",
         "dependencies": {
-          "AdonisUI": "1.14.0"
+          "AdonisUI": "1.15.0"
         }
       },
       "FluentValidation": {
@@ -71,17 +71,17 @@
       },
       "System.IO.Abstractions.TestingHelpers": {
         "type": "Direct",
-        "requested": "[11.0.3, )",
-        "resolved": "11.0.3",
-        "contentHash": "9fgu11T+o8mquiqMOFJNLBHXTGo3Bi3yoCkcpqK8MzGHCw9xpubYxGjIjxnBK+2dnWtAkxJKF2EBHAZwdI7t4A==",
+        "requested": "[11.0.6, )",
+        "resolved": "11.0.6",
+        "contentHash": "ZFKelXj3riGLhjXjRcOWbcnFNZmJPw5r00K9Kb4Cy8g/ccWCwZDKDUA0P4HrNGsblhiGztVfRSVzuIEit2dSFw==",
         "dependencies": {
-          "System.IO.Abstractions": "11.0.3"
+          "System.IO.Abstractions": "11.0.6"
         }
       },
       "AdonisUI": {
         "type": "Transitive",
-        "resolved": "1.14.0",
-        "contentHash": "2CUUEuzZOcI0JSMok/TXW+8YYRHgqprOSyRq/UcqL6DFIbkRAf8PylLmVlK0TG++ubTVtbiPXMCenuMFw08BVg==",
+        "resolved": "1.15.0",
+        "contentHash": "CguKjfoiAM3S+lS0N7wdJkVFLLm5/EcNY5XmqxLCNFtRXzRcqi4o2k4JPg78vcLnGRWyW1Uyhc43A+T532k9ng==",
         "dependencies": {
           "System.Drawing.Common": "4.6.0"
         }
@@ -573,8 +573,8 @@
       },
       "System.IO.Abstractions": {
         "type": "Transitive",
-        "resolved": "11.0.3",
-        "contentHash": "4O2DZhxJG2ZusDH5VQdLzqZmg/Zvg/f+GMwSwPC71kOfvEge+BCSp4Qk2DIew5jX0OjW7774DTSXp9YwvMaLHw==",
+        "resolved": "11.0.6",
+        "contentHash": "rXFELJ8UtlS0PMdPGKZN9ZYNIHTF6bK8pRbAFV8Xli03dNueEGe5ay/3y67rEdm3c5qcfeJrjSp8Gi2zXyWb0Q==",
         "dependencies": {
           "System.IO.FileSystem.AccessControl": "4.7.0"
         }
