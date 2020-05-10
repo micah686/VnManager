@@ -7,6 +7,6 @@ namespace VnManager.ViewModels.UserControls
 {
     public class GameListViewModel: Screen
     {
-         GameListViewModel() { }
+         public GameListViewModel() { }
     }
 }

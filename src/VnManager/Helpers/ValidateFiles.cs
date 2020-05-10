@@ -14,10 +14,13 @@ namespace VnManager.Helpers
             {
                 if (!File.Exists(filepath)) return false;
                 byte[] twoBytes = new byte[2];
+                int bytesRead = 0;
                 using (FileStream fileStream = File.Open(filepath, FileMode.Open, FileAccess.Read, FileShare.Read))
                 {
-                    fileStream.Read(twoBytes, 0, 2);
+                    bytesRead = fileStream.Read(twoBytes, 0, 2);
                 }
+                if (bytesRead != 2)
+                    return false;
                 switch (Encoding.UTF8.GetString(twoBytes))
                 {
                     case "MZ":

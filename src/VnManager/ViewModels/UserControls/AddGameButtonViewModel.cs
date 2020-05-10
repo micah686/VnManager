@@ -3,6 +3,7 @@ using StyletIoC;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using VnManager.ViewModels.Dialogs;
 
 namespace VnManager.ViewModels.UserControls
 {
@@ -18,7 +19,8 @@ namespace VnManager.ViewModels.UserControls
 
         public void Click()
         {
-            //var foo = _container.Get<RootViewModel>();
+            var foo = _container.Get<AddGameMultiViewModel>();
+            _windowManager.ShowDialog(foo);
             //foo.GameGridPage = (IContainer)_container.Get<GameListViewModel>();
         }
     }
