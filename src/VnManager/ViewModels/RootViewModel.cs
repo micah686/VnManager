@@ -2,12 +2,21 @@
 using Stylet;
 using StyletIoC;
 using VnManager.ViewModels.Dialogs;
+using VnManager.ViewModels.UserControls;
 using VnManager.ViewModels.Windows;
 
 namespace VnManager.ViewModels
 {
-    public class RootViewModel: Screen
+    public class RootViewModel: Conductor<IScreen>
     {
+        public TopInfoBarViewModel TopInfoBarPage { get; set; }
+        public StatusBarViewModel StatusBarPage { get; set; }
+        public LastPlayedViewModel LastPlayedPage { get; set; }
+        public CategoryListViewModel CategoryListPage { get; set; }
+        public GameGridViewModel GameGridPage { get; set; }
+        public AddGameButtonViewModel AddGamePage { get; set; }
+
+
         private readonly IContainer _container;
         private readonly IWindowManager _windowManager;
         private readonly IDialogService _dialogService;
@@ -17,6 +26,14 @@ namespace VnManager.ViewModels
             _container = container;
             _windowManager = windowManager;
             _dialogService = dialogService;
+
+            TopInfoBarPage = _container.Get<TopInfoBarViewModel>();
+            StatusBarPage = _container.Get<StatusBarViewModel>();
+            LastPlayedPage = _container.Get<LastPlayedViewModel>();
+            CategoryListPage = _container.Get<CategoryListViewModel>();
+            AddGamePage = _container.Get<AddGameButtonViewModel>();
+
+            GameGridPage = _container.Get<GameGridViewModel>();
 
             //var multi = _container.Get<AddGameViewModel>();
             //var test1 = _windowManager.ShowDialog(multi).Value;

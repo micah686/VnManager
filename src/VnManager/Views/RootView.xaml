@@ -16,10 +16,10 @@
         <!--<Button Content="Button" HorizontalAlignment="Left" Margin="223,189,0,0" VerticalAlignment="Top" Height="51" Width="92" Command="{s:Action Click}"/>-->
         <DockPanel LastChildFill="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <Grid DockPanel.Dock="Top">
-                <main:TopInfoBar MinHeight="50" Background="BlueViolet"/>
+                <ContentControl s:View.Model="{Binding TopInfoBarPage}" MinHeight="70"/>
             </Grid>
             <StatusBar DockPanel.Dock="Bottom">
-                <StatusBarItem Content="Ready"/>
+                <ContentControl s:View.Model="{Binding StatusBarPage}"/>
             </StatusBar>
 
             <Grid>
@@ -29,16 +29,16 @@
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="70"/>
-                    <RowDefinition Height="30"/>
+                    <!--<RowDefinition Height="30"/>-->
                     <RowDefinition Height="90*"/>
                     <RowDefinition Height="40"/>
                 </Grid.RowDefinitions>
-                <main:LastPlayed Grid.Row="0" Grid.Column="0" Margin="5,0,0,0"/>
-                
-                <main:CategoryList Grid.Row="1"  Grid.Column="0" Margin="5,0,0,0" extensions:LayerExtension.Layer="1"/>
-                <main:AddGameButton Grid.Row="2" Grid.Column="0" Margin="5,0,0,0" extensions:LayerExtension.Layer="3"/>
+                <ContentControl Grid.Row="0" Grid.Column="0" Margin="5,0,0,0" s:View.Model="{Binding LastPlayedPage}"/>
 
-                <main:GameGrid Grid.Row="0" Grid.Column="1" Grid.RowSpan="4" Margin="5"/>
+                <ContentControl Grid.Row="1" Grid.Column="0" Margin="5,0,0,0" s:View.Model="{Binding CategoryListPage}" MinHeight="300"/>
+                <ContentControl Grid.Row="2" Grid.Column="0" Margin="5,0,0,0" s:View.Model="{Binding AddGamePage}"/>
+
+                <ContentControl Grid.Row="0" Grid.Column="1" Grid.RowSpan="4" Margin="5" s:View.Model="{Binding GameGridPage}"/>
 
             </Grid>
 
