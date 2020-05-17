@@ -22,8 +22,8 @@ namespace VnManager.ViewModels.UserControls
         public void Click()
         {
             var inst = MainGridViewModel.Instance;
-            inst.Test2();
-            AdonisUI.ResourceLocator.SetColorScheme(Application.Current.Resources, ResourceLocator.LightColorScheme);
+            inst.Click();
+            
         }
     }
 

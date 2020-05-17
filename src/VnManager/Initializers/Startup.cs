@@ -64,7 +64,7 @@ namespace VnManager.Initializers
 
             //Config
             fs.Directory.CreateDirectory(Path.Combine(App.ConfigDirPath, @"database"));
-            fs.Directory.CreateDirectory(Path.Combine(App.AssetDirPath, @"config"));
+            fs.Directory.CreateDirectory(Path.Combine(App.ConfigDirPath, @"config"));
         }
 
         private static bool CheckWriteAccess(string dirPath)

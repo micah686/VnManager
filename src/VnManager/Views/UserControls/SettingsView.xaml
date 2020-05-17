@@ -4,9 +4,50 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:VnManager.Views.UserControls"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             xmlns:s="https://github.com/canton7/Stylet"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid Background="Beige">
-            
+    <Grid  Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <TextBlock Grid.Row="0" Margin="5,0,0,0" Text="Settings" FontSize="18"/>
+
+        <Grid Grid.Row="1" Margin="5,10,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="Enable Nsfw Content"/>
+            <CheckBox Grid.Column="1" Margin="8,0,0,0" Content="Yes"/>
+        </Grid>
+
+        <Grid Grid.Row="2" Margin="5,10,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="Enable Nsfw Images on Disk"/>
+            <iconPacks:PackIconMaterial Grid.Column="1" Margin="5,0,0,0" Kind="{x:Static iconPacks:PackIconMaterialKind.HelpCircleOutline}"  
+                       Height="14" Width="14">
+                <iconPacks:PackIconMaterial.ToolTip>
+                    <StackPanel>
+                        <TextBlock Text="If enabled, Nsfw images will be saved as .jpg and .png that will be visible in photo viewers."/>
+                        <TextBlock Text="If disabled, Nsfw images will be saved as extensionless Base64 files that will not be visible in photo viewers."/>
+                    </StackPanel>
+                </iconPacks:PackIconMaterial.ToolTip>
+            </iconPacks:PackIconMaterial>
+            <CheckBox Grid.Column="2" Margin="8,0,0,0" Content="Yes"/>
+
+        </Grid>
+
+        <Button Grid.Row="3" Content="Save" Command="{s:Action SaveUserSettings}" Margin="10" Width="70"/>
+
+
     </Grid>
 </UserControl>

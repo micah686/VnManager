@@ -27,4 +27,8 @@
     <ProjectReference Include="..\VndbSharp\VndbSharp\VndbSharp.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Models\Db\" />
+  </ItemGroup>
+
 </Project>
