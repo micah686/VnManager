@@ -1,8 +1,10 @@
-﻿using Stylet;
+﻿using AdonisUI;
+using Stylet;
 using StyletIoC;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Windows;
 using VnManager.ViewModels.Dialogs;
 
 namespace VnManager.ViewModels.UserControls
@@ -21,6 +23,7 @@ namespace VnManager.ViewModels.UserControls
         {
             var inst = MainGridViewModel.Instance;
             inst.Test2();
+            AdonisUI.ResourceLocator.SetColorScheme(Application.Current.Resources, ResourceLocator.LightColorScheme);
         }
     }
 
