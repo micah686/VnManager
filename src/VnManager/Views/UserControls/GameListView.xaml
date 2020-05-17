@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:VnManager.Views.UserControls"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-            
+    <Grid Background="OliveDrab">
+        <Label Content="ListView"/>
     </Grid>
 </UserControl>

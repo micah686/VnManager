@@ -7,7 +7,7 @@ using VnManager.ViewModels.Dialogs;
 
 namespace VnManager.ViewModels.UserControls
 {
-    public class AddGameButtonViewModel: Screen
+    public class AddGameButtonViewModel: Conductor<Screen>
     {
         private readonly IContainer _container;
         private readonly IWindowManager _windowManager;
@@ -19,9 +19,8 @@ namespace VnManager.ViewModels.UserControls
 
         public void Click()
         {
-            var foo = _container.Get<AddGameMultiViewModel>();
-            _windowManager.ShowDialog(foo);
-            //foo.GameGridPage = (IContainer)_container.Get<GameListViewModel>();
+            var inst = MainGridViewModel.Instance;
+            inst.Test2();
         }
     }
 

@@ -6,76 +6,32 @@
         xmlns:local="clr-namespace:VnManager.Views"
         xmlns:s="https://github.com/canton7/Stylet"
         xmlns:controls="clr-namespace:AdonisUI.Controls;assembly=AdonisUI"
-        xmlns:extensions="clr-namespace:AdonisUI.Extensions;assembly=AdonisUI"
-        xmlns:main="clr-namespace:VnManager.Views.UserControls"
-        xmlns:vm="clr-namespace:VnManager.ViewModels"
+        xmlns:adonisUi="clr-namespace:AdonisUI;assembly=AdonisUI"
+        xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
         mc:Ignorable="d"
-        d:DataContext="{d:DesignInstance vm:RootViewModel}"
         Title="RootView" MinWidth="800" MinHeight="600" Width="1024" Height="768">
+
+    <controls:AdonisWindow.TitleBarContent>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button  Style="{DynamicResource {x:Static adonisUi:Styles.WindowButton}}" FontFamily="Segoe UI" FontSize="14">
+                <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.Restore}"/>
+            </Button>
+        </StackPanel>
+    </controls:AdonisWindow.TitleBarContent>
+    
     <Grid>
-        <!--<Button Content="Button" HorizontalAlignment="Left" Margin="223,189,0,0" VerticalAlignment="Top" Height="51" Width="92" Command="{s:Action Click}"/>-->
-        <DockPanel LastChildFill="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-            <Grid DockPanel.Dock="Top">
-                <ContentControl s:View.Model="{Binding TopInfoBarPage}" MinHeight="70"/>
-            </Grid>
-            <Grid DockPanel.Dock="Bottom">
-                <ContentControl s:View.Model="{Binding StatusBarPage}"/>
-            </Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
 
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" MinWidth="147"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                
-                <Grid Grid.Column="0" x:Name="grdSideBar">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="70"/>
-                        <RowDefinition Height="90*"/>
-                        <RowDefinition Height="40"/>
-                    </Grid.RowDefinitions>
-                    <ContentControl Grid.Row="0"  Margin="5,0,0,0" s:View.Model="{Binding LastPlayedPage}"/>
-                    <ContentControl Grid.Row="1"  Margin="5,0,0,0" s:View.Model="{Binding CategoryListPage}"/>
-                    <ContentControl Grid.Row="2"  Margin="5,0,0,0" s:View.Model="{Binding AddGamePage}"/>
-                </Grid>
+        
+        <Grid Grid.Row="0">
+            <ContentControl s:View.Model="{Binding ActiveItem}"/>
+        </Grid>
 
-
-
-                <Grid Grid.Column="1" x:Name="grdMain">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="40"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-                    <Grid Grid.Row="0" Background="OrangeRed">
-                        <Label Content="SearchByTags"/>
-                    </Grid>
-                    <ContentControl Grid.Row="1" Grid.Column="1" Grid.RowSpan="4" Margin="5" s:View.Model="{Binding GameGridPage}"/>
-                </Grid>
-                
-                <!--End -->
-            </Grid>
- 
-            
-            <!--<Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" MinWidth="147"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="70"/>
-                    <RowDefinition Height="90*"/>
-                    <RowDefinition Height="40"/>
-                </Grid.RowDefinitions>
-                <ContentControl Grid.Row="0" Grid.Column="0" Margin="5,0,0,0" s:View.Model="{Binding LastPlayedPage}"/>
-
-                <ContentControl Grid.Row="1" Grid.Column="0" Margin="5,0,0,0" s:View.Model="{Binding CategoryListPage}" MinHeight="300"/>
-                <ContentControl Grid.Row="2" Grid.Column="0" Margin="5,0,0,0" s:View.Model="{Binding AddGamePage}"/>
-
-                <Grid Background="Chartreuse" Grid.Row="0" Grid.Column="1" />
-                <ContentControl Grid.Row="1" Grid.Column="1" Grid.RowSpan="4" Margin="5" s:View.Model="{Binding GameGridPage}"/>
-
-            </Grid>-->
-
-        </DockPanel>
+        <Grid Grid.Row="1">
+            <ContentControl s:View.Model="{Binding StatusBarPage}"/>
+        </Grid>
     </Grid>
 </controls:AdonisWindow>
