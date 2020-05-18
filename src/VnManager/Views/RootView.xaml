@@ -8,11 +8,19 @@
         xmlns:controls="clr-namespace:AdonisUI.Controls;assembly=AdonisUI"
         xmlns:adonisUi="clr-namespace:AdonisUI;assembly=AdonisUI"
         xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+        xmlns:diag="clr-namespace:System.Diagnostics;assembly=mscorlib"
         mc:Ignorable="d"
         Title="RootView" MinWidth="800" MinHeight="600" Width="1024" Height="768">
-
+    <controls:AdonisWindow.Resources>
+        <s:BoolToVisibilityConverter x:Key="boolToVisConverter" TrueVisibility="Visible" FalseVisibility="Hidden"/>
+    </controls:AdonisWindow.Resources>
     <controls:AdonisWindow.TitleBarContent>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+            <ToggleButton Style="{DynamicResource {x:Static adonisUi:Styles.WindowToggleButton}}" Visibility="{Binding Source={x:Static diag:Debugger.IsAttached}, Converter={StaticResource boolToVisConverter}}"
+                          IsChecked="{Binding DebugPressed}">
+                <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.CodeTags}" Foreground="Red" />
+            </ToggleButton>
+            
             <ToggleButton Style="{DynamicResource {x:Static adonisUi:Styles.WindowToggleButton}}" IsChecked="{Binding IsSettingsPressed}">
                 <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.CogOutline}" Foreground="{Binding SettingsIconColor}" />
             </ToggleButton>
