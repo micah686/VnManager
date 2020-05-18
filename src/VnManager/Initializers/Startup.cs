@@ -2,6 +2,7 @@
 using System.IO;
 using System.IO.Abstractions;
 using VnManager.Utilities;
+using VnManager.Helpers;
 
 namespace VnManager.Initializers
 {
@@ -14,7 +15,8 @@ namespace VnManager.Initializers
                 || App.ExecutableDirPath.Contains(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)))
             {
                 //prog files or appdata local
-                bool canReadWrite = (CheckWriteAccess(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)) && CheckWriteAccess(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)));
+                bool canReadWrite = (CheckWriteAccess.CheckWrite(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)) 
+                    && CheckWriteAccess.CheckWrite(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)));
                 if (canReadWrite)
                 {
                     App.AssetDirPath = fs.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "VnManager");
@@ -32,7 +34,7 @@ namespace VnManager.Initializers
             else
             {
                 //instance
-                bool canReadWrite = CheckWriteAccess(App.ExecutableDirPath);
+                bool canReadWrite = CheckWriteAccess.CheckWrite(App.ExecutableDirPath);
                 if (canReadWrite)
                 {
                     App.AssetDirPath = fs.Path.Combine(App.ExecutableDirPath, "Data");
@@ -67,21 +69,5 @@ namespace VnManager.Initializers
             fs.Directory.CreateDirectory(Path.Combine(App.ConfigDirPath, @"config"));
         }
 
-        private static bool CheckWriteAccess(string dirPath)
-        {
-            var testFilePath = fs.Path.Combine(dirPath, Guid.NewGuid().ToString());
-
-            try
-            {
-                fs.File.WriteAllText(testFilePath, "");
-                fs.File.Delete(testFilePath);
-
-                return true;
-            }
-            catch (UnauthorizedAccessException)
-            {
-                return false;
-            }
-        }
     }
 }

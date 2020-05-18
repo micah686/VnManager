@@ -7,6 +7,7 @@ using VnManager.Converters;
 using VnManager.Utilities;
 using VnManager.ViewModels;
 using MvvmDialogs;
+using VnManager.ViewModels.UserControls;
 
 namespace VnManager
 {
@@ -18,6 +19,7 @@ namespace VnManager
             // Set up things like logging, etc
             Initializers.Startup.SetDirectories();
             LogManager.UpdateLoggerDirectory();
+            SettingsViewModel.LoadUserSettingsStatic();
             App.StartupLockout = true; //lock any App SetOnce settings from being set again
         }
 

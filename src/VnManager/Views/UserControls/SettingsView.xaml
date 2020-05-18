@@ -14,6 +14,8 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <TextBlock Grid.Row="0" Margin="5,0,0,0" Text="Settings" FontSize="18"/>
 
@@ -46,7 +48,16 @@
 
         </Grid>
 
-        <Button Grid.Row="3" Content="Save" Command="{s:Action SaveUserSettings}" Margin="10" Width="70"/>
+        <Grid Grid.Row="3" Margin="5,10,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="Vndb Spoiler Level"/>
+            <ComboBox Grid.Column="1" Margin="5,0,0,0" ItemsSource="{Binding SpoilerList}" SelectedItem="{Binding SpoilerString}" SelectedIndex="{Binding SpoilerIndex}"  Width="70"/>
+        </Grid>
+        
+        <Button Grid.Row="4" Content="Save" Command="{s:Action SaveUserSettings}" Margin="10" Width="70"/>
 
 
     </Grid>

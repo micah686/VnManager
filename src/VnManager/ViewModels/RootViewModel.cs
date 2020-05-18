@@ -21,7 +21,7 @@ namespace VnManager.ViewModels
         private int _windowButtonPressedCounter = 0;
 
         public static RootViewModel Instance { get; private set; }
-
+        public string WindowTitle { get; } = string.Format($"VnManager {App.VersionString}");
 
         #region SettingsPressed
         private bool _isSettingsPressed;

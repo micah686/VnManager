@@ -16,7 +16,6 @@ namespace VnManager.Models.Settings
 
     public class UserSettingsVndb
     {
-        public uint CurrentId { get; set; }
         public SpoilerLevel Spoiler { get; set; }
 
     }

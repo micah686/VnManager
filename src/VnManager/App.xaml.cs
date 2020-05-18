@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
+using VnManager.Models.Settings;
 using VnManager.Utilities;
 
 namespace VnManager
@@ -41,9 +42,6 @@ namespace VnManager
             }
         }
         #endregion
-
-
-
 
         #region AssetDirPath 
         private static string _assetDirPath;
@@ -102,8 +100,7 @@ namespace VnManager
         }
         #endregion
 
-        public static bool IsNsfwEnabled { get; set; } = false;
-
         public static ILogger Logger { get; } = LogManager.Logger;
+        public static UserSettings UserSettings { get; set; }
     }
 }
