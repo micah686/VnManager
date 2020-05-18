@@ -4,17 +4,14 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:VnManager.Views.UserControls"
+             xmlns:s="https://github.com/canton7/Stylet"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-
         <TextBlock Grid.Row="0" Foreground="Red" FontWeight="Bold" FontSize="15">
             THIS PAGE SHOULD ONLY BE ABLE TO BE ACCESSED IF YOU ARE DEBUGGING THE PROGRAM FROM VISUAL STUDIO
             <LineBreak/>
@@ -22,9 +19,11 @@
             <LineBreak/>
             IF YOU ARE NOT DEBUGGING, CREATE A TICKET ON GITHUB STATING: "Able to access Debug page while in Release"
         </TextBlock>
-        
-        
-        
-        
+
+        <StackPanel Grid.Row="1" HorizontalAlignment="Left">
+            <Button Content="WriteLogFile" Command="{s:Action WriteLog}"/>
+            <Button Content="CauseCrash" Command="{s:Action CauseException}"/>
+        </StackPanel>
+
     </Grid>
 </UserControl>

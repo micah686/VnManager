@@ -41,14 +41,6 @@ namespace VnManager.ViewModels.UserControls
 
         public void Click()
         {
-            var dbg = new DebugTester();
-            dbg.Tester();
-            //var vm = new AddGameMultiViewModel(_windowManager);
-            //_windowManager.ShowWindow(vm);
-
-
-            //var multi = _container.Get<AddGameMultiViewModel>();
-            //var foo = _windowManager.ShowDialog(multi);
 
             var multi = _container.Get<AddGameViewModel>();
             var test1 = _windowManager.ShowDialog(multi).Value;
@@ -58,19 +50,6 @@ namespace VnManager.ViewModels.UserControls
                 //multi.Remove();
             }
         }
-
-        public static void TestGrid()
-        {
-            var foo = Instance._container.Get<GameListViewModel>();
-            Instance.ActivateItem(foo);
-        }
-
-        public void Test2()
-        {
-            var foo = _container.Get<GameListViewModel>();
-            ActivateItem(foo);
-        }
-
 
 
     }

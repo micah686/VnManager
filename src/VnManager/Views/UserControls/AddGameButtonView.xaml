@@ -8,6 +8,6 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <Button Width="100"  Content="Click"   Height="25" Command="{s:Action Click}"/>
+        <Button Width="100"  Content="Add Game"   Height="25" Command="{s:Action Click}"/>
     </Grid>
 </UserControl>
