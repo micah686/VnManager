@@ -33,7 +33,7 @@ namespace VnManager.Helpers
             }
             catch (Exception ex)
             {
-                LogManager.Logger.Warning(ex, "Failed to validate executable");
+                App.Logger.Warning(ex, "Failed to validate executable");
                 throw;
             }
         }
@@ -48,7 +48,7 @@ namespace VnManager.Helpers
             }
             catch (Exception ex)
             {
-                LogManager.Logger.Warning(ex, "EndsWithExe Check Failed");
+                App.Logger.Warning(ex, "EndsWithExe Check Failed");
                 return false;
             }
         }
@@ -63,7 +63,7 @@ namespace VnManager.Helpers
             }
             catch (Exception ex)
             {
-                LogManager.Logger.Warning(ex, "EndsWithIco check failed");
+                App.Logger.Warning(ex, "EndsWithIco check failed");
                 return false;
             }
         }

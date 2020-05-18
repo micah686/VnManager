@@ -24,8 +24,8 @@ namespace VnManager.Initializers
                 else
                 {
                     App.AssetDirPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-                    LogManager.Logger.Error("Could not read/write to asset/config directories");
-                    AdonisUI.Controls.MessageBox.Show($"Could not read/write to user data directories!\nExiting Application", "Failed to start!", AdonisUI.Controls.MessageBoxButton.OK);
+                    App.Logger.Error("Could not read/write to asset/config directories");
+                    AdonisUI.Controls.MessageBox.Show($"Could not read/write to user data directories!\nExiting Application", "Failed to start!", AdonisUI.Controls.MessageBoxButton.OK, AdonisUI.Controls.MessageBoxImage.Exclamation);
                     Environment.Exit(1);
                 }
             }            
@@ -42,8 +42,8 @@ namespace VnManager.Initializers
                 else
                 {
                     App.AssetDirPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-                    LogManager.Logger.Error("Could not read/write to asset/config directories");
-                    AdonisUI.Controls.MessageBox.Show($"Could not read/write to user data directories!\nExiting Application", "Failed to start!", AdonisUI.Controls.MessageBoxButton.OK);
+                    App.Logger.Error("Could not read/write to asset/config directories");
+                    AdonisUI.Controls.MessageBox.Show($"Could not read/write to user data directories!\nExiting Application", "Failed to start!", AdonisUI.Controls.MessageBoxButton.OK, AdonisUI.Controls.MessageBoxImage.Exclamation);
                     Environment.Exit(1);
                 }
             }

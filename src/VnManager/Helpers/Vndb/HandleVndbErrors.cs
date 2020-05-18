@@ -19,30 +19,30 @@ namespace VnManager.Helpers.Vndb
             {
                 case MissingError missing:
                     Debug.WriteLine($"A Missing Error occured, the field {missing.Field} was missing.");
-                    LogManager.Logger.Warning($"A Missing Error occured, the field {missing.Field} was missing.");
+                    App.Logger.Warning($"A Missing Error occured, the field {missing.Field} was missing.");
                     break;
                 case BadArgumentError badArg:
                     Debug.WriteLine($"A BadArgument Error occured, the field {badArg.Field} is invalid.");
-                    LogManager.Logger.Warning($"A BadArgument Error occured, the field {badArg.Field} is invalid.");
+                    App.Logger.Warning($"A BadArgument Error occured, the field {badArg.Field} is invalid.");
                     break;
                 case ThrottledError throttled:
                     ThrottledCheck(throttled, counter);
                     break;
                 case GetInfoError getInfo:
                     Debug.WriteLine($"A GetInfo Error occured, the flag {getInfo.Flag} is not valid on the issued command.");
-                    LogManager.Logger.Warning($"A GetInfo Error occured, the flag {getInfo.Flag} is not valid on the issued command.");
+                    App.Logger.Warning($"A GetInfo Error occured, the flag {getInfo.Flag} is not valid on the issued command.");
                     break;
                 case InvalidFilterError invalidFilter:
                     Debug.WriteLine($"A InvalidFilter Error occured, the filter combination of {invalidFilter.Field}, {invalidFilter.Operator}, {invalidFilter.Value} is not a valid combination.");
-                    LogManager.Logger.Warning($"A InvalidFilter Error occured, the filter combination of {invalidFilter.Field}, {invalidFilter.Operator}, {invalidFilter.Value} is not a valid combination.");
+                    App.Logger.Warning($"A InvalidFilter Error occured, the filter combination of {invalidFilter.Field}, {invalidFilter.Operator}, {invalidFilter.Value} is not a valid combination.");
                     break;
                 case BadAuthenticationError badAuthentication:
                     Debug.WriteLine($"A BadAuthenticationError occured. This is caused by an incorrect username or pasword.\nMessage: {badAuthentication.Message}");
-                    LogManager.Logger.Warning($"A BadAuthenticationError occured. This is caused by an incorrect username or pasword.\nMessage: {badAuthentication.Message}");
+                    App.Logger.Warning($"A BadAuthenticationError occured. This is caused by an incorrect username or pasword.\nMessage: {badAuthentication.Message}");
                     break;
                 default:
                     Debug.WriteLine($"A {error.Type} Error occured.\nMessage: {error.Message}");
-                    LogManager.Logger.Warning($"A {error.Type} Error occured.\nMessage: {error.Message}");
+                    App.Logger.Warning($"A {error.Type} Error occured.\nMessage: {error.Message}");
                     break;
             }
         }
@@ -58,7 +58,7 @@ namespace VnManager.Helpers.Vndb
                 var fullSeconds = TimeSpan.FromSeconds((throttled.FullWait - DateTime.Now).TotalSeconds); // Not sure if this is correct
                 TimeSpan timeSpan;
                 Debug.WriteLine($"minsec {minsec}, maxsec: {maxsec}\nA Throttled Error occured, you need to wait at minimum {minSeconds} seconds and preferably {fullSeconds} before issuing commands.");
-                LogManager.Logger.Warning($"minsec {minsec}, maxsec: {maxsec}\nA Throttled Error occured, you need to wait at minimum {minSeconds} seconds and preferably {fullSeconds} before issuing commands.");
+                App.Logger.Warning($"minsec {minsec}, maxsec: {maxsec}\nA Throttled Error occured, you need to wait at minimum {minSeconds} seconds and preferably {fullSeconds} before issuing commands.");
 
                 if (counter == 0) 
                     timeSpan = TimeSpan.FromSeconds(minSeconds.TotalSeconds);
@@ -74,14 +74,14 @@ namespace VnManager.Helpers.Vndb
 
                 if (timeSpan >= new TimeSpan(0, 0, 0, 0, 0))
                 {
-                    LogManager.Logger.Warning($"Please wait {timeSpan.TotalMinutes} minutes and {timeSpan.TotalSeconds} seconds");
+                    App.Logger.Warning($"Please wait {timeSpan.TotalMinutes} minutes and {timeSpan.TotalSeconds} seconds");
                     Thread.Sleep(timeSpan); //does this need to be Thread.Sleep or Task.Delay?
                 }
             }
             catch (Exception ex)
             {
                 Debug.WriteLine("Throttled logic failed");
-                LogManager.Logger.Error(ex, "Throttled logic failed");
+                App.Logger.Error(ex, "Throttled logic failed");
                 throw;
             }
         }

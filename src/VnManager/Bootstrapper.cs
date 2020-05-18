@@ -17,6 +17,8 @@ namespace VnManager
             // This is called just after the application is started, but before the IoC container is set up.
             // Set up things like logging, etc
             Initializers.Startup.SetDirectories();
+            LogManager.UpdateLoggerDirectory();
+            App.StartupLockout = true; //lock any App SetOnce settings from being set again
         }
 
         protected override void ConfigureIoC(IStyletIoCBuilder builder)
@@ -53,7 +55,8 @@ namespace VnManager
         {
             //always want a verbose log if the program crashes
             LogManager.SetLogLevel(LogLevel.Verbose);
-            LogManager.Logger.Fatal(e.Exception, "Program Crashed!");
+            App.Logger.Fatal(e.Exception, "Program Crashed!");
+            AdonisUI.Controls.MessageBox.Show($"Program Crashed!", "Program Crashed!", AdonisUI.Controls.MessageBoxButton.OK, AdonisUI.Controls.MessageBoxImage.Error);
             // Called on Application.DispatcherUnhandledException
         }
     }

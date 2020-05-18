@@ -11,16 +11,31 @@ namespace VnManager.Utilities
     {
         public static LogLevel LogLevel { get; private set; } = LogLevel.Normal;
 
-        internal static readonly ILogger Logger = new LoggerConfiguration().WriteTo.File(new SerilogFormatter(),
-            string.Format(@"{0}\logs\{1}-{2}-{3}_{4}.log", App.AssetDirPath, DateTime.Now.Day, DateTime.Now.Month, DateTime.Now.Year, LogLevel.ToString()), fileSizeLimitBytes: 500000, rollOnFileSizeLimit: true, retainedFileCountLimit: 15).CreateLogger();
+        internal static  ILogger Logger = new LoggerConfiguration().WriteTo.File(new SerilogFormatter(), string.Format(@"{0}\logs\{1}-{2}-{3}_{4}.log", GetConfigDirectory(), DateTime.Now.Day, DateTime.Now.Month, DateTime.Now.Year, LogLevel.ToString()),
+                    fileSizeLimitBytes: 500000, rollOnFileSizeLimit: true, retainedFileCountLimit: 15).CreateLogger();
 
 
-        //private readonly LogManager _logManager;
-        //public LogManager(LogManager logManager)
-        //{
-        //    _logManager = logManager ?? throw new ArgumentNullException(nameof(logManager));
-        //    Logger.Information("Logger Startup Initialized");
-        //}
+        private static string GetConfigDirectory()
+        {
+            if (string.IsNullOrEmpty(App.ConfigDirPath))
+            {
+                return Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            }
+            else
+            {
+                return App.ConfigDirPath;
+            }
+        }
+
+        internal static void UpdateLoggerDirectory()
+        {
+            if (!App.StartupLockout)//disallow updating logger after App has started
+            {
+                var log = new LoggerConfiguration().WriteTo.File(new SerilogFormatter(), string.Format(@"{0}\logs\{1}-{2}-{3}_{4}.log", GetConfigDirectory(), DateTime.Now.Day, DateTime.Now.Month, DateTime.Now.Year, LogLevel.ToString()),
+                    fileSizeLimitBytes: 500000, rollOnFileSizeLimit: true, retainedFileCountLimit: 15).CreateLogger();
+                Logger = log;
+            }
+        }
 
         public static void SetLogLevel(LogLevel logLevel)
         {

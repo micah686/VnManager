@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Serilog;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -6,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
+using VnManager.Utilities;
 
 namespace VnManager
 {
@@ -19,18 +21,40 @@ namespace VnManager
 
         public static string ExecutableDirPath { get; } = AppDomain.CurrentDomain.BaseDirectory!;
 
+        #region StartupLockout
+        private static bool wasSetStartupLockout = false;
+        private static bool _startupLockout;
+        public static bool StartupLockout
+        {
+            get { return _startupLockout; }
+            set
+            {
+                if (!wasSetStartupLockout)
+                {
+                    _startupLockout = value;
+                    wasSetStartupLockout = true;
+                }
+                else
+                {
+                    throw new InvalidOperationException("Value cannot be set after Startup has finished");
+                }
+            }
+        }
+        #endregion
+
+
+
+
         #region AssetDirPath 
-        private static bool wasSetAssetDirPath = false;
         private static string _assetDirPath;
         public static string AssetDirPath
         {
             get { return _assetDirPath; }
             set
             {
-                if (!wasSetAssetDirPath)
+                if (!StartupLockout)
                 {
                     _assetDirPath = value;
-                    wasSetAssetDirPath = true;
                 }
                 else
                 {
@@ -41,17 +65,15 @@ namespace VnManager
         #endregion
 
         #region ConfigDirPath
-        private static bool wasSetConfigDirPath = false;
         private static string _configDirPath;
         public static string ConfigDirPath
         {
             get { return _configDirPath; }
             set
             {
-                if (!wasSetConfigDirPath)
+                if (!StartupLockout)
                 {
                     _configDirPath = value;
-                    wasSetConfigDirPath = true;
                 }
                 else
                 {
@@ -62,17 +84,15 @@ namespace VnManager
         #endregion
 
         #region IsPortable
-        private static bool wasSetIsPortable = false;
         private static bool _isPortable;
         public static bool IsPortable
         {
             get { return _isPortable; }
             set
             {
-                if (!wasSetIsPortable)
+                if (!StartupLockout)
                 {
                     _isPortable = value;
-                    wasSetIsPortable = true;
                 }
                 else
                 {
@@ -81,7 +101,9 @@ namespace VnManager
             }
         }
         #endregion
+
         public static bool IsNsfwEnabled { get; set; } = false;
 
+        public static ILogger Logger { get; } = LogManager.Logger;
     }
 }

@@ -139,7 +139,7 @@ namespace VnManager.ViewModels.Windows
             await ValidateAsync();
             if (VndbConnectionTest.VndbTcpSocketTest() == false)
             {
-                LogManager.Logger.Warning("Could not connect to the Vndb API over SSL");
+                App.Logger.Warning("Could not connect to the Vndb API over SSL");
                 await Task.Delay(3500);
             }
             try
@@ -174,7 +174,7 @@ namespace VnManager.ViewModels.Windows
             }
             catch (Exception ex)
             {
-                LogManager.Logger.Error(ex, "Failed to search VnName");
+                App.Logger.Error(ex, "Failed to search VnName");
                 IsSearchingForNames = false;
                 throw;
             }
@@ -326,7 +326,7 @@ namespace VnManager.ViewModels.Windows
             }
             catch (Exception ex)
             {
-                LogManager.Logger.Error(ex, "check for deleted vn failed");
+                App.Logger.Error(ex, "check for deleted vn failed");
                 return false;
             }
         }
@@ -353,7 +353,7 @@ namespace VnManager.ViewModels.Windows
             }
             catch (Exception ex)
             {
-                LogManager.Logger.Error(ex, "Could not check max vndb id", ex.Data);
+                App.Logger.Error(ex, "Could not check max vndb id", ex.Data);
                 return false;
             }
         }
