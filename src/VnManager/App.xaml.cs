@@ -100,7 +100,28 @@ namespace VnManager
         }
         #endregion
 
-        public static ILogger Logger { get; } = LogManager.Logger;
+        #region Logger
+        private static ILogger _logger= LogManager.Logger;
+        public static ILogger Logger
+        {
+            get
+            {
+                return _logger == null ? LogManager.Logger : _logger;
+            }
+            set
+            {
+                if (!StartupLockout)
+                {
+                    _logger = value;
+                }
+                else
+                {
+                    throw new InvalidOperationException("Cannot set Logger after Startup");
+                }
+            }
+        }
+        #endregion
+
         public static UserSettings UserSettings { get; set; }
     }
 }

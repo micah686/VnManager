@@ -11,7 +11,7 @@ namespace VnManager.Utilities
     {
         public static LogLevel LogLevel { get; private set; } = LogLevel.Normal;
 
-        internal static  ILogger Logger = new LoggerConfiguration().WriteTo.File(new SerilogFormatter(), string.Format(@"{0}\logs\{1}-{2}-{3}_{4}.log", GetConfigDirectory(), DateTime.Now.Day, DateTime.Now.Month, DateTime.Now.Year, LogLevel.ToString()),
+        internal static  ILogger Logger = new LoggerConfiguration().WriteTo.File(new SerilogFormatter(), string.Format(@"{0}\logs\{1:dd-MM-yyyy}_{2}.log", GetConfigDirectory(), DateTime.Now, LogLevel.ToString()),
                     fileSizeLimitBytes: 500000, rollOnFileSizeLimit: true, retainedFileCountLimit: 15).CreateLogger();
 
 
@@ -31,9 +31,10 @@ namespace VnManager.Utilities
         {
             if (!App.StartupLockout)//disallow updating logger after App has started
             {
-                var log = new LoggerConfiguration().WriteTo.File(new SerilogFormatter(), string.Format(@"{0}\logs\{1}-{2}-{3}_{4}.log", GetConfigDirectory(), DateTime.Now.Day, DateTime.Now.Month, DateTime.Now.Year, LogLevel.ToString()),
+                var logConfig = new LoggerConfiguration().WriteTo.File(new SerilogFormatter(), string.Format(@"{0}\logs\{1:dd-MM-yyyy}_{2}.log", GetConfigDirectory(), DateTime.Now, LogLevel.ToString()),
                     fileSizeLimitBytes: 500000, rollOnFileSizeLimit: true, retainedFileCountLimit: 15).CreateLogger();
-                Logger = log;
+                Logger = logConfig;
+                App.Logger = logConfig;
             }
         }
 

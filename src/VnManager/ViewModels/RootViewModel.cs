@@ -45,8 +45,8 @@ namespace VnManager.ViewModels
                 else
                 {
                     _windowButtonPressedCounter -= 1;
-                    var brush = new SolidColorBrush((System.Windows.Media.Color)Application.Current.TryFindResource(AdonisUI.Colors.ForegroundColor));
-                    SettingsIconColor = brush != null ? brush : System.Windows.Media.Brushes.LightSteelBlue;
+                    var result = Application.Current.TryFindResource(AdonisUI.Colors.ForegroundColor);
+                    SettingsIconColor = result == null ? System.Windows.Media.Brushes.LightSteelBlue : new SolidColorBrush((System.Windows.Media.Color)result);
                     ActivateMainClick();
                 }
             }
@@ -95,9 +95,8 @@ namespace VnManager.ViewModels
 
             var maingrid = _container.Get<MainGridViewModel>();
             ActivateItem(maingrid);
-            var brush = new SolidColorBrush((System.Windows.Media.Color)Application.Current.TryFindResource(AdonisUI.Colors.ForegroundColor));
-            SettingsIconColor = brush != null ? brush : System.Windows.Media.Brushes.LightSteelBlue;
-            
+            var result = Application.Current.TryFindResource(AdonisUI.Colors.ForegroundColor);
+            SettingsIconColor = result == null ? System.Windows.Media.Brushes.LightSteelBlue : new SolidColorBrush((System.Windows.Media.Color)result);
         }
 
         
