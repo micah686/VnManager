@@ -94,8 +94,7 @@ namespace VnManager.MetadataProviders.Vndb
 					pageCount++;
 				}
 				if (characters != null) continue;
-				HandleVndbErrors.HandleErrors(client.GetLastError(), 0);
-				return;
+				HandleVndbErrors.HandleErrors(client.GetLastError(), 0);				
 			}
 			return characterList;
 		}
