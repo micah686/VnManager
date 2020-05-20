@@ -28,7 +28,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="MetadataProviders\Vndb\" />
     <Folder Include="Models\Db\" />
   </ItemGroup>
 

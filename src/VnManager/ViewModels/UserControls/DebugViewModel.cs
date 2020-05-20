@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using System.Text;
+using VnManager.MetadataProviders.Vndb;
 
 namespace VnManager.ViewModels.UserControls
 {
@@ -19,6 +20,12 @@ namespace VnManager.ViewModels.UserControls
             App.Logger.Error("DebugTest");
         }
 
+
+        public void TestVndbGet()
+        {
+            var foo = new GetVndbData();
+            foo.GetData(92);
+        }
 
         public void CauseException()
         {

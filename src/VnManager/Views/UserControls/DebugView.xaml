@@ -23,6 +23,7 @@
         <StackPanel Grid.Row="1" HorizontalAlignment="Left">
             <Button Content="WriteLogFile" Command="{s:Action WriteLog}"/>
             <Button Content="CauseCrash" Command="{s:Action CauseException}"/>
+            <Button Content="TestVndbGet" Command="{s:Action TestVndbGet}"/>
         </StackPanel>
 
     </Grid>
