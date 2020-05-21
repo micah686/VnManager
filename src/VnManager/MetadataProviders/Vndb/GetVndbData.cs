@@ -19,8 +19,8 @@ namespace VnManager.MetadataProviders.Vndb
 {
     public class GetVndbData
     {
-        
-		
+        private Stopwatch stopwatch = new Stopwatch();
+		private TimeSpan maxTime = TimeSpan.FromMinutes(3);
 		public async Task GetData(uint id)
         {
 			uint vnid = id;
@@ -29,7 +29,7 @@ namespace VnManager.MetadataProviders.Vndb
 				using (var client = new VndbSharp.Vndb(true))
 				{
 					RequestOptions ro = new RequestOptions { Count = 25 };
-
+					stopwatch.Start();
 					var visualNovel = await GetVisualNovel(client, vnid);
 					var releases = await GetReleases(client, vnid, ro);
 					uint[] producerIds = releases.SelectMany(x => x.Producers.Select(y => y.Id)).Distinct().ToArray();
@@ -38,6 +38,8 @@ namespace VnManager.MetadataProviders.Vndb
 
 					uint[] staffIds = visualNovel.Staff.Select(x => x.StaffId).Distinct().ToArray();
 					var staff = await GetStaff(client, staffIds, ro);
+					stopwatch.Stop();
+					stopwatch.Reset();
 				}
 			}
 			catch (Exception ex)
@@ -48,7 +50,8 @@ namespace VnManager.MetadataProviders.Vndb
         }
 
 		private async Task<VisualNovel> GetVisualNovel(VndbSharp.Vndb client, uint vnid)
-		{	
+		{
+			stopwatch.Restart();
 			while (true)
 			{
 				VndbResponse<VisualNovel> visualNovels = await client.GetVisualNovelAsync(VndbFilters.Id.Equals(vnid), VndbFlags.FullVisualNovel);
@@ -68,12 +71,13 @@ namespace VnManager.MetadataProviders.Vndb
 				{
 					return visualNovels.First();
 				}
-				//this could be locked up
+				if (stopwatch.Elapsed > maxTime) return null;
 			}
 		}
 
 		private async Task<List<Release>> GetReleases(VndbSharp.Vndb client, uint vnid, RequestOptions ro)
 		{
+			stopwatch.Restart();
 			bool hasMore = true;
 			int pageCount = 1;
 			int releasesCount = 0;
@@ -102,7 +106,7 @@ namespace VnManager.MetadataProviders.Vndb
 				releaseList.AddRange(releases.Items);
 				releasesCount = releasesCount + releases.Count;
 				pageCount++;
-				//this could be locked up
+				if (stopwatch.Elapsed > maxTime) return null;
 			}
 			return releaseList;
 
@@ -110,6 +114,7 @@ namespace VnManager.MetadataProviders.Vndb
 
 		private async Task<List<Character>> GetCharacters(VndbSharp.Vndb client, uint vnid, RequestOptions ro)
 		{
+			stopwatch.Restart();
 			bool hasMore = true;
 			int pageCount = 1;
 			int characterCount = 0;
@@ -138,13 +143,14 @@ namespace VnManager.MetadataProviders.Vndb
 				characterList.AddRange(characters.Items);
 				characterCount = characterCount + characters.Count;
 				pageCount++;
-				//this could be locked up
+				if (stopwatch.Elapsed > maxTime) return null;
 			}
 			return characterList;
 		}
 
 		private async Task<List<Producer>> GetProducers(VndbSharp.Vndb client, uint[] producerIdList, RequestOptions ro)
 		{
+			stopwatch.Restart();
 			bool hasMore = true;
 			int pageCount = 1;
 			int producerCount = 0;
@@ -173,13 +179,14 @@ namespace VnManager.MetadataProviders.Vndb
 				producerList.AddRange(producers.Items);
 				producerCount = producerCount + producers.Count;
 				pageCount++;
-				//this could be locked up
+				if (stopwatch.Elapsed > maxTime) return null;
 			}
 			return producerList;
 		}
 
 		private async Task<List<Staff>> GetStaff(VndbSharp.Vndb client, uint[] staffId, RequestOptions ro)
 		{
+			stopwatch.Restart();
 			bool hasMore = true;
 			int pageCount = 1;
 			int staffCount = 0;
@@ -208,7 +215,7 @@ namespace VnManager.MetadataProviders.Vndb
 				staffList.AddRange(staff.Items);
 				staffCount = staffCount + staff.Count;
 				pageCount++;
-				//this could be locked up
+				if (stopwatch.Elapsed > maxTime) return null;
 			}
 			return staffList;
 
