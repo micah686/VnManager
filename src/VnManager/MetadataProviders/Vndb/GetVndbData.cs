@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VndbSharp;
+using VndbSharp.Interfaces;
 using VndbSharp.Models;
 using VndbSharp.Models.Character;
+using VndbSharp.Models.Errors;
 using VndbSharp.Models.Producer;
 using VndbSharp.Models.Release;
 using VndbSharp.Models.Staff;
@@ -16,7 +19,9 @@ namespace VnManager.MetadataProviders.Vndb
 {
     public class GetVndbData
     {
-        public async Task GetData(uint id)
+        
+		
+		public async Task GetData(uint id)
         {
 			uint vnid = id;
 			try
@@ -31,7 +36,7 @@ namespace VnManager.MetadataProviders.Vndb
 					var producers = await GetProducers(client, producerIds, ro);
 					var characters = await GetCharacters(client, vnid, ro);
 
-					var staffIds = visualNovel.Staff.Select(x => x.StaffId).Distinct().ToArray();
+					uint[] staffIds = visualNovel.Staff.Select(x => x.StaffId).Distinct().ToArray();
 					var staff = await GetStaff(client, staffIds, ro);
 				}
 			}
@@ -43,14 +48,28 @@ namespace VnManager.MetadataProviders.Vndb
         }
 
 		private async Task<VisualNovel> GetVisualNovel(VndbSharp.Vndb client, uint vnid)
-		{
-			VndbResponse<VisualNovel> visualNovels = await client.GetVisualNovelAsync(VndbFilters.Id.Equals(vnid), VndbFlags.FullVisualNovel);
-			if (visualNovels == null)
+		{	
+			while (true)
 			{
-				HandleVndbErrors.HandleErrors(client.GetLastError(), 0);
-				return null;
+				VndbResponse<VisualNovel> visualNovels = await client.GetVisualNovelAsync(VndbFilters.Id.Equals(vnid), VndbFlags.FullVisualNovel);
+
+
+				if (visualNovels == null && client.GetLastError().Type == ErrorType.Throttled)
+				{
+
+					await HandleVndbErrors.ThrottledWait((ThrottledError)client.GetLastError(), 0);
+				}
+				else if (visualNovels == null)
+				{
+					HandleVndbErrors.HandleErrors(client.GetLastError(), 0);
+					return null;
+				}
+				else
+				{
+					return visualNovels.First();
+				}
+				//this could be locked up
 			}
-			else return visualNovels.First();
 		}
 
 		private async Task<List<Release>> GetReleases(VndbSharp.Vndb client, uint vnid, RequestOptions ro)
@@ -59,21 +78,34 @@ namespace VnManager.MetadataProviders.Vndb
 			int pageCount = 1;
 			int releasesCount = 0;
 			List<Release> releaseList = new List<Release>();
-			while (hasMore)
+			bool shouldContinue = true;
+			while (hasMore && shouldContinue)
 			{
+				shouldContinue = true;
 				ro.Page = pageCount;
 				VndbResponse<Release> releases = await client.GetReleaseAsync(VndbFilters.VisualNovel.Equals(vnid), VndbFlags.FullRelease, ro);
-				if (releases == null)
+
+				if (releases == null && client.GetLastError().Type == ErrorType.Throttled)
+				{
+					await HandleVndbErrors.ThrottledWait((ThrottledError)client.GetLastError(), 0);
+				}
+				else if (releases == null)
 				{
 					HandleVndbErrors.HandleErrors(client.GetLastError(), 0);
-					break;
+					return null;
+				}
+				else
+				{
+					shouldContinue = false;
 				}
 				hasMore = releases.HasMore;
 				releaseList.AddRange(releases.Items);
 				releasesCount = releasesCount + releases.Count;
 				pageCount++;
+				//this could be locked up
 			}
 			return releaseList;
+
 		}
 
 		private async Task<List<Character>> GetCharacters(VndbSharp.Vndb client, uint vnid, RequestOptions ro)
@@ -82,52 +114,68 @@ namespace VnManager.MetadataProviders.Vndb
 			int pageCount = 1;
 			int characterCount = 0;
 			List<Character> characterList = new List<Character>();
-			while (hasMore)
+			bool shouldContinue = true;
+			while (hasMore && shouldContinue)
 			{
+				shouldContinue = true;
 				ro.Page = pageCount;
 				VndbResponse<Character> characters = await client.GetCharacterAsync(VndbFilters.VisualNovel.Equals(vnid), VndbFlags.FullCharacter, ro);
-				if (characters != null)
+
+				if (characters == null && client.GetLastError().Type == ErrorType.Throttled)
 				{
-					hasMore = characters.HasMore;
-					characterList.AddRange(characters.Items);
-					characterCount = characterCount + characters.Count;
-					pageCount++;
+					await HandleVndbErrors.ThrottledWait((ThrottledError)client.GetLastError(), 0);
 				}
-				if (characters != null) continue;
-				HandleVndbErrors.HandleErrors(client.GetLastError(), 0);				
+				else if (characters == null)
+				{
+					HandleVndbErrors.HandleErrors(client.GetLastError(), 0);
+					return null;
+				}
+				else
+				{
+					shouldContinue = false;
+				}
+				hasMore = characters.HasMore;
+				characterList.AddRange(characters.Items);
+				characterCount = characterCount + characters.Count;
+				pageCount++;
+				//this could be locked up
 			}
 			return characterList;
 		}
 
 		private async Task<List<Producer>> GetProducers(VndbSharp.Vndb client, uint[] producerIdList, RequestOptions ro)
 		{
-			try
+			bool hasMore = true;
+			int pageCount = 1;
+			int producerCount = 0;
+			List<Producer> producerList = new List<Producer>();
+			bool shouldContinue = true;
+			while (hasMore && shouldContinue)
 			{
-				bool hasMore = true;
-				int pageCount = 1;
-				int producerCount = 0;
-				List<Producer> producerList = new List<Producer>();
-				while (hasMore)
-				{
-					ro.Page = pageCount;
-					var producers = await client.GetProducerAsync(VndbFilters.Id.Equals(producerIdList), VndbFlags.FullProducer, ro);
-					if (producers == null)
-					{
-						HandleVndbErrors.HandleErrors(client.GetLastError(), 0);
-						break;
-					}
-					hasMore = producers.HasMore;
-					producerList.AddRange(producers.Items);
-					producerCount = producerCount + producers.Count;
-					pageCount++;
-				}
-				return producerList;
-			}
-			catch (Exception ex)
-			{
+				shouldContinue = true;
+				ro.Page = pageCount;
+				var producers = await client.GetProducerAsync(VndbFilters.Id.Equals(producerIdList), VndbFlags.FullProducer, ro);
 
-				throw;
+				if (producers == null && client.GetLastError().Type == ErrorType.Throttled)
+				{
+					await HandleVndbErrors.ThrottledWait((ThrottledError)client.GetLastError(), 0);
+				}
+				else if (producers == null)
+				{
+					HandleVndbErrors.HandleErrors(client.GetLastError(), 0);
+					return null;
+				}
+				else
+				{
+					shouldContinue = false;
+				}
+				hasMore = producers.HasMore;
+				producerList.AddRange(producers.Items);
+				producerCount = producerCount + producers.Count;
+				pageCount++;
+				//this could be locked up
 			}
+			return producerList;
 		}
 
 		private async Task<List<Staff>> GetStaff(VndbSharp.Vndb client, uint[] staffId, RequestOptions ro)
@@ -136,21 +184,34 @@ namespace VnManager.MetadataProviders.Vndb
 			int pageCount = 1;
 			int staffCount = 0;
 			List<Staff> staffList = new List<Staff>();
-			while (hasMore)
+			bool shouldContinue = true;
+			while (hasMore && shouldContinue)
 			{
-				ro.Page = pageCount;				
+				shouldContinue = true;
+				ro.Page = pageCount;
 				VndbResponse<Staff> staff = await client.GetStaffAsync(VndbFilters.Id.Equals(staffId), VndbFlags.FullStaff, ro);
-				if (staff == null)
+
+				if (staff == null && client.GetLastError().Type == ErrorType.Throttled)
+				{
+					await HandleVndbErrors.ThrottledWait((ThrottledError)client.GetLastError(), 0);
+				}
+				else if (staff == null)
 				{
 					HandleVndbErrors.HandleErrors(client.GetLastError(), 0);
-					break;
+					return null;
+				}
+				else
+				{
+					shouldContinue = false;
 				}
 				hasMore = staff.HasMore;
 				staffList.AddRange(staff.Items);
 				staffCount = staffCount + staff.Count;
 				pageCount++;
+				//this could be locked up
 			}
 			return staffList;
+
 		}
 		
     }

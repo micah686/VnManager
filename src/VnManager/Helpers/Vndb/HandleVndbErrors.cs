@@ -26,7 +26,8 @@ namespace VnManager.Helpers.Vndb
                     App.Logger.Warning($"A BadArgument Error occured, the field {badArg.Field} is invalid.");
                     break;
                 case ThrottledError throttled:
-                    ThrottledCheck(throttled, counter);
+                    Debug.WriteLine($"A Throttled Error occured, use the ThrottledWait() method to wait for the {throttled.MinimumWait.Second} seconds needed.");
+                    App.Logger.Warning($"A Throttled Error occured, use the ThrottledWait() method to wait for the {throttled.MinimumWait.Second} seconds needed.");
                     break;
                 case GetInfoError getInfo:
                     Debug.WriteLine($"A GetInfo Error occured, the flag {getInfo.Flag} is not valid on the issued command.");
@@ -46,44 +47,24 @@ namespace VnManager.Helpers.Vndb
                     break;
             }
         }
-
-        private static void ThrottledCheck(ThrottledError throttled, int counter)
+        public static async Task ThrottledWait(ThrottledError throttled, int counter)
         {
-            try
+            
+            var minWait = TimeSpan.FromSeconds((throttled.MinimumWait - DateTime.Now).TotalSeconds);
+            var maxwait = TimeSpan.FromSeconds((throttled.FullWait - DateTime.Now).TotalSeconds);
+            Debug.WriteLine($"Vndb API throttled! You need to wait {minWait.Seconds} seconds minimum or {maxwait.Seconds} seconds maximum before issuing new commands\nErrorCounter:{counter}");
+            App.Logger.Warning($"Vndb API throttled! You need to wait {minWait.Seconds} seconds minimum or {maxwait.Seconds} seconds maximum before issuing new commands");
+
+            double waitime = counter == 0 ? minWait.TotalSeconds : TimeSpan.FromSeconds(5).TotalSeconds;            
+            if (counter >= 1)
             {
-                if (throttled.MinimumWait.Year < 2000) return;
-                var minsec = (throttled.MinimumWait - DateTime.Now).TotalSeconds;
-                var maxsec = (throttled.FullWait - DateTime.Now).TotalSeconds;
-                var minSeconds = TimeSpan.FromSeconds((throttled.MinimumWait - DateTime.Now).TotalSeconds); // Not sure if this is correct
-                var fullSeconds = TimeSpan.FromSeconds((throttled.FullWait - DateTime.Now).TotalSeconds); // Not sure if this is correct
-                TimeSpan timeSpan;
-                Debug.WriteLine($"minsec {minsec}, maxsec: {maxsec}\nA Throttled Error occured, you need to wait at minimum {minSeconds} seconds and preferably {fullSeconds} before issuing commands.");
-                App.Logger.Warning($"minsec {minsec}, maxsec: {maxsec}\nA Throttled Error occured, you need to wait at minimum {minSeconds} seconds and preferably {fullSeconds} before issuing commands.");
-
-                if (counter == 0) 
-                    timeSpan = TimeSpan.FromSeconds(minSeconds.TotalSeconds);
-                else if (counter >= 1) 
-                    timeSpan = TimeSpan.FromSeconds(minSeconds.TotalSeconds * counter);
-                else 
-                    timeSpan = TimeSpan.FromSeconds(5);
-
-                if (timeSpan > fullSeconds)
-                {
-                    timeSpan = TimeSpan.FromSeconds(fullSeconds.TotalSeconds);
-                }
-
-                if (timeSpan >= new TimeSpan(0, 0, 0, 0, 0))
-                {
-                    App.Logger.Warning($"Please wait {timeSpan.TotalMinutes} minutes and {timeSpan.TotalSeconds} seconds");
-                    Thread.Sleep(timeSpan); //does this need to be Thread.Sleep or Task.Delay?
-                }
+                waitime = waitime > maxwait.TotalSeconds ? maxwait.TotalSeconds : minWait.TotalSeconds + 5;
             }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("Throttled logic failed");
-                App.Logger.Error(ex, "Throttled logic failed");
-                throw;
-            }
+            waitime = Math.Abs(waitime);
+            var timeSpan = TimeSpan.FromSeconds(waitime);
+            App.Logger.Warning($"Please wait {timeSpan.TotalMinutes} minutes and {timeSpan.TotalSeconds} seconds");
+            await Task.Delay(timeSpan);
+            
         }
     }
 }
