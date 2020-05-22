@@ -40,16 +40,28 @@ namespace VnManager.MetadataProviders.Vndb
 					var staff = await GetStaff(client, staffIds, ro);
 					stopwatch.Stop();
 					stopwatch.Reset();
+
+					
+					if(visualNovel == null || releases == null || producers == null || characters == null || staff == null)
+					{
+						App.Logger.Error("Failed to get all of the Vndb Info from the API, one of the items was null");
+						//stop the progressbar here, and force it to show an error icon
+					}
+					else
+					{
+						//run code to add info to database
+					}
+
 				}
 			}
 			catch (Exception ex)
 			{
-
+				App.Logger.Error(ex, "An error occured when trying to get the vndb data from the API");
 				throw;
 			}
         }
 
-		private async Task<VisualNovel> GetVisualNovel(VndbSharp.Vndb client, uint vnid)
+		internal async Task<VisualNovel> GetVisualNovel(VndbSharp.Vndb client, uint vnid)
 		{
 			stopwatch.Restart();
 			while (true)
@@ -75,7 +87,7 @@ namespace VnManager.MetadataProviders.Vndb
 			}
 		}
 
-		private async Task<List<Release>> GetReleases(VndbSharp.Vndb client, uint vnid, RequestOptions ro)
+		internal async Task<List<Release>> GetReleases(VndbSharp.Vndb client, uint vnid, RequestOptions ro)
 		{
 			stopwatch.Restart();
 			bool hasMore = true;
@@ -112,7 +124,7 @@ namespace VnManager.MetadataProviders.Vndb
 
 		}
 
-		private async Task<List<Character>> GetCharacters(VndbSharp.Vndb client, uint vnid, RequestOptions ro)
+		internal async Task<List<Character>> GetCharacters(VndbSharp.Vndb client, uint vnid, RequestOptions ro)
 		{
 			stopwatch.Restart();
 			bool hasMore = true;
@@ -148,7 +160,7 @@ namespace VnManager.MetadataProviders.Vndb
 			return characterList;
 		}
 
-		private async Task<List<Producer>> GetProducers(VndbSharp.Vndb client, uint[] producerIdList, RequestOptions ro)
+		internal async Task<List<Producer>> GetProducers(VndbSharp.Vndb client, uint[] producerIdList, RequestOptions ro)
 		{
 			stopwatch.Restart();
 			bool hasMore = true;
@@ -184,7 +196,7 @@ namespace VnManager.MetadataProviders.Vndb
 			return producerList;
 		}
 
-		private async Task<List<Staff>> GetStaff(VndbSharp.Vndb client, uint[] staffId, RequestOptions ro)
+		internal async Task<List<Staff>> GetStaff(VndbSharp.Vndb client, uint[] staffId, RequestOptions ro)
 		{
 			stopwatch.Restart();
 			bool hasMore = true;

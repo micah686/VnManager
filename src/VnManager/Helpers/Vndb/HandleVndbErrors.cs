@@ -51,17 +51,17 @@ namespace VnManager.Helpers.Vndb
         {
             
             var minWait = TimeSpan.FromSeconds((throttled.MinimumWait - DateTime.Now).TotalSeconds);
-            var maxwait = TimeSpan.FromSeconds((throttled.FullWait - DateTime.Now).TotalSeconds);
-            Debug.WriteLine($"Vndb API throttled! You need to wait {minWait.Seconds} seconds minimum or {maxwait.Seconds} seconds maximum before issuing new commands\nErrorCounter:{counter}");
-            App.Logger.Warning($"Vndb API throttled! You need to wait {minWait.Seconds} seconds minimum or {maxwait.Seconds} seconds maximum before issuing new commands");
+            var maxWait = TimeSpan.FromSeconds((throttled.FullWait - DateTime.Now).TotalSeconds);
+            Debug.WriteLine($"Vndb API throttled! You need to wait {minWait.Seconds} seconds minimum or {maxWait.Seconds} seconds maximum before issuing new commands\nErrorCounter:{counter}");
+            App.Logger.Warning($"Vndb API throttled! You need to wait {minWait.Seconds} seconds minimum or {maxWait.Seconds} seconds maximum before issuing new commands");
 
-            double waitime = counter == 0 ? minWait.TotalSeconds : TimeSpan.FromSeconds(5).TotalSeconds;            
+            double waitTime = counter == 0 ? minWait.TotalSeconds : TimeSpan.FromSeconds(5).TotalSeconds;            
             if (counter >= 1)
             {
-                waitime = waitime > maxwait.TotalSeconds ? maxwait.TotalSeconds : minWait.TotalSeconds + 5;
+                waitTime = waitTime > maxWait.TotalSeconds ? maxWait.TotalSeconds : minWait.TotalSeconds + 5;
             }
-            waitime = Math.Abs(waitime);
-            var timeSpan = TimeSpan.FromSeconds(waitime);
+            waitTime = Math.Abs(waitTime);
+            var timeSpan = TimeSpan.FromSeconds(waitTime);
             App.Logger.Warning($"Please wait {timeSpan.TotalMinutes} minutes and {timeSpan.TotalSeconds} seconds");
             await Task.Delay(timeSpan);
             

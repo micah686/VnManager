@@ -20,11 +20,17 @@
           "System.ComponentModel.Annotations": "4.4.1"
         }
       },
+      "LiteDB": {
+        "type": "Direct",
+        "requested": "[5.0.8, )",
+        "resolved": "5.0.8",
+        "contentHash": "lqwQnweoa3Lko87uo9FzZYf6BFh3AULas5yosG95LPVHIoACtJJ2BjBPQ7d7vUYDQYSV3rUco2+vMilVoBQ3WA=="
+      },
       "MahApps.Metro.IconPacks.Material": {
         "type": "Direct",
-        "requested": "[4.0.0, )",
-        "resolved": "4.0.0",
-        "contentHash": "Vqka/LSwWa4W0WuJSFd/GKLdJWrk70sIQA3Hc4+iP94jLx7sWW23IpAEmXkqnPzSNKE1dW9gwQM0Bk1cdcNjYw=="
+        "requested": "[4.1.0, )",
+        "resolved": "4.1.0",
+        "contentHash": "GZ9evklAKW7XWH+hFSOZ2QmggjMPmOHA97IxprI2zQ4T7TGoei0ZJIhjG0MgHMuwuSgruVRhiLmvRtociBmpXQ=="
       },
       "MvvmDialogs": {
         "type": "Direct",
