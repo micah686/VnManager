@@ -1,6 +1,8 @@
-﻿using System.Windows;
+﻿using System.IO;
+using System.Windows;
 using System.Windows.Threading;
 using FluentValidation;
+using LiteDB;
 using Stylet;
 using StyletIoC;
 using VnManager.Converters;
@@ -22,6 +24,7 @@ namespace VnManager
             Initializers.Startup.DeleteOldLogs();
             LogManager.UpdateLoggerDirectory();
             SettingsViewModel.LoadUserSettingsStatic();
+            Initializers.Startup.LoadDatabase();
             App.StartupLockout = true; //lock any App SetOnce settings from being set again
         }
 

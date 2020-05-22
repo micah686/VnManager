@@ -4,6 +4,7 @@ using System.IO.Abstractions;
 using VnManager.Utilities;
 using VnManager.Helpers;
 using System.Globalization;
+using LiteDB;
 
 namespace VnManager.Initializers
 {
@@ -57,7 +58,7 @@ namespace VnManager.Initializers
         private static void CreateFolders()
         {
             //Assets folder ( images, logs,...)
-            fs.Directory.CreateDirectory(Path.Combine(App.AssetDirPath, @"res\icons\countryflags"));
+            fs.Directory.CreateDirectory(Path.Combine(App.AssetDirPath, @"res\icons\countryFlags"));
 
             fs.Directory.CreateDirectory(Path.Combine(App.AssetDirPath, @"vndb\images\cover"));
             fs.Directory.CreateDirectory(Path.Combine(App.AssetDirPath, @"vndb\images\screenshots"));
@@ -103,5 +104,10 @@ namespace VnManager.Initializers
             
         }
 
+        internal static void LoadDatabase()
+        {
+            
+            App.LiteDatabase = new LiteDatabase(Path.Combine(App.ConfigDirPath, @"database\Data.db"));
+        }
     }
 }

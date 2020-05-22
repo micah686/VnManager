@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
+using LiteDB;
 using VnManager.Models.Settings;
 using VnManager.Utilities;
 
@@ -121,6 +122,26 @@ namespace VnManager
             }
         }
         #endregion
+
+        #region  Database
+        private static LiteDatabase _liteDatabase;
+        public static LiteDatabase LiteDatabase
+        {
+            get => _liteDatabase;
+            set
+            {
+                if (!StartupLockout)
+                {
+                    _liteDatabase = value;
+                }
+                else
+                {
+                    throw new InvalidOperationException("LiteDatabase can only be set once!");
+                }
+            }
+        }
+        #endregion
+
 
         public static UserSettings UserSettings { get; set; }
     }
