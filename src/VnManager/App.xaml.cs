@@ -123,23 +123,27 @@ namespace VnManager
         }
         #endregion
 
-        #region  Database
-        private static LiteDatabase _liteDatabase;
-        public static LiteDatabase LiteDatabase
+        #region Database
+
+        private static string _databasePath;
+
+        public static string DatabasePath
         {
-            get => _liteDatabase;
+            get => _databasePath;
             set
             {
                 if (!StartupLockout)
                 {
-                    _liteDatabase = value;
+                    _databasePath = value;
                 }
                 else
                 {
-                    throw new InvalidOperationException("LiteDatabase can only be set once!");
+                    throw new InvalidOperationException("Cannot set Database Path after Startup");
                 }
             }
         }
+        
+
         #endregion
 
 

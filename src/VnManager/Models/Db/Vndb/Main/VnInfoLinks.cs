@@ -2,7 +2,7 @@
 {
     public class VnInfoLinks
     {
-        public int Id { get; set; }
+        public int Index { get; set; }
         public uint VnId { get; set; }
         public string Wikipedia { get; set; }
         public string Encubed { get; set; }

@@ -2,7 +2,7 @@
 {
     public class VnInfoScreens
     {
-        public int Id { get; set; }
+        public int Index { get; set; }
         public uint? VnId { get; set; }
         public string ImageUrl { get; set; }
         public string ReleaseId { get; set; }

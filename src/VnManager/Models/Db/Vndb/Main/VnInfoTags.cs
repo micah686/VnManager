@@ -2,7 +2,7 @@
 {
     public class VnInfoTags
     {
-        public int Id { get; set; }
+        public int Index { get; set; }
         public uint? VnId { get; set; }
         public uint TagId { get; set; }
         public double Score { get; set; }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using VnManager.Models.Db.Vndb.Character;
 using VnManager.Models.Db.Vndb.Release;
 
@@ -6,7 +7,7 @@ namespace VnManager.Models.Db.Vndb.Main
 {
     public class VnInfo
     {
-        public int Id { get; set; }
+        public int Index { get; set; }
         public uint VnId { get; set; }
         public string Title { get; set; }
         public string Original { get; set; }
@@ -20,7 +21,7 @@ namespace VnManager.Models.Db.Vndb.Main
         public string ImageLink { get; set; }
         public bool ImageNsfw { get; set; }
         public double? Popularity { get; set; }
-        public uint Rating { get; set; }
+        public double Rating { get; set; }
         public int VoteCount { get; set; }
         public virtual VnInfoAnime VnInfoAnime { get; set; }
         public virtual VnInfoLinks VnInfoLinks { get; set; }

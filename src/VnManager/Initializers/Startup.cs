@@ -104,10 +104,6 @@ namespace VnManager.Initializers
             
         }
 
-        internal static void LoadDatabase()
-        {
-            
-            App.LiteDatabase = new LiteDatabase(Path.Combine(App.ConfigDirPath, @"database\Data.db"));
-        }
+        
     }
 }

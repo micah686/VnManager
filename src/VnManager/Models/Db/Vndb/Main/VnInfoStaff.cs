@@ -2,7 +2,7 @@
 {
     public class VnInfoStaff
     {
-        public int Id { get; set; }
+        public int Index { get; set; }
         public uint? VnId { get; set; }
         public uint StaffId { get; set; }
         public uint AliasId { get; set; }

@@ -2,7 +2,7 @@
 {
     public class VnInfoRelations
     {
-        public int Id { get; set; }
+        public int Index { get; set; }
         public uint VnId { get; set; }
         public int? RelationId { get; set; }
         public string Relation { get; set; }

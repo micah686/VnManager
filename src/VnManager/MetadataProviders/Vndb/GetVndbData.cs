@@ -50,7 +50,9 @@ namespace VnManager.MetadataProviders.Vndb
 					else
 					{
 						//run code to add info to database
-					}
+                        SaveVnDataToDb foo = new SaveVnDataToDb();
+						foo.SaveVnInfo(visualNovel);
+                    }
 
 				}
 			}

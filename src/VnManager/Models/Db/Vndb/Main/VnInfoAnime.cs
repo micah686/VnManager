@@ -2,7 +2,7 @@
 {
     public class VnInfoAnime
     {
-        public int Id { get; set; }
+        public int Index { get; set; }
         public uint VnId { get; set; }
         public int? AniDbId { get; set; }
         public int? AnnId { get; set; }
