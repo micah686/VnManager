@@ -27,13 +27,12 @@ steps:
     projects: '**/VnManager.csproj'
     
 - task: Cache@2
+  displayName: Cache NuGet packages
   inputs:
-    key: 'nuget | "$(Agent.OS)" | **/*.csproj'
+    key: 'nuget | "$(Agent.OS)" | **/packages.lock.json,!**/bin/**'
     restoreKeys: |
        nuget | "$(Agent.OS)"
-       nuget
-    path: $(NUGET_PACKAGES)
-  displayName: Cache NuGet packages
+    path: $(NUGET_PACKAGES)  
 
 - task: SonarCloudPrepare@1
   displayName: 'Prepare for SonarCloud Scan'
