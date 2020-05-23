@@ -8,6 +8,6 @@ namespace VnManager.Models.Db.Vndb.Producer
         public int Index { get; set; }
         public int? ProducerId { get; set; }
         public string Homepage { get; set; }
-        public string Wikipedia { get; set; }
+        public string WikiData { get; set; }
     }
 }

@@ -12,6 +12,7 @@ using VndbSharp.Models.VisualNovel;
 using VnManager.Converters;
 using VnManager.Models.Db.Vndb.Character;
 using VnManager.Models.Db.Vndb.Main;
+using VnManager.Models.Db.Vndb.Producer;
 using VnManager.Models.Db.Vndb.Release;
 
 namespace VnManager.MetadataProviders.Vndb
@@ -302,9 +303,43 @@ namespace VnManager.MetadataProviders.Vndb
         {
             using (var db = new LiteDatabase(App.DatabasePath))
             {
-                var dbVnProducer = db.GetCollection<VnRelease>("vnproducer");
-                var dbVnProducerRelations = db.GetCollection<VnReleaseMedia>("vnproducer_relations");
+                var dbVnProducer = db.GetCollection<VnProducer>("vnproducer");
+                var dbVnProducerLinks = db.GetCollection<VnProducerLinks>("vnproducer_links");
+                var dbVnProducerRelations = db.GetCollection<VnProducerRelations>("vnproducer_relations");
                 
+                List<VnProducerRelations>vnProducerRelations = new List<VnProducerRelations>();
+                foreach (var vnProducer in vnProducers)
+                {
+                    VnProducer producer = new VnProducer()
+                    {
+                        ProducerId = (int?)vnProducer.Id,
+                        Name = vnProducer.Name,
+                        Original = vnProducer.OriginalName,
+                        ProducerType = vnProducer.ProducerType,
+                        Language = vnProducer.Language,
+                        Aliases = CsvConverter.ConvertToCsv(vnProducer.Aliases),
+                        Description = vnProducer.Description,
+                    };
+                    dbVnProducer.Upsert(producer);
+
+                    VnProducerLinks links = new VnProducerLinks()
+                    {
+                        ProducerId = (int?)vnProducer.Id,
+                        Homepage = vnProducer.Links.Homepage,
+                        WikiData = vnProducer.Links.Wikipedia
+                    };
+                    dbVnProducerLinks.Upsert(links);
+
+                    vnProducerRelations.AddRange(vnProducer.Relations.Select(relation => new VnProducerRelations()
+                    {
+                        RelationId = (int?) relation.Id,
+                        ProducerId = (int?) vnProducer.Id,
+                        Relation = relation.Relation,
+                        Name = relation.Name,
+                        Original = relation.OriginalName
+                    }));
+                    dbVnProducerRelations.Upsert(vnProducerRelations);
+                }
             }
         }
     }
