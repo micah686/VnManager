@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
+using LiteDB;
 
 namespace VnManager.Models.Db.Vndb.Character
 {
     public class VnCharacterInfo
     {
-        public int Id { get; set; }
+        [BsonId]
+        public int Index { get; set; }
         public uint? VnId { get; set; }
         public uint CharacterId { get; set; }
         public string Name { get; set; }

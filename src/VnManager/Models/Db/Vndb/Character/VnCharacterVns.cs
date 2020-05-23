@@ -1,8 +1,11 @@
-﻿namespace VnManager.Models.Db.Vndb.Character
+﻿using LiteDB;
+
+namespace VnManager.Models.Db.Vndb.Character
 {
     public class VnCharacterVns
     {
-        public int Id { get; set; }
+        [BsonId]
+        public int Index { get; set; }
         public uint CharacterId { get; set; }
         public uint VnId { get; set; }
         public uint ReleaseId { get; set; }

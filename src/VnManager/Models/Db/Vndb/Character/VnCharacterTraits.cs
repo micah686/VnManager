@@ -1,10 +1,14 @@
-﻿namespace VnManager.Models.Db.Vndb.Character
+﻿using LiteDB;
+using VndbSharp.Models.Common;
+
+namespace VnManager.Models.Db.Vndb.Character
 {
     public class VnCharacterTraits
     {
-        public int Id { get; set; }
+        [BsonId]
+        public int Index { get; set; }
         public uint CharacterId { get; set; }
         public uint TraitId { get; set; }
-        public byte SpoilerLevel { get; set; }
+        public SpoilerLevel SpoilerLevel { get; set; }
     }
 }

@@ -1,8 +1,11 @@
-﻿namespace VnManager.Models.Db.Vndb.TagTrait
+﻿using LiteDB;
+
+namespace VnManager.Models.Db.Vndb.TagTrait
 {
     public class VnTagData
     {
-        public int Id { get; set; }
+        [BsonId]
+        public int Index { get; set; }
         public uint TagId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }

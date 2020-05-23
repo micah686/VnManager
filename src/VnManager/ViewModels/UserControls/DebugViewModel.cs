@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using System.Text;
+using VndbSharp.Models.Common;
+using VnManager.Converters;
 using VnManager.MetadataProviders.Vndb;
 
 namespace VnManager.ViewModels.UserControls
@@ -23,8 +25,11 @@ namespace VnManager.ViewModels.UserControls
 
         public void TestVndbGet()
         {
+            var bd = BirthdayConverter.ConvertBirthday(new SimpleDate() {Day = 30, Month = 12, Year = 2000});
+            
             var foo = new GetVndbData();
             foo.GetData(92);
+            
         }
 
         public void CauseException()

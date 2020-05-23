@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using LiteDB;
 using VnManager.Models.Db.Vndb.Character;
 using VnManager.Models.Db.Vndb.Release;
 
@@ -7,6 +8,7 @@ namespace VnManager.Models.Db.Vndb.Main
 {
     public class VnInfo
     {
+        [BsonId]
         public int Index { get; set; }
         public uint VnId { get; set; }
         public string Title { get; set; }

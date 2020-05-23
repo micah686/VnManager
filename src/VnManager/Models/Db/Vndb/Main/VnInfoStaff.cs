@@ -1,7 +1,10 @@
-﻿namespace VnManager.Models.Db.Vndb.Main
+﻿using LiteDB;
+
+namespace VnManager.Models.Db.Vndb.Main
 {
     public class VnInfoStaff
     {
+        [BsonId]
         public int Index { get; set; }
         public uint? VnId { get; set; }
         public uint StaffId { get; set; }

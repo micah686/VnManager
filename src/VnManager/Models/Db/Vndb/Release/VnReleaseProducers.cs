@@ -1,8 +1,11 @@
-﻿namespace VnManager.Models.Db.Vndb.Release
+﻿using LiteDB;
+
+namespace VnManager.Models.Db.Vndb.Release
 {
     public class VnReleaseProducers
     {
-        public int Id { get; set; }
+        [BsonId]
+        public int Index { get; set; }
         public uint ReleaseId { get; set; }
         public uint ProducerId { get; set; }
         public bool Developer { get; set; }

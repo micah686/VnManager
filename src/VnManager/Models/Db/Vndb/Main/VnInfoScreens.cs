@@ -1,7 +1,10 @@
-﻿namespace VnManager.Models.Db.Vndb.Main
+﻿using LiteDB;
+
+namespace VnManager.Models.Db.Vndb.Main
 {
     public class VnInfoScreens
     {
+        [BsonId]
         public int Index { get; set; }
         public uint? VnId { get; set; }
         public string ImageUrl { get; set; }

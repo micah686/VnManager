@@ -1,8 +1,11 @@
-﻿namespace VnManager.Models.Db.Vndb.Producer
+﻿using LiteDB;
+
+namespace VnManager.Models.Db.Vndb.Producer
 {
     public class VnProducerRelations
     {
-        public int Id { get; set; }
+        [BsonId]
+        public int Index { get; set; }
         public int? RelationId { get; set; }
         public int? ProducerId { get; set; }
         public string Relation { get; set; }
