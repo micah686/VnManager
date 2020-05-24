@@ -8,12 +8,14 @@ using LiteDB;
 using VndbSharp.Models.Character;
 using VndbSharp.Models.Producer;
 using VndbSharp.Models.Release;
+using VndbSharp.Models.Staff;
 using VndbSharp.Models.VisualNovel;
 using VnManager.Converters;
 using VnManager.Models.Db.Vndb.Character;
 using VnManager.Models.Db.Vndb.Main;
 using VnManager.Models.Db.Vndb.Producer;
 using VnManager.Models.Db.Vndb.Release;
+using VnManager.Models.Db.Vndb.Staff;
 
 namespace VnManager.MetadataProviders.Vndb
 {
@@ -229,7 +231,7 @@ namespace VnManager.MetadataProviders.Vndb
 
         }
 
-        private void FormatVnReleases(List<Release> vnReleases, uint vnid)
+        public void FormatVnReleases(List<Release> vnReleases, uint vnid)
         {
             using (var db = new LiteDatabase(App.DatabasePath))
             {
@@ -299,7 +301,7 @@ namespace VnManager.MetadataProviders.Vndb
 
         }
 
-        private void SaveProducers(List<Producer> vnProducers)
+        public void SaveProducers(List<Producer> vnProducers)
         {
             using (var db = new LiteDatabase(App.DatabasePath))
             {
@@ -340,6 +342,79 @@ namespace VnManager.MetadataProviders.Vndb
                     }));
                     dbVnProducerRelations.Upsert(vnProducerRelations);
                 }
+            }
+        }
+
+        public void SaveStaff(List<Staff> vnStaffList, int vnid)
+        {
+            using (var db = new LiteDatabase(App.DatabasePath))
+            {
+                var dbVnStaff = db.GetCollection<VnStaff>("vnstaff");
+                var dbVnStaffAliases = db.GetCollection<VnStaffAliases>("vnstaff_aliases");
+                var dbVnStaffVns = db.GetCollection<VnStaffVns>("vnstaff_vns");
+                var dbVnStaffVoiced = db.GetCollection<VnStaffVoiced>("vnstaff_voiced");
+
+                List<VnStaff> staffList = new List<VnStaff>();
+                List<VnStaffAliases> vnStaffAliasesList = new List<VnStaffAliases>();
+                List<VnStaffVns> vnStaffVnList = new List<VnStaffVns>();
+                List<VnStaffVoiced> vnStaffVoicedList = new List<VnStaffVoiced>();
+
+                foreach (var vnStaff in vnStaffList)
+                {
+                    VnStaff staff = new VnStaff()
+                    {
+                        StaffId = (int?)vnStaff.Id,
+                        Name = vnStaff.Name,
+                        Original = vnStaff.OriginalName,
+                        Gender = vnStaff.Gender,
+                        Language = vnStaff.Language,
+                        VnStaffLinks = new VnStaffLinks()
+                        {
+                            Homepage = vnStaff.StaffLinks.Homepage,
+                            Twitter = vnStaff.StaffLinks.Twitter,
+                            AniDb = vnStaff.StaffLinks.AniDb,
+                            Pixiv = vnStaff.StaffLinks.Pixiv,
+                            Wikidata = vnStaff.StaffLinks.WikiData
+                        },
+                        Description = vnStaff.Description,
+                        MainAliasId = vnStaff.MainAlias
+                    };
+                    staffList.Add(staff);
+
+                    vnStaffAliasesList.AddRange(vnStaff.Aliases.Select(staffAliases => new VnStaffAliases()
+                        { StaffId = (int?)vnStaff.Id, AliasId = (int)staffAliases.Id, Name = staffAliases.Name, Original = staffAliases.OriginalName }));
+
+                    if (vnStaff.Vns.Length > 0)
+                    {
+                        vnStaffVnList.AddRange(vnStaff.Vns.Select(staffVns => new VnStaffVns()
+                        {
+                            VnId = vnid,
+                            StaffId = (int?)vnStaff.Id,
+                            AliasId = (int)staffVns.AliasId,
+                            Role = staffVns.Role,
+                            Note = staffVns.Note
+                        }));
+                    }
+
+                    if (vnStaff.Voiced.Length > 0)
+                    {
+                        vnStaffVoicedList.AddRange(vnStaff.Voiced.Select(voices => new VnStaffVoiced()
+                        {
+                            VnId = vnid,
+                            StaffId = (int?)vnStaff.Id,
+                            AliasId = (int)voices.AliasId,
+                            CharacterId = (int)voices.CharacterId,
+                            Note = voices.Note
+                        }));
+                    }
+                    
+
+                }
+
+                dbVnStaff.Upsert(staffList);
+                dbVnStaffAliases.Upsert(vnStaffAliasesList);
+                dbVnStaffVns.Upsert(vnStaffVnList);
+                dbVnStaffVoiced.Upsert(vnStaffVoicedList);
             }
         }
     }
