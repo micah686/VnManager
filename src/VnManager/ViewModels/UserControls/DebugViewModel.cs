@@ -1,6 +1,7 @@
 ﻿using Stylet;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -30,49 +31,93 @@ namespace VnManager.ViewModels.UserControls
         {
             var bd = BirthdayConverter.ConvertBirthday(new SimpleDate() {Day = 30, Month = 12, Year = 2000});
             
-            //var foo = new GetVndbData();
-            //foo.GetData(15538);
+            var foo = new GetVndbData();
+            foo.GetData(92);
 
+
+            //using (var db = new LiteDatabase(App.DatabasePath))
+            //{
+            //    var col = db.GetCollection<VnInfo>("entry_coll");
+            //    var entry = new VnInfo
+            //    {
+            //        VnId = 99,
+            //        Title = "SampleTitle",
+            //        Original = "FirstString"
+            //    };
+            //    col.Insert(entry);
+
+            //    var entryUpd = new VnInfo();
+            //    var prev = col.Query().Where(x => x.VnId == (uint) 99).FirstOrDefault();
+            //    if (prev != null)
+            //    {
+            //        entryUpd = prev;
+            //    }
+
+            //    entryUpd.Original = "Sample2";
+                
+            //    col.Upsert(entryUpd);
+
+            //}
+            return;
             using (var db = new LiteDatabase(App.DatabasePath))
             {
-                var col = db.GetCollection<Customer>("customers");
-
-                // Create your new customer instance
-                var customer = new Customer
+                var vnAnime = new List<VnInfoAnime>();
+                var col = db.GetCollection<VnInfoAnime>("collection");
+                var prev = col.Query().Where(x => x.VnId == 1).ToList();
+                if (prev.Count > 0)
                 {
-                    Name = "John Doe",
-                    Phones = new string[] { "8000-0000", "9000-0000" },
-                    IsActive = true
-                };
+                    var vnInfo = new VnInfoAnime();
+                    if (prev.Any(x => x.AniDbId == 3))
+                    {
+                        vnInfo = prev.First(x => x.AniDbId == 3);
+                    }
+                }
+                else
+                {
+                    
+                }
+                
+                //var vnAnime = new List<VnInfoAnime>();
+                //if (prev.Count > 0)
+                //{
+                //    vnAnime = prev;
+                //}
 
-                // Insert new customer document (Id will be auto-incremented)
-                col.Insert(customer);
-                var foo = col.Query().ToList();
+                //for (int i = 0; i < 10; i++)
+                //{
+                //    if (i % 2 ==0)
+                //    {
+                //        vnAnime[i].AnimeType = "updated";
+                //    }
+                //    else
+                //    {
+                //        var entry = new VnInfoAnime()
+                //        {
+                //            VnId = 50,
+                //            AnnId = i,
+                //            AnimeType = "test"
+                //        };
+                //        vnAnime.Add(entry);
+                //    }
+                //}
 
-                // Update a document inside a collection
-                customer.Name = "Jane Doe";
+                //col.Upsert(vnAnime);
 
-                col.Update(customer);
-                var bar = col.Query().ToList();
 
-                // Index document using document Name property
-                col.EnsureIndex(x => x.Name);
-
-                // Use LINQ to query documents (filter, sort, transform)
-                var results = col.Query()
-                    .Where(x => x.Name.StartsWith("J"))
-                    .OrderBy(x => x.Name)
-                    .Select(x => new { x.Name, NameUpper = x.Name.ToUpper() })
-                    .Limit(10)
-                    .ToList();
-
-                // Let's create an index in phone numbers (using expression). It's a multikey index
-                col.EnsureIndex(x => x.Phones);
-
-                // and now we can query phones
-                var r = col.FindOne(x => x.Phones.Contains("8888-5555"));
+                //var vnAnime = new List<VnInfoAnime>();
+                //for (int i = 0; i < 10; i++)
+                //{
+                //    var entry = new VnInfoAnime()
+                //    {
+                //        VnId = 50,
+                //        AnnId = i,
+                //        AnimeType = "test"
+                //    };
+                //    vnAnime.Add(entry);
+                //}
+                //col.Upsert(vnAnime);
             }
-            
+
         }
 
         public void CauseException()
@@ -82,13 +127,5 @@ namespace VnManager.ViewModels.UserControls
 
         [DllImport("kernel32.dll")]
         public static extern void RaiseException(uint dwExceptionCode, uint dwExceptionFlags, uint nNumberOfArguments, IntPtr lpArguments);
-    }
-
-    public class Customer
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string[] Phones { get; set; }
-        public bool IsActive { get; set; }
     }
 }
