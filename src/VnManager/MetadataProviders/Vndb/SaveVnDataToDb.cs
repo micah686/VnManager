@@ -281,62 +281,89 @@ namespace VnManager.MetadataProviders.Vndb
                 var dbVnReleaseProducers = db.GetCollection<VnReleaseProducers>("vnrelease_producers");
                 var dbReleaseVns = db.GetCollection<VnReleaseVn>("vnrelease_vn");
                 if (vnReleases.Count <= 0) return;
-                List<VnRelease> vnRelease = new List<VnRelease>();
-                List<VnReleaseMedia> vnReleaseMedia = new List<VnReleaseMedia>();
-                List<VnReleaseProducers> vnReleaseProducers = new List<VnReleaseProducers>();
-                List<VnReleaseVn> vnReleaseVns = new List<VnReleaseVn>();
-                foreach (Release release in vnReleases)
+                List<VnRelease> vnReleaseList = new List<VnRelease>();
+                List<VnReleaseMedia> vnReleaseMediaList = new List<VnReleaseMedia>();
+                List<VnReleaseProducers> vnReleaseProducersList = new List<VnReleaseProducers>();
+                List<VnReleaseVn> vnReleaseVnsList = new List<VnReleaseVn>();
+                foreach (Release vnRelease in vnReleases)
                 {
-                    vnRelease.Add(new VnRelease()
-                    {
-                        ReleaseId = release.Id,
-                        Title = release.Name,
-                        Original = release.OriginalName,
-                        ReleaseType = release.Type.ToString(),
-                        Patch = release.IsPatch,
-                        Freeware = release.IsFreeware,
-                        Doujin = release.IsDoujin,
-                        Languages = CsvConverter.ConvertToCsv(release.Languages),
-                        Website = release.Website,
-                        Notes = release.Notes,
-                        MinAge = Convert.ToByte(release.MinimumAge),
-                        Gtin = release.Gtin,
-                        Catalog = release.Catalog,
-                        Platforms = CsvConverter.ConvertToCsv(release.Platforms),
-                        Resolution = release.Resolution,
-                        Voiced = release.Voiced.ToString(),
-                        Animation = string.Join(",", release.Animation)
-                    });
+                    var prevVnRelease = dbVnRelease.Query().Where(x => x.ReleaseId == vnRelease.Id);
+                    var release = prevVnRelease.FirstOrDefault() ?? new VnRelease();
 
-                    if (release.Media.Count > 0)
-                    {
-                        vnReleaseMedia.AddRange(release.Media.Select(media => new VnReleaseMedia() 
-                            {ReleaseId = release.Id, Medium = media.Medium, Quantity = media.Quantity}));
-                    }
+                    release.ReleaseId = vnRelease.Id;
+                    release.Title = vnRelease.Name;
+                    release.Original = vnRelease.OriginalName;
+                    release.ReleaseType = vnRelease.Type.ToString();
+                    release.Patch = vnRelease.IsPatch;
+                    release.Freeware = vnRelease.IsFreeware;
+                    release.Doujin = vnRelease.IsDoujin;
+                    release.Languages = CsvConverter.ConvertToCsv(vnRelease.Languages);
+                    release.Website = vnRelease.Website;
+                    release.Notes = vnRelease.Notes;
+                    release.MinAge = Convert.ToByte(vnRelease.MinimumAge);
+                    release.Gtin = vnRelease.Gtin;
+                    release.Catalog = vnRelease.Catalog;
+                    release.Platforms = CsvConverter.ConvertToCsv(vnRelease.Platforms);
+                    release.Resolution = vnRelease.Resolution;
+                    release.Voiced = vnRelease.Voiced.ToString();
+                    release.Animation = string.Join(",", vnRelease.Animation);
+                    vnReleaseList.Add(release);
 
-                    if (release.Producers.Count > 0)
+
+                    if (vnRelease.Media.Count > 0)
                     {
-                        vnReleaseProducers.AddRange(release.Producers.Select(producer => new VnReleaseProducers()
+                        var prevVnReleaseMedia = dbVnReleaseMedia.Query().Where(x => x.ReleaseId == vnRelease.Id);
+                        foreach (var media in vnRelease.Media)
                         {
-                            ReleaseId = release.Id,
-                            ProducerId = producer.Id,
-                            Developer = producer.IsDeveloper,
-                            Publisher = producer.IsPublisher,
-                            Name = producer.Name,
-                            Original = producer.OriginalName,
-                            ProducerType = producer.ProducerType
-                        }));
+                            var entry = prevVnReleaseMedia.FirstOrDefault() ?? new VnReleaseMedia();
+                            entry.ReleaseId = vnRelease.Id;
+                            entry.Medium = media.Medium;
+                            entry.Quantity = media.Quantity;
+                            vnReleaseMediaList.Add(entry);
+                        }
                     }
 
-                    if (release.VisualNovels.Count <= 0) continue;
-                    vnReleaseVns.AddRange(release.VisualNovels.Select(vn => new VnReleaseVn() 
-                        {ReleaseId = vn.Id, VnId = vnid, Name = vn.Name, Original = vn.OriginalName}));
+
+                    if (vnRelease.Producers.Count > 0)
+                    {
+                        var prevVnReleaseProducers =
+                            dbVnReleaseProducers.Query().Where(x => x.ProducerId == vnRelease.Id);
+                        foreach (var producer in vnRelease.Producers)
+                        {
+                            var entry = prevVnReleaseProducers.FirstOrDefault() ?? new VnReleaseProducers();
+                            entry.ReleaseId = vnRelease.Id;
+                            entry.ProducerId = producer.Id;
+                            entry.Developer = producer.IsDeveloper;
+                            entry.Publisher = producer.IsPublisher;
+                            entry.Name = producer.Name;
+                            entry.Original = producer.OriginalName;
+                            entry.ProducerType = producer.ProducerType;
+                            vnReleaseProducersList.Add(entry);
+                        }
+                    }
+
+                    if (vnRelease.VisualNovels.Count > 0)
+                    {
+                        var prevVnReleaseVns = dbReleaseVns.Query().Where(x => x.ReleaseId == vnRelease.Id);
+
+                        foreach (var vn in vnRelease.VisualNovels)
+                        {
+                            var entry = prevVnReleaseVns.FirstOrDefault() ?? new VnReleaseVn();
+                            entry.ReleaseId = vnRelease.Id;
+                            entry.VnId = vn.Id;
+                            entry.Name = vn.Name;
+                            entry.Original = vn.OriginalName;
+                            vnReleaseVnsList.Add(entry);
+
+                        }
+                    }
+
                 }
 
-                dbVnRelease.Upsert(vnRelease);
-                dbVnReleaseMedia.Upsert(vnReleaseMedia);
-                dbVnReleaseProducers.Upsert(vnReleaseProducers);
-                dbReleaseVns.Upsert(vnReleaseVns);
+                dbVnRelease.Upsert(vnReleaseList);
+                dbVnReleaseMedia.Upsert(vnReleaseMediaList);
+                dbVnReleaseProducers.Upsert(vnReleaseProducersList);
+                dbReleaseVns.Upsert(vnReleaseVnsList);
 
             }
 
