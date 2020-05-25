@@ -350,38 +350,45 @@ namespace VnManager.MetadataProviders.Vndb
                 var dbVnProducerLinks = db.GetCollection<VnProducerLinks>("vnproducer_links");
                 var dbVnProducerRelations = db.GetCollection<VnProducerRelations>("vnproducer_relations");
                 
-                List<VnProducerRelations>vnProducerRelations = new List<VnProducerRelations>();
+                List<VnProducer>vnProducersList = new List<VnProducer>();
+                List<VnProducerLinks>vnProducerLinksList = new List<VnProducerLinks>();
+                List<VnProducerRelations>vnProducerRelationsList = new List<VnProducerRelations>();
                 foreach (var vnProducer in vnProducers)
                 {
-                    VnProducer producer = new VnProducer()
-                    {
-                        ProducerId = (int?)vnProducer.Id,
-                        Name = vnProducer.Name,
-                        Original = vnProducer.OriginalName,
-                        ProducerType = vnProducer.ProducerType,
-                        Language = vnProducer.Language,
-                        Aliases = CsvConverter.ConvertToCsv(vnProducer.Aliases),
-                        Description = vnProducer.Description,
-                    };
-                    dbVnProducer.Upsert(producer);
+                    var prevVnProducers = dbVnProducer.Query().Where(x => x.ProducerId == vnProducer.Id);
+                    var producer = prevVnProducers.FirstOrDefault() ?? new VnProducer();
 
-                    VnProducerLinks links = new VnProducerLinks()
-                    {
-                        ProducerId = (int?)vnProducer.Id,
-                        Homepage = vnProducer.Links.Homepage,
-                        WikiData = vnProducer.Links.Wikipedia
-                    };
-                    dbVnProducerLinks.Upsert(links);
+                    producer.ProducerId = (int?) vnProducer.Id;
+                    producer.Name = vnProducer.Name;
+                    producer.Original = vnProducer.OriginalName;
+                    producer.ProducerType = vnProducer.ProducerType;
+                    producer.Language = vnProducer.Language;
+                    producer.Aliases = CsvConverter.ConvertToCsv(vnProducer.Aliases);
+                    producer.Description = vnProducer.Description;
+                    vnProducersList.Add(producer);
 
-                    vnProducerRelations.AddRange(vnProducer.Relations.Select(relation => new VnProducerRelations()
+
+                    var prevVnProducerLinks = dbVnProducerLinks.Query().Where(x => x.ProducerId == vnProducer.Id);
+                    var links = prevVnProducerLinks.FirstOrDefault() ?? new VnProducerLinks();
+                    links.ProducerId = (int) vnProducer.Id;
+                    links.Homepage = vnProducer.Links.Homepage;
+                    links.WikiData = vnProducer.Links.Wikipedia;
+                    vnProducerLinksList.Add(links);
+
+                    var prevVnProducerRelations =
+                        dbVnProducerRelations.Query().Where(x => x.ProducerId == vnProducer.Id);
+
+                    foreach (var relation in vnProducer.Relations)
                     {
-                        RelationId = (int?) relation.Id,
-                        ProducerId = (int?) vnProducer.Id,
-                        Relation = relation.Relation,
-                        Name = relation.Name,
-                        Original = relation.OriginalName
-                    }));
-                    dbVnProducerRelations.Upsert(vnProducerRelations);
+                        var entry = prevVnProducerRelations.FirstOrDefault() ?? new VnProducerRelations();
+                        entry.RelationId = (int?) relation.Id;
+                        entry.ProducerId = (int?) vnProducer.Id;
+                        entry.Relation = relation.Relation;
+                        entry.Name = relation.Name;
+                        entry.Original = relation.OriginalName;
+                        vnProducerRelationsList.Add(entry);
+
+                    }
                 }
             }
         }
