@@ -206,67 +206,106 @@ namespace VnManager.MetadataProviders.Vndb
 
                 if (characters.Count > 0)
                 {
-                    List<VnCharacterInfo> vnCharacters = new List<VnCharacterInfo>();
-                    List<VnCharacterTraits> vnCharacterTraits = new List<VnCharacterTraits>();
-                    List<VnCharacterVns> vnCharacterVns = new List<VnCharacterVns>();
-                    List<VnCharacterVoiced> vnCharacterVoices = new List<VnCharacterVoiced>();
-                    List<VnCharacterInstances> vnCharacterInstances = new List<VnCharacterInstances>();
+                    List<VnCharacterInfo> vnCharactersList = new List<VnCharacterInfo>();
+                    List<VnCharacterTraits> vnCharacterTraitsList = new List<VnCharacterTraits>();
+                    List<VnCharacterVns> vnCharacterVnsList = new List<VnCharacterVns>();
+                    List<VnCharacterVoiced> vnCharacterVoicesList = new List<VnCharacterVoiced>();
+                    List<VnCharacterInstances> vnCharacterInstancesList = new List<VnCharacterInstances>();
                     foreach (Character vnCharacter in characters)
                     {
-                        VnCharacterInfo character = new VnCharacterInfo()
-                        {
-                            VnId = vnid,
-                            CharacterId = vnCharacter.Id,
-                            Name = vnCharacter.Name,
-                            Original = vnCharacter.OriginalName,
-                            Gender = vnCharacter.Gender.ToString(),
-                            BloodType = vnCharacter.BloodType.ToString(),
-                            Birthday = BirthdayConverter.ConvertBirthday(vnCharacter.Birthday),
-                            Aliases = CsvConverter.ConvertToCsv(vnCharacter.Aliases),
-                            Description = vnCharacter.Description,
-                            ImageLink = vnCharacter.Image,
-                            Bust = Convert.ToInt32(vnCharacter.Bust),
-                            Waist = Convert.ToInt32(vnCharacter.Waist),
-                            Hip = Convert.ToInt32(vnCharacter.Hip),
-                            Height = Convert.ToInt32(vnCharacter.Height),
-                            Weight = Convert.ToInt32(vnCharacter.Weight)
-                        };
-                        vnCharacters.Add(character);
+                        var prevVnCharacter = dbCharInfo.Query().Where(x => x.CharacterId == vnCharacter.Id);
+                        var character = prevVnCharacter.FirstOrDefault() ?? new VnCharacterInfo();
 
-                        vnCharacterTraits.AddRange(vnCharacter.Traits.Select(traits => (new VnCharacterTraits()
-                        {
-                            CharacterId = character.CharacterId, TraitId = traits.Id, SpoilerLevel = traits.SpoilerLevel
-                        })));
+                        character.VnId = vnid;
+                        character.CharacterId = vnCharacter.Id;
+                        character.Name = vnCharacter.Name;
+                        character.Original = vnCharacter.OriginalName;
+                        character.Gender = vnCharacter.Gender.ToString();
+                        character.BloodType = vnCharacter.BloodType.ToString();
+                        character.Birthday = BirthdayConverter.ConvertBirthday(vnCharacter.Birthday);
+                        character.Aliases = CsvConverter.ConvertToCsv(vnCharacter.Aliases);
+                        character.Description = vnCharacter.Description;
+                        character.ImageLink = vnCharacter.Image;
+                        character.Bust = Convert.ToInt32(vnCharacter.Bust);
+                        character.Waist = Convert.ToInt32(vnCharacter.Waist);
+                        character.Hip = Convert.ToInt32(vnCharacter.Hip);
+                        character.Height = Convert.ToInt32(vnCharacter.Height);
+                        character.Weight = Convert.ToInt32(vnCharacter.Weight);
+                        vnCharactersList.Add(character);
 
-                        vnCharacterVns.AddRange(vnCharacter.VisualNovels.Select(vn => new VnCharacterVns()
-                        {
-                            CharacterId = vnCharacter.Id,
-                            VnId = vn.Id,
-                            ReleaseId = vn.ReleaseId,
-                            SpoilerLevel = (byte) vn.SpoilerLevel,
-                            Role = vn.Role.ToString()
-                        }));
 
-                        vnCharacterVoices.AddRange(vnCharacter.VoiceActorMetadata.Select(voice =>
-                            new VnCharacterVoiced()
+                        if (vnCharacter.Traits.Count > 0)
+                        {
+                            var prevVnCharacterTraits =
+                                dbCharTraits.Query().Where(x => x.CharacterId == vnCharacter.Id);
+                            var entry = prevVnCharacterTraits.FirstOrDefault() ?? new VnCharacterTraits();
+                            foreach (var traits in vnCharacter.Traits)
                             {
-                                StaffId = voice.StaffId, StaffAliasId = voice.AliasId, VnId = voice.VisualNovelId,
-                                Note = voice.Note
-                            }));
+                                entry.CharacterId = vnCharacter.Id;
+                                entry.TraitId = traits.Id;
+                                entry.SpoilerLevel = traits.SpoilerLevel;
+                                vnCharacterTraitsList.Add(entry);
+                            }
+                        }
 
-                        vnCharacterInstances.AddRange(vnCharacter.CharacterInstances.Select(instance =>
-                            new VnCharacterInstances()
+
+                        if (vnCharacter.VisualNovels.Count > 0)
+                        {
+                            var prevVnCharacterVns = dbCharVns.Query().Where(x => x.CharacterId == vnCharacter.Id);
+                            var entry = prevVnCharacterVns.FirstOrDefault() ?? new VnCharacterVns();
+                            foreach (var vn in vnCharacter.VisualNovels)
                             {
-                                CharacterId = (int)character.CharacterId, Spoiler = (byte) instance.Spoiler, Name = instance.Name,
-                                Original = instance.Kanji
-                            }));
+                                entry.CharacterId = vnCharacter.Id;
+                                entry.VnId = vn.Id;
+                                entry.ReleaseId = vn.ReleaseId;
+                                entry.SpoilerLevel = vn.SpoilerLevel;
+                                entry.Role = vn.Role.ToString();
+                                vnCharacterVnsList.Add(entry);
+                            }
+                        }
+
+                        if (vnCharacter.VoiceActorMetadata.Count > 0)
+                        {
+                            var prevVnCharacterVoices =
+                                dbCharVoices.Query().Where(x => x.CharacterId == vnCharacter.Id);
+                            var entry = prevVnCharacterVoices.FirstOrDefault() ?? new VnCharacterVoiced();
+
+                            foreach (var voice in vnCharacter.VoiceActorMetadata)
+                            {
+                                entry.CharacterId = (int)vnCharacter.Id;
+                                entry.StaffId = voice.StaffId;
+                                entry.StaffAliasId = voice.AliasId;
+                                entry.VnId = voice.VisualNovelId;
+                                entry.Note = voice.Note;
+                                vnCharacterVoicesList.Add(entry);
+                            }
+                        }
+
+                        if (vnCharacter.CharacterInstances.Count > 0)
+                        {
+                            var prevVnCharacterInstances =
+                                dbCharInstances.Query().Where(x => x.CharacterId == vnCharacter.Id);
+                            var entry = prevVnCharacterInstances.FirstOrDefault() ?? new VnCharacterInstances();
+
+                            foreach (var instance in vnCharacter.CharacterInstances)
+                            {
+                                entry.CharacterId = (int) vnCharacter.Id;
+                                entry.Name = instance.Name;
+                                entry.Original = instance.Kanji;
+                                entry.Spoiler = instance.Spoiler;
+                                vnCharacterInstancesList.Add(entry);
+                            }
+
+                        }
+
+
                     }
 
-                    dbCharInfo.Upsert(vnCharacters);
-                    dbCharTraits.Upsert(vnCharacterTraits);
-                    dbCharVns.Upsert(vnCharacterVns);
-                    dbCharVoices.Upsert(vnCharacterVoices);
-                    dbCharInstances.Upsert(vnCharacterInstances);
+                    dbCharInfo.Upsert(vnCharactersList);
+                    dbCharTraits.Upsert(vnCharacterTraitsList);
+                    dbCharVns.Upsert(vnCharacterVnsList);
+                    dbCharVoices.Upsert(vnCharacterVoicesList);
+                    dbCharInstances.Upsert(vnCharacterInstancesList);
                 }
             }
 
@@ -417,6 +456,10 @@ namespace VnManager.MetadataProviders.Vndb
 
                     }
                 }
+
+                dbVnProducer.Upsert(vnProducersList);
+                dbVnProducerLinks.Upsert(vnProducerLinksList);
+                dbVnProducerRelations.Upsert(vnProducerRelationsList);
             }
         }
 
