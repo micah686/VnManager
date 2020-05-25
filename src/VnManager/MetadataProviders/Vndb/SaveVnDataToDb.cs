@@ -366,7 +366,7 @@ namespace VnManager.MetadataProviders.Vndb
                     if (vnRelease.Producers.Count > 0)
                     {
                         var prevVnReleaseProducers =
-                            dbVnReleaseProducers.Query().Where(x => x.ProducerId == vnRelease.Id);
+                            dbVnReleaseProducers.Query().Where(x => x.ReleaseId == vnRelease.Id);
                         foreach (var producer in vnRelease.Producers)
                         {
                             var entry = prevVnReleaseProducers.FirstOrDefault() ?? new VnReleaseProducers();
