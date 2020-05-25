@@ -402,53 +402,70 @@ namespace VnManager.MetadataProviders.Vndb
 
                 foreach (var vnStaff in vnStaffList)
                 {
-                    VnStaff staff = new VnStaff()
+                    //staff
+                    var prevVnStaff = dbVnStaff.Query().Where(x => x.StaffId == vnStaff.Id);
+                    var staff = prevVnStaff.FirstOrDefault() ?? new VnStaff();
+
+                    staff.StaffId = (int?) vnStaff.Id;
+                    staff.Name = vnStaff.Name;
+                    staff.Original = vnStaff.OriginalName;
+                    staff.Language = vnStaff.Language;
+                    staff.VnStaffLinks = new VnStaffLinks()
                     {
-                        StaffId = (int?)vnStaff.Id,
-                        Name = vnStaff.Name,
-                        Original = vnStaff.OriginalName,
-                        Gender = vnStaff.Gender,
-                        Language = vnStaff.Language,
-                        VnStaffLinks = new VnStaffLinks()
-                        {
-                            Homepage = vnStaff.StaffLinks.Homepage,
-                            Twitter = vnStaff.StaffLinks.Twitter,
-                            AniDb = vnStaff.StaffLinks.AniDb,
-                            Pixiv = vnStaff.StaffLinks.Pixiv,
-                            Wikidata = vnStaff.StaffLinks.WikiData
-                        },
-                        Description = vnStaff.Description,
-                        MainAliasId = vnStaff.MainAlias
+                        Homepage = vnStaff.StaffLinks.Homepage,
+                        Twitter = vnStaff.StaffLinks.Twitter,
+                        AniDb = vnStaff.StaffLinks.AniDb,
+                        Pixiv = vnStaff.StaffLinks.Pixiv,
+                        Wikidata = vnStaff.StaffLinks.WikiData
                     };
+                    staff.Description = vnStaff.Description;
+                    staff.MainAliasId = vnStaff.MainAlias;
                     staffList.Add(staff);
 
-                    vnStaffAliasesList.AddRange(vnStaff.Aliases.Select(staffAliases => new VnStaffAliases()
-                        { StaffId = (int?)vnStaff.Id, AliasId = (int)staffAliases.Id, Name = staffAliases.Name, Original = staffAliases.OriginalName }));
+                    //aliases
+                    if (vnStaff.Aliases.Count > 0)
+                    {
+                        var prevVnStaffAliases = dbVnStaffAliases.Query().Where(x => x.StaffId == vnStaff.Id);
+                        var vnAliases = prevVnStaffAliases.FirstOrDefault() ?? new VnStaffAliases();
+                        foreach (var alias in vnStaff.Aliases)
+                        {
+                            vnAliases.StaffId = (int?) vnStaff.Id;
+                            vnAliases.AliasId = (int) alias.Id;
+                            vnAliases.Name = alias.Name;
+                            vnAliases.Original = alias.OriginalName;
+                            vnStaffAliasesList.Add(vnAliases);
+                        }
+                    }
 
+                    //vns
                     if (vnStaff.Vns.Length > 0)
                     {
-                        vnStaffVnList.AddRange(vnStaff.Vns.Select(staffVns => new VnStaffVns()
+                        var prevVnStaffVns = dbVnStaffVns.Query().Where(x => x.StaffId == staff.StaffId);
+                        var staffVns = prevVnStaffVns.FirstOrDefault() ?? new VnStaffVns();
+                        foreach (var vn in vnStaff.Vns)
                         {
-                            VnId = vnid,
-                            StaffId = (int?)vnStaff.Id,
-                            AliasId = (int)staffVns.AliasId,
-                            Role = staffVns.Role,
-                            Note = staffVns.Note
-                        }));
+                            staffVns.VnId = vnid;
+                            staffVns.StaffId = (int?) vnStaff.Id;
+                            staffVns.AliasId = (int) staffVns.AliasId;
+                            staffVns.Role = staffVns.Role;
+                            staffVns.Note = staffVns.Note;
+                            vnStaffVnList.Add(staffVns);
+                        }
                     }
-
+                    //voiced
                     if (vnStaff.Voiced.Length > 0)
                     {
-                        vnStaffVoicedList.AddRange(vnStaff.Voiced.Select(voices => new VnStaffVoiced()
+                        var prevVnStaffVoiced = dbVnStaffVoiced.Query().Where(x => x.StaffId == vnStaff.Id);
+                        foreach (var voiced in vnStaff.Voiced)
                         {
-                            VnId = vnid,
-                            StaffId = (int?)vnStaff.Id,
-                            AliasId = (int)voices.AliasId,
-                            CharacterId = (int)voices.CharacterId,
-                            Note = voices.Note
-                        }));
+                            var entry = prevVnStaffVoiced.FirstOrDefault() ?? new VnStaffVoiced();
+                            entry.VnId = vnid;
+                            entry.StaffId = (int?)vnStaff.Id;
+                            entry.CharacterId = (int)voiced.CharacterId;
+                            entry.Note = voiced.Note;
+                            vnStaffVoicedList.Add(entry);
+                        }
                     }
-                    
 
                 }
 
