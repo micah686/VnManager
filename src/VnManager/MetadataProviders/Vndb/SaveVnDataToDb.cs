@@ -481,8 +481,8 @@ namespace VnManager.MetadataProviders.Vndb
                             staffVns.VnId = vnid;
                             staffVns.StaffId = (int?) vnStaff.Id;
                             staffVns.AliasId = (int) staffVns.AliasId;
-                            staffVns.Role = staffVns.Role;
-                            staffVns.Note = staffVns.Note;
+                            staffVns.Role = vn.Role;
+                            staffVns.Note = vn.Note;
                             vnStaffVnList.Add(staffVns);
                         }
                     }
