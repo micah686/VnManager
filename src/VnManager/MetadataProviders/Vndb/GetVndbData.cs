@@ -53,7 +53,7 @@ namespace VnManager.MetadataProviders.Vndb
                         SaveVnDataToDb foo = new SaveVnDataToDb();
 						foo.SaveVnInfo(visualNovel);
 						foo.FormatVnCharacters(characters, vnid);
-						foo.FormatVnReleases(releases, vnid);
+						foo.FormatVnReleases(releases);
 						foo.SaveProducers(producers);
 						foo.SaveStaff(staff, (int)vnid);
                     }

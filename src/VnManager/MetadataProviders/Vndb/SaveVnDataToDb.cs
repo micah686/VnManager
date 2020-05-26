@@ -311,7 +311,7 @@ namespace VnManager.MetadataProviders.Vndb
 
         }
 
-        public void FormatVnReleases(List<Release> vnReleases, uint vnid)
+        public void FormatVnReleases(List<Release> vnReleases)
         {
             using (var db = new LiteDatabase(App.DatabasePath))
             {
