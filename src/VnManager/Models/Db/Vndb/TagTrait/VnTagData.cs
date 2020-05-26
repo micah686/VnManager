@@ -1,4 +1,6 @@
-﻿using LiteDB;
+﻿using System.Collections.ObjectModel;
+using LiteDB;
+using VndbSharp.Models.Dumps;
 
 namespace VnManager.Models.Db.Vndb.TagTrait
 {
@@ -13,9 +15,9 @@ namespace VnManager.Models.Db.Vndb.TagTrait
         public bool IsSearchable { get; set; }
         public bool IsApplicable { get; set; }
         public uint Vns { get; set; }
-        public string Category { get; set; }
+        public TagCategory Category { get; set; }
         public string Aliases { get; set; }
-        public int?[] Parents { get; set; }
+        public ReadOnlyCollection<uint> Parents { get; set; }
 
         
     }
