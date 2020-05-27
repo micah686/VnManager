@@ -15,7 +15,7 @@ namespace VnManager.Helpers
             char[] output = new char[input.Length];
             bool skipped = false;
 
-            foreach (char c in input.ToCharArray())
+            foreach (char c in input)
             {
                 if (char.IsWhiteSpace(c))
                 {

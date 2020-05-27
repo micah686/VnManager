@@ -72,24 +72,22 @@ namespace VnManager.MetadataProviders.Vndb
 			stopwatch.Restart();
 			while (true)
 			{
+                if (stopwatch.Elapsed > maxTime) return null;
 				VndbResponse<VisualNovel> visualNovels = await client.GetVisualNovelAsync(VndbFilters.Id.Equals(vnid), VndbFlags.FullVisualNovel);
 
 
-				if (visualNovels == null && client.GetLastError().Type == ErrorType.Throttled)
-				{
-
-					await HandleVndbErrors.ThrottledWait((ThrottledError)client.GetLastError(), 0);
-				}
-				else if (visualNovels == null)
-				{
-					HandleVndbErrors.HandleErrors(client.GetLastError(), 0);
-					return null;
-				}
-				else
-				{
-					return visualNovels.First();
-				}
-				if (stopwatch.Elapsed > maxTime) return null;
+				switch (visualNovels)
+                {
+                    case null when client.GetLastError().Type == ErrorType.Throttled:
+                        await HandleVndbErrors.ThrottledWait((ThrottledError)client.GetLastError(), 0);
+                        break;
+                    case null:
+                        HandleVndbErrors.HandleErrors(client.GetLastError(), 0);
+                        return null;
+                    default:
+                        return visualNovels.First();
+                }
+				
 			}
 		}
 
@@ -107,24 +105,26 @@ namespace VnManager.MetadataProviders.Vndb
 				ro.Page = pageCount;
 				VndbResponse<Release> releases = await client.GetReleaseAsync(VndbFilters.VisualNovel.Equals(vnid), VndbFlags.FullRelease, ro);
 
-				if (releases == null && client.GetLastError().Type == ErrorType.Throttled)
-				{
-					await HandleVndbErrors.ThrottledWait((ThrottledError)client.GetLastError(), 0);
-				}
-				else if (releases == null)
-				{
-					HandleVndbErrors.HandleErrors(client.GetLastError(), 0);
-					return null;
-				}
-				else
-				{
-					shouldContinue = false;
-				}
-				hasMore = releases.HasMore;
-				releaseList.AddRange(releases.Items);
-				releasesCount = releasesCount + releases.Count;
-				pageCount++;
-				if (stopwatch.Elapsed > maxTime) return null;
+				switch (releases)
+                {
+                    case null when client.GetLastError().Type == ErrorType.Throttled:
+                        await HandleVndbErrors.ThrottledWait((ThrottledError)client.GetLastError(), 0);
+                        break;
+                    case null:
+                        HandleVndbErrors.HandleErrors(client.GetLastError(), 0);
+                        return null;
+                    default:
+                    {
+                        shouldContinue = false;
+                        hasMore = releases.HasMore;
+                        releaseList.AddRange(releases.Items);
+                        releasesCount = releasesCount + releases.Count;
+                        pageCount++;
+                        if (stopwatch.Elapsed > maxTime) return null;
+                        break;
+                    }
+                }
+				
 			}
 			return releaseList;
 
@@ -144,24 +144,26 @@ namespace VnManager.MetadataProviders.Vndb
 				ro.Page = pageCount;
 				VndbResponse<Character> characters = await client.GetCharacterAsync(VndbFilters.VisualNovel.Equals(vnid), VndbFlags.FullCharacter, ro);
 
-				if (characters == null && client.GetLastError().Type == ErrorType.Throttled)
-				{
-					await HandleVndbErrors.ThrottledWait((ThrottledError)client.GetLastError(), 0);
-				}
-				else if (characters == null)
-				{
-					HandleVndbErrors.HandleErrors(client.GetLastError(), 0);
-					return null;
-				}
-				else
-				{
-					shouldContinue = false;
-				}
-				hasMore = characters.HasMore;
-				characterList.AddRange(characters.Items);
-				characterCount = characterCount + characters.Count;
-				pageCount++;
-				if (stopwatch.Elapsed > maxTime) return null;
+				switch (characters)
+                {
+                    case null when client.GetLastError().Type == ErrorType.Throttled:
+                        await HandleVndbErrors.ThrottledWait((ThrottledError)client.GetLastError(), 0);
+                        break;
+                    case null:
+                        HandleVndbErrors.HandleErrors(client.GetLastError(), 0);
+                        return null;
+                    default:
+                    {
+                        shouldContinue = false;
+                        hasMore = characters.HasMore;
+                        characterList.AddRange(characters.Items);
+                        characterCount = characterCount + characters.Count;
+                        pageCount++;
+                        if (stopwatch.Elapsed > maxTime) return null;
+                        break;
+                    }
+                }
+				
 			}
 			return characterList;
 		}
@@ -192,12 +194,13 @@ namespace VnManager.MetadataProviders.Vndb
 				else
 				{
 					shouldContinue = false;
+                    hasMore = producers.HasMore;
+                    producerList.AddRange(producers.Items);
+                    producerCount = producerCount + producers.Count;
+                    pageCount++;
+                    if (stopwatch.Elapsed > maxTime) return null;
 				}
-				hasMore = producers.HasMore;
-				producerList.AddRange(producers.Items);
-				producerCount = producerCount + producers.Count;
-				pageCount++;
-				if (stopwatch.Elapsed > maxTime) return null;
+				
 			}
 			return producerList;
 		}
@@ -216,24 +219,26 @@ namespace VnManager.MetadataProviders.Vndb
 				ro.Page = pageCount;
 				VndbResponse<Staff> staff = await client.GetStaffAsync(VndbFilters.Id.Equals(staffId), VndbFlags.FullStaff, ro);
 
-				if (staff == null && client.GetLastError().Type == ErrorType.Throttled)
-				{
-					await HandleVndbErrors.ThrottledWait((ThrottledError)client.GetLastError(), 0);
-				}
-				else if (staff == null)
-				{
-					HandleVndbErrors.HandleErrors(client.GetLastError(), 0);
-					return null;
-				}
-				else
-				{
-					shouldContinue = false;
-				}
-				hasMore = staff.HasMore;
-				staffList.AddRange(staff.Items);
-				staffCount = staffCount + staff.Count;
-				pageCount++;
-				if (stopwatch.Elapsed > maxTime) return null;
+				switch (staff)
+                {
+                    case null when client.GetLastError().Type == ErrorType.Throttled:
+                        await HandleVndbErrors.ThrottledWait((ThrottledError)client.GetLastError(), 0);
+                        break;
+                    case null:
+                        HandleVndbErrors.HandleErrors(client.GetLastError(), 0);
+                        return null;
+                    default:
+                    {
+                        shouldContinue = false;
+                        hasMore = staff.HasMore;
+                        staffList.AddRange(staff.Items);
+                        staffCount = staffCount + staff.Count;
+                        pageCount++;
+                        if (stopwatch.Elapsed > maxTime) return null;
+                        break;
+                    }
+                }
+				
 			}
 			return staffList;
 
