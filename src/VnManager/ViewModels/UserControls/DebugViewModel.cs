@@ -1,6 +1,7 @@
 ﻿using Stylet;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
@@ -13,6 +14,7 @@ using VnManager.Models.Db.Vndb.Main;
 using System.Linq;
 using System.Threading.Tasks;
 using VndbSharp;
+using VndbSharp.Models.Dumps;
 using VnManager.Models.Db.Vndb.TagTrait;
 
 
@@ -47,23 +49,6 @@ namespace VnManager.ViewModels.UserControls
 
         private async Task DoThingAsync()
         {
-            var foo = (await VndbUtils.GetTagsDumpAsync()).ToList().LastOrDefault();
-
-            if (foo != null)
-            {
-                var tgData = new VnTagData();
-                tgData.TagId = foo.Id;
-                tgData.Name = foo.Name;
-                tgData.Description = foo.Description;
-                tgData.IsMeta = foo.IsMeta;
-                tgData.IsSearchable = foo.Searchable;
-                tgData.IsApplicable = foo.Applicable;
-                tgData.Vns = foo.VisualNovels;
-                tgData.Category = foo.TagCategory;
-                tgData.Aliases = CsvConverter.ConvertToCsv(foo.Aliases);
-                tgData.Parents = foo.Parents;
-            }
-            
 
         }
 

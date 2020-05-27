@@ -17,8 +17,7 @@ namespace VnManager.Models.Db.Vndb.TagTrait
         public uint Vns { get; set; }
         public TagCategory Category { get; set; }
         public string Aliases { get; set; }
-        public ReadOnlyCollection<uint> Parents { get; set; }
+        public uint[] Parents { get; set; }
 
-        
     }
 }

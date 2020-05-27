@@ -4,8 +4,11 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using LiteDB;
+using VndbSharp;
 using VndbSharp.Models.Character;
+using VndbSharp.Models.Dumps;
 using VndbSharp.Models.Producer;
 using VndbSharp.Models.Release;
 using VndbSharp.Models.Staff;
@@ -16,6 +19,7 @@ using VnManager.Models.Db.Vndb.Main;
 using VnManager.Models.Db.Vndb.Producer;
 using VnManager.Models.Db.Vndb.Release;
 using VnManager.Models.Db.Vndb.Staff;
+using VnManager.Models.Db.Vndb.TagTrait;
 
 namespace VnManager.MetadataProviders.Vndb
 {
@@ -550,6 +554,49 @@ namespace VnManager.MetadataProviders.Vndb
                 dbVnStaffAliases.Upsert(vnStaffAliasesList);
                 dbVnStaffVns.Upsert(vnStaffVnList);
                 dbVnStaffVoiced.Upsert(vnStaffVoicedList);
+            }
+        }
+
+
+
+        public async Task GetAndSaveTagDump()
+        {
+            try
+            {
+                using (var db = new LiteDatabase(App.DatabasePath))
+                {
+                    var dbTags = db.GetCollection<VnTagData>("vntagdump");
+                    List<Tag> tagDump = (await VndbUtils.GetTagsDumpAsync()).ToList();
+                    List<VnTagData> tagsToAdd = new List<VnTagData>();
+                    var prevEntry = dbTags.Query().ToList();
+
+                    foreach (var item in tagDump)
+                    {
+                        var entry = prevEntry.FirstOrDefault(x => x.TagId == item.Id) ?? new VnTagData();
+                        entry.TagId = item.Id;
+                        entry.Name = item.Name;
+                        entry.Description = item.Description;
+                        entry.IsMeta = item.IsMeta;
+                        entry.IsSearchable = item.Searchable;
+                        entry.IsApplicable = item.Applicable;
+                        entry.Vns = item.VisualNovels;
+                        entry.Category = item.TagCategory;
+                        entry.Aliases = CsvConverter.ConvertToCsv(item.Aliases);
+                        entry.Parents = item.Parents.ToArray();
+                        tagsToAdd.Add(entry);
+                    }
+
+                    dbTags.Upsert(tagsToAdd);
+
+                    IEnumerable<int> idsToDelete = prevEntry.Except(tagsToAdd).Select(x => x.Index);
+                    dbTags.DeleteMany(x => idsToDelete.Contains(x.Index));
+                }
+
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error(ex, "An error happened while getting/saving the tag dump");
+                throw;
             }
         }
     }
