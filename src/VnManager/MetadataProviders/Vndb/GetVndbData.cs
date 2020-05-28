@@ -52,8 +52,8 @@ namespace VnManager.MetadataProviders.Vndb
 						//run code to add info to database
                         SaveVnDataToDb foo = new SaveVnDataToDb();
 						foo.SaveVnInfo(visualNovel);
-						foo.FormatVnCharacters(characters, vnid);
-						foo.FormatVnReleases(releases);
+						foo.SaveVnCharacters(characters, vnid);
+						foo.SaveVnReleases(releases);
 						foo.SaveProducers(producers);
 						foo.SaveStaff(staff, (int)vnid);
                     }
