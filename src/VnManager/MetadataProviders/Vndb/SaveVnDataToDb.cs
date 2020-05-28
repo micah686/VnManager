@@ -506,46 +506,21 @@ namespace VnManager.MetadataProviders.Vndb
                     //aliases
                     if (vnStaff.Aliases.Count > 0)
                     {
-                        var prevVnStaffAliases = dbVnStaffAliases.Query().Where(x => x.StaffId == vnStaff.Id);
-                        var vnAliases = prevVnStaffAliases.FirstOrDefault() ?? new VnStaffAliases();
-                        foreach (var alias in vnStaff.Aliases)
-                        {
-                            vnAliases.StaffId = (int?) vnStaff.Id;
-                            vnAliases.AliasId = (int) alias.Id;
-                            vnAliases.Name = alias.Name;
-                            vnAliases.Original = alias.OriginalName;
-                            vnStaffAliasesList.Add(vnAliases);
-                        }
+                        ILiteQueryable<VnStaffAliases> prevVnStaffAliases = dbVnStaffAliases.Query().Where(x => x.StaffId == vnStaff.Id);
+                        vnStaffAliasesList = formatVnStaffAliases(vnStaff, prevVnStaffAliases);
                     }
 
                     //vns
                     if (vnStaff.Vns.Length > 0)
                     {
-                        var prevVnStaffVns = dbVnStaffVns.Query().Where(x => x.StaffId == staff.StaffId);
-                        var staffVns = prevVnStaffVns.FirstOrDefault() ?? new VnStaffVns();
-                        foreach (var vn in vnStaff.Vns)
-                        {
-                            staffVns.VnId = vnid;
-                            staffVns.StaffId = (int?) vnStaff.Id;
-                            staffVns.AliasId = (int) staffVns.AliasId;
-                            staffVns.Role = vn.Role;
-                            staffVns.Note = vn.Note;
-                            vnStaffVnList.Add(staffVns);
-                        }
+                        ILiteQueryable<VnStaffVns> prevVnStaffVns = dbVnStaffVns.Query().Where(x => x.StaffId == staff.StaffId);
+                        vnStaffVnList = FormatStaffVns(vnStaff, vnid, prevVnStaffVns);
                     }
                     //voiced
                     if (vnStaff.Voiced.Length > 0)
                     {
-                        var prevVnStaffVoiced = dbVnStaffVoiced.Query().Where(x => x.StaffId == vnStaff.Id);
-                        foreach (var voiced in vnStaff.Voiced)
-                        {
-                            var entry = prevVnStaffVoiced.FirstOrDefault() ?? new VnStaffVoiced();
-                            entry.VnId = vnid;
-                            entry.StaffId = (int?)vnStaff.Id;
-                            entry.CharacterId = (int)voiced.CharacterId;
-                            entry.Note = voiced.Note;
-                            vnStaffVoicedList.Add(entry);
-                        }
+                        ILiteQueryable<VnStaffVoiced> prevVnStaffVoiced = dbVnStaffVoiced.Query().Where(x => x.StaffId == vnStaff.Id);
+                        vnStaffVoicedList = FormatVnStaffVoiced(vnStaff, vnid, prevVnStaffVoiced);
                     }
 
                 }
@@ -557,8 +532,61 @@ namespace VnManager.MetadataProviders.Vndb
             }
         }
 
+        //vn staff
+
+        private List<VnStaffAliases> formatVnStaffAliases(Staff vnStaff, ILiteQueryable<VnStaffAliases> prevVnStaffAliases)
+        {
+            List<VnStaffAliases> vnStaffAliasesList = new List<VnStaffAliases>();
+            var vnAliases = prevVnStaffAliases.FirstOrDefault() ?? new VnStaffAliases();
+            foreach (var alias in vnStaff.Aliases)
+            {
+                vnAliases.StaffId = (int?)vnStaff.Id;
+                vnAliases.AliasId = (int)alias.Id;
+                vnAliases.Name = alias.Name;
+                vnAliases.Original = alias.OriginalName;
+                vnStaffAliasesList.Add(vnAliases);
+            }
+            return vnStaffAliasesList;
+        }
+
+        private List<VnStaffVns> FormatStaffVns(Staff vnStaff, int vnid, ILiteQueryable<VnStaffVns> prevVnStaffVns)
+        {
+            List<VnStaffVns> vnStaffVnList = new List<VnStaffVns>();
+            var staffVns = prevVnStaffVns.FirstOrDefault() ?? new VnStaffVns();
+            foreach (var vn in vnStaff.Vns)
+            {
+                staffVns.VnId = vnid;
+                staffVns.StaffId = (int?)vnStaff.Id;
+                staffVns.AliasId = (int)staffVns.AliasId;
+                staffVns.Role = vn.Role;
+                staffVns.Note = vn.Note;
+                vnStaffVnList.Add(staffVns);
+            }
+            return vnStaffVnList;
+        }
+
+        private List<VnStaffVoiced> FormatVnStaffVoiced(Staff vnStaff, int vnid, ILiteQueryable<VnStaffVoiced> prevVnStaffVoiced)
+        {
+            List<VnStaffVoiced> vnStaffVoicedList = new List<VnStaffVoiced>();
+            foreach (var voiced in vnStaff.Voiced)
+            {
+                var entry = prevVnStaffVoiced.FirstOrDefault() ?? new VnStaffVoiced();
+                entry.VnId = vnid;
+                entry.StaffId = (int?)vnStaff.Id;
+                entry.CharacterId = (int)voiced.CharacterId;
+                entry.Note = voiced.Note;
+                vnStaffVoicedList.Add(entry);
+            }
+            return vnStaffVoicedList;
+        }
 
 
+
+
+
+
+
+        //Tag and Trait Dumps
         public async Task GetAndSaveTagDump()
         {
             try
