@@ -19,7 +19,15 @@ steps:
 - task: UseDotNet@2
   inputs:
     version: '3.1.x'
-    
+  
+- task: PowerShell@2
+  displayName: "Use Java 11 by default"
+  inputs:
+    targetType: 'inline'
+    script: |
+      $jdkPath = 'C:\Program Files\Java\zulu-11-azure-jdk_11.33.15-11.0.4-win_x64'
+      Write-Host "##vso[task.setvariable variable=JAVA_HOME]$jdkPath"
+  
 - task: DotNetCoreCLI@2
   displayName: Restore Nuget packages
   inputs:
