@@ -747,8 +747,8 @@ namespace VnManager.MetadataProviders.Vndb
                         entry.Name = item.Name;
                         entry.Description = item.Description;
                         entry.IsMeta = item.IsMeta;
-                        //entry.IsSearchable = item.IsSearchable;
-                        //entry.IsApplicable = item.IsApplicable;
+                        entry.IsSearchable = item.IsSearchable;
+                        entry.IsApplicable = item.IsApplicable;
                         entry.Characters = item.Characters;
                         entry.Aliases = CsvConverter.ConvertToCsv(item.Aliases);
                         entry.Parents = item.Parents.ToArray();
