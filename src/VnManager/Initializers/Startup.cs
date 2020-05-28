@@ -76,32 +76,27 @@ namespace VnManager.Initializers
         {
             //doesn't delete logs out of User Profile directory
             var minDate = (DateTime.Today - new TimeSpan(30, 0, 0, 0));
-            if(Directory.Exists(App.ConfigDirPath + @"\logs"))
+            if (!Directory.Exists(App.ConfigDirPath + @"\logs")) return;
+            foreach (var file in Directory.GetFiles(App.ConfigDirPath + @"\logs"))
             {
-                foreach (var file in Directory.GetFiles(App.ConfigDirPath + @"\logs"))
-                {
-                    var name = Path.GetFileName(file);
-                    int charLoc = name.IndexOf("_", StringComparison.Ordinal);
-                    var subst = name.Substring(0, charLoc);
+                var name = Path.GetFileName(file);
+                int charLoc = name.IndexOf("_", StringComparison.Ordinal);
+                var subst = name.Substring(0, charLoc);
 
-                    DateTime date = DateTime.Now;
-                    var didParse = DateTime.TryParseExact(subst.ToCharArray(), "dd-MM-yyyy".ToCharArray(), CultureInfo.InvariantCulture, DateTimeStyles.None, out date);
-                    if (didParse == false) continue;
-                    if(date < minDate)
-                    {
-                        try
-                        {
-                            File.Delete(file);
-                        }
-                        catch (Exception ex)
-                        {
-                            App.Logger.Warning(ex, "Couldn't delete log file");
-                            continue;
-                        }
-                    }
+                DateTime date = DateTime.Now; //need for the 'out' in the next line
+                var didParse = DateTime.TryParseExact(subst.ToCharArray(), "dd-MM-yyyy".ToCharArray(), CultureInfo.InvariantCulture, DateTimeStyles.None, out date);
+                if (didParse == false) continue;
+                if (date >= minDate) continue;
+                try
+                {
+                    File.Delete(file);
+                }
+                catch (Exception ex)
+                {
+                    App.Logger.Warning(ex, "Couldn't delete log file");
                 }
             }
-            
+
         }
 
         

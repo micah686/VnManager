@@ -587,7 +587,7 @@ namespace VnManager.MetadataProviders.Vndb
                     }
 
                     dbTags.Upsert(tagsToAdd);
-
+                    //remove any deleted tags
                     IEnumerable<int> idsToDelete = prevEntry.Except(tagsToAdd).Select(x => x.Index);
                     dbTags.DeleteMany(x => idsToDelete.Contains(x.Index));
                 }
@@ -596,6 +596,44 @@ namespace VnManager.MetadataProviders.Vndb
             catch (Exception ex)
             {
                 App.Logger.Error(ex, "An error happened while getting/saving the tag dump");
+                throw;
+            }
+        }
+
+        public async Task GetAndSaveTraitDump()
+        {
+            try
+            {
+                using (var db = new LiteDatabase(App.DatabasePath))
+                {
+                    var dbTraits = db.GetCollection<VnTraitData>("vntraitdump");
+                    List<Trait> traitDump = (await VndbUtils.GetTraitsDumpAsync()).ToList();
+                    List<VnTraitData> traitsToAdd = new List<VnTraitData>();
+                    var prevEntry = dbTraits.Query().ToList();
+                    foreach (var item in traitDump)
+                    {
+                        var entry = prevEntry.FirstOrDefault(x => x.TraitId == item.Id) ?? new VnTraitData();
+                        entry.TraitId = item.Id;
+                        entry.Name = item.Name;
+                        entry.Description = item.Description;
+                        entry.IsMeta = item.IsMeta;
+                        //entry.IsSearchable = item.IsSearchable;
+                        //entry.IsApplicable = item.IsApplicable;
+                        entry.Characters = item.Characters;
+                        entry.Aliases = CsvConverter.ConvertToCsv(item.Aliases);
+                        entry.Parents = item.Parents.ToArray();
+                        traitsToAdd.Add(entry);
+                    }
+
+                    dbTraits.Upsert(traitsToAdd);
+
+                    IEnumerable<int> idsToDelete = prevEntry.Except(traitsToAdd).Select(x => x.Index);
+                    dbTraits.DeleteMany(x => idsToDelete.Contains(x.Index));
+                }
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error(ex, "An error happened while getting/saving the trait dump");
                 throw;
             }
         }

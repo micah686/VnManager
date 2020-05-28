@@ -39,8 +39,9 @@ namespace VnManager.ViewModels.UserControls
             
             //var foo = new GetVndbData();
             //foo.GetData(92);
-            DoThingAsync();
-
+            //DoThingAsync();
+            var foo2 = new SaveVnDataToDb();
+            foo2.GetAndSaveTraitDump();
 
 
 
