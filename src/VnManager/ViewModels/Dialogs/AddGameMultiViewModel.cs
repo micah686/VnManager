@@ -54,11 +54,9 @@ namespace VnManager.ViewModels.Dialogs
         public bool HideArgumentsError { get; private set; } = false;
         public bool HideIconError { get; private set; } = false;
 
-        private readonly IWindowManager _windowManager;
         private readonly IDialogService _dialogService;
         public AddGameMultiViewModel(IWindowManager windowManager, IModelValidator<AddGameMultiViewModel> validator, IDialogService dialogService) : base(validator)
         {
-            _windowManager = windowManager;
             _dialogService = dialogService;
         }
 

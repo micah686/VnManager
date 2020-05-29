@@ -18,7 +18,6 @@ namespace VnManager.ViewModels.UserControls
 
         private readonly IContainer _container;
         private readonly IWindowManager _windowManager;
-        private readonly IDialogService _dialogService;
 
         public static MainGridViewModel Instance { get; private set; }
 
@@ -27,7 +26,6 @@ namespace VnManager.ViewModels.UserControls
             Instance = this;
             _container = container;
             _windowManager = windowManager;
-            _dialogService = dialogService;
 
             TopInfoBarPage = _container.Get<TopInfoBarViewModel>();           
             LastPlayedPage = _container.Get<LastPlayedViewModel>();

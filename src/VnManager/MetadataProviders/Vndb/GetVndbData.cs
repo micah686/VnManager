@@ -21,6 +21,7 @@ namespace VnManager.MetadataProviders.Vndb
     {
         private Stopwatch stopwatch = new Stopwatch();
 		private TimeSpan maxTime = TimeSpan.FromMinutes(3);
+        private bool didErrorOccur = false;
 		public async Task GetData(uint id)
         {
 			uint vnid = id;
@@ -42,7 +43,7 @@ namespace VnManager.MetadataProviders.Vndb
 					stopwatch.Reset();
 
 					
-					if(visualNovel == null || releases == null || producers == null || characters == null || staff == null)
+					if(didErrorOccur)
 					{
 						App.Logger.Error("Failed to get all of the Vndb Info from the API, one of the items was null");
 						//stop the progressbar here, and force it to show an error icon
@@ -83,6 +84,7 @@ namespace VnManager.MetadataProviders.Vndb
                         break;
                     case null:
                         HandleVndbErrors.HandleErrors(client.GetLastError(), 0);
+                        didErrorOccur = true;
                         return null;
                     default:
                         return visualNovels.First();
@@ -112,6 +114,7 @@ namespace VnManager.MetadataProviders.Vndb
                         break;
                     case null:
                         HandleVndbErrors.HandleErrors(client.GetLastError(), 0);
+                        didErrorOccur = true;
                         return null;
                     default:
                     {
@@ -151,6 +154,7 @@ namespace VnManager.MetadataProviders.Vndb
                         break;
                     case null:
                         HandleVndbErrors.HandleErrors(client.GetLastError(), 0);
+                        didErrorOccur = true;
                         return null;
                     default:
                     {
@@ -189,7 +193,8 @@ namespace VnManager.MetadataProviders.Vndb
 				else if (producers == null)
 				{
 					HandleVndbErrors.HandleErrors(client.GetLastError(), 0);
-					return null;
+                    didErrorOccur = true;
+                    return null;
 				}
 				else
 				{
@@ -226,6 +231,7 @@ namespace VnManager.MetadataProviders.Vndb
                         break;
                     case null:
                         HandleVndbErrors.HandleErrors(client.GetLastError(), 0);
+                        didErrorOccur = true;
                         return null;
                     default:
                     {

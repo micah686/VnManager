@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text;
 using LiteDB;
@@ -12,6 +13,8 @@ using VnManager.Converters;
 using VnManager.MetadataProviders.Vndb;
 using VnManager.Models.Db.Vndb.Main;
 using System.Linq;
+using System.Reflection;
+using System.Resources;
 using System.Threading.Tasks;
 using VndbSharp;
 using VndbSharp.Models.Dumps;
@@ -48,9 +51,12 @@ namespace VnManager.ViewModels.UserControls
         }
 
 
-        private async Task DoThingAsync()
+        public void TestStrings()
         {
-
+            System.Threading.Thread.CurrentThread.CurrentCulture = new CultureInfo("ja-JP");
+            System.Threading.Thread.CurrentThread.CurrentUICulture = new CultureInfo("ja-JP");
+            var rm = new ResourceManager("VnManager.Strings.Resources", Assembly.GetExecutingAssembly());
+            var value = rm.GetString("TestProp");
         }
 
         public void CauseException()

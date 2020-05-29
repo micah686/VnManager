@@ -105,10 +105,7 @@ namespace VnManager
         private static ILogger _logger= LogManager.Logger;
         public static ILogger Logger
         {
-            get
-            {
-                return _logger == null ? LogManager.Logger : _logger;
-            }
+            get => _logger ?? LogManager.Logger;
             set
             {
                 if (!StartupLockout)
