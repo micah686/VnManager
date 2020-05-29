@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:res="clr-namespace:VnManager.Strings"
         xmlns:local="clr-namespace:VnManager.Views.Windows"
         xmlns:s="https://github.com/canton7/Stylet"
         xmlns:controls="clr-namespace:AdonisUI.Controls;assembly=AdonisUI"
@@ -11,7 +12,7 @@
         xmlns:mvd="https://github.com/fantasticfiasco/mvvm-dialogs"
         mvd:DialogServiceViews.IsRegistered="True"
         mc:Ignorable="d"
-        Title="Add Games for Collection" Height="450" Width="500" ResizeMode="NoResize">
+        Title="{x:Static res:Resources.AddGameCollectionTitle}" Height="450" Width="500" ResizeMode="NoResize">
     <Grid>
         <Grid Margin="10">
             <Grid.RowDefinitions>
@@ -39,9 +40,9 @@
                     </ListView.Resources>
                     <ListView.View>
                         <GridView>
-                            <GridViewColumn DisplayMemberBinding="{Binding Path=ExePath}" Header="Exe Path"/>
-                            <GridViewColumn DisplayMemberBinding="{Binding Path=IconPath}" Header="Icon Path"/>
-                            <GridViewColumn DisplayMemberBinding="{Binding Path=ArgumentsString}" Header="Arguments"/>
+                            <GridViewColumn DisplayMemberBinding="{Binding Path=ExePath}" Header="{x:Static res:Resources.ExePath}"/>
+                            <GridViewColumn DisplayMemberBinding="{Binding Path=IconPath}" Header="{x:Static res:Resources.IconPath}"/>
+                            <GridViewColumn DisplayMemberBinding="{Binding Path=ArgumentsString}" Header="{x:Static res:Resources.Arguments}"/>
                         </GridView>
                     </ListView.View>
                 </ListView>
@@ -68,8 +69,8 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
-                    <Button Grid.Column="0" Content="Add" Width="60" Height="30" Style="{DynamicResource {x:Static adonisUi:Styles.AccentButton}}" Command="{s:Action Add}"/>
-                    <Button Grid.Column="1" Content="Remove" Width="70" Height="25" Margin="10,0,0,0" Command="{s:Action Remove}"/>
+                    <Button Grid.Column="0" Content="{x:Static res:Resources.Add}" Width="60" Height="30" Style="{DynamicResource {x:Static adonisUi:Styles.AccentButton}}" Command="{s:Action Add}"/>
+                    <Button Grid.Column="1" Content="{x:Static res:Resources.Remove}" Width="70" Height="25" Margin="10,0,0,0" Command="{s:Action Remove}"/>
                 </Grid>
 
                 <Grid Grid.Row="1" Margin="0,10,0,0">
@@ -79,9 +80,9 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <TextBlock Text="Path:" Width="40"/>
+                    <TextBlock Text="{x:Static res:Resources.Path}" Width="40"/>
                 <TextBox Grid.Column="1" x:Name="txtExePath"  Width="300" IsReadOnly="True" IsReadOnlyCaretVisible="True"  Text="{Binding ExePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                <Button Grid.Column="2" Content="Browse" Margin="5,0,0,0" Command="{s:Action BrowseExePath}"/>
+                    <Button Grid.Column="2" Content="{x:Static res:Resources.Browse}" Margin="5,0,0,0" Command="{s:Action BrowseExePath}"/>
             </Grid>
 
             <Grid Grid.Row="2" Margin="0,10,0,0">
@@ -90,8 +91,8 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                    <CheckBox x:Name="chkEnableIcon" Grid.Column="0" Content="Enable Custom Icon" IsChecked="{Binding IsIconChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                    <CheckBox x:Name="chkEnableArgs" Grid.Column="1" Content="Enable Custom Arguments" Margin="10,0,0,0" IsChecked="{Binding IsArgsChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <CheckBox x:Name="chkEnableIcon" Grid.Column="0" Content="{x:Static res:Resources.EnableCustomIcon}" IsChecked="{Binding IsIconChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <CheckBox x:Name="chkEnableArgs" Grid.Column="1" Content="{x:Static res:Resources.EnableCustomArgs}" Margin="10,0,0,0" IsChecked="{Binding IsArgsChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
             </Grid>
 
             <Grid Grid.Row="3" Margin="0,10,0,0" IsEnabled="{Binding ElementName=chkEnableIcon, Path=IsChecked}">
@@ -100,9 +101,9 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Text="Icon:" Width="40"/>
+                    <TextBlock Text="{x:Static res:Resources.Icon}" Width="40"/>
                     <TextBox Grid.Column="1" x:Name="txtIconPath"  Width="300" IsReadOnly="True" IsReadOnlyCaretVisible="True" Text="{Binding IconPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                    <Button Grid.Column="2" Content="Browse" Margin="5,0,0,0" Command="{s:Action BrowseIconPath}"/>
+                    <Button Grid.Column="2" Content="{x:Static res:Resources.Browse}" Margin="5,0,0,0" Command="{s:Action BrowseIconPath}"/>
             </Grid>
 
             <Grid Grid.Row="4" Margin="0,10,0,0" IsEnabled="{Binding ElementName=chkEnableArgs, Path=IsChecked}">
@@ -111,7 +112,7 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                    <TextBlock Text="Arguments:" Width="70" Margin="0,2,0,0" IsEnabled="False" />
+                    <TextBlock Text="{x:Static res:Resources.Arguments}" Width="70" Margin="0,2,0,0" IsEnabled="False" />
                     <TextBox Grid.Column="1" MaxLength="300" Width="350" Text="{Binding ExeArguments, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
             </Grid>
 
@@ -124,8 +125,8 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <Button Content="Done" Grid.Column="0" Width="70"   Command="{s:Action Submit}"/>
-                <Button Content="Cancel" Grid.Column="1" Width="70"  Margin="15,0,0,0" Command="{s:Action Cancel}"/>
+                <Button Content="{x:Static res:Resources.Done}" Grid.Column="0" Width="70"   Command="{s:Action Submit}"/>
+                <Button Content="{x:Static res:Resources.Cancel}" Grid.Column="1" Width="70"  Margin="15,0,0,0" Command="{s:Action Cancel}"/>
 
             </Grid>
 

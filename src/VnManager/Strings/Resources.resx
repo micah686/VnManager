@@ -117,10 +117,187 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AddGameCollectionTitle" xml:space="preserve">
-    <value>Add Games for Collection</value>
+  <data name="Add" xml:space="preserve">
+    <value>Add</value>
   </data>
-  <data name="TestProp" xml:space="preserve">
-    <value>Hello</value>
+  <data name="AddGame" xml:space="preserve">
+    <value>Add Game</value>
+  </data>
+  <data name="AddGameCollectionTitle" xml:space="preserve">
+    <value>Add Games for Collection str</value>
+  </data>
+  <data name="AddGameCollectionTooltip" xml:space="preserve">
+    <value>There are multiple executables associated with a single ID</value>
+  </data>
+  <data name="AddGameFillInInfo" xml:space="preserve">
+    <value>Fill in the required information to add a visual novel to this program</value>
+  </data>
+  <data name="AddGameLauncherTooltip" xml:space="preserve">
+    <value>This executable has multiple game IDs associated with it</value>
+  </data>
+  <data name="AddGameNormalTooltip" xml:space="preserve">
+    <value>A single executable associated with a single ID</value>
+  </data>
+  <data name="ApplicationTitle" xml:space="preserve">
+    <value>VnManager</value>
+  </data>
+  <data name="Arguments" xml:space="preserve">
+    <value>Arguments:</value>
+  </data>
+  <data name="Browse" xml:space="preserve">
+    <value>Browse</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="Collection" xml:space="preserve">
+    <value>Collection</value>
+  </data>
+  <data name="DebugPageWarning1" xml:space="preserve">
+    <value>THIS PAGE SHOULD ONLY BE ABLE TO BE ACCESSED IF YOU ARE DEBUGGING THE PROGRAM FROM VISUAL STUDIO</value>
+  </data>
+  <data name="DebugPageWarning2" xml:space="preserve">
+    <value>IF YOU ARE SEEING THIS PAGE, AND YOU ARE NOT USING VISUAL STUDIO TO DEBUG, DO NOT CLICK ON ANY BUTTON</value>
+  </data>
+  <data name="DebugPageWarning3" xml:space="preserve">
+    <value>IF YOU ARE NOT DEBUGGING, CREATE A TICKET ON GITHUB STATING: "Able to access Debug page while in Release"</value>
+  </data>
+  <data name="Done" xml:space="preserve">
+    <value>Done</value>
+  </data>
+  <data name="EnableCustomArgs" xml:space="preserve">
+    <value>Enable Custom Arguments</value>
+  </data>
+  <data name="EnableCustomIcon" xml:space="preserve">
+    <value>Enable Custom Icon</value>
+  </data>
+  <data name="EnableNsfwContent" xml:space="preserve">
+    <value>Enable Nsfw Content</value>
+  </data>
+  <data name="EnableNsfwDiskDisabledTooltip" xml:space="preserve">
+    <value>If disabled, Nsfw images will be saved as extensionless Base64 files that will not be visible in photo viewers.</value>
+  </data>
+  <data name="EnableNsfwDiskEnabledTooltip" xml:space="preserve">
+    <value>If enabled, Nsfw images will be saved as .jpg and .png that will be visible in photo viewers.</value>
+  </data>
+  <data name="EnableNsfwImagesOnDisk" xml:space="preserve">
+    <value>Enable Nsfw Images on Disk</value>
+  </data>
+  <data name="ExePath" xml:space="preserve">
+    <value>Exe Path</value>
+  </data>
+  <data name="ExeType" xml:space="preserve">
+    <value>ExeType:</value>
+  </data>
+  <data name="Icon" xml:space="preserve">
+    <value>Icon:</value>
+  </data>
+  <data name="IconPath" xml:space="preserve">
+    <value>Icon Path</value>
+  </data>
+  <data name="Id" xml:space="preserve">
+    <value>Id</value>
+  </data>
+  <data name="Launcher" xml:space="preserve">
+    <value>Launcher</value>
+  </data>
+  <data name="Major" xml:space="preserve">
+    <value>Major</value>
+  </data>
+  <data name="ManageExecutables" xml:space="preserve">
+    <value>Manage Executables</value>
+  </data>
+  <data name="Minor" xml:space="preserve">
+    <value>Minor</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="None" xml:space="preserve">
+    <value>None</value>
+  </data>
+  <data name="Normal" xml:space="preserve">
+    <value>Normal</value>
+  </data>
+  <data name="NoSource" xml:space="preserve">
+    <value>No Source</value>
+  </data>
+  <data name="Path" xml:space="preserve">
+    <value>Path:</value>
+  </data>
+  <data name="Remove" xml:space="preserve">
+    <value>Remove</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="SaveNsfwImagesInDatabase" xml:space="preserve">
+    <value>Save Nsfw Images in Database</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="Source" xml:space="preserve">
+    <value>Source:</value>
+  </data>
+  <data name="Submit" xml:space="preserve">
+    <value>Submit</value>
+  </data>
+  <data name="ValidationArgumentsEmpty" xml:space="preserve">
+    <value>Arguments cannot be empty</value>
+  </data>
+  <data name="ValidationArgumentsIllegalChars" xml:space="preserve">
+    <value>Illegal characters detected</value>
+  </data>
+  <data name="ValidationExeNotValid" xml:space="preserve">
+    <value>Not a valid Executable</value>
+  </data>
+  <data name="ValidationExePathEmpty" xml:space="preserve">
+    <value>Exe Path cannot be empty</value>
+  </data>
+  <data name="ValidationExePathNotValid" xml:space="preserve">
+    <value>Not a valid path to exe</value>
+  </data>
+  <data name="ValidationIconPathEmpty" xml:space="preserve">
+    <value>Icon Path cannot be empty</value>
+  </data>
+  <data name="ValidationIconPathNotValid" xml:space="preserve">
+    <value>Not a valid path to icon</value>
+  </data>
+  <data name="ValidationVnIdAboveMax" xml:space="preserve">
+    <value>ID entered is above maximum Vndb ID</value>
+  </data>
+  <data name="ValidationVnIdDoesNotExist" xml:space="preserve">
+    <value>The Vndb ID entered has been removed or does not exist</value>
+  </data>
+  <data name="ValidationVnIdNotAboveZero" xml:space="preserve">
+    <value>Vndb ID must be greater than 0</value>
+  </data>
+  <data name="ValidationVnNameEmpty" xml:space="preserve">
+    <value>Vn Name cannot be empty</value>
+  </data>
+  <data name="ValidationVnNameSelection" xml:space="preserve">
+    <value>A selection from the list of VN names is required</value>
+  </data>
+  <data name="Vndb" xml:space="preserve">
+    <value>Vndb</value>
+  </data>
+  <data name="VndbIdOrName" xml:space="preserve">
+    <value>Vndb Id or Name:</value>
+  </data>
+  <data name="VndbSpoilerLevel" xml:space="preserve">
+    <value>VnDb Spoiler Level</value>
+  </data>
+  <data name="VnId" xml:space="preserve">
+    <value>Vn Id:</value>
+  </data>
+  <data name="VnName" xml:space="preserve">
+    <value>Vn Name:</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Yes</value>
   </data>
 </root>

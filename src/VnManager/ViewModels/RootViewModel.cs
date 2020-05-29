@@ -3,6 +3,8 @@ using Stylet;
 using StyletIoC;
 using System;
 using System.Drawing;
+using System.Reflection;
+using System.Resources;
 using System.Windows;
 using System.Windows.Media;
 using VnManager.ViewModels.Dialogs;
@@ -13,7 +15,7 @@ namespace VnManager.ViewModels
 {
     public class RootViewModel: Conductor<Screen>
     {
-
+        private static readonly ResourceManager Rm = new ResourceManager("VnManager.Strings.Resources", Assembly.GetExecutingAssembly());
         public StatusBarViewModel StatusBarPage { get; set; }
 
         private readonly IContainer _container;
@@ -21,7 +23,7 @@ namespace VnManager.ViewModels
         private int _windowButtonPressedCounter = 0;
 
         public static RootViewModel Instance { get; private set; }
-        public string WindowTitle { get; } = string.Format($"VnManager {App.VersionString}");
+        public string WindowTitle { get; } = string.Format($"{Rm.GetString("ApplicationTitle")} {App.VersionString}");
 
         #region SettingsPressed
         private bool _isSettingsPressed;

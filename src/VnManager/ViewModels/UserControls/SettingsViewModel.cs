@@ -10,18 +10,21 @@ using VnManager.Models.Settings;
 using System.IO;
 using VnManager.Helpers;
 using System.Linq;
+using System.Reflection;
+using System.Resources;
 
 namespace VnManager.ViewModels.UserControls
 {
     public class SettingsViewModel :Screen
     {
+        private static readonly ResourceManager Rm = new ResourceManager("VnManager.Strings.Resources", Assembly.GetExecutingAssembly());
         private const string configFile = @"\config\config.xml";
         public string Theme { get; set; } = "DarkTheme";
         public bool NsfwEnabled { get; set; }
         public bool NsfwContentSavedVisible { get; set; }
 
         #region SpoilerList
-        public List<string> SpoilerList { get; set; } = new List<string>(new string[] { "None", "Minor", "Major" });
+        public List<string> SpoilerList { get; set; } = new List<string>(new string[] { Rm.GetString("None"), Rm.GetString("Minor"), Rm.GetString("Major") });
         public string SpoilerString { get; set; }
         public int SpoilerIndex { get; set; } = 0;
         #endregion

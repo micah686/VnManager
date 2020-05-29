@@ -2,7 +2,8 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:res="clr-namespace:VnManager.Strings"
              xmlns:local="clr-namespace:VnManager.Views.UserControls"
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:s="https://github.com/canton7/Stylet"
@@ -17,14 +18,14 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <TextBlock Grid.Row="0" Margin="5,0,0,0" Text="Settings" FontSize="18"/>
+        <TextBlock Grid.Row="0" Margin="5,0,0,0" Text="{x:Static res:Resources.Settings}" FontSize="18"/>
 
         <Grid Grid.Row="1" Margin="5,10,0,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="Enable Nsfw Content"/>
+            <TextBlock Text="{x:Static res:Resources.EnableNsfwContent}"/>
             <CheckBox Grid.Column="1" Margin="8,0,0,0" Content="Yes"/>
         </Grid>
 
@@ -34,13 +35,13 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0" Text="Enable Nsfw Images on Disk"/>
+            <TextBlock Grid.Column="0" Text="{x:Static res:Resources.EnableNsfwImagesOnDisk}"/>
             <iconPacks:PackIconMaterial Grid.Column="1" Margin="5,0,0,0" Kind="{x:Static iconPacks:PackIconMaterialKind.HelpCircleOutline}"  
                        Height="14" Width="14">
                 <iconPacks:PackIconMaterial.ToolTip>
                     <StackPanel>
-                        <TextBlock Text="If enabled, Nsfw images will be saved as .jpg and .png that will be visible in photo viewers."/>
-                        <TextBlock Text="If disabled, Nsfw images will be saved as extensionless Base64 files that will not be visible in photo viewers."/>
+                        <TextBlock Text="{x:Static res:Resources.EnableNsfwDiskEnabledTooltip}"/>
+                        <TextBlock Text="{x:Static res:Resources.EnableNsfwDiskDisabledTooltip}"/>
                     </StackPanel>
                 </iconPacks:PackIconMaterial.ToolTip>
             </iconPacks:PackIconMaterial>
@@ -53,11 +54,11 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0" Text="Vndb Spoiler Level"/>
+            <TextBlock Grid.Column="0" Text="{x:Static res:Resources.VndbSpoilerLevel}"/>
             <ComboBox Grid.Column="1" Margin="5,0,0,0" ItemsSource="{Binding SpoilerList}" SelectedItem="{Binding SpoilerString}" SelectedIndex="{Binding SpoilerIndex}"  Width="70"/>
         </Grid>
-        
-        <Button Grid.Row="4" Content="Save" Command="{s:Action SaveUserSettings}" Margin="10" Width="70"/>
+
+        <Button Grid.Row="4" Content="{x:Static res:Resources.Save}" Command="{s:Action SaveUserSettings}" Margin="10" Width="70"/>
 
 
     </Grid>

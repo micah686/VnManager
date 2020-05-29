@@ -2,7 +2,8 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:res="clr-namespace:VnManager.Strings"
              xmlns:local="clr-namespace:VnManager.Views.UserControls"
              xmlns:s="https://github.com/canton7/Stylet"
              mc:Ignorable="d" 
@@ -12,13 +13,11 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <TextBlock Grid.Row="0" Foreground="Red" FontWeight="Bold" FontSize="15">
-            THIS PAGE SHOULD ONLY BE ABLE TO BE ACCESSED IF YOU ARE DEBUGGING THE PROGRAM FROM VISUAL STUDIO
-            <LineBreak/>
-            IF YOU ARE SEEING THIS PAGE, AND YOU ARE NOT USING VISUAL STUDIO TO DEBUG, DO NOT CLICK ON ANY BUTTON
-            <LineBreak/>
-            IF YOU ARE NOT DEBUGGING, CREATE A TICKET ON GITHUB STATING: "Able to access Debug page while in Release"
-        </TextBlock>
+        <StackPanel Grid.Row="0">
+            <TextBlock Foreground="Red" FontWeight="Bold" FontSize="16" Text="{x:Static res:Resources.DebugPageWarning1}"/>
+            <TextBlock Foreground="Red" FontWeight="Bold" FontSize="16" Text="{x:Static res:Resources.DebugPageWarning2}"/>
+            <TextBlock Foreground="Red" FontWeight="Bold" FontSize="16" Text="{x:Static res:Resources.DebugPageWarning3}"/>
+        </StackPanel>
 
         <StackPanel Grid.Row="1" HorizontalAlignment="Left">
             <Button Content="WriteLogFile" Command="{s:Action WriteLog}"/>

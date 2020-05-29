@@ -55,8 +55,8 @@ namespace VnManager.ViewModels.UserControls
         {
             System.Threading.Thread.CurrentThread.CurrentCulture = new CultureInfo("ja-JP");
             System.Threading.Thread.CurrentThread.CurrentUICulture = new CultureInfo("ja-JP");
-            var rm = new ResourceManager("VnManager.Strings.Resources", Assembly.GetExecutingAssembly());
-            var value = rm.GetString("TestProp");
+            ResourceManager rm = new ResourceManager("VnManager.Strings.Resources", Assembly.GetExecutingAssembly());
+            var value = rm.GetString("AddGameCollectionTitle");
         }
 
         public void CauseException()

@@ -4,6 +4,8 @@ using MvvmDialogs.FrameworkDialogs.OpenFile;
 using Stylet;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
+using System.Resources;
 using System.Text;
 using VnManager.Helpers;
 
@@ -150,24 +152,25 @@ namespace VnManager.ViewModels.Dialogs
     {
         public AddGameMultiViewModelValidator()
         {
+            var rm = new ResourceManager("VnManager.Strings.Resources", Assembly.GetExecutingAssembly());
             RuleFor(x => x.ExePath).Cascade(CascadeMode.StopOnFirstFailure)
-               .NotEmpty().Unless(x => x.ShowValidationErrors == false).WithMessage("Exe Path cannot be empty")
-               .Must(ValidateFiles.EndsWithExe).Unless(x => x.ShowValidationErrors == false).WithMessage("Not a valid path to exe")
-               .Must(ValidateFiles.ValidateExe).Unless(x => x.ShowValidationErrors == false).WithMessage("Not a valid Executable");
+               .NotEmpty().Unless(x => x.ShowValidationErrors == false).WithMessage(rm.GetString("ValidationExePathEmpty"))
+               .Must(ValidateFiles.EndsWithExe).Unless(x => x.ShowValidationErrors == false).WithMessage(rm.GetString("ValidationExePathNotValid"))
+               .Must(ValidateFiles.ValidateExe).Unless(x => x.ShowValidationErrors == false).WithMessage(rm.GetString("ValidationExeNotValid"));
                         
             When(x => x.IsIconChecked == true, () =>
             {
                 RuleFor(x => x.IconPath).Cascade(CascadeMode.StopOnFirstFailure)
-                    .NotEmpty().Unless(x => x.ShowValidationErrors == false && x.HideIconError == true).WithMessage("Icon Path cannot be empty")
-                    .Must(ValidateFiles.EndsWithIcoOrExe).Unless(x => x.ShowValidationErrors == false).WithMessage("Not a valid path to icon");
+                    .NotEmpty().Unless(x => x.ShowValidationErrors == false && x.HideIconError == true).WithMessage(rm.GetString("ValidationIconPathEmpty"))
+                    .Must(ValidateFiles.EndsWithIcoOrExe).Unless(x => x.ShowValidationErrors == false).WithMessage(rm.GetString("ValidationIconPathNotValid"));
 
             });
 
             When(x => x.IsArgsChecked == true, () =>
               {                  
                   RuleFor(x => x.ExeArguments).Cascade(CascadeMode.StopOnFirstFailure)
-                    .NotEmpty().Unless(x => x.ShowValidationErrors == false && x.HideArgumentsError == true).WithMessage("Arguments cannot be empty")
-                    .Must(ContainsIllegalCharacters).Unless(x => x.ShowValidationErrors == false).WithMessage("Illegal characters detected");
+                    .NotEmpty().Unless(x => x.ShowValidationErrors == false && x.HideArgumentsError == true).WithMessage(rm.GetString("ValidationArgumentsEmpty"))
+                    .Must(ContainsIllegalCharacters).Unless(x => x.ShowValidationErrors == false).WithMessage(rm.GetString("ValidationArgumentsIllegalChars"));
               });
                         
         }

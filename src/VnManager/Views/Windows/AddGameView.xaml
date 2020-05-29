@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vmw="clr-namespace:VnManager.ViewModels.Windows"
+        xmlns:res="clr-namespace:VnManager.Strings"
         xmlns:local="clr-namespace:VnManager.Views.Windows"
         xmlns:s="https://github.com/canton7/Stylet"
         xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
@@ -14,7 +15,7 @@
         xmlns:mvd="https://github.com/fantasticfiasco/mvvm-dialogs"
         mvd:DialogServiceViews.IsRegistered="True"
         mc:Ignorable="d"        
-        Title="Add Game" Height="400" Width="500" ResizeMode="NoResize">
+        Title="{x:Static res:Resources.AddGame}" Height="400" Width="500" ResizeMode="NoResize">
     <Grid>
         <Grid x:Name="AddVnRoot" Margin="15,10,10,10" MinWidth="200">
             <Grid.Resources>
@@ -33,10 +34,10 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <Label Grid.Column="0" Content="Source:" MinWidth="50"/>
+                <Label Grid.Column="0" Content="{x:Static res:Resources.Source}" MinWidth="50"/>
                 <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="5,0,0,0">
-                    <RadioButton x:Name="VndbSource" Content="Vndb"  Margin="0,0,5,0" IsChecked="{Binding SourceTypes, Mode=TwoWay, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Vndb}"/>
-                    <RadioButton x:Name="NoSource" Content="No Source" Margin="10,0,0,0" IsChecked="{Binding SourceTypes, Mode=TwoWay, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=NoSource}"/>
+                    <RadioButton x:Name="VndbSource" Content="{x:Static res:Resources.Vndb}"  Margin="0,0,5,0" IsChecked="{Binding SourceTypes, Mode=TwoWay, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Vndb}"/>
+                    <RadioButton x:Name="NoSource" Content="{x:Static res:Resources.NoSource}" Margin="10,0,0,0" IsChecked="{Binding SourceTypes, Mode=TwoWay, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=NoSource}"/>
                 </StackPanel>
             </Grid>
 
@@ -55,17 +56,17 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <TextBlock Grid.Row="0" Text="Fill in the required information to add a visual novel to this program" Margin="0,15,0,15"/>
+                <TextBlock Grid.Row="0" Text="{x:Static res:Resources.AddGameFillInInfo}" Margin="0,15,0,15"/>
 
                 <Grid  Grid.Row="1" Margin="0,0,0,15">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" Text="Vndb Id or Name:" Width="100" FontStyle="Normal"/>
+                    <TextBlock Grid.Column="0" Text="{x:Static res:Resources.VndbIdOrName}" Width="100" FontStyle="Normal"/>
                     <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="5,0,0,0" >
-                        <RadioButton x:Name="VnIdRadio" Content="Id" Margin="0,0,5,0"  IsChecked="True"/>
-                        <RadioButton x:Name="VnNameRadio" Content="Name" Margin="10,0,0,0" IsChecked="{Binding IsNameChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        <RadioButton x:Name="VnIdRadio" Content="{x:Static res:Resources.Id}" Margin="0,0,5,0"  IsChecked="True"/>
+                        <RadioButton x:Name="VnNameRadio" Content="{x:Static res:Resources.Name}" Margin="10,0,0,0" IsChecked="{Binding IsNameChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                     </StackPanel>
                 </Grid>
 
@@ -112,14 +113,14 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" Text="ExeType:"/>
+                    <TextBlock Grid.Column="0" Text="{x:Static res:Resources.ExeType}"/>
                     <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="5,0,0,0">
-                        <RadioButton x:Name="ExeNormalRadio" Content="Normal" Margin="5,0,0,0" IsChecked="{Binding ExeTypes, Mode=TwoWay, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Normal}"/>
-                        <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.HelpCircleOutline}" Margin="3,1,0,0" Height="14" Width="14" ToolTip="A single executable associated with a single ID"/>
-                        <RadioButton x:Name="ExeLauncherRadio" Content="Launcher" Margin="5,0,0,0" IsChecked="{Binding ExeTypes, Mode=TwoWay, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Launcher}"/>
-                        <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.HelpCircleOutline}" Margin="3,1,0,0" Height="14" Width="14" ToolTip="This executable has multiple game IDs associated with it"/>
-                        <RadioButton x:Name="ExeCollectionRadio" Content="Collection" Margin="5,0,0,0" IsChecked="{Binding ExeTypes, Mode=TwoWay, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Collection}" />
-                        <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.HelpCircleOutline}" Margin="3,1,0,0" Height="14" Width="14" ToolTip="There are multiple executables associated with a single ID"/>
+                        <RadioButton x:Name="ExeNormalRadio" Content="{x:Static res:Resources.Normal}" Margin="5,0,0,0" IsChecked="{Binding ExeTypes, Mode=TwoWay, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Normal}"/>
+                        <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.HelpCircleOutline}" Margin="3,1,0,0" Height="14" Width="14" ToolTip="{x:Static res:Resources.AddGameNormalTooltip}"/>
+                        <RadioButton x:Name="ExeLauncherRadio" Content="{x:Static res:Resources.Launcher}" Margin="5,0,0,0" IsChecked="{Binding ExeTypes, Mode=TwoWay, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Launcher}"/>
+                        <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.HelpCircleOutline}" Margin="3,1,0,0" Height="14" Width="14" ToolTip="{x:Static res:Resources.AddGameLauncherTooltip}"/>
+                        <RadioButton x:Name="ExeCollectionRadio" Content="{x:Static res:Resources.Collection}" Margin="5,0,0,0" IsChecked="{Binding ExeTypes, Mode=TwoWay, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Collection}" />
+                        <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.HelpCircleOutline}" Margin="3,1,0,0" Height="14" Width="14" ToolTip="{x:Static res:Resources.AddGameCollectionTooltip}"/>
                     </StackPanel>
                 </Grid>
 
@@ -144,12 +145,12 @@
                                 </Style.Triggers>
                             </Style>
                         </StackPanel.Style>
-                        <TextBlock Text="Path:" Width="40"/>
+                        <TextBlock Text="{x:Static res:Resources.Path}" Width="40"/>
                         <TextBox Grid.Column="1" x:Name="TextPath"  Width="300" IsReadOnly="True" IsReadOnlyCaretVisible="True" Text="{Binding ExePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                        <Button Grid.Column="2" Content="Browse" Margin="5,0,0,0" Command="{s:Action BrowseExe}"/>
+                        <Button Grid.Column="2" Content="{x:Static res:Resources.Browse}" Margin="5,0,0,0" Command="{s:Action BrowseExe}"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Visibility="{Binding IsChecked, ElementName=ExeCollectionRadio, Converter={StaticResource boolToVisConverter}}">
-                        <Button Content="Manage Executables" Width="150" Command="{s:Action ManageExes}"/>
+                        <Button Content="{x:Static res:Resources.ManageExecutables}" Width="150" Command="{s:Action ManageExes}"/>
                     </StackPanel>
 
                 </Grid>
@@ -159,9 +160,9 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <CheckBox Grid.Column="0" x:Name="chkCustomIco" Content="Custom Icon" Margin="10,0,0,0" IsChecked="{Binding IsIconChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                    <CheckBox Grid.Column="0" x:Name="chkCustomIco" Content="{x:Static res:Resources.EnableCustomIcon}" Margin="10,0,0,0" IsChecked="{Binding IsIconChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                               IsEnabled="{Binding IsNotExeCollection}"/>
-                    <CheckBox Grid.Column="1" x:Name="chkCustomArg" Content="Custom Arguments" Margin="10,0,0,0" IsChecked="{Binding IsArgsChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                    <CheckBox Grid.Column="1" x:Name="chkCustomArg" Content="{x:Static res:Resources.EnableCustomArgs}" Margin="10,0,0,0" IsChecked="{Binding IsArgsChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                               IsEnabled="{Binding IsNotExeCollection}"/>
                 </Grid>
 
@@ -176,9 +177,9 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Text="Icon:" Width="60" Margin="0,3,0,0"/>
+                    <TextBlock Text="{x:Static res:Resources.Icon}" Width="60" Margin="0,3,0,0"/>
                     <TextBox Grid.Column="1"  Width="300" IsReadOnly="True" IsReadOnlyCaretVisible="True" Text="{Binding IconPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                    <Button Grid.Column="2" Content="Browse" Margin="5,0,0,0" Command="{s:Action BrowseIcon}" />
+                    <Button Grid.Column="2" Content="{x:Static res:Resources.Browse}" Margin="5,0,0,0" Command="{s:Action BrowseIcon}" />
 
                 </Grid>
                 
@@ -193,7 +194,7 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Text="Arguments:" Width="70" Margin="0,2,0,0" IsEnabled="False"/>
+                    <TextBlock Text="{x:Static res:Resources.Arguments}" Width="70" Margin="0,2,0,0" IsEnabled="False"/>
                     <TextBox Grid.Column="1"  Width="350" MaxLength="300" Text="{Binding ExeArguments, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                              IsEnabled="{Binding IsNotExeCollection}"/>
 
@@ -206,8 +207,8 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <Button Width="100" Height="30" Content="Submit" Command="{s:Action Submit}" Style="{DynamicResource {x:Static adonisUi:Styles.AccentButton}}"/>
-                    <Button Width="85" Height="25" Grid.Column="1" Content="Cancel" Command="{s:Action Cancel}" Margin="10,0,0,0"/>
+                    <Button Width="100" Height="30" Content="{x:Static res:Resources.Submit}" Command="{s:Action Submit}" Style="{DynamicResource {x:Static adonisUi:Styles.AccentButton}}"/>
+                    <Button Width="85" Height="25" Grid.Column="1" Content="{x:Static res:Resources.Cancel}" Command="{s:Action Cancel}" Margin="10,0,0,0"/>
                 </Grid>
 
                 <!-- end of root -->

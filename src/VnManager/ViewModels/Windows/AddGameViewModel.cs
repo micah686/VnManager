@@ -8,6 +8,8 @@ using StyletIoC;
 using VnManager.ViewModels.Dialogs;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using System.Resources;
 using MvvmDialogs.FrameworkDialogs.OpenFile;
 using VnManager.Helpers;
 using System.Threading;
@@ -273,32 +275,33 @@ namespace VnManager.ViewModels.Windows
     {
         public AddGameViewModelValidator()
         {
-
+            var rm = new ResourceManager("VnManager.Strings.Resources", Assembly.GetExecutingAssembly());
             RuleFor(x => x.VnId).Cascade(CascadeMode.StopOnFirstFailure)
-                .NotEmpty().Unless(x => x.SourceTypes != AddGameSourceTypes.Vndb).When(x => x.IsNameChecked == false).WithMessage("Vndb ID must be greater than 0")
-                .MustAsync(IsNotAboveMaxId).Unless(x => x.SourceTypes != AddGameSourceTypes.Vndb).When(x => x.IsNameChecked == false).WithMessage("ID entered is above maximum Vndb ID")
-                .MustAsync(IsNotDeletedVn).Unless(x => x.SourceTypes != AddGameSourceTypes.Vndb).When(x => x.IsNameChecked == false).WithMessage("The Vndb ID entered has been removed or does not exist");
+                .NotEmpty().Unless(x => x.SourceTypes != AddGameSourceTypes.Vndb).When(x => x.IsNameChecked == false).WithMessage(rm.GetString("ValidationVnIdNotAboveZero"))
+                .MustAsync(IsNotAboveMaxId).Unless(x => x.SourceTypes != AddGameSourceTypes.Vndb).When(x => x.IsNameChecked == false).WithMessage(rm.GetString("ValidationVnIdAboveMax"))
+                .MustAsync(IsNotDeletedVn).Unless(x => x.SourceTypes != AddGameSourceTypes.Vndb).When(x => x.IsNameChecked == false).WithMessage(rm.GetString("ValidationVnIdDoesNotExist"));
 
             When(x => x.IsNameChecked == true, () =>
             {
-                RuleFor(x => x.CanChangeVnName).NotEqual(true).Unless(x => x.SourceTypes != AddGameSourceTypes.Vndb).WithMessage("A selection from the list of VN names is required");
-                RuleFor(x => x.VnName).NotEmpty().Unless(x => x.SourceTypes != AddGameSourceTypes.Vndb).When(x => x.CanChangeVnName ==false).WithMessage("Vn Name cannot be empty");
+                RuleFor(x => x.CanChangeVnName).NotEqual(true).Unless(x => x.SourceTypes != AddGameSourceTypes.Vndb).WithMessage(rm.GetString("ValidationVnNameSelection"));
+                RuleFor(x => x.VnName).NotEmpty().Unless(x => x.SourceTypes != AddGameSourceTypes.Vndb).When(x => x.CanChangeVnName ==false).WithMessage(rm.GetString("ValidationVnNameEmpty"));
             });
 
 
             RuleFor(x => x.ExePath).Cascade(CascadeMode.StopOnFirstFailure)
-                .NotEmpty().WithMessage("Exe Path cannot be empty")
-                .Must(ValidateFiles.EndsWithExe).WithMessage("Not a valid path to exe")
-                .Must(ValidateFiles.ValidateExe).WithMessage("Not a valid Executable");
+                .NotEmpty().WithMessage(rm.GetString("ValidationExePathEmpty"))
+                .Must(ValidateFiles.EndsWithExe).WithMessage(rm.GetString("ValidationExePathNotValid"))
+                .Must(ValidateFiles.ValidateExe).WithMessage(rm.GetString("ValidationExeNotValid"));
 
 
             RuleFor(x => x.IconPath).Cascade(CascadeMode.StopOnFirstFailure)
-                .NotEmpty().When(x => x.IsIconChecked == true).Unless(x => x.HideIconError == true).WithMessage("Icon path cannot be empty")
-                .Must(ValidateFiles.EndsWithIcoOrExe).When(x => x.IsIconChecked == true).Unless(x => x.HideIconError == true).WithMessage("Not a valid path to icon");
+                .NotEmpty().When(x => x.IsIconChecked == true).Unless(x => x.HideIconError == true).WithMessage(rm.GetString("ValidationIconPathEmpty"))
+                .Must(ValidateFiles.EndsWithIcoOrExe).When(x => x.IsIconChecked == true).Unless(x => x.HideIconError == true).WithMessage(rm.GetString("ValidationIconPathNotValid"));
 
             RuleFor(x => x.ExeArguments).Cascade(CascadeMode.StopOnFirstFailure)
-                .NotEmpty().When(x => x.IsArgsChecked == true && x.ExeArguments == "").Unless(x => x.HideArgumentsError == true).WithMessage("Arguments cannot be empty")
-                .Must(AddGameMultiViewModelValidator.ContainsIllegalCharacters).When(x => x.IsArgsChecked == true && x.ExeArguments == "").Unless(x => x.HideArgumentsError == true).WithMessage("Illegal characters detected");
+                .NotEmpty().When(x => x.IsArgsChecked == true && x.ExeArguments == "").Unless(x => x.HideArgumentsError == true).WithMessage(rm.GetString("ValidationArgumentsEmpty"))
+                .Must(AddGameMultiViewModelValidator.ContainsIllegalCharacters).When(x => x.IsArgsChecked == true && x.ExeArguments == "")
+                        .Unless(x => x.HideArgumentsError == true).WithMessage(rm.GetString("ValidationArgumentsIllegalChars"));
 
         }
 
@@ -370,10 +373,11 @@ namespace VnManager.ViewModels.Windows
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            var rm = new ResourceManager("VnManager.Strings.Resources", Assembly.GetExecutingAssembly());
             if (value != null && (bool)value)
-                return "Vn Name:";
+                return rm.GetString("VnName");
             else
-                return "Vn ID:";
+                return rm.GetString("VnId");
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
