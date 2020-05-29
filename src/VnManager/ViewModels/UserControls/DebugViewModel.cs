@@ -65,6 +65,6 @@ namespace VnManager.ViewModels.UserControls
         }
 
         [DllImport("kernel32.dll")]
-        public static extern void RaiseException(uint dwExceptionCode, uint dwExceptionFlags, uint nNumberOfArguments, IntPtr lpArguments);
+        internal static extern void RaiseException(uint dwExceptionCode, uint dwExceptionFlags, uint nNumberOfArguments, IntPtr lpArguments);
     }
 }

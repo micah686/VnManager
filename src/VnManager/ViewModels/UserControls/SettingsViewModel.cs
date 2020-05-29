@@ -2,6 +2,7 @@
 using StyletIoC;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 using VndbSharp.Models.Common;
 using System.Xml;
@@ -24,7 +25,7 @@ namespace VnManager.ViewModels.UserControls
         public bool NsfwContentSavedVisible { get; set; }
 
         #region SpoilerList
-        public List<string> SpoilerList { get; set; } = new List<string>(new string[] { Rm.GetString("None"), Rm.GetString("Minor"), Rm.GetString("Major") });
+        public Collection<string> SpoilerList { get;} = new Collection<string>(new string[] { Rm.GetString("None"), Rm.GetString("Minor"), Rm.GetString("Major") });
         public string SpoilerString { get; set; }
         public int SpoilerIndex { get; set; } = 0;
         #endregion
@@ -42,8 +43,7 @@ namespace VnManager.ViewModels.UserControls
 
         public void SaveUserSettings()
         {
-            SpoilerLevel spoiler;
-            Enum.TryParse(SpoilerString, out spoiler);
+            Enum.TryParse(SpoilerString, out SpoilerLevel spoiler);
             UserSettingsVndb vndb = new UserSettingsVndb
             {
                 Spoiler = spoiler

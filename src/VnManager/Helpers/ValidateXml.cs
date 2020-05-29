@@ -23,7 +23,10 @@ namespace VnManager.Helpers
             {
                 try
                 {
-                    while (xmlReader.Read()) { }                    
+                    while (xmlReader.Read())
+                    {
+                        //intentionally left blank
+                    }                    
                     return true;
                 }
                 catch (XmlException)

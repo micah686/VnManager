@@ -5,7 +5,7 @@ using System.Text;
 
 namespace VnManager.Converters
 {
-    public class CsvConverter
+    public static class CsvConverter
     {
         public static string ConvertToCsv(ReadOnlyCollection<string> input)
         {

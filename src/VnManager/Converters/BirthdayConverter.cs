@@ -6,7 +6,7 @@ using VnManager.Helpers;
 
 namespace VnManager.Converters
 {
-    public class BirthdayConverter
+    public static class BirthdayConverter
     {
         public static string ConvertBirthday(SimpleDate birthday)
         {
