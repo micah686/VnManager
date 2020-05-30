@@ -79,7 +79,7 @@ namespace VnManager.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add Games for Collection str.
+        ///   Looks up a localized string similar to Add Games for Collection.
         /// </summary>
         public static string AddGameCollectionTitle {
             get {
@@ -255,6 +255,15 @@ namespace VnManager.Strings {
         public static string EnableNsfwImagesOnDisk {
             get {
                 return ResourceManager.GetString("EnableNsfwImagesOnDisk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This Exe already exists in the database.
+        /// </summary>
+        public static string ExeAlreadyExistsInDb {
+            get {
+                return ResourceManager.GetString("ExeAlreadyExistsInDb", resourceCulture);
             }
         }
         
@@ -588,6 +597,15 @@ namespace VnManager.Strings {
         public static string VnId {
             get {
                 return ResourceManager.GetString("VnId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This Vndb ID already exists in the database.
+        /// </summary>
+        public static string VnIdAlreadyExistsInDb {
+            get {
+                return ResourceManager.GetString("VnIdAlreadyExistsInDb", resourceCulture);
             }
         }
         

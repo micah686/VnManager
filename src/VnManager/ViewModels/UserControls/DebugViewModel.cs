@@ -18,7 +18,9 @@ using System.Resources;
 using System.Threading.Tasks;
 using VndbSharp;
 using VndbSharp.Models.Dumps;
+using VnManager.Models.Db.User;
 using VnManager.Models.Db.Vndb.TagTrait;
+using VnManager.ViewModels.Windows;
 
 
 namespace VnManager.ViewModels.UserControls
@@ -50,6 +52,26 @@ namespace VnManager.ViewModels.UserControls
 
         }
 
+
+        public void AddUserData()
+        {
+            using (var db = new LiteDatabase(App.DatabasePath))
+            {
+                var dbUserData = db.GetCollection<UserDataGames>("UserData_Games");
+                var entry = new UserDataGames();
+                entry.SourceType = AddGameSourceTypes.Vndb;
+                entry.ExeType = ExeTypesEnum.Launcher;
+                entry.Id = Guid.NewGuid();
+                entry.GameId = new Random().Next();
+                entry.LastPlayed = DateTime.UtcNow;
+                entry.PlayTime = TimeSpan.FromDays(3.5);
+                entry.ExePath = @"C:\test.exe";
+                entry.IconPath = @"C:\test.ico";
+                entry.Arguments = "- quiet";
+                dbUserData.Insert(entry);
+
+            }
+        }
 
         public void TestStrings()
         {

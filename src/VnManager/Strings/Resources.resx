@@ -124,7 +124,7 @@
     <value>Add Game</value>
   </data>
   <data name="AddGameCollectionTitle" xml:space="preserve">
-    <value>Add Games for Collection str</value>
+    <value>Add Games for Collection</value>
   </data>
   <data name="AddGameCollectionTooltip" xml:space="preserve">
     <value>There are multiple executables associated with a single ID</value>
@@ -182,6 +182,9 @@
   </data>
   <data name="EnableNsfwImagesOnDisk" xml:space="preserve">
     <value>Enable Nsfw Images on Disk</value>
+  </data>
+  <data name="ExeAlreadyExistsInDb" xml:space="preserve">
+    <value>This Exe already exists in the database</value>
   </data>
   <data name="ExePath" xml:space="preserve">
     <value>Exe Path</value>
@@ -293,6 +296,9 @@
   </data>
   <data name="VnId" xml:space="preserve">
     <value>Vn Id:</value>
+  </data>
+  <data name="VnIdAlreadyExistsInDb" xml:space="preserve">
+    <value>This Vndb ID already exists in the database</value>
   </data>
   <data name="VnName" xml:space="preserve">
     <value>Vn Name:</value>

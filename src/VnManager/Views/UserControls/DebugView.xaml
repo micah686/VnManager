@@ -24,6 +24,7 @@
             <Button Content="CauseCrash" Command="{s:Action CauseException}"/>
             <Button Content="TestVndbGet" Command="{s:Action TestVndbGet}"/>
             <Button Content="TestStrings" Command="{s:Action TestStrings}"/>
+            <Button Content="AddUserData" Command="{s:Action AddUserData}"/>
         </StackPanel>
 
     </Grid>
