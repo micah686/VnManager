@@ -272,7 +272,7 @@ namespace VnManager.ViewModels.Windows
             bool result = validator.Validate(this).IsValid;
             if(result == true)
             {
-                this.RequestClose();
+                this.RequestClose(true);
             }
         }
 

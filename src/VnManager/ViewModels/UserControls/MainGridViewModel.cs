@@ -37,18 +37,5 @@ namespace VnManager.ViewModels.UserControls
         }
 
 
-        public void Click()
-        {
-
-            var multi = _container.Get<AddGameViewModel>();
-            var test1 = _windowManager.ShowDialog(multi).Value;
-            if (test1 == true)
-            {
-                //var foo1 = multi.GameCollection;
-                //multi.Remove();
-            }
-        }
-
-
     }
 }

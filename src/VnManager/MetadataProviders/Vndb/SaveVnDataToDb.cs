@@ -14,21 +14,45 @@ using VndbSharp.Models.Release;
 using VndbSharp.Models.Staff;
 using VndbSharp.Models.VisualNovel;
 using VnManager.Converters;
+using VnManager.Models;
+using VnManager.Models.Db.User;
 using VnManager.Models.Db.Vndb.Character;
 using VnManager.Models.Db.Vndb.Main;
 using VnManager.Models.Db.Vndb.Producer;
 using VnManager.Models.Db.Vndb.Release;
 using VnManager.Models.Db.Vndb.Staff;
 using VnManager.Models.Db.Vndb.TagTrait;
+using VnManager.ViewModels.Windows;
 
 namespace VnManager.MetadataProviders.Vndb
 {
     public class SaveVnDataToDb
     {
 
-        public void SortVnInfo()
+        public async Task SortVnInfo(AddItemDbModel entry, VisualNovel vn, List<Release>rel,List<Producer> prod, List<Character> character, List<Staff> staff)
         {
             //sort out info like collection type, ift's already been added,...
+
+            switch (entry.SourceType)
+            {
+                case AddGameSourceTypes.NoSource:
+                    SaveUserData(entry);
+                    break;
+                case AddGameSourceTypes.Vndb:
+                    SaveVnInfo(vn);
+                    SaveVnCharacters(character, vn.Id);
+                    SaveVnReleases(rel);
+                    SaveProducers(prod);
+                    SaveStaff(staff, (int)vn.Id);
+                    SaveUserData(entry);
+                    await GetAndSaveTagDump();
+                    await GetAndSaveTraitDump();
+                    
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
         }
 
 
@@ -666,7 +690,48 @@ namespace VnManager.MetadataProviders.Vndb
         }
         #endregion
 
+        #region UserData
 
+        private void SaveUserData(AddItemDbModel data)
+        {
+            using (var db = new LiteDatabase(App.DatabasePath))
+            {
+                var dbUserData = db.GetCollection<UserDataGames>("UserData_Games");
+                List<UserDataGames> gamesList = new List<UserDataGames>();
+                var entry = new UserDataGames();
+                if (data.IsCollectionEnabled)
+                {
+                    foreach (var item in data.ExeCollection)
+                    {
+                        entry.ExePath = item.ExePath;
+                        entry.IconPath = item.IconPath;
+                        entry.Arguments = item.ArgumentsString;
+                        entry.SourceType = data.SourceType;
+                        entry.Id = Guid.NewGuid();
+                        entry.GameId = data.GameId;
+                        entry.LastPlayed = DateTime.UtcNow;
+                        entry.PlayTime = TimeSpan.Zero;
+                        gamesList.Add(entry);
+                    }
+                }
+                else
+                {
+                    entry.SourceType = data.SourceType;
+                    entry.Id = Guid.NewGuid();
+                    entry.GameId = data.GameId;
+                    entry.LastPlayed = DateTime.UtcNow;
+                    entry.PlayTime = TimeSpan.Zero;
+                    entry.ExePath = data.ExePath;
+                    entry.IconPath = data.IconPath;
+                    entry.Arguments = data.ExeArguments;
+                    gamesList.Add(entry);
+                }
+                dbUserData.Insert(gamesList);
+            }
+        }
+        
+
+        #endregion
 
 
 
@@ -705,6 +770,7 @@ namespace VnManager.MetadataProviders.Vndb
                     //remove any deleted tags
                     IEnumerable<int> idsToDelete = prevEntry.Except(tagsToAdd).Select(x => x.Index);
                     dbTags.DeleteMany(x => idsToDelete.Contains(x.Index));
+                    db.Dispose();
                 }
 
             }
@@ -744,6 +810,7 @@ namespace VnManager.MetadataProviders.Vndb
 
                     IEnumerable<int> idsToDelete = prevEntry.Except(traitsToAdd).Select(x => x.Index);
                     dbTraits.DeleteMany(x => idsToDelete.Contains(x.Index));
+                    db.Dispose();
                 }
             }
             catch (Exception ex)

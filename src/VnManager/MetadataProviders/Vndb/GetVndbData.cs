@@ -14,6 +14,7 @@ using VndbSharp.Models.Release;
 using VndbSharp.Models.Staff;
 using VndbSharp.Models.VisualNovel;
 using VnManager.Helpers.Vndb;
+using VnManager.Models;
 
 namespace VnManager.MetadataProviders.Vndb
 {
@@ -22,9 +23,9 @@ namespace VnManager.MetadataProviders.Vndb
         private readonly Stopwatch stopwatch = new Stopwatch();
 		private readonly TimeSpan maxTime = TimeSpan.FromMinutes(3);
         private bool _didErrorOccur = false;
-		public async Task GetData(uint id)
+		public async Task GetData(AddItemDbModel entry)
         {
-			uint vnid = id;
+			uint vnid = (uint)entry.GameId;
 			try
 			{
 				using (var client = new VndbSharp.Vndb(true))
@@ -51,13 +52,12 @@ namespace VnManager.MetadataProviders.Vndb
 					else
 					{
 						//run code to add info to database
-                        SaveVnDataToDb foo = new SaveVnDataToDb();
-						foo.SaveVnInfo(visualNovel);
-						foo.SaveVnCharacters(characters, vnid);
-						foo.SaveVnReleases(releases);
-						foo.SaveProducers(producers);
-						foo.SaveStaff(staff, (int)vnid);
+                        
+						SaveVnDataToDb save = new SaveVnDataToDb();
+						await save.SortVnInfo(entry, visualNovel, releases, producers, characters, staff);
                     }
+
+					
 
 				}
 			}

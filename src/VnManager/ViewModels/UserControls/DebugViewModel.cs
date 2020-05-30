@@ -43,7 +43,7 @@ namespace VnManager.ViewModels.UserControls
             var bd = BirthdayConverter.ConvertBirthday(new SimpleDate() {Day = 30, Month = 12, Year = 2000});
             
             var foo = new GetVndbData();
-            foo.GetData(92);
+            //foo.GetData(92);
             //DoThingAsync();
             //var foo2 = new SaveVnDataToDb();
             //foo2.GetAndSaveTraitDump();
