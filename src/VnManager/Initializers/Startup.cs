@@ -83,8 +83,7 @@ namespace VnManager.Initializers
                 int charLoc = name.IndexOf("_", StringComparison.Ordinal);
                 var subst = name.Substring(0, charLoc);
 
-                DateTime date = DateTime.Now; //need for the 'out' in the next line
-                var didParse = DateTime.TryParseExact(subst.ToCharArray(), "dd-MM-yyyy".ToCharArray(), CultureInfo.InvariantCulture, DateTimeStyles.None, out date);
+                var didParse = DateTime.TryParseExact(subst.ToCharArray(), "dd-MM-yyyy".ToCharArray(), CultureInfo.InvariantCulture, DateTimeStyles.None, out var date);
                 if (didParse == false) continue;
                 if (date >= minDate) continue;
                 try

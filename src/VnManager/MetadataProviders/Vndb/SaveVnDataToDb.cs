@@ -40,16 +40,15 @@ namespace VnManager.MetadataProviders.Vndb
             {
                 using (var db = new LiteDatabase(App.DatabasePath))
                 {
-                    var dbVnInfo = db.GetCollection<VnInfo>("vninfo");
-                    ILiteCollection<VnInfoAnime> dbVnInfoAnime = db.GetCollection<VnInfoAnime>("vninfo_anime");
-                    var dbVnInfoLinks = db.GetCollection<VnInfoLinks>("vninfo_links");
-                    ILiteCollection<VnInfoScreens> dbVnInfoScreens = db.GetCollection<VnInfoScreens>("vninfo_screens");
-                    ILiteCollection<VnInfoRelations> dbVnInfoRelations = db.GetCollection<VnInfoRelations>("vninfo_relations");
-                    ILiteCollection<VnInfoStaff> dbVnInfoStaff = db.GetCollection<VnInfoStaff>("vninfo_staff");
-                    ILiteCollection<VnInfoTags> dbVnInfoTags = db.GetCollection<VnInfoTags>("vninfo_tags");
+                    var dbVnInfo = db.GetCollection<VnInfo>("VnInfo");
+                    ILiteCollection<VnInfoAnime> dbVnInfoAnime = db.GetCollection<VnInfoAnime>("VnInfo_Anime");
+                    var dbVnInfoLinks = db.GetCollection<VnInfoLinks>("VnInfo_Links");
+                    ILiteCollection<VnInfoScreens> dbVnInfoScreens = db.GetCollection<VnInfoScreens>("VnInfo_Screens");
+                    ILiteCollection<VnInfoRelations> dbVnInfoRelations = db.GetCollection<VnInfoRelations>("VnInfo_Relations");
+                    ILiteCollection<VnInfoStaff> dbVnInfoStaff = db.GetCollection<VnInfoStaff>("VnInfo_Staff");
+                    ILiteCollection<VnInfoTags> dbVnInfoTags = db.GetCollection<VnInfoTags>("VnInfo_Tags");
 
                     var prevVnInfo = dbVnInfo.Query().Where(x => x.VnId == visualNovel.Id).FirstOrDefault();
-                    
                     var prevVnInfoLinks = dbVnInfoLinks.Query().Where(x => x.VnId == visualNovel.Id).FirstOrDefault();
 
                     List<VnInfoTags> vnTags = new List<VnInfoTags>();
@@ -58,11 +57,7 @@ namespace VnManager.MetadataProviders.Vndb
                     List<VnInfoScreens> vnScreenshot = new List<VnInfoScreens>();
                     List<VnInfoAnime> vnAnime = new List<VnInfoAnime>();
 
-                    var vn = new VnInfo();
-                    if (prevVnInfo != null)
-                    {
-                        vn = prevVnInfo;
-                    }
+                    var vn = prevVnInfo ?? new VnInfo();
 
                     vn.VnId = visualNovel.Id;
                     vn.Title = visualNovel.Name;
@@ -79,24 +74,15 @@ namespace VnManager.MetadataProviders.Vndb
                     vn.Popularity = visualNovel.Popularity;
                     vn.Rating = visualNovel.Rating;
 
-
-
                     //anime
                     vnAnime.AddRange(FormatVnInfoAnime(visualNovel, dbVnInfoAnime));
 
-
                     //links
-                    VnInfoLinks vnLinks = new VnInfoLinks();
-                    if (prevVnInfoLinks != null)
-                    {
-                        vnLinks = prevVnInfoLinks;
-                    }
-
+                    VnInfoLinks vnLinks = prevVnInfoLinks ?? new VnInfoLinks();
                     vnLinks.VnId = visualNovel.Id;
                     vnLinks.Wikidata = visualNovel.VisualNovelLinks.Wikidata;
                     vnLinks.Encubed = visualNovel.VisualNovelLinks.Encubed;
                     vnLinks.Renai = visualNovel.VisualNovelLinks.Renai;
-
 
                     //screenshot
                     vnScreenshot.AddRange(FormatVnInfoScreens(visualNovel, dbVnInfoScreens));
@@ -249,11 +235,11 @@ namespace VnManager.MetadataProviders.Vndb
             if (characters.Count < 1) return;
             using (var db = new LiteDatabase(App.DatabasePath))
             {
-                var dbCharInfo = db.GetCollection<VnCharacterInfo>("vncharacter");
-                ILiteCollection<VnCharacterTraits> dbCharTraits = db.GetCollection<VnCharacterTraits>("vncharacter_traits");
-                ILiteCollection<VnCharacterVns> dbCharVns = db.GetCollection<VnCharacterVns>("vncharacter_vns");
-                ILiteCollection<VnCharacterVoiced> dbCharVoices = db.GetCollection<VnCharacterVoiced>("vncharacter_voiced");
-                ILiteCollection<VnCharacterInstances> dbCharInstances = db.GetCollection<VnCharacterInstances>("vncharacter_instances");
+                var dbCharInfo = db.GetCollection<VnCharacterInfo>("VnCharacter");
+                ILiteCollection<VnCharacterTraits> dbCharTraits = db.GetCollection<VnCharacterTraits>("VnCharacter_Traits");
+                ILiteCollection<VnCharacterVns> dbCharVns = db.GetCollection<VnCharacterVns>("VnCharacter_Vns");
+                ILiteCollection<VnCharacterVoiced> dbCharVoices = db.GetCollection<VnCharacterVoiced>("VnCharacter_Voiced");
+                ILiteCollection<VnCharacterInstances> dbCharInstances = db.GetCollection<VnCharacterInstances>("VnCharacter_Instances");
 
                 if (characters.Count > 0)
                 {
@@ -392,10 +378,10 @@ namespace VnManager.MetadataProviders.Vndb
         {
             using (var db = new LiteDatabase(App.DatabasePath))
             {
-                var dbVnRelease = db.GetCollection<VnRelease>("vnrelease");
-                var dbVnReleaseMedia = db.GetCollection<VnReleaseMedia>("vnrelease_media");
-                var dbVnReleaseProducers = db.GetCollection<VnReleaseProducers>("vnrelease_producers");
-                var dbReleaseVns = db.GetCollection<VnReleaseVn>("vnrelease_vn");
+                var dbVnRelease = db.GetCollection<VnRelease>("VnReleases");
+                var dbVnReleaseMedia = db.GetCollection<VnReleaseMedia>("VnReleases_Media");
+                var dbVnReleaseProducers = db.GetCollection<VnReleaseProducers>("VnReleases_Producers");
+                var dbReleaseVns = db.GetCollection<VnReleaseVn>("VnReleases_Vns");
                 if (vnReleases.Count <= 0) return;
                 List<VnRelease> vnReleaseList = new List<VnRelease>();
                 List<VnReleaseMedia> vnReleaseMediaList = new List<VnReleaseMedia>();
@@ -511,9 +497,9 @@ namespace VnManager.MetadataProviders.Vndb
         {
             using (var db = new LiteDatabase(App.DatabasePath))
             {
-                var dbVnProducer = db.GetCollection<VnProducer>("vnproducer");
-                var dbVnProducerLinks = db.GetCollection<VnProducerLinks>("vnproducer_links");
-                var dbVnProducerRelations = db.GetCollection<VnProducerRelations>("vnproducer_relations");
+                var dbVnProducer = db.GetCollection<VnProducer>("VnProducers");
+                var dbVnProducerLinks = db.GetCollection<VnProducerLinks>("VnProducers_Links");
+                var dbVnProducerRelations = db.GetCollection<VnProducerRelations>("VnProducers_Relations");
 
                 List<VnProducer> vnProducersList = new List<VnProducer>();
                 List<VnProducerLinks> vnProducerLinksList = new List<VnProducerLinks>();
@@ -574,10 +560,10 @@ namespace VnManager.MetadataProviders.Vndb
         {
             using (var db = new LiteDatabase(App.DatabasePath))
             {
-                var dbVnStaff = db.GetCollection<VnStaff>("vnstaff");
-                var dbVnStaffAliases = db.GetCollection<VnStaffAliases>("vnstaff_aliases");
-                var dbVnStaffVns = db.GetCollection<VnStaffVns>("vnstaff_vns");
-                var dbVnStaffVoiced = db.GetCollection<VnStaffVoiced>("vnstaff_voiced");
+                var dbVnStaff = db.GetCollection<VnStaff>("VnStaff");
+                var dbVnStaffAliases = db.GetCollection<VnStaffAliases>("VnStaff_Aliases");
+                var dbVnStaffVns = db.GetCollection<VnStaffVns>("VnStaff_Vns");
+                var dbVnStaffVoiced = db.GetCollection<VnStaffVoiced>("VnStaff_Voiced");
 
                 List<VnStaff> staffList = new List<VnStaff>();
                 List<VnStaffAliases> vnStaffAliasesList = new List<VnStaffAliases>();
@@ -694,7 +680,7 @@ namespace VnManager.MetadataProviders.Vndb
             {
                 using (var db = new LiteDatabase(App.DatabasePath))
                 {
-                    var dbTags = db.GetCollection<VnTagData>("vntagdump");
+                    var dbTags = db.GetCollection<VnTagData>("VnDump_TagData");
                     List<Tag> tagDump = (await VndbUtils.GetTagsDumpAsync()).ToList();
                     List<VnTagData> tagsToAdd = new List<VnTagData>();
                     var prevEntry = dbTags.Query().ToList();
@@ -735,7 +721,7 @@ namespace VnManager.MetadataProviders.Vndb
             {
                 using (var db = new LiteDatabase(App.DatabasePath))
                 {
-                    var dbTraits = db.GetCollection<VnTraitData>("vntraitdump");
+                    var dbTraits = db.GetCollection<VnTraitData>("VnDump_TraitData");
                     List<Trait> traitDump = (await VndbUtils.GetTraitsDumpAsync()).ToList();
                     List<VnTraitData> traitsToAdd = new List<VnTraitData>();
                     var prevEntry = dbTraits.Query().ToList();

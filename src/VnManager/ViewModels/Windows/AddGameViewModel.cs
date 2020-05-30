@@ -7,6 +7,7 @@ using FluentValidation;
 using StyletIoC;
 using VnManager.ViewModels.Dialogs;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Resources;
@@ -20,6 +21,7 @@ using VndbSharp.Models;
 using VnManager.Helpers.Vndb;
 using VnManager.Utilities;
 using System.Text.RegularExpressions;
+using VndbSharp.Models.Errors;
 
 namespace VnManager.ViewModels.Windows
 {
@@ -149,27 +151,39 @@ namespace VnManager.ViewModels.Windows
                 if (VnName == null || VnName.Length < 2) return;
                 using (Vndb client = new Vndb(true))
                 {
+                    var stopwatch = new Stopwatch();
+                    bool shouldContinue = true;
+                    var maxTime = TimeSpan.FromMinutes(1.5);
                     SuggestedNamesCollection.Clear();
-                    VndbResponse<VisualNovel> _vnNameList = null;
+                    VndbResponse<VisualNovel> vnNameList = null;
                     IsSearchingForNames = true;
-                    _vnNameList = await client.GetVisualNovelAsync(VndbFilters.Search.Fuzzy(VnName), VndbFlags.Basic);
-                    if(_vnNameList == null)
+
+                    stopwatch.Start();
+                    while (shouldContinue)
                     {
-                        HandleVndbErrors.HandleErrors(client.GetLastError(), 0);
-                        return;
+                        shouldContinue = false;
+                        vnNameList = await client.GetVisualNovelAsync(VndbFilters.Search.Fuzzy(null), VndbFlags.Basic);
+                        //do I need to check for null
+                        if (vnNameList.Count < 1 && client.GetLastError().Type == ErrorType.Throttled)
+                        {
+                            if (stopwatch.Elapsed > maxTime) return;
+                            await HandleVndbErrors.ThrottledWait((ThrottledError)client.GetLastError(), 0);
+                            shouldContinue = true;
+                        }
+                        else if (vnNameList.Count < 1)
+                        {
+                            HandleVndbErrors.HandleErrors(client.GetLastError(), 0);
+                            return;
+                        }
+                        else
+                        {
+                            if (stopwatch.Elapsed > maxTime) return;
+                            List<string> nameList = IsJapaneseText(VnName) == true ? vnNameList.Select(item => item.OriginalName).ToList() : vnNameList.Select(item => item.Name).ToList();
+                            SuggestedNamesCollection.AddRange(nameList.Where(x => !string.IsNullOrEmpty(x)).ToList());
+                            IsNameDropDownOpen = true;
+                            SelectedName = SuggestedNamesCollection.FirstOrDefault();
+                        }
                     }
-                    else if(_vnNameList.Count < 1)
-                    {
-                        HandleVndbErrors.HandleErrors(client.GetLastError(), 0);
-                        return;
-                    }
-                    else
-                    {
-                        List<string> nameList = IsJapaneseText(VnName) == true ? _vnNameList.Select(item => item.OriginalName).ToList() : _vnNameList.Select(item => item.Name).ToList();
-                        SuggestedNamesCollection.AddRange(nameList.Where(x => !string.IsNullOrEmpty(x)).ToList());
-                        IsNameDropDownOpen = true;
-                        SelectedName = SuggestedNamesCollection.FirstOrDefault();
-                    }                    
                 }
                 IsResetNameButtonEnabled = true;
                 IsSearchingForNames = false;
