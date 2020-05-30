@@ -21,13 +21,15 @@ using VndbSharp.Models;
 using VnManager.Helpers.Vndb;
 using VnManager.Utilities;
 using System.Text.RegularExpressions;
+using LiteDB;
 using VndbSharp.Models.Errors;
+using VnManager.Models.Db.User;
 
 namespace VnManager.ViewModels.Windows
 {
     public class AddGameViewModel: Screen
     {
-        private readonly List<MultiExeGamePaths> _exeCollection = new List<MultiExeGamePaths>();
+        internal readonly List<MultiExeGamePaths> ExeCollection = new List<MultiExeGamePaths>();
         public BindableCollection<string> SuggestedNamesCollection { get; private set; }
 
         #region Properties
@@ -291,21 +293,26 @@ namespace VnManager.ViewModels.Windows
         {
             var rm = new ResourceManager("VnManager.Strings.Resources", Assembly.GetExecutingAssembly());
             RuleFor(x => x.VnId).Cascade(CascadeMode.StopOnFirstFailure)
-                .NotEmpty().Unless(x => x.SourceTypes != AddGameSourceTypes.Vndb).When(x => x.IsNameChecked == false).WithMessage(rm.GetString("ValidationVnIdNotAboveZero"))
-                .MustAsync(IsNotAboveMaxId).Unless(x => x.SourceTypes != AddGameSourceTypes.Vndb).When(x => x.IsNameChecked == false).WithMessage(rm.GetString("ValidationVnIdAboveMax"))
-                .MustAsync(IsNotDeletedVn).Unless(x => x.SourceTypes != AddGameSourceTypes.Vndb).When(x => x.IsNameChecked == false).WithMessage(rm.GetString("ValidationVnIdDoesNotExist"));
+                .NotEmpty().Unless(x => x.SourceType != AddGameSourceTypes.Vndb).When(x => x.IsNameChecked == false)
+                    .WithMessage(rm.GetString("ValidationVnIdNotAboveZero"))
+                .MustAsync(IsNotAboveMaxId).Unless(x => x.SourceType != AddGameSourceTypes.Vndb)
+                    .When(x => x.IsNameChecked == false).WithMessage(rm.GetString("ValidationVnIdAboveMax"))
+                .MustAsync(IsNotDeletedVn).Unless(x => x.SourceType != AddGameSourceTypes.Vndb)
+                    .When(x => x.IsNameChecked == false).WithMessage(rm.GetString("ValidationVnIdDoesNotExist"))
+                .Must(IsNotDuplicateId).WithMessage(rm.GetString("VnIdAlreadyExistsInDb"));
 
             When(x => x.IsNameChecked == true, () =>
             {
-                RuleFor(x => x.CanChangeVnName).NotEqual(true).Unless(x => x.SourceTypes != AddGameSourceTypes.Vndb).WithMessage(rm.GetString("ValidationVnNameSelection"));
-                RuleFor(x => x.VnName).NotEmpty().Unless(x => x.SourceTypes != AddGameSourceTypes.Vndb).When(x => x.CanChangeVnName ==false).WithMessage(rm.GetString("ValidationVnNameEmpty"));
+                RuleFor(x => x.CanChangeVnName).NotEqual(true).Unless(x => x.SourceType != AddGameSourceTypes.Vndb).WithMessage(rm.GetString("ValidationVnNameSelection"));
+                RuleFor(x => x.VnName).NotEmpty().Unless(x => x.SourceType != AddGameSourceTypes.Vndb).When(x => x.CanChangeVnName ==false).WithMessage(rm.GetString("ValidationVnNameEmpty"));
             });
 
 
             RuleFor(x => x.ExePath).Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().WithMessage(rm.GetString("ValidationExePathEmpty"))
                 .Must(ValidateFiles.EndsWithExe).WithMessage(rm.GetString("ValidationExePathNotValid"))
-                .Must(ValidateFiles.ValidateExe).WithMessage(rm.GetString("ValidationExeNotValid"));
+                .Must(ValidateFiles.ValidateExe).WithMessage(rm.GetString("ValidationExeNotValid"))
+                .Must(IsNotDuplicateExe).WithMessage(rm.GetString("ExeAlreadyExistsInDb"));
 
 
             RuleFor(x => x.IconPath).Cascade(CascadeMode.StopOnFirstFailure)
@@ -375,9 +382,80 @@ namespace VnManager.ViewModels.Windows
             }
         }
 
-        private bool IsNotDuplicateVn(int id)
+        private bool IsNotDuplicateExe(AddGameViewModel instance, string exePath)
         {
-            throw new NotImplementedException("Need to add support for LiteDb");
+            //if type is normal and game id in db or exe in db
+            try
+            {
+                using (var db = new LiteDatabase(App.DatabasePath))
+                {
+                    if (instance == null) return false;
+                    var id = instance.VnId;
+                    var exeType = instance.ExeType;
+                    var dbUserData = db.GetCollection<UserDataGames>("UserData_Games").Query()
+                        .Where(x => x.SourceType == AddGameSourceTypes.NoSource).ToEnumerable();
+                    switch (exeType)
+                    {
+                        case ExeTypesEnum.Normal:
+                        {
+                            var count = dbUserData.Count(x => x.ExePath == exePath || x.GameId == id);
+                            return count <= 0;
+                        }
+                        case ExeTypesEnum.Launcher:
+                        {
+                            var count = dbUserData.Count(x => x.ExePath == exePath);
+                            return count <= 0;
+                        }
+                        case ExeTypesEnum.Collection:
+                            return true;
+                    }
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error(ex, "IsValidExe");
+                throw;
+            }
+        }
+
+
+        private bool IsNotDuplicateId(AddGameViewModel instance, int id)
+        {
+            try
+            {
+                using (var db = new LiteDatabase(App.DatabasePath))
+                {
+                    if (instance == null) return false;
+                    var exePath = instance.ExePath;
+                    var exeType = instance.ExeType;
+                    var dbUserData = db.GetCollection<UserDataGames>("UserData_Games").Query()
+                        .Where(x => x.SourceType == AddGameSourceTypes.NoSource).ToEnumerable();
+                    switch (exeType)
+                    {
+                        case ExeTypesEnum.Normal:
+                        {
+                            var count = dbUserData.Count(x => x.GameId == id || x.ExePath == exePath);
+                            return count <= 0;
+                        }
+                        case ExeTypesEnum.Collection:
+                        {
+                            var count = dbUserData.Count(x => x.GameId == id);
+                            return count <= 0;
+                        }
+                        case ExeTypesEnum.Launcher:
+                            return true;
+                    }
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
         }
 
         #endregion
