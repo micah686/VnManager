@@ -238,8 +238,8 @@ namespace VnManager.ViewModels.Windows
             var result = _windowManager.ShowDialog(multivm).Value;
             if(result == true && multivm.GameCollection != null)
             {
-                _exeCollection.Clear();
-                _exeCollection.AddRange(from item in multivm.GameCollection
+                ExeCollection.Clear();
+                ExeCollection.AddRange(from item in multivm.GameCollection
                                         select new MultiExeGamePaths { ExePath = item.ExePath, IconPath = item.IconPath, ArgumentsString = item.ArgumentsString });
             }
             multivm.Remove();
@@ -293,18 +293,18 @@ namespace VnManager.ViewModels.Windows
         {
             var rm = new ResourceManager("VnManager.Strings.Resources", Assembly.GetExecutingAssembly());
             RuleFor(x => x.VnId).Cascade(CascadeMode.StopOnFirstFailure)
-                .NotEmpty().Unless(x => x.SourceType != AddGameSourceTypes.Vndb).When(x => x.IsNameChecked == false)
+                .NotEmpty().Unless(x => x.SourceTypes != AddGameSourceTypes.Vndb).When(x => x.IsNameChecked == false)
                     .WithMessage(rm.GetString("ValidationVnIdNotAboveZero"))
-                .MustAsync(IsNotAboveMaxId).Unless(x => x.SourceType != AddGameSourceTypes.Vndb)
+                .MustAsync(IsNotAboveMaxId).Unless(x => x.SourceTypes != AddGameSourceTypes.Vndb)
                     .When(x => x.IsNameChecked == false).WithMessage(rm.GetString("ValidationVnIdAboveMax"))
-                .MustAsync(IsNotDeletedVn).Unless(x => x.SourceType != AddGameSourceTypes.Vndb)
+                .MustAsync(IsNotDeletedVn).Unless(x => x.SourceTypes != AddGameSourceTypes.Vndb)
                     .When(x => x.IsNameChecked == false).WithMessage(rm.GetString("ValidationVnIdDoesNotExist"))
                 .Must(IsNotDuplicateId).WithMessage(rm.GetString("VnIdAlreadyExistsInDb"));
 
             When(x => x.IsNameChecked == true, () =>
             {
-                RuleFor(x => x.CanChangeVnName).NotEqual(true).Unless(x => x.SourceType != AddGameSourceTypes.Vndb).WithMessage(rm.GetString("ValidationVnNameSelection"));
-                RuleFor(x => x.VnName).NotEmpty().Unless(x => x.SourceType != AddGameSourceTypes.Vndb).When(x => x.CanChangeVnName ==false).WithMessage(rm.GetString("ValidationVnNameEmpty"));
+                RuleFor(x => x.CanChangeVnName).NotEqual(true).Unless(x => x.SourceTypes != AddGameSourceTypes.Vndb).WithMessage(rm.GetString("ValidationVnNameSelection"));
+                RuleFor(x => x.VnName).NotEmpty().Unless(x => x.SourceTypes != AddGameSourceTypes.Vndb).When(x => x.CanChangeVnName ==false).WithMessage(rm.GetString("ValidationVnNameEmpty"));
             });
 
 
@@ -391,7 +391,7 @@ namespace VnManager.ViewModels.Windows
                 {
                     if (instance == null) return false;
                     var id = instance.VnId;
-                    var exeType = instance.ExeType;
+                    var exeType = instance.ExeTypes;
                     var dbUserData = db.GetCollection<UserDataGames>("UserData_Games").Query()
                         .Where(x => x.SourceType == AddGameSourceTypes.NoSource).ToEnumerable();
                     switch (exeType)
@@ -429,7 +429,7 @@ namespace VnManager.ViewModels.Windows
                 {
                     if (instance == null) return false;
                     var exePath = instance.ExePath;
-                    var exeType = instance.ExeType;
+                    var exeType = instance.ExeTypes;
                     var dbUserData = db.GetCollection<UserDataGames>("UserData_Games").Query()
                         .Where(x => x.SourceType == AddGameSourceTypes.NoSource).ToEnumerable();
                     switch (exeType)
