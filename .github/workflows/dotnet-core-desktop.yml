@@ -60,13 +60,7 @@ jobs:
       uses: enricomarino/actions@v2
       with:
         source:  "${{ github.workspace }}/build"
-
-    - name: Zip Release
-      uses: TheDoctor0/zip-release@v0.3.0
-      with:
-        filename: 'VnManager.zip'
-        directory:  "${{ github.workspace }}/build"
-        path:  "${{ github.workspace }}/staging"
+    
 
     - name: List Files Staging
       uses: enricomarino/actions@v2
@@ -77,7 +71,7 @@ jobs:
       uses: actions/upload-artifact@v1
       with:
         name: VnManager
-        path:  "${{ github.workspace }}/staging/VnManager.zip"
+        path:  "${{ github.workspace }}/build/"
 
 
     # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
