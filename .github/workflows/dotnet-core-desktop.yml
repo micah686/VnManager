@@ -10,7 +10,7 @@
 #
 
 
-name: .NET Core Desktop
+name: Main CI
 
 on:
   push:
@@ -20,7 +20,9 @@ on:
 
 jobs:
 
-  build:
+  #Build Job for prepping the environment for build (installing .net core, getting nuget packages,...
+  prep:
+    name: Prep for Build
     runs-on: windows-latest                             
     env:
       Solution_Name: src/VnManager.sln                         
@@ -49,26 +51,37 @@ jobs:
     - name: Install .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 3.1.101
-    - name: Dotnet Publish
+        dotnet-version: 3.1.101    
+
+    
+
+  #Build Job for building and uploading the actual project
+  build:
+    name: Build Project
+    runs-on: windows-latest                             
+    env:
+      Solution_Name: src/VnManager.sln                         
+      
+    steps:
+       # Install the .NET Core workload
+    - name: Build VnManager
       run: |
         mkdir ${{ github.workspace }}/build
         mkdir ${{ github.workspace }}/staging
         dotnet publish src/VnManager/VnManager.csproj --framework netcoreapp3.1 -c Release -o --output "${{ github.workspace }}/build"
-
+        
     - name: Upload Artifact
       uses: actions/upload-artifact@v1
       with:
         name: VnManager
         path:  "${{ github.workspace }}/build/"
 
-
-    - name: Publish
-      uses: softprops/action-gh-release@v1
-      with:
-        files:  "${{ github.workspace }}/build/"
-      env: 
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    
+    
+  #Build Job for running scans and tests  
+  test-scans:
+    name: Tests and Scans
+    runs-on: windows-latest
 
 
 
