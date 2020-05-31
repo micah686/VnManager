@@ -23,7 +23,7 @@ jobs:
   #Build Job for prepping the environment for build (installing .net core, getting nuget packages,...
   build:
     name: Build Project
-    runs-on: windows-latest                             
+    runs-on: ubuntu-latest                             
     env:
       Solution_Name: src/VnManager.sln                         
       
@@ -81,7 +81,7 @@ jobs:
         fetch-depth: 0
         submodules: true
     - name: SonarCloud Scan
-      uses: sonarsource/sonarcloud-github-action@master
+      uses: sonarsource/sonarcloud-github-action@1.2
       with:
         projectBaseDir: src
       env:
