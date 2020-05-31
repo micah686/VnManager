@@ -47,6 +47,8 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.101
+    - name: Dotnet Publish
+      run: dotnet publish src -c Release 
 
     - name: Cache NuGet Packages
       uses: actions/cache@v1
@@ -65,9 +67,9 @@ jobs:
     #  run: dotnet test
 
     # Restore the application to populate the obj folder with RuntimeIdentifiers
-    - name: Restore the application
-      run: msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration
-      env:
-        Configuration: ${{ matrix.configuration }}
+  #  - name: Restore the application
+  #    run: msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration
+  #    env:
+  #      Configuration: ${{ matrix.configuration }}
 
    
