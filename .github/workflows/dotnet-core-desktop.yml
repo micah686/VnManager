@@ -79,9 +79,9 @@ jobs:
     
     
   #Build Job for running scans and tests  
-  test-scans:
-    name: Tests and Scans
-    runs-on: windows-latest
+  #test-scans:
+  #  name: Tests and Scans
+  #  runs-on: windows-latest
 
 
 
