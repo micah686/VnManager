@@ -56,22 +56,20 @@ jobs:
         mkdir ${{ github.workspace }}/staging
         dotnet publish src/VnManager/VnManager.csproj --framework netcoreapp3.1 -c Release -o --output "${{ github.workspace }}/build"
 
-    - name: List Files build
-      uses: enricomarino/actions@v2
-      with:
-        source:  "${{ github.workspace }}/build"
-    
-
-    - name: List Files Staging
-      uses: enricomarino/actions@v2
-      with:
-        source:  "${{ github.workspace }}/build"
-
     - name: Upload Artifact
       uses: actions/upload-artifact@v1
       with:
         name: VnManager
         path:  "${{ github.workspace }}/build/"
+
+
+    - name: Publish
+      uses: softprops/action-gh-release@v1
+      with:
+        files:  "${{ github.workspace }}/build/"
+      env: 
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 
 
     # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
