@@ -42,21 +42,23 @@ jobs:
         fetch-depth: 0
         submodules: true
 
-    # Install the .NET Core workload
-    - name: Install .NET Core
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 3.1.101
-    - name: Dotnet Publish
-      run: dotnet publish src/VnManager/VnManager.csproj --framework netcoreapp3.1 -c Release -o VnManager
-
     - name: Cache NuGet Packages
       uses: actions/cache@v1
       with:
         path: ~/.nuget/packages
         key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
         restore-keys: |
-          ${{ runner.os }}-nuget-  
+          ${{ runner.os }}-nuget-
+
+    # Install the .NET Core workload
+    - name: Install .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.101
+    - name: Dotnet Publish
+      run: dotnet publish src/VnManager/VnManager.csproj --framework netcoreapp3.1 --zipafterPublish true -c Release -o VnManager
+
+      
 
     # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
     - name: Setup MSBuild.exe
