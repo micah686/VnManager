@@ -61,7 +61,11 @@ jobs:
     - name: Upload Artifact
       uses: actions/upload-artifact@v1
       with:
-        name: VnManager
+        name: VnManager.zip
         path:  "${{ github.workspace }}/build/"
 
-   
+    - name: Scan with SonarCloud
+      uses: sonarsource/sonarcloud-github-action@master
+      env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
