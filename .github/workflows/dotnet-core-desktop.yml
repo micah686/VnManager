@@ -21,8 +21,8 @@ on:
 jobs:
 
   #Build Job for prepping the environment for build (installing .net core, getting nuget packages,...
-  prep:
-    name: Prep for Build
+  build:
+    name: Build Project
     runs-on: windows-latest                             
     env:
       Solution_Name: src/VnManager.sln                         
@@ -51,52 +51,17 @@ jobs:
     - name: Install .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 3.1.101    
-
-    
-
-  #Build Job for building and uploading the actual project
-  build:
-    name: Build Project
-    runs-on: windows-latest                             
-    env:
-      Solution_Name: src/VnManager.sln                         
-      
-    steps:
-       # Install the .NET Core workload
+        dotnet-version: 3.1.101 
     - name: Build VnManager
       run: |
         mkdir ${{ github.workspace }}/build
         mkdir ${{ github.workspace }}/staging
         dotnet publish src/VnManager/VnManager.csproj --framework netcoreapp3.1 -c Release -o --output "${{ github.workspace }}/build"
-        
+                
     - name: Upload Artifact
       uses: actions/upload-artifact@v1
       with:
         name: VnManager
         path:  "${{ github.workspace }}/build/"
-
-    
-    
-  #Build Job for running scans and tests  
-  #test-scans:
-  #  name: Tests and Scans
-  #  runs-on: windows-latest
-
-
-
-    # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
-    #- name: Setup MSBuild.exe
-    #  uses: microsoft/setup-msbuild@2008f912f56e61277eefaac6d1888b750582aa16
-
-    # Execute all unit tests in the solution
-    #- name: Execute unit tests
-    #  run: dotnet test
-
-    # Restore the application to populate the obj folder with RuntimeIdentifiers
-  #  - name: Restore the application
-  #    run: msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration
-  #    env:
-  #      Configuration: ${{ matrix.configuration }}
 
    
