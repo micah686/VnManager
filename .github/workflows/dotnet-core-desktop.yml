@@ -81,7 +81,7 @@ jobs:
         fetch-depth: 0
         submodules: true
     - name: SonarCloud Scan
-      uses: sonarsource/sonarcloud-github-action@v1.2
+      uses: sonarsource/sonarcloud-github-action@v1.1
       with:
         projectBaseDir: src
       env:
