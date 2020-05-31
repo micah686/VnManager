@@ -4,6 +4,7 @@ using StyletIoC;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using VnManager.MetadataProviders.Vndb;
 using VnManager.Models;
@@ -22,7 +23,7 @@ namespace VnManager.ViewModels.UserControls
             _windowManager = windowManager;
         }
 
-        public void Click()
+        public async Task Click()
         {
             //var inst = MainGridViewModel.Instance;
             //inst.Click();
@@ -47,7 +48,7 @@ namespace VnManager.ViewModels.UserControls
             gameEntry.IsArgumentsEnabled = vmAddGame.IsArgsChecked;
             gameEntry.ExeArguments = vmAddGame.ExeArguments;
             GetVndbData getData = new GetVndbData();
-            getData.GetData(gameEntry);
+            await getData.GetData(gameEntry);
             
         }
     }

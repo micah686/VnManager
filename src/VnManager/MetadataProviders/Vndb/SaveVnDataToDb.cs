@@ -47,7 +47,6 @@ namespace VnManager.MetadataProviders.Vndb
                     SaveUserData(entry);
                     await GetAndSaveTagDump();
                     await GetAndSaveTraitDump();
-                    
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -604,6 +603,7 @@ namespace VnManager.MetadataProviders.Vndb
                     staff.Name = vnStaff.Name;
                     staff.Original = vnStaff.OriginalName;
                     staff.Language = vnStaff.Language;
+                    staff.Gender = vnStaff.Gender;
                     staff.VnStaffLinks = new VnStaffLinks()
                     {
                         Homepage = vnStaff.StaffLinks.Homepage,
@@ -770,7 +770,6 @@ namespace VnManager.MetadataProviders.Vndb
                     //remove any deleted tags
                     IEnumerable<int> idsToDelete = prevEntry.Except(tagsToAdd).Select(x => x.Index);
                     dbTags.DeleteMany(x => idsToDelete.Contains(x.Index));
-                    //db.Dispose();
                 }
 
             }
@@ -810,7 +809,6 @@ namespace VnManager.MetadataProviders.Vndb
 
                     IEnumerable<int> idsToDelete = prevEntry.Except(traitsToAdd).Select(x => x.Index);
                     dbTraits.DeleteMany(x => idsToDelete.Contains(x.Index));
-                    //db.Dispose();
                 }
             }
             catch (Exception ex)

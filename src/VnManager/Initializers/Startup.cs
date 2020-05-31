@@ -72,7 +72,6 @@ namespace VnManager.Initializers
             fs.Directory.CreateDirectory(Path.Combine(App.ConfigDirPath, @"config"));
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0059:Unnecessary assignment of a value")]
         internal static void DeleteOldLogs()
         {
             //doesn't delete logs out of User Profile directory

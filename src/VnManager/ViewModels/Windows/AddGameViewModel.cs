@@ -157,18 +157,17 @@ namespace VnManager.ViewModels.Windows
                     bool shouldContinue = true;
                     var maxTime = TimeSpan.FromMinutes(1.5);
                     SuggestedNamesCollection.Clear();
-                    VndbResponse<VisualNovel> vnNameList = null;
                     IsSearchingForNames = true;
 
                     stopwatch.Start();
                     while (shouldContinue)
                     {
+                        if (stopwatch.Elapsed > maxTime) return;
                         shouldContinue = false;
-                        vnNameList = await client.GetVisualNovelAsync(VndbFilters.Search.Fuzzy(null), VndbFlags.Basic);
-                        //do I need to check for null
+                        var vnNameList = await client.GetVisualNovelAsync(VndbFilters.Search.Fuzzy(null), VndbFlags.Basic);
+                        //do I need to check for null?
                         if (vnNameList.Count < 1 && client.GetLastError().Type == ErrorType.Throttled)
                         {
-                            if (stopwatch.Elapsed > maxTime) return;
                             await HandleVndbErrors.ThrottledWait((ThrottledError)client.GetLastError(), 0);
                             shouldContinue = true;
                         }
@@ -179,7 +178,6 @@ namespace VnManager.ViewModels.Windows
                         }
                         else
                         {
-                            if (stopwatch.Elapsed > maxTime) return;
                             List<string> nameList = IsJapaneseText(VnName) == true ? vnNameList.Select(item => item.OriginalName).ToList() : vnNameList.Select(item => item.Name).ToList();
                             SuggestedNamesCollection.AddRange(nameList.Where(x => !string.IsNullOrEmpty(x)).ToList());
                             IsNameDropDownOpen = true;
@@ -408,10 +406,10 @@ namespace VnManager.ViewModels.Windows
                         }
                         case ExeTypesEnum.Collection:
                             return true;
+                        default:
+                            throw new ArgumentOutOfRangeException();
                     }
                 }
-
-                return false;
             }
             catch (Exception ex)
             {
@@ -446,14 +444,14 @@ namespace VnManager.ViewModels.Windows
                         }
                         case ExeTypesEnum.Launcher:
                             return true;
+                        default:
+                            throw new ArgumentOutOfRangeException();
                     }
                 }
-
-                return false;
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
+                App.Logger.Error(ex, $"IsNotDuplicateId encountered an error");
                 throw;
             }
         }
