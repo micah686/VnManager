@@ -88,7 +88,7 @@ namespace VnManager.Helpers
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error: " + ex.Message);
+                App.Logger.Error(ex, "FileEncrypt Failed");
             }
             finally
             {
@@ -109,7 +109,7 @@ namespace VnManager.Helpers
             var outputFile = Path.GetFileNameWithoutExtension(inputFile);
             FileStream fsCrypt = new FileStream(inputFile, FileMode.Open);
             fsCrypt.Read(salt, 0, salt.Length);
-
+            if (fsCrypt.Length < 1) return;
             RijndaelManaged AES = new RijndaelManaged()
             {
                 KeySize = 256,
@@ -136,13 +136,13 @@ namespace VnManager.Helpers
                     fsOut.Write(buffer, 0, read);
                 }
             }
-            catch (CryptographicException ex_CryptographicException)
+            catch (CryptographicException ex)
             {
-                Console.WriteLine("CryptographicException error: " + ex_CryptographicException.Message);
+                App.Logger.Error(ex, "FileDecrypt CryptographicException error");
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error: " + ex.Message);
+                App.Logger.Error(ex, "FileDecrypt Error");
             }
 
             try
@@ -151,7 +151,7 @@ namespace VnManager.Helpers
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error by closing CryptoStream: " + ex.Message);
+                App.Logger.Error(ex, "FileDecrypt Error by closing CryptoStream");
             }
             finally
             {
@@ -165,10 +165,9 @@ namespace VnManager.Helpers
         {
             byte[] passwordBytes = System.Text.Encoding.UTF8.GetBytes(ReadSecret(keyName));
             byte[] salt = new byte[32];
-            var outputFile = Path.GetFileNameWithoutExtension(inputFile);
             FileStream fsCrypt = new FileStream(inputFile, FileMode.Open);
             fsCrypt.Read(salt, 0, salt.Length);
-
+            if (fsCrypt.Length < 1) return null;
             RijndaelManaged AES = new RijndaelManaged()
             {
                 KeySize = 256,
@@ -194,13 +193,13 @@ namespace VnManager.Helpers
                     memoryStream.Write(buffer, 0, read);
                 }
             }
-            catch (CryptographicException ex_CryptographicException)
+            catch (CryptographicException ex)
             {
-                Console.WriteLine("CryptographicException error: " + ex_CryptographicException.Message);
+                App.Logger.Error(ex, "FileDecrypt CryptographicException error");
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error: " + ex.Message);
+                App.Logger.Error(ex, "FileDecrypt Error");
             }
 
             try
@@ -209,7 +208,7 @@ namespace VnManager.Helpers
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error by closing CryptoStream: " + ex.Message);
+                App.Logger.Error(ex, "FileDecrypt Error by closing CryptoStream");
             }
             finally
             {
@@ -220,15 +219,6 @@ namespace VnManager.Helpers
 
         #endregion
 
-        private SecureString GetStoreSecureString(string keyName)
-        {
-            using (var secMan = SecretsManager.LoadStore(_secretStore))
-            {
-                secMan.LoadKeyFromFile(_secretKey);
-                SecureString encryptedKey = new NetworkCredential("", secMan.Get(keyName)).SecurePassword;
-                return encryptedKey;
-            }
-        }
 
         #region SecureStore
         internal bool TestSecret(string keyName)

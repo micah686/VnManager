@@ -17,7 +17,7 @@ namespace VnManager.ViewModels.UserControls
         public AddGameButtonViewModel AddGamePage { get; set; }
 
         private readonly IContainer _container;
-        private readonly IWindowManager _windowManager;
+        
 
         public static MainGridViewModel Instance { get; private set; }
 
@@ -25,7 +25,7 @@ namespace VnManager.ViewModels.UserControls
         {
             Instance = this;
             _container = container;
-            _windowManager = windowManager;
+            
 
             TopInfoBarPage = _container.Get<TopInfoBarViewModel>();           
             LastPlayedPage = _container.Get<LastPlayedViewModel>();

@@ -19,7 +19,7 @@ namespace VnManager.ViewModels
         public StatusBarViewModel StatusBarPage { get; set; }
 
         private readonly IContainer _container;
-        private readonly IWindowManager _windowManager;
+        
         private int _windowButtonPressedCounter = 0;
 
         public static RootViewModel Instance { get; private set; }
@@ -90,7 +90,7 @@ namespace VnManager.ViewModels
         {
             Instance = this;
             _container = container;
-            _windowManager = windowManager;
+            
 
             StatusBarPage = _container.Get<StatusBarViewModel>();
 

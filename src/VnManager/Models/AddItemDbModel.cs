@@ -11,7 +11,7 @@ namespace VnManager.Models
         public AddGameSourceTypes SourceType { get; set; }
         public ExeTypesEnum ExeType { get; set; }
         public bool IsCollectionEnabled { get; set; }
-        public List<MultiExeGamePaths> ExeCollection { get; set; }
+        public  List<MultiExeGamePaths> ExeCollection { get; set; }
         public int GameId { get; set; }
         public string ExePath { get; set; }
         public bool IsIconEnabled { get; set; }
