@@ -28,9 +28,9 @@
       },
       "MahApps.Metro.IconPacks.Material": {
         "type": "Direct",
-        "requested": "[4.1.0, )",
-        "resolved": "4.1.0",
-        "contentHash": "GZ9evklAKW7XWH+hFSOZ2QmggjMPmOHA97IxprI2zQ4T7TGoei0ZJIhjG0MgHMuwuSgruVRhiLmvRtociBmpXQ=="
+        "requested": "[4.2.0, )",
+        "resolved": "4.2.0",
+        "contentHash": "kJ21TKh/RTzYbkiavSSIE7Ltx00ThqZKubBo+XMY4KmFFzniiborAk1DZtIokjzomNrtW/R7SQjthQuBjVnsFA=="
       },
       "MvvmDialogs": {
         "type": "Direct",
@@ -46,6 +46,15 @@
         "dependencies": {
           "Fody": "6.1.1",
           "NETStandard.Library": "1.6.1"
+        }
+      },
+      "SecureStore": {
+        "type": "Direct",
+        "requested": "[1.0.3, )",
+        "resolved": "1.0.3",
+        "contentHash": "ypsHD2/gXCUCMaZD6OoqDuqGHEbKD1AtmZxF8M0vcvWiSh5Wq+5WmEYukVtVVB7gQt/NP6mQ/FZHdRIkrGEa+g==",
+        "dependencies": {
+          "Newtonsoft.Json": "10.0.3"
         }
       },
       "Serilog": {
@@ -77,11 +86,11 @@
       },
       "System.IO.Abstractions.TestingHelpers": {
         "type": "Direct",
-        "requested": "[11.0.6, )",
-        "resolved": "11.0.6",
-        "contentHash": "ZFKelXj3riGLhjXjRcOWbcnFNZmJPw5r00K9Kb4Cy8g/ccWCwZDKDUA0P4HrNGsblhiGztVfRSVzuIEit2dSFw==",
+        "requested": "[11.0.7, )",
+        "resolved": "11.0.7",
+        "contentHash": "3RLDM8AdsAHiHLcTIXxyZ7kg5ltjY0Jifjsry5LIkZ5IRayAQJXmOJ81vB1rPnT75LNCllDtiIBbfJlP07RYhw==",
         "dependencies": {
-          "System.IO.Abstractions": "11.0.6"
+          "System.IO.Abstractions": "11.0.7"
         }
       },
       "AdonisUI": {
@@ -579,8 +588,8 @@
       },
       "System.IO.Abstractions": {
         "type": "Transitive",
-        "resolved": "11.0.6",
-        "contentHash": "rXFELJ8UtlS0PMdPGKZN9ZYNIHTF6bK8pRbAFV8Xli03dNueEGe5ay/3y67rEdm3c5qcfeJrjSp8Gi2zXyWb0Q==",
+        "resolved": "11.0.7",
+        "contentHash": "Q67kQFcsdw3of9/kNbv303TYU5MNIGiQvYGsDOjgi7+Ii/HABw7E/TUgMOtwCFiwkZTyEvnHj/m7CEe/ybELfg==",
         "dependencies": {
           "System.IO.FileSystem.AccessControl": "4.7.0"
         }

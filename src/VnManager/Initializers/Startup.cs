@@ -68,6 +68,7 @@ namespace VnManager.Initializers
 
             //Config
             fs.Directory.CreateDirectory(Path.Combine(App.ConfigDirPath, @"database"));
+            fs.Directory.CreateDirectory(Path.Combine(App.ConfigDirPath, @"secure"));
             fs.Directory.CreateDirectory(Path.Combine(App.ConfigDirPath, @"config"));
         }
 

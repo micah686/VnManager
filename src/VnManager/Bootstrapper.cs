@@ -9,6 +9,7 @@ using VnManager.Converters;
 using VnManager.Utilities;
 using VnManager.ViewModels;
 using MvvmDialogs;
+using VnManager.Helpers;
 using VnManager.ViewModels.UserControls;
 
 namespace VnManager
@@ -25,6 +26,7 @@ namespace VnManager
             LogManager.UpdateLoggerDirectory();
             SettingsViewModel.LoadUserSettingsStatic();
             App.DatabasePath = Path.Combine(App.ConfigDirPath, @"database\Data.db");
+            new EncryptedStore().CreateSecureStore();
             App.StartupLockout = true; //lock any App SetOnce settings from being set again
         }
 

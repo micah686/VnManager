@@ -770,7 +770,7 @@ namespace VnManager.MetadataProviders.Vndb
                     //remove any deleted tags
                     IEnumerable<int> idsToDelete = prevEntry.Except(tagsToAdd).Select(x => x.Index);
                     dbTags.DeleteMany(x => idsToDelete.Contains(x.Index));
-                    db.Dispose();
+                    //db.Dispose();
                 }
 
             }
@@ -810,7 +810,7 @@ namespace VnManager.MetadataProviders.Vndb
 
                     IEnumerable<int> idsToDelete = prevEntry.Except(traitsToAdd).Select(x => x.Index);
                     dbTraits.DeleteMany(x => idsToDelete.Contains(x.Index));
-                    db.Dispose();
+                    //db.Dispose();
                 }
             }
             catch (Exception ex)

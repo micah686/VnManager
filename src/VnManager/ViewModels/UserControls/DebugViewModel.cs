@@ -14,6 +14,7 @@ using VnManager.MetadataProviders.Vndb;
 using VnManager.Models.Db.Vndb.Main;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.PortableExecutable;
 using System.Resources;
 using System.Threading.Tasks;
 using VndbSharp;
@@ -71,6 +72,12 @@ namespace VnManager.ViewModels.UserControls
                 dbUserData.Insert(entry);
 
             }
+        }
+
+        public void CreateSecure()
+        {
+            new Helpers.EncryptedStore().FileEncrypt("test.txt", "FileEnc");
+            new Helpers.EncryptedStore().FileDecrypt("test.txt.aes", "test_dec.txt", "FileEnc");
         }
 
         public void TestStrings()
