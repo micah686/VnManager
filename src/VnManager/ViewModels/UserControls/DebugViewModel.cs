@@ -17,6 +17,7 @@ using System.Reflection;
 using System.Reflection.PortableExecutable;
 using System.Resources;
 using System.Threading.Tasks;
+using StyletIoC;
 using VndbSharp;
 using VndbSharp.Models.Dumps;
 using VnManager.Models.Db.User;
@@ -29,7 +30,14 @@ namespace VnManager.ViewModels.UserControls
     [ExcludeFromCodeCoverage]
     public class DebugViewModel: Screen
     {
-        public DebugViewModel() { }
+        private readonly IContainer _container;
+        private readonly IWindowManager _windowManager;
+
+        public DebugViewModel(IContainer container, IWindowManager windowManager)
+        {
+            _container = container;
+            _windowManager = windowManager;
+        }
 
 
 
@@ -88,6 +96,15 @@ namespace VnManager.ViewModels.UserControls
             ResourceManager rm = new ResourceManager("VnManager.Strings.Resources", Assembly.GetExecutingAssembly());
             var value = rm.GetString("AddGameCollectionTitle");
         }
+
+        public void TestPasswordEntry()
+        {
+            var vmTestPassword = _container.Get<SetEnterPasswordViewModel>();
+
+            _windowManager.ShowWindow(vmTestPassword);
+        }
+
+
 
         public void CauseException()
         {

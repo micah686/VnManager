@@ -272,5 +272,52 @@ namespace VnManager.Helpers
         }
         #endregion
 
+
+
+        public static bool SecureStringEqual(SecureString secureString1, SecureString secureString2)
+        {
+            if (secureString1 == null)
+            {
+                return false;
+                //throw new ArgumentNullException("s1");
+            }
+            if (secureString2 == null)
+            {
+                return false;
+                //throw new ArgumentNullException("s2");
+            }
+
+            if (secureString1.Length != secureString2.Length)
+            {
+                return false;
+            }
+
+            IntPtr ssBstr1Ptr = IntPtr.Zero;
+            IntPtr ssBstr2Ptr = IntPtr.Zero;
+
+            try
+            {
+                ssBstr1Ptr = Marshal.SecureStringToBSTR(secureString1);
+                ssBstr2Ptr = Marshal.SecureStringToBSTR(secureString2);
+
+                String str1 = Marshal.PtrToStringBSTR(ssBstr1Ptr);
+                String str2 = Marshal.PtrToStringBSTR(ssBstr2Ptr);
+
+                return str1.Equals(str2);
+            }
+            finally
+            {
+                if (ssBstr1Ptr != IntPtr.Zero)
+                {
+                    Marshal.ZeroFreeBSTR(ssBstr1Ptr);
+                }
+
+                if (ssBstr2Ptr != IntPtr.Zero)
+                {
+                    Marshal.ZeroFreeBSTR(ssBstr2Ptr);
+                }
+            }
+        }
+
     }
 }
