@@ -47,6 +47,14 @@ steps:
     projectKey: '$(SONAR_CLOUD_KEY)'
     projectName: 'VnManager'
 
+- task: DotNetCoreCLI@2
+  displayName: Build and Publish
+  inputs:
+    command: publish
+    projects: '**/*VnManager.csproj'
+    publishWebProjects: false
+    arguments: '-c Release --output ./$(Build.SourcesDirectory)' # Update this to match your need
+
 - task: SonarCloudAnalyze@1
   displayName: 'Run SonarCloud analysis'
 
