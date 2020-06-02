@@ -4,7 +4,6 @@
 # https://aka.ms/yaml
 
 trigger:
-- v3
 - master
 
 variables:
@@ -58,21 +57,6 @@ steps:
     projects: '**/*VnManager.csproj'
     publishWebProjects: false
     arguments: '-c Release --output ./$(Build.SourcesDirectory)' # Update this to match your need
-    zipAfterPublish: True
-
-- task: CopyFiles@2
-  displayName: 'Copy Files to: Staging Directory'
-  inputs:
-    SourceFolder: '$(Build.SourcesDirectory)'
-    Contents: '$(Build.SourcesDirectory)\*.zip'
-    TargetFolder: '$(build.artifactstagingdirectory)'
-  condition: succeededOrFailed()
-  
-- task: PublishBuildArtifacts@1
-  displayName: 'Publish Artifact: drop'
-  inputs:
-    PathtoPublish: '$(build.artifactstagingdirectory)'
-  condition: succeededOrFailed()
 
 - task: SonarCloudAnalyze@1
   displayName: 'Run SonarCloud analysis'
