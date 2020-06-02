@@ -7,13 +7,8 @@ trigger:
 - master
 
 pool:
-  vmImage: 'windows-latest'
-
-variables:
-  solution: '**/*.sln'
-  buildPlatform: 'Any CPU'
-  buildConfiguration: 'Release'
-
+  vmImage: 'windows-2019'
+  
 steps:
 - checkout: self
   submodules: true
@@ -28,6 +23,20 @@ steps:
     script: |
       $jdkPath = 'C:\Program Files\Java\zulu-11-azure-jdk_11.33.15-11.0.4-win_x64'
       Write-Host "##vso[task.setvariable variable=JAVA_HOME]$jdkPath"
+  
+- task: DotNetCoreCLI@2
+  displayName: Restore Nuget packages
+  inputs:
+    command: restore
+    projects: '**/VnManager.csproj'
+    
+- task: Cache@2
+  displayName: Cache NuGet packages
+  inputs:
+    key: 'nuget | "$(Agent.OS)" | **/packages.lock.json,!**/bin/**'
+    restoreKeys: |
+       nuget | "$(Agent.OS)"
+    path: $(NUGET_PACKAGES)  
 
 - task: SonarCloudPrepare@1
   displayName: 'Prepare for SonarCloud Scan'
