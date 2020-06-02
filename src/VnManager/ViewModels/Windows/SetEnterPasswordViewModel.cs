@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Security;
@@ -13,6 +14,7 @@ namespace VnManager.ViewModels.Windows
 {
     public class SetEnterPasswordViewModel: Screen
     {
+        #region Previous
         public string Title { get; set; }
         public bool IsCreatePassword { get; set; } = true;
         public bool RequirePasswordChecked { get; set; }
@@ -20,47 +22,74 @@ namespace VnManager.ViewModels.Windows
         public SecureString ConfirmPassword { get; set; }
         public string Test { get; set; }
 
+        //private readonly IWindowManager _windowManager;
+        //private readonly IContainer _container;
+        //public SetEnterPasswordViewModel(IContainer container, IWindowManager windowManager, IModelValidator<SetEnterPasswordViewModel> validator) : base(validator)
+        //{
+        //    _container = container;
+        //    _windowManager = windowManager;
+        //    Title = "Set a password";
+        //    //if (File.Exists(Path.Combine(App.ConfigDirPath, @"secure\secrets.store")))
+        //    //{
+        //    //    IsCreatePassword = false;
+        //    var result = EncryptedStore.SecureStringEqual(Password, ConfirmPassword);
+        //    //}
+        //}
+        #endregion
+
+
         private readonly IWindowManager _windowManager;
         private readonly IContainer _container;
-        public SetEnterPasswordViewModel(IContainer container, IWindowManager windowManager, IModelValidator<SetEnterPasswordViewModel> validator): base(validator)
+        public SetEnterPasswordViewModel(IContainer container, IWindowManager windowManager, IModelValidator<SetEnterPasswordViewModel> validator) : base(validator)
         {
             _container = container;
             _windowManager = windowManager;
             Title = "Set a password";
-            //if (File.Exists(Path.Combine(App.ConfigDirPath, @"secure\secrets.store")))
-            //{
-            //    IsCreatePassword = false;
-            //}
+
+        }
+        public void Click()
+        {
+            Debug.WriteLine("clicked");
+            //var validator = new SetEnterPasswordViewModelValidator();
+            Validate();
+
         }
 
 
-
-        public void SetPassword()
+        public void OpenMain()
         {
-            var validator = new SetEnterPasswordViewModelValidator();
-            
-
-            //if (RequirePasswordChecked)
-            //{
-            //    var result = EncryptedStore.SecureStringEqual(Password, ConfirmPassword);
-            //}
-
-
+            //var vm = _container.Get<RootViewModel>();
+           // _windowManager.ShowWindow(vm);
+            //this.RequestClose();
         }
 
     }
 
 
+    
 
-    public class SetEnterPasswordViewModelValidator : AbstractValidator<SetEnterPasswordViewModel>
+
+
+    public class SetEnterPasswordViewModelValidator: AbstractValidator<SetEnterPasswordViewModel>
     {
         public SetEnterPasswordViewModelValidator()
         {
-            RuleFor(x => x.Password).NotEmpty().WithMessage("can't be empty");
+            RuleFor(x => x.Password).Cascade(CascadeMode.StopOnFirstFailure)
+                .NotNull().Unless(x => x.RequirePasswordChecked).WithMessage("Password cannot be empty");
+
+            RuleFor(x => x.ConfirmPassword).Cascade(CascadeMode.StopOnFirstFailure)
+                .NotNull().Unless(x => x.RequirePasswordChecked).WithMessage("Password cannot be empty")
+            .Must(DoPasswordsMatch).Unless(x => x.RequirePasswordChecked).WithMessage("Passwords do not match!");
         }
+
+
+
+        private bool DoPasswordsMatch(SetEnterPasswordViewModel instance, SecureString confirmPass)
+        {
+            return EncryptedStore.SecureStringEqual(instance.Password, confirmPass);
+        }
+
     }
-
-
 
 
 

@@ -11,10 +11,11 @@ using VnManager.ViewModels;
 using MvvmDialogs;
 using VnManager.Helpers;
 using VnManager.ViewModels.UserControls;
+using VnManager.ViewModels.Windows;
 
 namespace VnManager
 {
-    public class Bootstrapper: Bootstrapper<RootViewModel>
+    public class Bootstrapper: Bootstrapper<SetEnterPasswordViewModel>
     {
         protected override void OnStart()
         {
