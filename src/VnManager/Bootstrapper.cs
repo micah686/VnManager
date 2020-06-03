@@ -15,7 +15,7 @@ using VnManager.ViewModels.Windows;
 
 namespace VnManager
 {
-    public class Bootstrapper: Bootstrapper<SetEnterPasswordViewModel>
+    public class Bootstrapper: Bootstrapper<RootViewModel>
     {
         protected override void OnStart()
         {
@@ -25,7 +25,6 @@ namespace VnManager
             Initializers.Startup.SetDirectories();
             Initializers.Startup.DeleteOldLogs();
             LogManager.UpdateLoggerDirectory();
-            SettingsViewModel.LoadUserSettingsStatic();
             App.DatabasePath = Path.Combine(App.ConfigDirPath, @"database\Data.db");
             new EncryptedStore().CreateSecureStore();
             App.StartupLockout = true; //lock any App SetOnce settings from being set again

@@ -3,10 +3,12 @@ using Stylet;
 using StyletIoC;
 using System;
 using System.Drawing;
+using System.IO;
 using System.Reflection;
 using System.Resources;
 using System.Windows;
 using System.Windows.Media;
+using VnManager.Helpers;
 using VnManager.ViewModels.Dialogs;
 using VnManager.ViewModels.UserControls;
 using VnManager.ViewModels.Windows;
@@ -19,7 +21,8 @@ namespace VnManager.ViewModels
         public StatusBarViewModel StatusBarPage { get; set; }
 
         private readonly IContainer _container;
-        
+        private readonly IWindowManager _windowManager;
+
         private int _windowButtonPressedCounter = 0;
 
         public static RootViewModel Instance { get; private set; }
@@ -90,18 +93,68 @@ namespace VnManager.ViewModels
         {
             Instance = this;
             _container = container;
-            
-
-            StatusBarPage = _container.Get<StatusBarViewModel>();
+            _windowManager = windowManager;
 
 
-            var maingrid = _container.Get<MainGridViewModel>();
-            ActivateItem(maingrid);
-            var result = Application.Current.TryFindResource(AdonisUI.Colors.ForegroundColor);
-            SettingsIconColor = result == null ? System.Windows.Media.Brushes.LightSteelBlue : new SolidColorBrush((System.Windows.Media.Color)result);
+            // StatusBarPage = _container.Get<StatusBarViewModel>();
+
+
+            //var maingrid = _container.Get<MainGridViewModel>();
+            //ActivateItem(maingrid);
+            //var result = Application.Current.TryFindResource(AdonisUI.Colors.ForegroundColor);
+            //SettingsIconColor = result == null ? System.Windows.Media.Brushes.LightSteelBlue : new SolidColorBrush((System.Windows.Media.Color)result);
+
+
+
+
+           
+
         }
 
-        
+        protected override void OnViewLoaded()
+        {
+
+            if (!IsNormalStart())
+            {
+                var auth = _container.Get<SetEnterPasswordViewModel>();
+                var isAuth = _windowManager.ShowDialog(auth);
+                if (isAuth == true)
+                {
+                    var maingrid = _container.Get<MainGridViewModel>();
+                    ActivateItem(maingrid);
+                    var result = Application.Current.TryFindResource(AdonisUI.Colors.ForegroundColor);
+                    SettingsIconColor = result == null ? System.Windows.Media.Brushes.LightSteelBlue : new SolidColorBrush((System.Windows.Media.Color)result);
+                }
+                else
+                {
+                    Environment.Exit(0);//closed auth window
+                }
+            }
+            else
+            {
+                var maingrid = _container.Get<MainGridViewModel>();
+                ActivateItem(maingrid);
+                var result = Application.Current.TryFindResource(AdonisUI.Colors.ForegroundColor);
+                SettingsIconColor = result == null ? System.Windows.Media.Brushes.LightSteelBlue : new SolidColorBrush((System.Windows.Media.Color)result);
+            }
+
+
+
+
+        }
+
+        private bool IsNormalStart()
+        {
+            var configFile = Path.Combine(App.ConfigDirPath, @"config\config.xml");
+            if (!File.Exists(configFile)) return false;
+            if (!ValidateXml.IsValidXml(configFile)) return false;
+
+            SettingsViewModel.LoadUserSettingsStatic();
+            var useEncryption = App.UserSettings.EncryptionEnabled;
+            return !useEncryption;
+        }
+
+
         public void ActivateSettingsClick()
         {
             var vm = _container.Get<SettingsViewModel>();

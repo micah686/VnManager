@@ -19,7 +19,7 @@ namespace VnManager.ViewModels.UserControls
     public class SettingsViewModel :Screen
     {
         private static readonly ResourceManager Rm = new ResourceManager("VnManager.Strings.Resources", Assembly.GetExecutingAssembly());
-        private const string configFile = @"\config\config.xml";
+        private readonly string configFile = Path.Combine(App.ConfigDirPath, @"config\config.xml");
         public string Theme { get; set; } = "DarkTheme";
         public bool NsfwEnabled { get; set; }
         public bool NsfwContentSavedVisible { get; set; }
@@ -59,7 +59,7 @@ namespace VnManager.ViewModels.UserControls
             try
             {
                 var serializer = new XmlSerializer(typeof(UserSettings));
-                using (var writer = new StreamWriter(App.ConfigDirPath + configFile))
+                using (var writer = new StreamWriter(configFile))
                 {
                     serializer.Serialize(writer, settings);
                 }
@@ -74,16 +74,16 @@ namespace VnManager.ViewModels.UserControls
 
         public void LoadUserSettings()
         {
-            if(!File.Exists(App.ConfigDirPath + configFile))
+            if(!File.Exists(configFile))
             {
                 CreateDefaultConfig();
             }
             try
             {
                 var serializer = new XmlSerializer(typeof(UserSettings));
-                using (var fs = new FileStream(App.ConfigDirPath + configFile, FileMode.Open, FileAccess.Read, FileShare.Read))
+                using (var fs = new FileStream(configFile, FileMode.Open, FileAccess.Read, FileShare.Read))
                 {
-                    bool isValid = ValidateXml.IsValidXml(App.ConfigDirPath + configFile);
+                    bool isValid = ValidateXml.IsValidXml(configFile);
                     App.UserSettings = isValid == true ? (UserSettings)serializer.Deserialize(fs) : null;
                 }
             }
@@ -110,7 +110,7 @@ namespace VnManager.ViewModels.UserControls
             try
             {
                 var serializer = new XmlSerializer(typeof(UserSettings));
-                using (var writer = new StreamWriter(App.ConfigDirPath + configFile))
+                using (var writer = new StreamWriter(configFile))
                 {
                     serializer.Serialize(writer, settings);
                 }
