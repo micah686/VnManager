@@ -41,7 +41,7 @@ namespace VnManager.ViewModels.UserControls
             }            
         }
 
-        public void SaveUserSettings()
+        public void SaveUserSettings(bool useEncryption = false)
         {
             Enum.TryParse(SpoilerString, out SpoilerLevel spoiler);
             UserSettingsVndb vndb = new UserSettingsVndb
@@ -53,7 +53,8 @@ namespace VnManager.ViewModels.UserControls
                 ColorTheme = Theme,
                 IsNsfwEnabled = NsfwEnabled,
                 IsVisibleSavedNsfwContent = NsfwContentSavedVisible,
-                SettingsVndb = vndb
+                SettingsVndb = vndb,
+                EncryptionEnabled = useEncryption
             };
 
             try

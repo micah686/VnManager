@@ -122,45 +122,22 @@ namespace VnManager
         }
         #endregion
 
-        #region Database
-
-        private static string _databasePath;
-
-        public static string DatabasePath
-        {
-            get => _databasePath;
-            set
-            {
-                if (!StartupLockout)
-                {
-                    _databasePath = value;
-                }
-                else
-                {
-                    throw new InvalidOperationException("Cannot set Database Path after Startup");
-                }
-            }
-        }
-        
-
-        #endregion
-
-
         public static UserSettings UserSettings { get; set; }
 
         public static string GetDatabaseString()
         {
-            if(!File.Exists(Path.Combine(App.ConfigDirPath, @"secure\secrets.store"))|| !File.Exists(Path.Combine(App.ConfigDirPath, @"secure\secrets.key"))) return String.Empty;
+            if (!File.Exists(Path.Combine(App.ConfigDirPath, @"secure\secrets.store")) || !File.Exists(Path.Combine(App.ConfigDirPath, @"secure\secrets.key"))) return String.Empty;
             try
             {
                 return new EncryptedStore().ReadSecret("ConnStr");
             }
             catch (Exception e)
             {
-                App.Logger.Error(e,"Couldn't read ConnString");
+                App.Logger.Error(e, "Couldn't read ConnString");
                 return String.Empty;
             }
-            
+
         }
+
     }
 }

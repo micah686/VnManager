@@ -64,7 +64,7 @@ namespace VnManager.ViewModels.UserControls
 
         public void AddUserData()
         {
-            using (var db = new LiteDatabase(App.DatabasePath))
+            using (var db = new LiteDatabase(App.GetDatabaseString()))
             {
                 var dbUserData = db.GetCollection<UserDataGames>("UserData_Games");
                 var entry = new UserDataGames();

@@ -385,7 +385,7 @@ namespace VnManager.ViewModels.Windows
             //if type is normal and game id in db or exe in db
             try
             {
-                using (var db = new LiteDatabase(App.DatabasePath))
+                using (var db = new LiteDatabase(App.GetDatabaseString()))
                 {
                     if (instance == null) return false;
                     var id = instance.VnId;
@@ -423,7 +423,7 @@ namespace VnManager.ViewModels.Windows
         {
             try
             {
-                using (var db = new LiteDatabase(App.DatabasePath))
+                using (var db = new LiteDatabase(App.GetDatabaseString()))
                 {
                     if (instance == null) return false;
                     var exePath = instance.ExePath;

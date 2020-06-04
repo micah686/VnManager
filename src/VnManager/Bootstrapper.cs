@@ -25,8 +25,6 @@ namespace VnManager
             Initializers.Startup.SetDirectories();
             Initializers.Startup.DeleteOldLogs();
             LogManager.UpdateLoggerDirectory();
-            App.DatabasePath = Path.Combine(App.ConfigDirPath, @"database\Data.db");
-            //new EncryptedStore().CreateSecureStore();
             App.StartupLockout = true; //lock any App SetOnce settings from being set again
         }
 

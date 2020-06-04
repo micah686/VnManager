@@ -14,6 +14,8 @@ using NeoSmart.SecureStore;
 using Stylet;
 using StyletIoC;
 using VnManager.Helpers;
+using VnManager.Models.Settings;
+using VnManager.ViewModels.UserControls;
 
 namespace VnManager.ViewModels.Windows
 {
@@ -71,6 +73,8 @@ namespace VnManager.ViewModels.Windows
 
                     enc.SetSecret("ConnStr", $"Filename={Path.Combine(App.ConfigDirPath, @"database\Data.db")};Password={Marshal.PtrToStringBSTR(Marshal.SecureStringToBSTR(Password))}");
                     using (var db = new LiteDatabase(enc.ReadSecret("ConnStr"))) { }
+                    var settings = new SettingsViewModel();
+                    settings.SaveUserSettings(true);
                     RequestClose(true);
                 }
                 else

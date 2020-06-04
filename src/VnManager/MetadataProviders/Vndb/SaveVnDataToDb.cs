@@ -61,7 +61,7 @@ namespace VnManager.MetadataProviders.Vndb
             if (visualNovel == null) return;
             try
             {
-                using (var db = new LiteDatabase(App.DatabasePath))
+                using (var db = new LiteDatabase(App.GetDatabaseString()))
                 {
                     var dbVnInfo = db.GetCollection<VnInfo>("VnInfo");
                     ILiteCollection<VnInfoAnime> dbVnInfoAnime = db.GetCollection<VnInfoAnime>("VnInfo_Anime");
@@ -256,7 +256,7 @@ namespace VnManager.MetadataProviders.Vndb
         public void SaveVnCharacters(List<Character> characters, uint vnid)
         {
             if (characters.Count < 1) return;
-            using (var db = new LiteDatabase(App.DatabasePath))
+            using (var db = new LiteDatabase(App.GetDatabaseString()))
             {
                 var dbCharInfo = db.GetCollection<VnCharacterInfo>("VnCharacter");
                 ILiteCollection<VnCharacterTraits> dbCharTraits = db.GetCollection<VnCharacterTraits>("VnCharacter_Traits");
@@ -399,7 +399,7 @@ namespace VnManager.MetadataProviders.Vndb
         #region VnReleases
         public void SaveVnReleases(List<Release> vnReleases)
         {
-            using (var db = new LiteDatabase(App.DatabasePath))
+            using (var db = new LiteDatabase(App.GetDatabaseString()))
             {
                 var dbVnRelease = db.GetCollection<VnRelease>("VnReleases");
                 var dbVnReleaseMedia = db.GetCollection<VnReleaseMedia>("VnReleases_Media");
@@ -518,7 +518,7 @@ namespace VnManager.MetadataProviders.Vndb
         #region VnProducers
         public void SaveProducers(List<Producer> vnProducers)
         {
-            using (var db = new LiteDatabase(App.DatabasePath))
+            using (var db = new LiteDatabase(App.GetDatabaseString()))
             {
                 var dbVnProducer = db.GetCollection<VnProducer>("VnProducers");
                 var dbVnProducerLinks = db.GetCollection<VnProducerLinks>("VnProducers_Links");
@@ -581,7 +581,7 @@ namespace VnManager.MetadataProviders.Vndb
         #region VnStaff
         public void SaveStaff(List<Staff> vnStaffList, int vnid)
         {
-            using (var db = new LiteDatabase(App.DatabasePath))
+            using (var db = new LiteDatabase(App.GetDatabaseString()))
             {
                 var dbVnStaff = db.GetCollection<VnStaff>("VnStaff");
                 var dbVnStaffAliases = db.GetCollection<VnStaffAliases>("VnStaff_Aliases");
@@ -694,7 +694,7 @@ namespace VnManager.MetadataProviders.Vndb
 
         private void SaveUserData(AddItemDbModel data)
         {
-            using (var db = new LiteDatabase(App.DatabasePath))
+            using (var db = new LiteDatabase(App.GetDatabaseString()))
             {
                 var dbUserData = db.GetCollection<UserDataGames>("UserData_Games");
                 List<UserDataGames> gamesList = new List<UserDataGames>();
@@ -743,7 +743,7 @@ namespace VnManager.MetadataProviders.Vndb
         {
             try
             {
-                using (var db = new LiteDatabase(App.DatabasePath))
+                using (var db = new LiteDatabase(App.GetDatabaseString()))
                 {
                     var dbTags = db.GetCollection<VnTagData>("VnDump_TagData");
                     List<Tag> tagDump = (await VndbUtils.GetTagsDumpAsync()).ToList();
@@ -784,7 +784,7 @@ namespace VnManager.MetadataProviders.Vndb
         {
             try
             {
-                using (var db = new LiteDatabase(App.DatabasePath))
+                using (var db = new LiteDatabase(App.GetDatabaseString()))
                 {
                     var dbTraits = db.GetCollection<VnTraitData>("VnDump_TraitData");
                     List<Trait> traitDump = (await VndbUtils.GetTraitsDumpAsync()).ToList();
