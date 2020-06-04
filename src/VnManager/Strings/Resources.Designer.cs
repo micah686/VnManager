@@ -169,6 +169,24 @@ namespace VnManager.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Confirm Password:.
+        /// </summary>
+        public static string ConfirmPassword {
+            get {
+                return ResourceManager.GetString("ConfirmPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Set a password.
+        /// </summary>
+        public static string CreatePassTitle {
+            get {
+                return ResourceManager.GetString("CreatePassTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to THIS PAGE SHOULD ONLY BE ABLE TO BE ACCESSED IF YOU ARE DEBUGGING THE PROGRAM FROM VISUAL STUDIO.
         /// </summary>
         public static string DebugPageWarning1 {
@@ -259,6 +277,15 @@ namespace VnManager.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please enter your password.
+        /// </summary>
+        public static string EnterPass {
+            get {
+                return ResourceManager.GetString("EnterPass", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This Exe already exists in the database.
         /// </summary>
         public static string ExeAlreadyExistsInDb {
@@ -282,6 +309,24 @@ namespace VnManager.Strings {
         public static string ExeType {
             get {
                 return ResourceManager.GetString("ExeType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The password cannot be changed once it has been set!.
+        /// </summary>
+        public static string FirstSetupPassNoChange {
+            get {
+                return ResourceManager.GetString("FirstSetupPassNoChange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Would you like to require a password to use this application?.
+        /// </summary>
+        public static string FirstSetupRequirePass {
+            get {
+                return ResourceManager.GetString("FirstSetupRequirePass", resourceCulture);
             }
         }
         
@@ -394,6 +439,33 @@ namespace VnManager.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Password is Incorrect.
+        /// </summary>
+        public static string PassIncorrect {
+            get {
+                return ResourceManager.GetString("PassIncorrect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Password:.
+        /// </summary>
+        public static string Password {
+            get {
+                return ResourceManager.GetString("Password", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Password cannot be empty.
+        /// </summary>
+        public static string PasswordNoEmpty {
+            get {
+                return ResourceManager.GetString("PasswordNoEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Path:.
         /// </summary>
         public static string Path {
@@ -453,6 +525,15 @@ namespace VnManager.Strings {
         public static string Submit {
             get {
                 return ResourceManager.GetString("Submit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter password to unlock the database.
+        /// </summary>
+        public static string UnlockDb {
+            get {
+                return ResourceManager.GetString("UnlockDb", resourceCulture);
             }
         }
         

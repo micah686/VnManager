@@ -5,7 +5,10 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Text;
+using System.Threading.Tasks;
 using FluentValidation;
+using LiteDB;
+using NeoSmart.SecureStore;
 using Stylet;
 using StyletIoC;
 using VnManager.Helpers;
@@ -34,6 +37,10 @@ namespace VnManager.ViewModels.Windows
         }
 
 
+        public bool IsPasswordCheckClicked { get; set; } = false;
+        public bool IsUnlockPasswordButtonEnabled { get; set; } = true;
+        private int _attemptCounter = 0;
+
         #endregion
 
         private readonly IWindowManager _windowManager;
@@ -43,6 +50,10 @@ namespace VnManager.ViewModels.Windows
             _container = container;
             _windowManager = windowManager;
             Title = "Set a password";
+            if (App.UserSettings.EncryptionEnabled)
+            {
+                IsCreatePasswordVisible = false;
+            }
         }
 
 
@@ -62,21 +73,75 @@ namespace VnManager.ViewModels.Windows
 
         public void CreatePasswordClick()
         {
-            if (RequirePasswordChecked)
+            try
             {
+                if (RequirePasswordChecked)
+                {
+                    var enc = new EncryptedStore();
+                    enc.CreateSecureStore();
 
+                    enc.SetSecret("ConnStr", $"Filename={Path.Combine(App.ConfigDirPath, @"database\Data.db")};Password={Marshal.PtrToStringBSTR(Marshal.SecureStringToBSTR(Password))}");
+                    using (var db = new LiteDatabase(enc.ReadSecret("ConnStr"))) { }
+                    RequestClose(true);
+                }
+                else
+                {
+                    var enc = new EncryptedStore();
+                    enc.CreateSecureStore();
+                    enc.SetSecret("ConnStr", $"Filename={Path.Combine(App.ConfigDirPath, @"database\Data.db")};Password={enc.ReadSecret("FileEnc")}");
+                    using (var db = new LiteDatabase(enc.ReadSecret("ConnStr"))) { }
+                    RequestClose(true);
+                }
             }
-            else
+            catch (Exception ex)
+            {
+                App.Logger.Error(ex, "Couldn't Create Password");
+                RequestClose(false);
+            }
+        }
+
+        public async Task UnlockPasswordClick()
+        {
+            IsPasswordCheckClicked = true;
+            bool result = await ValidateAsync();
+            if (result)
             {
                 RequestClose(true);
             }
+            _attemptCounter += 1;
+            await PasswordAttemptChecker();
+            IsPasswordCheckClicked = false;
         }
 
-        public void UnlockPasswordClick()
+
+
+        private async Task PasswordAttemptChecker()
         {
-
+            if(_attemptCounter <=5)
+            {
+                IsUnlockPasswordButtonEnabled = false;
+                await Task.Delay(TimeSpan.FromMilliseconds(650));
+                IsUnlockPasswordButtonEnabled = true;
+            }
+            if (_attemptCounter >= 5 && _attemptCounter <= 20)
+            {
+                IsUnlockPasswordButtonEnabled = false;
+                var wait = new Random().NextDouble() * (8 - 2) + 2;
+                await Task.Delay(TimeSpan.FromSeconds(wait));
+                
+                IsUnlockPasswordButtonEnabled = true;
+            }
+            if (_attemptCounter > 20 && _attemptCounter < 50)
+            {
+                IsUnlockPasswordButtonEnabled = false;
+                await Task.Delay(TimeSpan.FromSeconds(30));
+                IsUnlockPasswordButtonEnabled = true;
+            }
+            else if(_attemptCounter > 50)
+            {
+                Environment.Exit(0);
+            }
         }
-
 
     }
 
@@ -89,7 +154,6 @@ namespace VnManager.ViewModels.Windows
     {
         public SetEnterPasswordViewModelValidator()
         {
-
             When(x => x.IsCreatePasswordVisible && x.RequirePasswordChecked, () =>
             {
                 RuleFor(x => x.Password).NotNull().WithMessage("Password cannot be empty");
@@ -99,6 +163,12 @@ namespace VnManager.ViewModels.Windows
                     .Must(DoPasswordsMatch).WithMessage("Passwords do not match");
 
             });
+
+            When(x => x.IsUnlockPasswordVisible && x.IsPasswordCheckClicked, () =>
+            {
+                RuleFor(x => x.Password).Must(DidEnterRightPassword).WithMessage("Password is Incorrect");
+
+            });
         }
 
 
@@ -106,6 +176,25 @@ namespace VnManager.ViewModels.Windows
         private bool DoPasswordsMatch(SetEnterPasswordViewModel instance, SecureString confirmPass)
         {
             return EncryptedStore.SecureStringEqual(instance.Password, confirmPass);
+        }
+
+        private bool DidEnterRightPassword(SecureString password)
+        {
+            try
+            {
+                if (password == null) return false;
+                using var db = new LiteDatabase($"Filename={Path.Combine(App.ConfigDirPath, @"database\Data.db")};Password={Marshal.PtrToStringBSTR(Marshal.SecureStringToBSTR(password))}");
+                return true;
+            }
+            catch (LiteException ex)
+            {
+                return false;
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error("DidEnterWithRightPassword an unknown error occurred");
+                return false;
+            }
         }
 
     }

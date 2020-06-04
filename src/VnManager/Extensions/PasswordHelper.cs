@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Runtime.InteropServices;
 using System.Security;
 using System.Text;
 using System.Windows;
@@ -64,7 +65,8 @@ namespace VnManager.Extensions
 
             if (!(bool) GetIsUpdating(passwordBox))
             {
-                passwordBox.Password = (string) e.NewValue;
+                var secureStr = Marshal.SecureStringToBSTR((SecureString)e.NewValue);
+                passwordBox.Password = Marshal.PtrToStringBSTR(secureStr);
             }
 
             passwordBox.PasswordChanged += PasswordChanged;

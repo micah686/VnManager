@@ -254,13 +254,13 @@ namespace VnManager.Helpers
             if (File.Exists(_secretStore)) return;
             using (var secMan = SecretsManager.CreateStore())
             {
-                var secret = GenerateSecureKey(128);
-                secMan.LoadKeyFromPassword(secret); //securely derive key from passsword
-                secMan.Set("FileEnc", secret);
+                secMan.LoadKeyFromPassword(GenerateSecureKey(128)); //securely derive key from password
+                secMan.Set("FileEnc", GenerateSecureKey(128));
 
                 secMan.ExportKey(_secretKey);
                 secMan.SaveStore(_secretStore);
             }
+
         }
 
         private static string GenerateSecureKey(int length)
@@ -303,7 +303,7 @@ namespace VnManager.Helpers
                 String str1 = Marshal.PtrToStringBSTR(ssBstr1Ptr);
                 String str2 = Marshal.PtrToStringBSTR(ssBstr2Ptr);
 
-                return str1.Equals(str2);
+                return Marshal.PtrToStringBSTR(ssBstr1Ptr).Equals(Marshal.PtrToStringBSTR(ssBstr2Ptr));
             }
             finally
             {

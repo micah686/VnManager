@@ -116,8 +116,10 @@ namespace VnManager.ViewModels
 
             if (!IsNormalStart())
             {
+                SettingsViewModel.LoadUserSettingsStatic();
                 var auth = _container.Get<SetEnterPasswordViewModel>();
                 var isAuth = _windowManager.ShowDialog(auth);
+                
                 if (isAuth == true)
                 {
                     var maingrid = _container.Get<MainGridViewModel>();

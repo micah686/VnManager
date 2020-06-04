@@ -153,6 +153,12 @@
   <data name="Collection" xml:space="preserve">
     <value>Collection</value>
   </data>
+  <data name="ConfirmPassword" xml:space="preserve">
+    <value>Confirm Password:</value>
+  </data>
+  <data name="CreatePassTitle" xml:space="preserve">
+    <value>Set a password</value>
+  </data>
   <data name="DebugPageWarning1" xml:space="preserve">
     <value>THIS PAGE SHOULD ONLY BE ABLE TO BE ACCESSED IF YOU ARE DEBUGGING THE PROGRAM FROM VISUAL STUDIO</value>
   </data>
@@ -183,6 +189,9 @@
   <data name="EnableNsfwImagesOnDisk" xml:space="preserve">
     <value>Enable Nsfw Images on Disk</value>
   </data>
+  <data name="EnterPass" xml:space="preserve">
+    <value>Please enter your password</value>
+  </data>
   <data name="ExeAlreadyExistsInDb" xml:space="preserve">
     <value>This Exe already exists in the database</value>
   </data>
@@ -191,6 +200,12 @@
   </data>
   <data name="ExeType" xml:space="preserve">
     <value>ExeType:</value>
+  </data>
+  <data name="FirstSetupPassNoChange" xml:space="preserve">
+    <value>The password cannot be changed once it has been set!</value>
+  </data>
+  <data name="FirstSetupRequirePass" xml:space="preserve">
+    <value>Would you like to require a password to use this application?</value>
   </data>
   <data name="Icon" xml:space="preserve">
     <value>Icon:</value>
@@ -228,6 +243,15 @@
   <data name="NoSource" xml:space="preserve">
     <value>No Source</value>
   </data>
+  <data name="PassIncorrect" xml:space="preserve">
+    <value>Password is Incorrect</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Password:</value>
+  </data>
+  <data name="PasswordNoEmpty" xml:space="preserve">
+    <value>Password cannot be empty</value>
+  </data>
   <data name="Path" xml:space="preserve">
     <value>Path:</value>
   </data>
@@ -248,6 +272,9 @@
   </data>
   <data name="Submit" xml:space="preserve">
     <value>Submit</value>
+  </data>
+  <data name="UnlockDb" xml:space="preserve">
+    <value>Enter password to unlock the database</value>
   </data>
   <data name="ValidationArgumentsEmpty" xml:space="preserve">
     <value>Arguments cannot be empty</value>
