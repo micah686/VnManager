@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
+using System.Resources;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Text;
@@ -56,23 +58,10 @@ namespace VnManager.ViewModels.Windows
             }
         }
 
-
-
-
-        public void Click()
-        {
-
-            var validator = new SetEnterPasswordViewModelValidator();
-            ValidateAsync();
-            bool result = validator.Validate(this).IsValid;
-
-
-        }
-
-
-
         public void CreatePasswordClick()
         {
+            var rm = new ResourceManager("VnManager.Strings.Resources", Assembly.GetExecutingAssembly());
+            Title = rm.GetString("CreatePassTitle");
             try
             {
                 if (RequirePasswordChecked)
@@ -102,6 +91,8 @@ namespace VnManager.ViewModels.Windows
 
         public async Task UnlockPasswordClick()
         {
+            var rm = new ResourceManager("VnManager.Strings.Resources", Assembly.GetExecutingAssembly());
+            Title = rm.GetString("UnlockDbTitle");
             IsPasswordCheckClicked = true;
             bool result = await ValidateAsync();
             if (result)
@@ -145,28 +136,24 @@ namespace VnManager.ViewModels.Windows
 
     }
 
-
-    
-
-
-
     public class SetEnterPasswordViewModelValidator: AbstractValidator<SetEnterPasswordViewModel>
     {
         public SetEnterPasswordViewModelValidator()
         {
+            var rm = new ResourceManager("VnManager.Strings.Resources", Assembly.GetExecutingAssembly());
             When(x => x.IsCreatePasswordVisible && x.RequirePasswordChecked, () =>
             {
-                RuleFor(x => x.Password).NotNull().WithMessage("Password cannot be empty");
+                RuleFor(x => x.Password).NotNull().WithMessage(rm.GetString("PasswordNoEmpty"));
 
                 RuleFor(x => x.ConfirmPassword).Cascade(CascadeMode.StopOnFirstFailure)
-                    .NotNull().WithMessage("Password cannot be empty")
-                    .Must(DoPasswordsMatch).WithMessage("Passwords do not match");
+                    .NotNull().WithMessage(rm.GetString("PasswordNoEmpty"))
+                    .Must(DoPasswordsMatch).WithMessage(rm.GetString("PasswordsNoMatch"));
 
             });
 
             When(x => x.IsUnlockPasswordVisible && x.IsPasswordCheckClicked, () =>
             {
-                RuleFor(x => x.Password).Must(DidEnterRightPassword).WithMessage("Password is Incorrect");
+                RuleFor(x => x.Password).Must(DidEnterRightPassword).WithMessage(rm.GetString("PassIncorrect"));
 
             });
         }

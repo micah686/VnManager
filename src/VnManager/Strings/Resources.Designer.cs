@@ -466,6 +466,15 @@ namespace VnManager.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Passwords do not match.
+        /// </summary>
+        public static string PasswordsNoMatch {
+            get {
+                return ResourceManager.GetString("PasswordsNoMatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Path:.
         /// </summary>
         public static string Path {
@@ -531,9 +540,9 @@ namespace VnManager.Strings {
         /// <summary>
         ///   Looks up a localized string similar to Enter password to unlock the database.
         /// </summary>
-        public static string UnlockDb {
+        public static string UnlockDbTitle {
             get {
-                return ResourceManager.GetString("UnlockDb", resourceCulture);
+                return ResourceManager.GetString("UnlockDbTitle", resourceCulture);
             }
         }
         

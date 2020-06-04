@@ -252,6 +252,9 @@
   <data name="PasswordNoEmpty" xml:space="preserve">
     <value>Password cannot be empty</value>
   </data>
+  <data name="PasswordsNoMatch" xml:space="preserve">
+    <value>Passwords do not match</value>
+  </data>
   <data name="Path" xml:space="preserve">
     <value>Path:</value>
   </data>
@@ -273,7 +276,7 @@
   <data name="Submit" xml:space="preserve">
     <value>Submit</value>
   </data>
-  <data name="UnlockDb" xml:space="preserve">
+  <data name="UnlockDbTitle" xml:space="preserve">
     <value>Enter password to unlock the database</value>
   </data>
   <data name="ValidationArgumentsEmpty" xml:space="preserve">
