@@ -96,18 +96,7 @@ namespace VnManager.ViewModels
             _windowManager = windowManager;
 
 
-            // StatusBarPage = _container.Get<StatusBarViewModel>();
-
-
-            //var maingrid = _container.Get<MainGridViewModel>();
-            //ActivateItem(maingrid);
-            //var result = Application.Current.TryFindResource(AdonisUI.Colors.ForegroundColor);
-            //SettingsIconColor = result == null ? System.Windows.Media.Brushes.LightSteelBlue : new SolidColorBrush((System.Windows.Media.Color)result);
-
-
-
-
-           
+             
 
         }
 
@@ -124,6 +113,7 @@ namespace VnManager.ViewModels
                 {
                     var maingrid = _container.Get<MainGridViewModel>();
                     ActivateItem(maingrid);
+                    StatusBarPage = _container.Get<StatusBarViewModel>();
                     var result = Application.Current.TryFindResource(AdonisUI.Colors.ForegroundColor);
                     SettingsIconColor = result == null ? System.Windows.Media.Brushes.LightSteelBlue : new SolidColorBrush((System.Windows.Media.Color)result);
                 }
@@ -136,6 +126,7 @@ namespace VnManager.ViewModels
             {
                 var maingrid = _container.Get<MainGridViewModel>();
                 ActivateItem(maingrid);
+                StatusBarPage = _container.Get<StatusBarViewModel>();
                 var result = Application.Current.TryFindResource(AdonisUI.Colors.ForegroundColor);
                 SettingsIconColor = result == null ? System.Windows.Media.Brushes.LightSteelBlue : new SolidColorBrush((System.Windows.Media.Color)result);
             }
@@ -150,8 +141,9 @@ namespace VnManager.ViewModels
             var configFile = Path.Combine(App.ConfigDirPath, @"config\config.xml");
             if (!File.Exists(configFile)) return false;
             if (!ValidateXml.IsValidXml(configFile)) return false;
-
-            SettingsViewModel.LoadUserSettingsStatic();
+            if (!File.Exists(Path.Combine(App.ConfigDirPath, @"secure\secrets.store")) ||
+                !File.Exists(Path.Combine(App.ConfigDirPath, @"secure\secrets.key"))) return false;
+                SettingsViewModel.LoadUserSettingsStatic();
             var useEncryption = App.UserSettings.EncryptionEnabled;
             return !useEncryption;
         }

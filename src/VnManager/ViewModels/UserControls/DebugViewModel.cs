@@ -85,8 +85,8 @@ namespace VnManager.ViewModels.UserControls
         public void CreateSecure()
         {
             //new Helpers.EncryptedStore().FileEncrypt("test.txt", "FileEnc");
-            new Helpers.EncryptedStore().SetSecret("VndbPass", "samplepassword12345!@#");
-            var foo = new Helpers.EncryptedStore().ReadSecret("VndbPass");
+            new Helpers.Secure().SetSecret("VndbPass", "samplepassword12345!@#");
+            var foo = new Helpers.Secure().ReadSecret("VndbPass");
         }
 
         public void TestStrings()

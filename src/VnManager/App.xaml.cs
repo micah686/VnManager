@@ -126,10 +126,9 @@ namespace VnManager
 
         public static string GetDatabaseString()
         {
-            if (!File.Exists(Path.Combine(App.ConfigDirPath, @"secure\secrets.store")) || !File.Exists(Path.Combine(App.ConfigDirPath, @"secure\secrets.key"))) return String.Empty;
             try
             {
-                return new EncryptedStore().ReadSecret("ConnStr");
+                return new Secure().ReadSecret("ConnStr");
             }
             catch (Exception e)
             {

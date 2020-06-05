@@ -53,22 +53,32 @@ namespace VnManager.ViewModels.Windows
         {
             _container = container;
             _windowManager = windowManager;
-            Title = "Set a password";
-            if (App.UserSettings.EncryptionEnabled)
+            var rm = new ResourceManager("VnManager.Strings.Resources", Assembly.GetExecutingAssembly());
+            Title = rm.GetString("CreatePassTitle");
+            if (!App.UserSettings.EncryptionEnabled) return;
+            IsCreatePasswordVisible = false; //sets form to unlock mode
+            Title = rm.GetString("UnlockDbTitle");
+            if ((!File.Exists(Path.Combine(App.ConfigDirPath, @"secure\secrets.store")) || 
+                 !File.Exists(Path.Combine(Path.Combine(App.ConfigDirPath, @"secure\secrets.key")))))
             {
-                IsCreatePasswordVisible = false;
+                File.Delete(Path.Combine(App.ConfigDirPath, @"config\config.xml"));
+                Environment.Exit(0);
+            }
+            if (new Secure().TestSecret("ConnStr") == false)
+            {
+                File.Delete(Path.Combine(App.ConfigDirPath, @"database\Data.db"));
+                Environment.Exit(0);
             }
         }
 
         public void CreatePasswordClick()
         {
-            var rm = new ResourceManager("VnManager.Strings.Resources", Assembly.GetExecutingAssembly());
-            Title = rm.GetString("CreatePassTitle");
+            
             try
             {
                 if (RequirePasswordChecked)
                 {
-                    var enc = new EncryptedStore();
+                    var enc = new Secure();
                     enc.CreateSecureStore();
 
                     enc.SetSecret("ConnStr", $"Filename={Path.Combine(App.ConfigDirPath, @"database\Data.db")};Password={Marshal.PtrToStringBSTR(Marshal.SecureStringToBSTR(Password))}");
@@ -79,7 +89,7 @@ namespace VnManager.ViewModels.Windows
                 }
                 else
                 {
-                    var enc = new EncryptedStore();
+                    var enc = new Secure();
                     enc.CreateSecureStore();
                     enc.SetSecret("ConnStr", $"Filename={Path.Combine(App.ConfigDirPath, @"database\Data.db")};Password={enc.ReadSecret("FileEnc")}");
                     using (var db = new LiteDatabase(enc.ReadSecret("ConnStr"))) { }
@@ -95,8 +105,6 @@ namespace VnManager.ViewModels.Windows
 
         public async Task UnlockPasswordClick()
         {
-            var rm = new ResourceManager("VnManager.Strings.Resources", Assembly.GetExecutingAssembly());
-            Title = rm.GetString("UnlockDbTitle");
             IsPasswordCheckClicked = true;
             bool result = await ValidateAsync();
             if (result)
@@ -166,7 +174,7 @@ namespace VnManager.ViewModels.Windows
 
         private bool DoPasswordsMatch(SetEnterPasswordViewModel instance, SecureString confirmPass)
         {
-            return EncryptedStore.SecureStringEqual(instance.Password, confirmPass);
+            return Secure.SecureStringEqual(instance.Password, confirmPass);
         }
 
         private bool DidEnterRightPassword(SecureString password)

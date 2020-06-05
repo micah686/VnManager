@@ -24,6 +24,7 @@ namespace VnManager
             
             Initializers.Startup.SetDirectories();
             Initializers.Startup.DeleteOldLogs();
+            Initializers.Startup.ValidateFiles();
             LogManager.UpdateLoggerDirectory();
             App.StartupLockout = true; //lock any App SetOnce settings from being set again
         }

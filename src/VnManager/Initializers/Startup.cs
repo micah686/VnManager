@@ -4,6 +4,7 @@ using System.IO.Abstractions;
 using VnManager.Utilities;
 using VnManager.Helpers;
 using System.Globalization;
+using System.Linq;
 using LiteDB;
 
 namespace VnManager.Initializers
@@ -59,10 +60,10 @@ namespace VnManager.Initializers
         {
             //Assets folder ( images, logs,...)
             fs.Directory.CreateDirectory(Path.Combine(App.AssetDirPath, @"res\icons\countryFlags"));
-
-            fs.Directory.CreateDirectory(Path.Combine(App.AssetDirPath, @"vndb\images\cover"));
-            fs.Directory.CreateDirectory(Path.Combine(App.AssetDirPath, @"vndb\images\screenshots"));
-            fs.Directory.CreateDirectory(Path.Combine(App.AssetDirPath, @"vndb\images\characters"));
+            fs.Directory.CreateDirectory(Path.Combine(App.AssetDirPath, @"sources\vndb\images\cover"));
+            fs.Directory.CreateDirectory(Path.Combine(App.AssetDirPath, @"sources\vndb\images\cover"));
+            fs.Directory.CreateDirectory(Path.Combine(App.AssetDirPath, @"sources\vndb\images\screenshots"));
+            fs.Directory.CreateDirectory(Path.Combine(App.AssetDirPath, @"sources\vndb\images\characters"));
 
             fs.Directory.CreateDirectory(Path.Combine(App.AssetDirPath, @"logs"));
 
@@ -98,6 +99,36 @@ namespace VnManager.Initializers
 
         }
 
+        internal static void ValidateFiles()
+        {
+            var configFile = Path.Combine(App.ConfigDirPath, @"config\config.xml");
+            var secretStore = Path.Combine(App.ConfigDirPath, @"secure\secrets.store");
+            var secretKey = Path.Combine(App.ConfigDirPath, @"secure\secrets.key");
+
+            if (File.Exists(configFile))
+            {
+                if (!ValidateXml.IsValidXml(configFile))
+                {
+                    File.Delete(configFile);
+                }
+            }
+            
+
+            if (!File.Exists(secretStore) || !File.Exists(Path.Combine(secretKey)))
+            {
+                Directory.Delete(Path.Combine(App.ConfigDirPath, @"secure"), true);
+                Directory.CreateDirectory(Path.Combine(App.ConfigDirPath, @"secure"));
+                return;
+            }
+
+            string[] secKeys = new[] {"FileEnc", "ConnStr"};
+            var encSt = new Secure();
+            if (secKeys.Select(key => encSt.TestSecret(key)).Any(output => output == false))
+            {
+                Directory.Delete(Path.Combine(App.ConfigDirPath, @"secure"), true);
+                Directory.CreateDirectory(Path.Combine(App.ConfigDirPath, @"secure"));
+            }
+        }
         
     }
 }

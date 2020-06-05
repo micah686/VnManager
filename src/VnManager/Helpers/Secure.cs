@@ -17,7 +17,7 @@ namespace VnManager.Helpers
 {
 
     
-    internal class EncryptedStore
+    internal class Secure
     {
         private readonly string _secretStore = Path.Combine(App.ConfigDirPath, @"secure\secrets.store");
         private readonly string _secretKey = Path.Combine(App.ConfigDirPath, @"secure\secrets.key");
