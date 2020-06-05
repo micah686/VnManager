@@ -6,9 +6,13 @@
              xmlns:local="clr-namespace:VnManager.Views.UserControls"
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:adonisUi="clr-namespace:AdonisUI;assembly=AdonisUI"
+             xmlns:s="https://github.com/canton7/Stylet"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
+        <Grid.Resources>
+            <s:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        </Grid.Resources>
         <StatusBar >
             <StatusBar.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -32,26 +36,26 @@
                     </Grid>
                 </ItemsPanelTemplate>
             </StatusBar.ItemsPanel>
-            <StatusBarItem Grid.Column="0" Content="Ready" Margin="5,0,0,0"/>
-            <StatusBarItem Grid.Column="1">
+            <StatusBarItem Grid.Column="0" Content="{Binding StatusString}" Margin="5,0,0,0"/>
+            <StatusBarItem Grid.Column="1" Visibility="{Binding IsWorking, Converter={StaticResource BoolToVisibilityConverter}}">
                 <ContentControl ContentTemplate="{DynamicResource {x:Static adonisUi:Templates.LoadingBars}}" Width="16" Height="16" Focusable="False"/>
             </StatusBarItem>
             <Separator Grid.Column="2" />
-            <StatusBarItem Grid.Column="3" Content="16/ 40 items"/>
+            <StatusBarItem Grid.Column="3" Content="{Binding GameCount}"/>
             <StatusBarItem Grid.Column="4"/>
 
-            <StatusBarItem Grid.Column="5" Content="text for status bar"/>
-            <Separator Grid.Column="6" />
-            <StatusBarItem Grid.Column="7">
-                <ProgressBar Value="50" Width="90" Height="16" />
+            <StatusBarItem Grid.Column="5" Content="{Binding InfoText}"/>
+            <Separator Grid.Column="6" Visibility="{Binding IsProgressBarVisible, Converter={StaticResource BoolToVisibilityConverter}}"/>
+            <StatusBarItem Grid.Column="7" Visibility="{Binding IsProgressBarVisible, Converter={StaticResource BoolToVisibilityConverter}}">
+                <ProgressBar Value="{Binding ProgressBarValue}" Width="90" Height="16" IsIndeterminate="{Binding IsProgressBarInfinite}"/>
             </StatusBarItem>
 
             <Separator Grid.Column="8" />
-            <StatusBarItem Grid.Column="9">
+            <StatusBarItem Grid.Column="9" Visibility="{Binding IsDatabaseProcessing, Converter={StaticResource BoolToVisibilityConverter}}">
                 <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.Database}"  />
             </StatusBarItem>
             <StatusBarItem Grid.Column="10">
-                <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.CheckCircleOutline}" Foreground="LimeGreen"  />
+                <iconPacks:PackIconMaterial Kind="{Binding StatusIcon}" Foreground="LimeGreen"  />
             </StatusBarItem>
 
         </StatusBar>
