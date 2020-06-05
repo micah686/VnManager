@@ -81,12 +81,15 @@ namespace VnManager.ViewModels.UserControls
             }
             try
             {
-                var serializer = new XmlSerializer(typeof(UserSettings));
+                
                 using (var fs = new FileStream(configFile, FileMode.Open, FileAccess.Read, FileShare.Read))
                 {
+                    //var serializer = new XmlSerializer(typeof(UserSettings));
+                    XmlSerializer serializer = XmlSerializer.FromTypes(new[] { typeof(UserSettings) })[0]; //TODO: Check for memory leaks if this run multiple times
                     bool isValid = ValidateXml.IsValidXml(configFile);
                     App.UserSettings = isValid == true ? (UserSettings)serializer.Deserialize(fs) : null;
                 }
+                
             }
             catch (Exception ex)
             {
