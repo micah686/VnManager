@@ -39,6 +39,8 @@ namespace VnManager
             builder.Bind(typeof(IModelValidator<>)).To(typeof(FluentModelValidator<>));
             builder.Bind(typeof(IValidator<>)).ToAllImplementations();
             builder.Bind(typeof(IDialogService)).To(typeof(DialogService));
+
+            builder.Bind<StatusBarViewModel>().ToSelf().InSingletonScope();
         }
 
         protected override void Configure()

@@ -104,6 +104,15 @@ namespace VnManager.ViewModels.UserControls
             _windowManager.ShowWindow(vmTestPassword);
         }
 
+        public void TestStatusBar()
+        {
+            var sb = _container.Get<StatusBarViewModel>();
+            sb.IsProgressBarVisible = true;
+            sb.IsProgressBarInfinite = false;
+            sb.ProgressBarValue = 85;
+            sb.IsWorking = true;
+            sb.InfoText = "debug test";
+        }
 
 
         public void CauseException()
