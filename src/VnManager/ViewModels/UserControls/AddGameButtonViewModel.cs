@@ -53,7 +53,7 @@ namespace VnManager.ViewModels.UserControls
             switch (gameEntry.SourceType)
             {
                 case AddGameSourceTypes.NoSource:
-                    var saveData = new SaveNoSourceGameData(_container, _windowManager);
+                    var saveData = new SaveNoSourceGameData();
                     saveData.SaveUserData(gameEntry);
                     break;
                 case AddGameSourceTypes.Vndb:
