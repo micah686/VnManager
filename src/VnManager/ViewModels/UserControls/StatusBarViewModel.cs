@@ -5,8 +5,9 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Media;
 using MahApps.Metro.IconPacks;
-using Brush = System.Drawing.Brush;
-using Color = System.Windows.Media.Color;
+using Brush = System.Windows.Media.Brush;
+using Brushes = System.Windows.Media.Brushes;
+
 
 namespace VnManager.ViewModels.UserControls
 {
@@ -21,7 +22,8 @@ namespace VnManager.ViewModels.UserControls
         public bool IsProgressBarInfinite { get; set; }
         public bool IsDatabaseProcessing { get; set; }
         public PackIconMaterialKind StatusIcon { get; set; }
-        //public Brush StatusIconColor { get; set; }
+        public Brush StatusIconColor { get; set; }
+        public string StatusIconTooltip { get; set; }
 
 
         public StatusBarViewModel()
@@ -40,7 +42,8 @@ namespace VnManager.ViewModels.UserControls
             IsProgressBarInfinite = false;
             IsDatabaseProcessing = false;
             StatusIcon = PackIconMaterialKind.CheckCircleOutline;
-            //StatusIconColor = new SolidBrush(System.Drawing.Color.LimeGreen);
+            StatusIconColor = Brushes.LimeGreen;
+            StatusIconTooltip = null;
 
         }
 
