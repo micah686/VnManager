@@ -41,7 +41,8 @@
                 </StackPanel>
             </Grid>
 
-            <Grid Grid.Row="1" x:Name="AddVndb" Visibility="{Binding IsChecked, ElementName=VndbSource, Converter={StaticResource boolToVisConverter}}">
+            <Grid Grid.Row="1" x:Name="AddVndb" >
+                <!-- Visibility="{Binding IsChecked, ElementName=VndbSource, Converter={StaticResource boolToVisConverter}}" -->
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>

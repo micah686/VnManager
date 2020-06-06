@@ -1,0 +1,140 @@
+﻿<UserControl x:Class="VnManager.Views.Dialogs.AddGameSources.AddGameNoSourceView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:VnManager.Views.Dialogs.AddGameSources"
+             xmlns:res="clr-namespace:VnManager.Strings"
+             xmlns:s="https://github.com/canton7/Stylet"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             xmlns:controls="clr-namespace:AdonisUI.Controls;assembly=AdonisUI"
+             xmlns:adonisUi="clr-namespace:AdonisUI;assembly=AdonisUI"
+             xmlns:ex="clr-namespace:VnManager.Extensions"
+             xmlns:conv="clr-namespace:VnManager.Converters"
+             xmlns:mvd="https://github.com/fantasticfiasco/mvvm-dialogs"
+             mc:Ignorable="d" 
+             Height="380" Width="500">
+    <Grid Background="AntiqueWhite">
+        <Grid.Resources>
+            <conv:BooleanAndConverter x:Key="BooleanAndConverter"/>
+            <conv:EnumToBooleanConverter x:Key="EnumToBooleanConverter"/>
+            <s:BoolToVisibilityConverter x:Key="BoolToVisConverter" TrueVisibility="Visible" FalseVisibility="Hidden"/>
+            
+        </Grid.Resources>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Margin="0,10,0,0" Text="Choose a Game that is not associated with any Source"/>
+
+        <Grid Grid.Row="1" Margin="0,0,0,15">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="{x:Static res:Resources.ExeType}"/>
+            <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="5,0,0,0">
+                <RadioButton x:Name="ExeNormalRadio" Content="{x:Static res:Resources.Normal}" Margin="5,0,0,0" IsChecked="{Binding ExeTypes, Mode=TwoWay, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Normal}"/>
+                <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.HelpCircleOutline}" Margin="3,1,0,0" Height="14" Width="14" ToolTip="{x:Static res:Resources.AddGameNormalTooltip}"/>
+                <RadioButton x:Name="ExeLauncherRadio" Content="{x:Static res:Resources.Launcher}" Margin="5,0,0,0" IsChecked="{Binding ExeTypes, Mode=TwoWay, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Launcher}"/>
+                <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.HelpCircleOutline}" Margin="3,1,0,0" Height="14" Width="14" ToolTip="{x:Static res:Resources.AddGameLauncherTooltip}"/>
+                <RadioButton x:Name="ExeCollectionRadio" Content="{x:Static res:Resources.Collection}" Margin="5,0,0,0" IsChecked="{Binding ExeTypes, Mode=TwoWay, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Collection}" />
+                <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.HelpCircleOutline}" Margin="3,1,0,0" Height="14" Width="14" ToolTip="{x:Static res:Resources.AddGameCollectionTooltip}"/>
+            </StackPanel>
+        </Grid>
+
+        <Grid Grid.Row="2" Margin="0,0,0,15">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Orientation="Horizontal" >
+                <StackPanel.Style>
+                    <Style TargetType="StackPanel">
+                        <Setter Property="Visibility" Value="Hidden"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ExeTypes}" Value="Normal">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding ExeTypes}" Value="Launcher">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </StackPanel.Style>
+                <TextBlock Text="{x:Static res:Resources.Path}" Width="40"/>
+                <TextBox Grid.Column="1" x:Name="TextPath"  Width="300" IsReadOnly="True" IsReadOnlyCaretVisible="True" Text="{Binding ExePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                <Button Grid.Column="2" Content="{x:Static res:Resources.Browse}" Margin="5,0,0,0" Command="{s:Action BrowseExe}"/>
+            </StackPanel>
+            <StackPanel Grid.Column="0" Orientation="Horizontal" Visibility="{Binding IsChecked, ElementName=ExeCollectionRadio, Converter={StaticResource BoolToVisConverter}}">
+                <Button Content="{x:Static res:Resources.ManageExecutables}" Width="150" Command="{s:Action ManageExes}"/>
+            </StackPanel>
+
+        </Grid>
+
+        <Grid Grid.Row="3" Margin="0,0,0,15">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <CheckBox Grid.Column="0" x:Name="chkCustomIco" Content="{x:Static res:Resources.EnableCustomIcon}" Margin="10,0,0,0" IsChecked="{Binding IsIconChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                              IsEnabled="{Binding IsNotExeCollection}"/>
+            <CheckBox Grid.Column="1" x:Name="chkCustomArg" Content="{x:Static res:Resources.EnableCustomArgs}" Margin="10,0,0,0" IsChecked="{Binding IsArgsChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                              IsEnabled="{Binding IsNotExeCollection}"/>
+        </Grid>
+
+        <Grid Grid.Row="4" Margin="0,0,0,15">
+            <Grid.IsEnabled>
+                <MultiBinding Converter="{StaticResource BooleanAndConverter}">
+                    <Binding ElementName="chkCustomIco" Path="IsChecked"/>
+                </MultiBinding>
+            </Grid.IsEnabled>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="{x:Static res:Resources.Icon}" Width="60" Margin="0,3,0,0"/>
+            <TextBox Grid.Column="1"  Width="300" IsReadOnly="True" IsReadOnlyCaretVisible="True" Text="{Binding IconPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <Button Grid.Column="2" Content="{x:Static res:Resources.Browse}" Margin="5,0,0,0" Command="{s:Action BrowseIcon}" />
+
+        </Grid>
+
+        <Grid Grid.Row="5" Margin="0,0,0,15">
+            <Grid.IsEnabled>
+                <MultiBinding Converter="{StaticResource BooleanAndConverter}">
+                    <Binding ElementName="chkCustomArg" Path="IsChecked"/>
+                </MultiBinding>
+            </Grid.IsEnabled>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="{x:Static res:Resources.Arguments}" Width="70" Margin="0,2,0,0" IsEnabled="False"/>
+            <TextBox Grid.Column="1"  Width="350" MaxLength="300" Text="{Binding ExeArguments, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                             IsEnabled="{Binding IsNotExeCollection}"/>
+
+        </Grid>
+
+
+
+        <Grid Grid.Row="6" Margin="0,5,0,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Button Width="100" Height="30" Content="{x:Static res:Resources.Submit}" Command="{s:Action Submit}" Style="{DynamicResource {x:Static adonisUi:Styles.AccentButton}}"/>
+            <Button Width="85" Height="25" Grid.Column="1" Content="{x:Static res:Resources.Cancel}" Command="{s:Action Cancel}" Margin="10,0,0,0"/>
+        </Grid>
+
+    </Grid>
+</UserControl>

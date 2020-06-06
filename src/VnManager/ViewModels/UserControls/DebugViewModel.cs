@@ -22,6 +22,7 @@ using VndbSharp;
 using VndbSharp.Models.Dumps;
 using VnManager.Models.Db.User;
 using VnManager.Models.Db.Vndb.TagTrait;
+using VnManager.ViewModels.Dialogs.AddGameSources;
 using VnManager.ViewModels.Windows;
 
 
@@ -112,6 +113,8 @@ namespace VnManager.ViewModels.UserControls
             sb.ProgressBarValue = 85;
             sb.IsWorking = true;
             sb.InfoText = "debug test";
+            var foo = _container.Get<AddGameMainViewModel>();
+            _windowManager.ShowDialog(foo);
         }
 
 
