@@ -31,27 +31,14 @@ namespace VnManager.MetadataProviders.Vndb
 
         public async Task SortVnInfo(AddItemDbModel entry, VisualNovel vn, List<Release>rel,List<Producer> prod, List<Character> character, List<Staff> staff)
         {
-            //sort out info like collection type, ift's already been added,...
-
-            switch (entry.SourceType)
-            {
-                case AddGameSourceTypes.NoSource:
-                    SaveUserData(entry);
-                    break;
-                case AddGameSourceTypes.Vndb:
-                    SaveVnInfo(vn);
-                    SaveVnCharacters(character, vn.Id);
-                    SaveVnReleases(rel);
-                    SaveProducers(prod);
-                    SaveStaff(staff, (int)vn.Id);
-                    SaveUserData(entry);
-                    await GetAndSaveTagDump();
-                    await GetAndSaveTraitDump();
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-
+            SaveVnInfo(vn);
+            SaveVnCharacters(character, vn.Id);
+            SaveVnReleases(rel);
+            SaveProducers(prod);
+            SaveStaff(staff, (int)vn.Id);
+            SaveUserData(entry);
+            await GetAndSaveTagDump();
+            await GetAndSaveTraitDump();
         }
 
 

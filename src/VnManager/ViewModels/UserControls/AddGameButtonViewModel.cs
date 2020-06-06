@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using VnManager.MetadataProviders.NoSource;
 using VnManager.MetadataProviders.Vndb;
 using VnManager.Models;
 using VnManager.ViewModels.Dialogs;
@@ -47,8 +48,23 @@ namespace VnManager.ViewModels.UserControls
             gameEntry.IconPath = vmAddGame.IconPath;
             gameEntry.IsArgumentsEnabled = vmAddGame.IsArgsChecked;
             gameEntry.ExeArguments = vmAddGame.ExeArguments;
-            GetVndbData getData = new GetVndbData();
-            await getData.GetData(gameEntry);
+            
+
+            switch (gameEntry.SourceType)
+            {
+                case AddGameSourceTypes.NoSource:
+                    var saveData = new SaveNoSourceGameData(_container, _windowManager);
+                    saveData.SaveUserData(gameEntry);
+                    break;
+                case AddGameSourceTypes.Vndb:
+                    GetVndbData getData = new GetVndbData();
+                    await getData.GetData(gameEntry);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            
+            
             
         }
     }
