@@ -93,7 +93,7 @@ namespace VnManager.Helpers
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
+                App.Logger.Error(ex, "Failed to save user settings");
                 throw;
             }
         }

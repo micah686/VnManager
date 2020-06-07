@@ -17,6 +17,7 @@ namespace VnManager.MetadataProviders.NoSource
             App.StatusBar.IsWorking = true;
             App.StatusBar.StatusString = App.ResMan.GetString("WritingToDb");
             App.StatusBar.IsDatabaseProcessing = true;
+            
             using (var db = new LiteDatabase(App.GetDatabaseString()))
             {
                 var dbUserData = db.GetCollection<UserDataGames>("UserData_Games");
@@ -51,6 +52,10 @@ namespace VnManager.MetadataProviders.NoSource
                 }
                 dbUserData.Insert(gamesList);
             }
+
+            App.StatusBar.IsWorking = false;
+            App.StatusBar.StatusString = "";
+            App.StatusBar.IsDatabaseProcessing = false;
         }
     }
 }

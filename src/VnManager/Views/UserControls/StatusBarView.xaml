@@ -28,7 +28,7 @@
 
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="100" />
+                            <ColumnDefinition Width="Auto" />
 
 
                             <ColumnDefinition Width="Auto" />
@@ -64,11 +64,8 @@
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding IsDatabaseProcessing}" Value="True">
                                 <DataTrigger.EnterActions>
-                                    <BeginStoryboard Name="Flash" Storyboard="{StaticResource FlashAnimation}"/>
+                                    <BeginStoryboard Storyboard="{StaticResource FlashAnimation}"/>
                                 </DataTrigger.EnterActions>
-                                <DataTrigger.ExitActions>
-                                    <StopStoryboard BeginStoryboardName="flash"/>
-                                </DataTrigger.ExitActions>
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>

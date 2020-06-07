@@ -29,16 +29,24 @@ namespace VnManager.MetadataProviders.Vndb
 			try
 			{
 				using (var client = new VndbSharp.Vndb(true))
-				{
-					RequestOptions ro = new RequestOptions { Count = 25 };
+                {
+                    App.StatusBar.IsWorking = true;
+					
+                    
+                    RequestOptions ro = new RequestOptions { Count = 25 };
 					stopwatch.Start();
+                    App.StatusBar.InfoText = "Downloading visual novel information";
 					var visualNovel = await GetVisualNovel(client, vnid);
+                    App.StatusBar.InfoText = "Downloading releases information";
 					var releases = await GetReleases(client, vnid, ro);
 					uint[] producerIds = releases.SelectMany(x => x.Producers.Select(y => y.Id)).Distinct().ToArray();
+                    App.StatusBar.InfoText = "Downloading producers information";
 					var producers = await GetProducers(client, producerIds, ro);
+                    App.StatusBar.InfoText = "Downloading characters information";
 					var characters = await GetCharacters(client, vnid, ro);
 
 					uint[] staffIds = visualNovel.Staff.Select(x => x.StaffId).Distinct().ToArray();
+                    App.StatusBar.InfoText = "Downloading staff information";
 					var staff = await GetStaff(client, staffIds, ro);
 					stopwatch.Stop();
 					stopwatch.Reset();
@@ -48,7 +56,9 @@ namespace VnManager.MetadataProviders.Vndb
 					{
 						App.Logger.Error("Failed to get all of the Vndb Info from the API, one of the items was null");
 						//stop the progressbar here, and force it to show an error icon
-					}
+                        App.StatusBar.IsWorking = false;
+                        App.StatusBar.InfoText = "";
+                    }
 					else
 					{
 						//run code to add info to database
