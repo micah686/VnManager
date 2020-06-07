@@ -115,6 +115,7 @@ namespace VnManager.ViewModels.UserControls
             sb.ProgressBarValue = 85;
             sb.IsWorking = true;
             sb.InfoText = "debug test";
+            sb.IsDatabaseProcessing = true;
             var foo = _container.Get<AddGameMainViewModel>();
             _windowManager.ShowDialog(foo);
         }

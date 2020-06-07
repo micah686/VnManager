@@ -13,6 +13,7 @@ using VnManager.Helpers;
 using System.Linq;
 using System.Reflection;
 using System.Resources;
+using System.Threading.Tasks;
 
 namespace VnManager.ViewModels.UserControls
 {
@@ -27,17 +28,6 @@ namespace VnManager.ViewModels.UserControls
         public string SpoilerString { get; set; }
         public int SpoilerIndex { get; set; } = 0;
         #endregion
-
-        public static SettingsViewModel Instance { get; private set; }
-
-
-        public SettingsViewModel()
-        {
-            if(Instance != null)
-            {
-                Instance = this;
-            }            
-        }
 
         public void SaveUserSettings(bool useEncryption = false)
         {
@@ -83,14 +73,26 @@ namespace VnManager.ViewModels.UserControls
         }
 
 
-        private void DeleteNsfwImages()
+        public void DeleteNsfwImages()
         {
             //Use CheckWriteAccess to see if you can delete from the images
-
-            throw new NotImplementedException();
+           
         }
 
-
+        public void ResetApplication()
+        {
+            //add a messageBox with a 5 second delay and warning
+            if (App.AssetDirPath.Equals(App.ConfigDirPath))
+            {
+                Directory.Delete(App.AssetDirPath, true);
+            }
+            else
+            {
+                Directory.Delete(App.AssetDirPath, true);
+                Directory.Delete(App.ConfigDirPath, true);
+            }
+            Environment.Exit(0);
+        }
 
 
     }

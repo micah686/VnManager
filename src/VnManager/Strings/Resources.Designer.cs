@@ -259,7 +259,7 @@ namespace VnManager.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to If disabled, Nsfw images will be saved as extensionless Base64 files that will not be visible in photo viewers..
+        ///   Looks up a localized string similar to If disabled, Nsfw images will be saved as encrypted files that will not be visible in photo viewers..
         /// </summary>
         public static string EnableNsfwDiskDisabledTooltip {
             get {
@@ -502,6 +502,24 @@ namespace VnManager.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Reset Application.
+        /// </summary>
+        public static string ResetApplication {
+            get {
+                return ResourceManager.GetString("ResetApplication", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you SURE you want to reset the entire Application?.
+        /// </summary>
+        public static string ResetAppWarning {
+            get {
+                return ResourceManager.GetString("ResetAppWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Save.
         /// </summary>
         public static string Save {
@@ -723,6 +741,15 @@ namespace VnManager.Strings {
         public static string VnName {
             get {
                 return ResourceManager.GetString("VnName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Writing to Database.
+        /// </summary>
+        public static string WritingToDb {
+            get {
+                return ResourceManager.GetString("WritingToDb", resourceCulture);
             }
         }
         

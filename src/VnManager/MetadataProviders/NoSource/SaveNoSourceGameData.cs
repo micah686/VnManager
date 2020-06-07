@@ -14,6 +14,9 @@ namespace VnManager.MetadataProviders.NoSource
     {
         public void SaveUserData(AddItemDbModel data)
         {
+            App.StatusBar.IsWorking = true;
+            App.StatusBar.StatusString = App.ResMan.GetString("WritingToDb");
+            App.StatusBar.IsDatabaseProcessing = true;
             using (var db = new LiteDatabase(App.GetDatabaseString()))
             {
                 var dbUserData = db.GetCollection<UserDataGames>("UserData_Games");

@@ -184,7 +184,7 @@
     <value>Enable Nsfw Content</value>
   </data>
   <data name="EnableNsfwDiskDisabledTooltip" xml:space="preserve">
-    <value>If disabled, Nsfw images will be saved as extensionless Base64 files that will not be visible in photo viewers.</value>
+    <value>If disabled, Nsfw images will be saved as encrypted files that will not be visible in photo viewers.</value>
   </data>
   <data name="EnableNsfwDiskEnabledTooltip" xml:space="preserve">
     <value>If enabled, Nsfw images will be saved as .jpg and .png that will be visible in photo viewers.</value>
@@ -264,6 +264,12 @@
   <data name="Remove" xml:space="preserve">
     <value>Remove</value>
   </data>
+  <data name="ResetApplication" xml:space="preserve">
+    <value>Reset Application</value>
+  </data>
+  <data name="ResetAppWarning" xml:space="preserve">
+    <value>Are you SURE you want to reset the entire Application?</value>
+  </data>
   <data name="Save" xml:space="preserve">
     <value>Save</value>
   </data>
@@ -338,6 +344,9 @@
   </data>
   <data name="VnName" xml:space="preserve">
     <value>Vn Name:</value>
+  </data>
+  <data name="WritingToDb" xml:space="preserve">
+    <value>Writing to Database</value>
   </data>
   <data name="Yes" xml:space="preserve">
     <value>Yes</value>

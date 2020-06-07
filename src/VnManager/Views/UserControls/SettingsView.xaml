@@ -6,11 +6,16 @@
              xmlns:res="clr-namespace:VnManager.Strings"
              xmlns:local="clr-namespace:VnManager.Views.UserControls"
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             xmlns:adExt="clr-namespace:AdonisUI.Extensions;assembly=AdonisUI"
              xmlns:s="https://github.com/canton7/Stylet"
+             xmlns:adonisUi="clr-namespace:AdonisUI;assembly=AdonisUI"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid  Margin="10">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -58,7 +63,11 @@
             <ComboBox Grid.Column="1" Margin="5,0,0,0" ItemsSource="{Binding SpoilerList}" SelectedItem="{Binding SpoilerString}" SelectedIndex="{Binding SpoilerIndex}"  Width="70"/>
         </Grid>
 
-        <Button Grid.Row="4" Content="{x:Static res:Resources.Save}" Command="{s:Action SaveUserSettings}" Margin="10" Width="70"/>
+        <Button Grid.Row="4" Content="{x:Static res:Resources.Save}" Command="{s:Action SaveUserSettings}" Margin="10" Width="70" Style="{DynamicResource {x:Static adonisUi:Styles.AccentButton}}"/>
+
+        <Button Grid.Row="5" Margin="0,20,0,0" Width="120" Background="Crimson" Foreground="White" adExt:RippleExtension.BackgroundBrush="Crimson" adExt:RippleExtension.BorderBrush="Red" adExt:RippleExtension.ForegroundBrush="White"
+                adExt:CursorSpotlightExtension.BorderBrush="Red" adExt:CursorSpotlightExtension.BackgroundBrush="Crimson" 
+                Content="{x:Static res:Resources.ResetApplication}" Command="{s:Action ResetApplication}"/>
 
 
     </Grid>

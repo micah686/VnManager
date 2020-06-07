@@ -13,6 +13,7 @@ using LiteDB;
 using VnManager.Helpers;
 using VnManager.Models.Settings;
 using VnManager.Utilities;
+using VnManager.ViewModels.UserControls;
 
 namespace VnManager
 {
@@ -140,6 +141,8 @@ namespace VnManager
             }
 
         }
+
+        public static StatusBarViewModel StatusBar { get; set; }
 
     }
 }

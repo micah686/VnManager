@@ -12,7 +12,9 @@
     <Grid>
         <Grid.Resources>
             <s:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+
         </Grid.Resources>
+
         <StatusBar >
             <StatusBar.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -52,10 +54,29 @@
 
             <Separator Grid.Column="8" />
             <StatusBarItem Grid.Column="9" Visibility="{Binding IsDatabaseProcessing, Converter={StaticResource BoolToVisibilityConverter}}" Margin="5,0,5,0">
+                <StatusBarItem.Style>
+                    <Style TargetType="{x:Type StatusBarItem}">
+                        <Style.Resources>
+                            <Storyboard x:Key="FlashAnimation">
+                                <DoubleAnimation Storyboard.TargetProperty="Opacity" From="1" To="0" AutoReverse="True" Duration="0:0:0.3" RepeatBehavior="Forever" />
+                            </Storyboard>
+                        </Style.Resources>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsDatabaseProcessing}" Value="True">
+                                <DataTrigger.EnterActions>
+                                    <BeginStoryboard Name="Flash" Storyboard="{StaticResource FlashAnimation}"/>
+                                </DataTrigger.EnterActions>
+                                <DataTrigger.ExitActions>
+                                    <StopStoryboard BeginStoryboardName="flash"/>
+                                </DataTrigger.ExitActions>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </StatusBarItem.Style>
                 <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.Database}"  />
             </StatusBarItem>
             <StatusBarItem Grid.Column="10" Margin="5,0,5,0" ToolTip="{Binding StatusIconTooltip}">
-                <iconPacks:PackIconMaterial Kind="{Binding StatusIcon}" Foreground="{Binding StatusIconColor}"  />
+                <iconPacks:PackIconMaterial x:Name="DbProc" Kind="{Binding StatusIcon}" Foreground="{Binding StatusIconColor}"/>
             </StatusBarItem>
 
         </StatusBar>

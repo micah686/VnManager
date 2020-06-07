@@ -86,8 +86,12 @@ namespace VnManager.ViewModels.Windows
 
                     enc.SetSecret("ConnStr", $"Filename={Path.Combine(App.ConfigDirPath, @"database\Data.db")};Password={Marshal.PtrToStringBSTR(Marshal.SecureStringToBSTR(Password))}");
                     using (var db = new LiteDatabase(enc.ReadSecret("ConnStr"))) { }
-                    var settings = new SettingsViewModel();
-                    settings.SaveUserSettings(true);
+                    var settings = new UserSettings
+                    {
+                        EncryptionEnabled = true,
+                        IsVisibleSavedNsfwContent = false
+                    };
+                    UserSettingsHelper.SaveUserSettings(settings);
                     RequestClose(true);
                 }
                 else

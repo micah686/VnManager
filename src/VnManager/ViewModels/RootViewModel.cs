@@ -94,9 +94,9 @@ namespace VnManager.ViewModels
             Instance = this;
             _container = container;
             _windowManager = windowManager;
+            App.StatusBar = _container.Get<StatusBarViewModel>();
 
 
-             
 
         }
 
