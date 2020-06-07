@@ -105,7 +105,7 @@ namespace VnManager.ViewModels
 
             if (!IsNormalStart())
             {
-                SettingsViewModel.LoadUserSettingsStatic();
+                App.UserSettings = UserSettingsHelper.ReadUserSettings();
                 var auth = _container.Get<SetEnterPasswordViewModel>();
                 var isAuth = _windowManager.ShowDialog(auth);
                 
@@ -138,12 +138,12 @@ namespace VnManager.ViewModels
 
         private bool IsNormalStart()
         {
-            var configFile = Path.Combine(App.ConfigDirPath, @"config\config.xml");
+            var configFile = Path.Combine(App.ConfigDirPath, @"config\config.json");
             if (!File.Exists(configFile)) return false;
-            if (!ValidateXml.IsValidXml(configFile)) return false;
+            if (!UserSettingsHelper.ValidateConfigFile()) return false;
             if (!File.Exists(Path.Combine(App.ConfigDirPath, @"secure\secrets.store")) ||
                 !File.Exists(Path.Combine(App.ConfigDirPath, @"secure\secrets.key"))) return false;
-                SettingsViewModel.LoadUserSettingsStatic();
+            App.UserSettings = UserSettingsHelper.ReadUserSettings();
             var useEncryption = App.UserSettings.EncryptionEnabled;
             return !useEncryption;
         }

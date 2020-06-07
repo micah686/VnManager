@@ -18,14 +18,12 @@ namespace VnManager.ViewModels.UserControls
 {
     public class SettingsViewModel :Screen
     {
-        private static readonly ResourceManager Rm = new ResourceManager("VnManager.Strings.Resources", Assembly.GetExecutingAssembly());
-        private readonly string configFile = Path.Combine(App.ConfigDirPath, @"config\config.xml");
         public string Theme { get; set; } = "DarkTheme";
         public bool NsfwEnabled { get; set; }
         public bool NsfwContentSavedVisible { get; set; }
 
         #region SpoilerList
-        public Collection<string> SpoilerList { get;} = new Collection<string>(new string[] { Rm.GetString("None"), Rm.GetString("Minor"), Rm.GetString("Major") });
+        public Collection<string> SpoilerList { get;} = new Collection<string>(new string[] { App.ResMan.GetString("None"), App.ResMan.GetString("Minor"), App.ResMan.GetString("Major") });
         public string SpoilerString { get; set; }
         public int SpoilerIndex { get; set; } = 0;
         #endregion
@@ -59,11 +57,7 @@ namespace VnManager.ViewModels.UserControls
 
             try
             {
-                var serializer = new XmlSerializer(typeof(UserSettings));
-                using (var writer = new StreamWriter(configFile))
-                {
-                    serializer.Serialize(writer, settings);
-                }
+                UserSettingsHelper.SaveUserSettings(settings);
                 App.UserSettings = settings;
             }
             catch (Exception ex)
@@ -75,19 +69,10 @@ namespace VnManager.ViewModels.UserControls
 
         public void LoadUserSettings()
         {
-            if(!File.Exists(configFile))
-            {
-                CreateDefaultConfig();
-            }
             try
             {
-                
-                using (var fs = new FileStream(configFile, FileMode.Open, FileAccess.Read, FileShare.Read))
-                {
-                    var serializer = new XmlSerializer(typeof(UserSettings));
-                    bool isValid = ValidateXml.IsValidXml(configFile);
-                    App.UserSettings = isValid == true ? (UserSettings)serializer.Deserialize(fs) : null;
-                }
+                var settings = UserSettingsHelper.ReadUserSettings();
+                App.UserSettings = settings;
                 
             }
             catch (Exception ex)
@@ -97,33 +82,6 @@ namespace VnManager.ViewModels.UserControls
             }
         }
 
-        public static void LoadUserSettingsStatic()
-        {
-            if(Instance== null)
-            {
-                Instance = new SettingsViewModel();
-            }
-            Instance.LoadUserSettings();
-        }
-
-
-        private void CreateDefaultConfig()
-        {
-            var settings = new UserSettings();
-            try
-            {
-                var serializer = new XmlSerializer(typeof(UserSettings));
-                using (var writer = new StreamWriter(configFile))
-                {
-                    serializer.Serialize(writer, settings);
-                }
-            }
-            catch (Exception ex)
-            {
-                App.Logger.Error(ex, "Couldn't write to config file");
-                throw;
-            }
-        }
 
         private void DeleteNsfwImages()
         {

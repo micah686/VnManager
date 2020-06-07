@@ -20,6 +20,7 @@ using System.Threading.Tasks;
 using StyletIoC;
 using VndbSharp;
 using VndbSharp.Models.Dumps;
+using VnManager.Helpers;
 using VnManager.Models.Db.User;
 using VnManager.Models.Db.Vndb.TagTrait;
 using VnManager.ViewModels.Dialogs.AddGameSources;
@@ -57,8 +58,9 @@ namespace VnManager.ViewModels.UserControls
             //DoThingAsync();
             //var foo2 = new SaveVnDataToDb();
             //foo2.GetAndSaveTraitDump();
-
-
+            UserSettingsHelper.CreateDefaultConfig();
+            UserSettingsHelper.ValidateConfigFile();
+            UserSettingsHelper.ReadUserSettings();
 
         }
 

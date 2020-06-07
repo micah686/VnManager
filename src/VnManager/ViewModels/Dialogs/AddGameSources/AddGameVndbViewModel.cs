@@ -43,7 +43,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             get => _isNameChecked;
             set
             {
-                VnIdOrName = value == false ? "Id" : "Name";
+                VnIdOrName = value == false ? App.ResMan.GetString("Id") : App.ResMan.GetString("Name");
                 SetAndNotify(ref _isNameChecked, value);
             }
         }

@@ -98,6 +98,58 @@ namespace VnManager.Helpers
         }
 
         /// <summary>
+        /// Encrypts a memory stream to a file on the disk
+        /// </summary>
+        /// <param name="ms">The MemoryStream</param>
+        /// <param name="inputFile">The full filename WITHOUT the .aes extension</param>
+        /// <param name="keyName">Name of Key for SecureStore</param>
+        public void FileEncryptStream(MemoryStream ms, string inputFile, string keyName)
+        {
+            byte[] salt = GenerateRandomSalt();
+            FileStream fsCrypt = new FileStream(inputFile + ".aes", FileMode.Create);
+            byte[] passwordBytes = System.Text.Encoding.UTF8.GetBytes(ReadSecret(keyName));
+
+            RijndaelManaged AES = new RijndaelManaged()
+            {
+                KeySize = 256,
+                BlockSize = 128,
+                Padding = PaddingMode.PKCS7,
+                Mode = CipherMode.CBC
+            };
+            var key = new Rfc2898DeriveBytes(passwordBytes, salt, 50000);
+            AES.Key = key.GetBytes(AES.KeySize / 8);
+            AES.IV = key.GetBytes(AES.BlockSize / 8);
+
+            fsCrypt.Write(salt, 0, salt.Length);
+            CryptoStream cs = new CryptoStream(fsCrypt, AES.CreateEncryptor(), CryptoStreamMode.Write);
+
+            //FileStream fsIn = new FileStream(inputFile, FileMode.Open);
+
+            //create a buffer (1mb) so only this amount will allocate in the memory and not the whole file
+            byte[] buffer = new byte[1048576];
+
+            try
+            {
+                int read;
+                while ((read = ms.Read(buffer, 0, buffer.Length)) > 0)
+                {
+                    //MediaTypeNames.Application.DoEvents(); // -> for responsive GUI, using Task will be better!
+                    cs.Write(buffer, 0, read);
+                }
+                ms.Close();
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error(ex, "FileEncrypt Failed");
+            }
+            finally
+            {
+                cs.Close();
+                fsCrypt.Close();
+            }
+        }
+
+        /// <summary>
         /// Decrypts an encrypted file with the FileEncrypt method through its path and the plain password.
         /// </summary>
         /// <param name="inputFile"></param>

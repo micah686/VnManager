@@ -64,7 +64,7 @@ namespace VnManager.ViewModels.Windows
             if ((!File.Exists(Path.Combine(App.ConfigDirPath, @"secure\secrets.store")) || 
                  !File.Exists(Path.Combine(Path.Combine(App.ConfigDirPath, @"secure\secrets.key")))))
             {
-                File.Delete(Path.Combine(App.ConfigDirPath, @"config\config.xml"));
+                File.Delete(Path.Combine(App.ConfigDirPath, @"config\config.json"));
                 Environment.Exit(0);
             }
             if (new Secure().TestSecret("ConnStr") == false)
@@ -160,24 +160,26 @@ namespace VnManager.ViewModels.Windows
 
         private void ValidateFiles()
         {
-            var configFile = Path.Combine(App.ConfigDirPath, @"config\config.xml");
+            var configFile = Path.Combine(App.ConfigDirPath, @"config\config.json");
             var secretStore = Path.Combine(App.ConfigDirPath, @"secure\secrets.store");
             var secretKey = Path.Combine(App.ConfigDirPath, @"secure\secrets.key");
             var database = Path.Combine(App.ConfigDirPath, @"database\Data.db");
 
-            if (File.Exists(configFile))
+            if (!File.Exists(configFile))
             {
-                if (!ValidateXml.IsValidXml(configFile))
-                {
-                    File.Delete(configFile);
-                    SettingsViewModel.LoadUserSettingsStatic();
-                }
+                UserSettingsHelper.CreateDefaultConfig();
+            }
+
+            if (UserSettingsHelper.ValidateConfigFile()== false)
+            {
+                File.Delete(configFile);
+                UserSettingsHelper.CreateDefaultConfig();
             }
 
             if (App.UserSettings.EncryptionEnabled == true && !File.Exists(database))
             {
                 File.Delete(configFile);
-                SettingsViewModel.LoadUserSettingsStatic();
+                App.UserSettings = UserSettingsHelper.ReadUserSettings();
             }
 
             if (!File.Exists(secretStore) || !File.Exists(Path.Combine(secretKey)))
