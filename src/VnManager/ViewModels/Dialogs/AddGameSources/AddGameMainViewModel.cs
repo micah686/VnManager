@@ -9,11 +9,15 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
 {
     public class AddGameMainViewModel: Conductor<Screen>
     {
-        public enum AddGameSourceType { NoSource, Vndb }
-        public AddGameSourceType SourceType { get; set; } = AddGameSourceType.Vndb;
+        public enum AddGameSourceType { NotSet, NoSource, Vndb }
+        public enum ExeTypeEnum { Normal, Launcher, Collection }
+        //public AddGameSourceType SourceType { get; set; } = AddGameSourceType.Vndb;
+
+        public int SelectedIndex { get; set; }
 
         public IEnumerable<string> SourceCollection { get; set; } = new[] {"Vndb", "No Source"};
         public string SelectedSource { get; set; }
+        public AddGameSourceType SelectedSourceEnum = AddGameSourceType.NotSet;
 
 
         private readonly IWindowManager _windowManager;
@@ -23,6 +27,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             _container = container;
             _windowManager = windowManager;
             SourceChanged();
+            SelectedIndex = 0;
         }
 
         public void SourceChanged()
@@ -30,11 +35,15 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             switch (SelectedSource)
             {
                 case "Vndb":
+                    SelectedSourceEnum = AddGameSourceType.Vndb;
+                    var vndb = _container.Get<AddGameVndbViewModel>();
+                    ActivateItem(vndb);
                     
                     break;
                 case "No Source":
-                    var item = _container.Get<AddGameNoSourceViewModel>();
-                    ActivateItem(item);
+                    SelectedSourceEnum = AddGameSourceType.NoSource;
+                    var noSource = _container.Get<AddGameNoSourceViewModel>();
+                    ActivateItem(noSource);
                     break;
                 default:
                     break;

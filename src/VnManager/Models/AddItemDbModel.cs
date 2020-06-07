@@ -2,14 +2,15 @@
 using System.Collections.Generic;
 using System.Text;
 using VnManager.ViewModels.Dialogs;
+using VnManager.ViewModels.Dialogs.AddGameSources;
 using VnManager.ViewModels.Windows;
 
 namespace VnManager.Models
 {
     public class AddItemDbModel
     {
-        public AddGameSourceTypes SourceType { get; set; }
-        public ExeTypesEnum ExeType { get; set; }
+        public AddGameMainViewModel.AddGameSourceType SourceType { get; set; }
+        public AddGameMainViewModel.ExeTypeEnum ExeType { get; set; }
         public bool IsCollectionEnabled { get; set; }
         public  List<MultiExeGamePaths> ExeCollection { get; set; }
         public int GameId { get; set; }

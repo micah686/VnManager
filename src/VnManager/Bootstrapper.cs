@@ -10,6 +10,7 @@ using VnManager.Utilities;
 using VnManager.ViewModels;
 using MvvmDialogs;
 using VnManager.Helpers;
+using VnManager.ViewModels.Dialogs.AddGameSources;
 using VnManager.ViewModels.UserControls;
 using VnManager.ViewModels.Windows;
 
@@ -41,6 +42,8 @@ namespace VnManager
             builder.Bind(typeof(IDialogService)).To(typeof(DialogService));
 
             builder.Bind<StatusBarViewModel>().ToSelf().InSingletonScope();
+            builder.Bind<AddGameNoSourceViewModel>().ToSelf().InSingletonScope();
+            builder.Bind<AddGameVndbViewModel>().ToSelf().InSingletonScope();
         }
 
         protected override void Configure()

@@ -9,7 +9,7 @@
              xmlns:res="clr-namespace:VnManager.Strings"
              xmlns:conv="clr-namespace:VnManager.Converters"
              mc:Ignorable="d" 
-             Title="{x:Static res:Resources.AddGame}" Height="400" Width="500" ResizeMode="NoResize">
+             Title="{x:Static res:Resources.AddGame}" Height="410" Width="500" ResizeMode="NoResize">
     <Grid Margin="10">
         <Grid.Resources>
             <s:BoolToVisibilityConverter x:Key="BoolToVisConverter"/>
@@ -26,11 +26,8 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <Label Grid.Column="0" Content="{x:Static res:Resources.Source}" MinWidth="50"/>
-            <!--<StackPanel Grid.Column="1" Orientation="Horizontal" Margin="5,0,0,0">
-                <RadioButton x:Name="VndbSource" Content="{x:Static res:Resources.Vndb}"  Margin="0,0,5,0" IsChecked="{Binding SourceTypes, Mode=TwoWay, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Vndb}"/>
-                <RadioButton x:Name="NoSource" Content="{x:Static res:Resources.NoSource}" Margin="10,0,0,0" IsChecked="{Binding SourceTypes, Mode=TwoWay, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=NoSource}"/>
-            </StackPanel>-->
-            <ComboBox Grid.Column="1" MinWidth="70" ItemsSource="{Binding SourceCollection, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectionChanged="{s:Action SourceChanged}" SelectedItem="{Binding SelectedSource}"/>
+            <ComboBox Grid.Column="1" MinWidth="70" ItemsSource="{Binding SourceCollection, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectionChanged="{s:Action SourceChanged}" SelectedItem="{Binding SelectedSource}" 
+                      SelectedIndex="{Binding SelectedIndex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
         </Grid>
 
         <Grid Grid.Row="1">

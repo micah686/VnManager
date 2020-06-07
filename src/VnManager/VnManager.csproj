@@ -9,6 +9,11 @@
 
   <ItemGroup>
     <Compile Remove="Extensions\BooleanAndOrConverter.cs" />
+    <Compile Remove="ViewModels\Windows\AddGameViewModel.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Remove="Views\Windows\AddGameView.xaml" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,98 +1,75 @@
 ﻿using System;
-using System.Globalization;
-using System.Windows.Data;
-using Stylet;
-using MvvmDialogs;
-using FluentValidation;
-using StyletIoC;
-using VnManager.ViewModels.Dialogs;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Resources;
-using MvvmDialogs.FrameworkDialogs.OpenFile;
-using VnManager.Helpers;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using VndbSharp;
-using VndbSharp.Models.VisualNovel;
-using VndbSharp.Models;
-using VnManager.Helpers.Vndb;
-using VnManager.Utilities;
-using System.Text.RegularExpressions;
+using System.Windows;
+using System.Windows.Data;
+using FluentValidation;
 using LiteDB;
+using MvvmDialogs;
+using MvvmDialogs.FrameworkDialogs.OpenFile;
+using Stylet;
+using StyletIoC;
+using VndbSharp;
+using VndbSharp.Models;
 using VndbSharp.Models.Errors;
+using VndbSharp.Models.VisualNovel;
+using VnManager.Helpers;
+using VnManager.Helpers.Vndb;
 using VnManager.Models.Db.User;
+using VnManager.ViewModels.Windows;
+using static VnManager.ViewModels.Dialogs.AddGameSources.AddGameMainViewModel;
 
-namespace VnManager.ViewModels.Windows
+namespace VnManager.ViewModels.Dialogs.AddGameSources
 {
-    public class AddGameViewModel: Screen
+    public class AddGameVndbViewModel: Screen
     {
+
         internal readonly List<MultiExeGamePaths> ExeCollection = new List<MultiExeGamePaths>();
         public BindableCollection<string> SuggestedNamesCollection { get; private set; }
 
-        #region Properties
-        public string SourceSite { get; set; }
-        public int VnId { get; set; }        
+        public int VnId { get; set; }
         public string VnName { get; set; }
-        public bool IsNameChecked { get; set; }        
+        private bool _isNameChecked;
+        public bool IsNameChecked
+        {
+            get => _isNameChecked;
+            set
+            {
+                VnIdOrName = value == false ? "Id" : "Name";
+                SetAndNotify(ref _isNameChecked, value);
+            }
+        }
+
+        public string VnIdOrName { get; set; }
         public string ExePath { get; set; }
         public string IconPath { get; set; }
         public string ExeArguments { get; set; }
 
         public bool CanChangeVnName { get; set; }
-        public bool HideArgumentsError { get; private set; } = false;
-        public bool HideIconError { get; private set; } = false;
         public bool IsNameDropDownOpen { get; set; } = false;
         public string SelectedName { get; set; }
-        public bool IsSearchingForNames { get; set; } = false;
         public bool IsSearchNameButtonEnabled { get; set; } = true;
         public bool IsResetNameButtonEnabled { get; set; } = true;
+        public bool IsSearchingForNames { get; set; } = false;
 
 
-        private bool _isIconChecked;
-        public bool IsIconChecked
+
+        private ExeTypeEnum _exeType;
+        public ExeTypeEnum ExeType
         {
-            get => _isIconChecked;
+            get => _exeType;
             set
             {
-                SetAndNotify(ref _isIconChecked, value);
-                if (_isIconChecked == false)
-                {
-                    IconPath = string.Empty;
-                    HideIconError = true;
-                    ValidateAsync();
-                    HideIconError = false;
-                }
-            }
-        }
-
-        private bool _isArgsChecked;
-        public bool IsArgsChecked
-        {
-            get => _isArgsChecked;
-            set
-            {
-                SetAndNotify(ref _isArgsChecked, value);
-                if (_isArgsChecked == false)
-                {
-                    ExeArguments = string.Empty;
-                    HideArgumentsError = true;
-                    ValidateAsync();
-                    HideArgumentsError = false;
-                }
-            }
-        }
-
-        private ExeTypesEnum _exeTypes;
-        public ExeTypesEnum ExeTypes
-        {
-            get { return _exeTypes; }
-            set
-            {
-                SetAndNotify(ref _exeTypes, value);
-                if(_exeTypes != ExeTypesEnum.Collection)
+                SetAndNotify(ref _exeType, value);
+                if (_exeType != ExeTypeEnum.Collection)
                 {
                     IsNotExeCollection = true;
                 }
@@ -102,8 +79,6 @@ namespace VnManager.ViewModels.Windows
                 }
             }
         }
-
-        public AddGameSourceTypes SourceTypes { get; set; } = AddGameSourceTypes.Vndb;
 
         private bool _isNotExeCollection;
         public bool IsNotExeCollection
@@ -119,14 +94,61 @@ namespace VnManager.ViewModels.Windows
             }
         }
 
-        #endregion
+
+        private bool _isIconChecked;
+        public bool IsIconChecked
+        {
+            get => _isIconChecked;
+            set
+            {
+                SetAndNotify(ref _isIconChecked, value);
+                if (_isIconChecked == false)
+                {
+                    IconPath = string.Empty;
+                    //HideIconError = true;
+                    ValidateAsync();
+                    //HideIconError = false;
+                }
+            }
+        }
+
+        private bool _isArgsChecked;
+        public bool IsArgsChecked
+        {
+            get => _isArgsChecked;
+            set
+            {
+                SetAndNotify(ref _isArgsChecked, value);
+                if (_isArgsChecked == false)
+                {
+                    ExeArguments = string.Empty;
+                    //HideArgumentsError = true;
+                    ValidateAsync();
+                    //HideArgumentsError = false;
+                }
+            }
+        }
+
+
+        //public bool HideArgumentsError { get; private set; } = false;
+        //public bool HideIconError { get; private set; } = false;
+
+
+
+
+
+
+
+
+        //public AddGameSourceType SourceTypes { get; set; } = AddGameSourceType.Vndb;
+
 
 
 
         private readonly IWindowManager _windowManager;
         private readonly IDialogService _dialogService;
         private readonly IContainer _container;
-        public AddGameViewModel(IContainer container, IWindowManager windowManager, IModelValidator<AddGameViewModel> validator, IDialogService dialogService) : base(validator)
+        public AddGameVndbViewModel(IContainer container, IWindowManager windowManager, IModelValidator<AddGameVndbViewModel> validator, IDialogService dialogService) : base(validator)
         {
             _container = container;
             _windowManager = windowManager;
@@ -136,26 +158,21 @@ namespace VnManager.ViewModels.Windows
             SuggestedNamesCollection = new BindableCollection<string>();
         }
 
+
+
+
+
         public async Task Search()
         {
-            if (string.IsNullOrEmpty(VnName) || string.IsNullOrWhiteSpace(VnName)) return;
-            CanChangeVnName = false;
-            IsSearchNameButtonEnabled = false;
-            IsResetNameButtonEnabled = false;
-            await ValidateAsync();
-            if (VndbConnectionTest.VndbTcpSocketTest() == false)
-            {
-                App.Logger.Warning("Could not connect to the Vndb API over SSL");
-                await Task.Delay(3500);
-            }
+            if(await PreSearchCheck() == false) return;
+
             try
             {
-                if (VnName == null || VnName.Length < 2) return;
                 using (Vndb client = new Vndb(true))
                 {
                     var stopwatch = new Stopwatch();
                     bool shouldContinue = true;
-                    var maxTime = TimeSpan.FromMinutes(1.5);
+                    var maxTime = TimeSpan.FromSeconds(45);
                     SuggestedNamesCollection.Clear();
                     IsSearchingForNames = true;
 
@@ -164,7 +181,7 @@ namespace VnManager.ViewModels.Windows
                     {
                         if (stopwatch.Elapsed > maxTime) return;
                         shouldContinue = false;
-                        var vnNameList = await client.GetVisualNovelAsync(VndbFilters.Search.Fuzzy(null), VndbFlags.Basic);
+                        var vnNameList = await client.GetVisualNovelAsync(VndbFilters.Search.Fuzzy(VnName), VndbFlags.Basic);
                         //do I need to check for null?
                         if (vnNameList.Count < 1 && client.GetLastError().Type == ErrorType.Throttled)
                         {
@@ -192,14 +209,35 @@ namespace VnManager.ViewModels.Windows
             {
                 App.Logger.Error(ex, "Failed to search VnName");
                 IsSearchingForNames = false;
-                throw;
             }
+
         }
 
-        private bool IsJapaneseText(string text)
+        private async Task<bool> PreSearchCheck()
         {
-            Regex regex = new Regex(@"/[\u3000-\u303F]|[\u3040-\u309F]|[\u30A0-\u30FF]|[\uFF00-\uFFEF]|[\u4E00-\u9FAF]|[\u2605-\u2606]|[\u2190-\u2195]|\u203B/g");
-            return regex.IsMatch(text);
+            if (string.IsNullOrEmpty(VnName) || string.IsNullOrWhiteSpace(VnName)) return false;
+            if (VnName.Length < 2) return false;
+            CanChangeVnName = false;
+            IsResetNameButtonEnabled = false;
+            IsResetNameButtonEnabled = false;
+            await ValidateAsync();
+            var retryCount = 5;
+            bool didSucceed = false;
+            for (int i = 0; i < retryCount; i++)
+            {
+                if (VndbConnectionTest.VndbTcpSocketTest() == false)
+                {
+                    App.Logger.Warning("Could not connect to the Vndb API over SSL");
+                    await Task.Delay(3500);
+                    didSucceed = false;
+                }
+                else
+                {
+                    didSucceed = true;
+                    break;
+                }
+            }
+            return didSucceed;
         }
 
         public void ResetName()
@@ -232,15 +270,18 @@ namespace VnManager.ViewModels.Windows
 
         public void ManageExes()
         {
-            var multivm = _container.Get<AddGameMultiViewModel>();
-            var result = _windowManager.ShowDialog(multivm).Value;
-            if(result == true && multivm.GameCollection != null)
+            var multiVm = _container.Get<AddGameMultiViewModel>();
+            var result = _windowManager.ShowDialog(multiVm);
+            if (result != null)
             {
-                ExeCollection.Clear();
-                ExeCollection.AddRange(from item in multivm.GameCollection
-                                        select new MultiExeGamePaths { ExePath = item.ExePath, IconPath = item.IconPath, ArgumentsString = item.ArgumentsString });
+                if (result == true && multiVm.GameCollection != null)
+                {
+                    ExeCollection.Clear();
+                    ExeCollection.AddRange(from item in multiVm.GameCollection
+                                                   select new MultiExeGamePaths { ExePath = item.ExePath, IconPath = item.IconPath, ArgumentsString = item.ArgumentsString });
+                }
             }
-            multivm.Remove();
+            multiVm.Remove();
         }
 
         public void BrowseIcon()
@@ -263,69 +304,85 @@ namespace VnManager.ViewModels.Windows
             }
         }
 
-        public void Submit()
+        public async Task Submit()
         {
-            var validator = new AddGameViewModelValidator();
-            ValidateAsync();
-            bool result = validator.Validate(this).IsValid;
-            if(result == true)
+            bool result = await ValidateAsync();
+            if (result == true)
             {
-                this.RequestClose(true);
+                var parent = (AddGameMainViewModel)Parent;
+                parent.RequestClose(true);
             }
         }
 
         public void Cancel()
         {
-            RequestClose();
+            var parent = (AddGameMainViewModel)Parent;
+            parent.RequestClose();
+        }
+
+
+
+        private bool IsJapaneseText(string text)
+        {
+            Regex regex = new Regex(@"/[\u3000-\u303F]|[\u3040-\u309F]|[\u30A0-\u30FF]|[\uFF00-\uFFEF]|[\u4E00-\u9FAF]|[\u2605-\u2606]|[\u2190-\u2195]|\u203B/g");
+            return regex.IsMatch(text);
         }
 
 
     }
 
-    public enum ExeTypesEnum { Normal, Launcher, Collection}
-    public enum AddGameSourceTypes { NoSource, Vndb}
 
-    public class AddGameViewModelValidator : AbstractValidator<AddGameViewModel>
+    public class AddGameVndbViewModelValidator : AbstractValidator<AddGameVndbViewModel>
     {
-        public AddGameViewModelValidator()
+        public AddGameVndbViewModelValidator()
         {
             var rm = new ResourceManager("VnManager.Strings.Resources", Assembly.GetExecutingAssembly());
+
+            //VnId
             RuleFor(x => x.VnId).Cascade(CascadeMode.StopOnFirstFailure)
-                .NotEmpty().Unless(x => x.SourceTypes != AddGameSourceTypes.Vndb).When(x => x.IsNameChecked == false)
-                    .WithMessage(rm.GetString("ValidationVnIdNotAboveZero"))
-                .MustAsync(IsNotAboveMaxId).Unless(x => x.SourceTypes != AddGameSourceTypes.Vndb)
+                .NotEmpty().When(x => x.IsNameChecked == false)
+                    .WithMessage(rm.GetString("ValidationVnIdNotAboveZero")).MustAsync(IsNotAboveMaxId)
                     .When(x => x.IsNameChecked == false).WithMessage(rm.GetString("ValidationVnIdAboveMax"))
-                .MustAsync(IsNotDeletedVn).Unless(x => x.SourceTypes != AddGameSourceTypes.Vndb)
-                    .When(x => x.IsNameChecked == false).WithMessage(rm.GetString("ValidationVnIdDoesNotExist"))
+                .MustAsync(IsNotDeletedVn).When(x => x.IsNameChecked == false).WithMessage(rm.GetString("ValidationVnIdDoesNotExist"))
                 .Must(IsNotDuplicateId).WithMessage(rm.GetString("VnIdAlreadyExistsInDb"));
 
+            //Vn name validation
             When(x => x.IsNameChecked == true, () =>
             {
-                RuleFor(x => x.CanChangeVnName).NotEqual(true).Unless(x => x.SourceTypes != AddGameSourceTypes.Vndb).WithMessage(rm.GetString("ValidationVnNameSelection"));
-                RuleFor(x => x.VnName).NotEmpty().Unless(x => x.SourceTypes != AddGameSourceTypes.Vndb).When(x => x.CanChangeVnName ==false).WithMessage(rm.GetString("ValidationVnNameEmpty"));
+                RuleFor(x => x.CanChangeVnName).NotEqual(true).WithMessage(rm.GetString("ValidationVnNameSelection"));
+                RuleFor(x => x.VnName).NotEmpty().When(x => x.CanChangeVnName == false).WithMessage(rm.GetString("ValidationVnNameEmpty"));
             });
 
 
+
+
+            //Exe Path Validation
             RuleFor(x => x.ExePath).Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().WithMessage(rm.GetString("ValidationExePathEmpty"))
                 .Must(ValidateFiles.EndsWithExe).WithMessage(rm.GetString("ValidationExePathNotValid"))
                 .Must(ValidateFiles.ValidateExe).WithMessage(rm.GetString("ValidationExeNotValid"))
                 .Must(IsNotDuplicateExe).WithMessage(rm.GetString("ExeAlreadyExistsInDb"));
 
+            //Icon
+            When(x => x.IsIconChecked == true, () =>
+            {
+                RuleFor(x => x.IconPath).Cascade(CascadeMode.StopOnFirstFailure)
+                    .NotEmpty().WithMessage(rm.GetString("ValidationIconPathEmpty"))
+                    .Must(ValidateFiles.EndsWithIcoOrExe).WithMessage(rm.GetString("ValidationIconPathNotValid"));
+            });
 
-            RuleFor(x => x.IconPath).Cascade(CascadeMode.StopOnFirstFailure)
-                .NotEmpty().When(x => x.IsIconChecked == true).Unless(x => x.HideIconError == true).WithMessage(rm.GetString("ValidationIconPathEmpty"))
-                .Must(ValidateFiles.EndsWithIcoOrExe).When(x => x.IsIconChecked == true).Unless(x => x.HideIconError == true).WithMessage(rm.GetString("ValidationIconPathNotValid"));
 
-            RuleFor(x => x.ExeArguments).Cascade(CascadeMode.StopOnFirstFailure)
-                .NotEmpty().When(x => x.IsArgsChecked == true && x.ExeArguments == "").Unless(x => x.HideArgumentsError == true).WithMessage(rm.GetString("ValidationArgumentsEmpty"))
-                .Must(AddGameMultiViewModelValidator.ContainsIllegalCharacters).When(x => x.IsArgsChecked == true && x.ExeArguments == "")
-                        .Unless(x => x.HideArgumentsError == true).WithMessage(rm.GetString("ValidationArgumentsIllegalChars"));
+
+            //Arguments
+            When(x => x.IsArgsChecked == true, () =>
+            {
+                RuleFor(x => x.ExeArguments).Cascade(CascadeMode.StopOnFirstFailure)
+                    .NotEmpty().WithMessage(rm.GetString("ValidationArgumentsEmpty"))
+                    .Must(AddGameMultiViewModelValidator.ContainsIllegalCharacters).WithMessage(rm.GetString("ValidationArgumentsIllegalChars"));
+            });
 
         }
 
-
-        #region Validators
 
         private async Task<bool> IsNotDeletedVn(int inputid, CancellationToken cancellation)
         {
@@ -333,7 +390,7 @@ namespace VnManager.ViewModels.Windows
             {
                 using (Vndb client = new Vndb(true))
                 {
-                    uint vnid = Convert.ToUInt32(inputid); //17725 is deleted vn
+                    uint vnid = Convert.ToUInt32(inputid); //17725 is a deleted vn
                     VndbResponse<VisualNovel> response = await client.GetVisualNovelAsync(VndbFilters.Id.Equals(vnid));
                     if (response != null)
                     {
@@ -359,7 +416,7 @@ namespace VnManager.ViewModels.Windows
             {
                 using (Vndb client = new Vndb(true))
                 {
-                    RequestOptions ro = new RequestOptions { Reverse = true, Sort = "id",Count = 1 };
+                    RequestOptions ro = new RequestOptions { Reverse = true, Sort = "id", Count = 1 };
                     VndbResponse<VisualNovel> response = await client.GetVisualNovelAsync(VndbFilters.Id.GreaterThan(1), VndbFlags.Basic, ro);
                     if (response != null)
                     {
@@ -380,7 +437,7 @@ namespace VnManager.ViewModels.Windows
             }
         }
 
-        private bool IsNotDuplicateExe(AddGameViewModel instance, string exePath)
+        private bool IsNotDuplicateExe(AddGameVndbViewModel instance, string exePath)
         {
             //if type is normal and game id in db or exe in db
             try
@@ -389,22 +446,22 @@ namespace VnManager.ViewModels.Windows
                 {
                     if (instance == null) return false;
                     var id = instance.VnId;
-                    var exeType = instance.ExeTypes;
+                    var exeType = instance.ExeType;
                     var dbUserData = db.GetCollection<UserDataGames>("UserData_Games").Query()
-                        .Where(x => x.SourceType == AddGameSourceTypes.NoSource).ToEnumerable();
+                        .Where(x => x.SourceType == AddGameSourceType.NoSource).ToEnumerable();
                     switch (exeType)
                     {
-                        case ExeTypesEnum.Normal:
-                        {
-                            var count = dbUserData.Count(x => x.ExePath == exePath || x.GameId == id);
-                            return count <= 0;
-                        }
-                        case ExeTypesEnum.Launcher:
-                        {
-                            var count = dbUserData.Count(x => x.ExePath == exePath);
-                            return count <= 0;
-                        }
-                        case ExeTypesEnum.Collection:
+                        case ExeTypeEnum.Normal:
+                            {
+                                var count = dbUserData.Count(x => x.ExePath == exePath || x.GameId == id);
+                                return count <= 0;
+                            }
+                        case ExeTypeEnum.Launcher:
+                            {
+                                var count = dbUserData.Count(x => x.ExePath == exePath);
+                                return count <= 0;
+                            }
+                        case ExeTypeEnum.Collection:
                             return true;
                         default:
                             throw new ArgumentOutOfRangeException();
@@ -418,8 +475,7 @@ namespace VnManager.ViewModels.Windows
             }
         }
 
-
-        private bool IsNotDuplicateId(AddGameViewModel instance, int id)
+        private bool IsNotDuplicateId(AddGameVndbViewModel instance, int id)
         {
             try
             {
@@ -427,22 +483,22 @@ namespace VnManager.ViewModels.Windows
                 {
                     if (instance == null) return false;
                     var exePath = instance.ExePath;
-                    var exeType = instance.ExeTypes;
+                    var exeType = instance.ExeType;
                     var dbUserData = db.GetCollection<UserDataGames>("UserData_Games").Query()
-                        .Where(x => x.SourceType == AddGameSourceTypes.NoSource).ToEnumerable();
+                        .Where(x => x.SourceType == AddGameSourceType.Vndb).ToEnumerable();
                     switch (exeType)
                     {
-                        case ExeTypesEnum.Normal:
-                        {
-                            var count = dbUserData.Count(x => x.GameId == id || x.ExePath == exePath);
-                            return count <= 0;
-                        }
-                        case ExeTypesEnum.Collection:
-                        {
-                            var count = dbUserData.Count(x => x.GameId == id);
-                            return count <= 0;
-                        }
-                        case ExeTypesEnum.Launcher:
+                        case ExeTypeEnum.Normal:
+                            {
+                                var count = dbUserData.Count(x => x.GameId == id || x.ExePath == exePath);
+                                return count <= 0;
+                            }
+                        case ExeTypeEnum.Collection:
+                            {
+                                var count = dbUserData.Count(x => x.GameId == id);
+                                return count <= 0;
+                            }
+                        case ExeTypeEnum.Launcher:
                             return true;
                         default:
                             throw new ArgumentOutOfRangeException();
@@ -456,25 +512,8 @@ namespace VnManager.ViewModels.Windows
             }
         }
 
-        #endregion
+
     }
 
-    public class VnIdNameBoolToStringConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            var rm = new ResourceManager("VnManager.Strings.Resources", Assembly.GetExecutingAssembly());
-            if (value != null && (bool)value)
-                return rm.GetString("VnName");
-            else
-                return rm.GetString("VnId");
-        }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    
 }

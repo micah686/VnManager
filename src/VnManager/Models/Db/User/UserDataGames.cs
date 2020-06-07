@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using LiteDB;
+using VnManager.ViewModels.Dialogs.AddGameSources;
 using VnManager.ViewModels.Windows;
 
 namespace VnManager.Models.Db.User
@@ -10,8 +11,8 @@ namespace VnManager.Models.Db.User
     {
         [BsonId]
         public int Index { get; set; }
-        public AddGameSourceTypes SourceType { get; set; }
-        public ExeTypesEnum ExeType { get; set; }
+        public AddGameMainViewModel.AddGameSourceType SourceType { get; set; }
+        public AddGameMainViewModel.ExeTypeEnum ExeType { get; set; }
         /// <summary>
         /// Used for a unique value per entry
         /// </summary>
