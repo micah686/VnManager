@@ -43,7 +43,6 @@ namespace VnManager.Extensions
         public static void SetPassword(DependencyObject dp, string value)
         {
             SecureString val= new NetworkCredential("", value).SecurePassword;
-            if (val.Length < 1) val = null;
             dp.SetValue(PasswordProperty, val);
         }
 

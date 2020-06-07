@@ -242,6 +242,7 @@ namespace VnManager.ViewModels.Windows
             try
             {
                 if (password == null) return false;
+                if (password.Length < 1) return false;
                 using var db = new LiteDatabase($"Filename={Path.Combine(App.ConfigDirPath, @"database\Data.db")};Password={Marshal.PtrToStringBSTR(Marshal.SecureStringToBSTR(password))}");
                 return true;
             }
@@ -265,6 +266,7 @@ namespace VnManager.ViewModels.Windows
             try
             {
                 if (instance.Password == null) return App.ResMan.GetString("PasswordNoEmpty");
+                if (instance.Password.Length <1) return App.ResMan.GetString("PasswordNoEmpty");
                 using var db = new LiteDatabase($"Filename={Path.Combine(App.ConfigDirPath, @"database\Data.db")};Password={Marshal.PtrToStringBSTR(Marshal.SecureStringToBSTR(instance.Password))}");
                 return String.Empty;
             }
