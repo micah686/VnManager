@@ -6,6 +6,7 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Resources;
 using System.Threading.Tasks;
 using System.Windows;
 using LiteDB;
@@ -123,6 +124,8 @@ namespace VnManager
         #endregion
 
         public static UserSettings UserSettings { get; set; }
+
+        public static ResourceManager ResMan = new ResourceManager("VnManager.Strings.Resources", Assembly.GetExecutingAssembly());
 
         public static string GetDatabaseString()
         {

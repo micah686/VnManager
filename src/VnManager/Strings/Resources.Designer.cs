@@ -187,6 +187,15 @@ namespace VnManager.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Database is locked by another process.
+        /// </summary>
+        public static string DbIsLockedProc {
+            get {
+                return ResourceManager.GetString("DbIsLockedProc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to THIS PAGE SHOULD ONLY BE ABLE TO BE ACCESSED IF YOU ARE DEBUGGING THE PROGRAM FROM VISUAL STUDIO.
         /// </summary>
         public static string DebugPageWarning1 {
@@ -534,6 +543,15 @@ namespace VnManager.Strings {
         public static string Submit {
             get {
                 return ResourceManager.GetString("Submit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An unkown exception has occured.
+        /// </summary>
+        public static string UnknownException {
+            get {
+                return ResourceManager.GetString("UnknownException", resourceCulture);
             }
         }
         

@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Resources;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using FluentValidation;
 using LiteDB;
 using NeoSmart.SecureStore;
@@ -53,6 +55,7 @@ namespace VnManager.ViewModels.Windows
         {
             _container = container;
             _windowManager = windowManager;
+            ValidateFiles();
             var rm = new ResourceManager("VnManager.Strings.Resources", Assembly.GetExecutingAssembly());
             Title = rm.GetString("CreatePassTitle");
             if (!App.UserSettings.EncryptionEnabled) return;
@@ -106,6 +109,8 @@ namespace VnManager.ViewModels.Windows
         public async Task UnlockPasswordClick()
         {
             IsPasswordCheckClicked = true;
+           // var validator = new SetEnterPasswordViewModelValidator();
+           // await validator.ValidateAsync(this);
             bool result = await ValidateAsync();
             if (result)
             {
@@ -116,7 +121,13 @@ namespace VnManager.ViewModels.Windows
             IsPasswordCheckClicked = false;
         }
 
-
+        public async Task UnlockPasswordKeyPressed(KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                await UnlockPasswordClick();
+            }
+        }
 
         private async Task PasswordAttemptChecker()
         {
@@ -146,6 +157,46 @@ namespace VnManager.ViewModels.Windows
             }
         }
 
+
+        private void ValidateFiles()
+        {
+            var configFile = Path.Combine(App.ConfigDirPath, @"config\config.xml");
+            var secretStore = Path.Combine(App.ConfigDirPath, @"secure\secrets.store");
+            var secretKey = Path.Combine(App.ConfigDirPath, @"secure\secrets.key");
+            var database = Path.Combine(App.ConfigDirPath, @"database\Data.db");
+
+            if (File.Exists(configFile))
+            {
+                if (!ValidateXml.IsValidXml(configFile))
+                {
+                    File.Delete(configFile);
+                    SettingsViewModel.LoadUserSettingsStatic();
+                }
+            }
+
+            if (App.UserSettings.EncryptionEnabled == true && !File.Exists(database))
+            {
+                File.Delete(configFile);
+                SettingsViewModel.LoadUserSettingsStatic();
+            }
+
+            if (!File.Exists(secretStore) || !File.Exists(Path.Combine(secretKey)))
+            {
+                Directory.Delete(Path.Combine(App.ConfigDirPath, @"secure"), true);
+                Directory.CreateDirectory(Path.Combine(App.ConfigDirPath, @"secure"));
+                return;
+            }
+
+            string[] secKeys = new[] { "FileEnc", "ConnStr" };
+            var encSt = new Secure();
+            if (secKeys.Select(key => encSt.TestSecret(key)).Any(output => output == false))
+            {
+                Directory.Delete(Path.Combine(App.ConfigDirPath, @"secure"), true);
+                Directory.CreateDirectory(Path.Combine(App.ConfigDirPath, @"secure"));
+            }
+
+        }
+
     }
 
     public class SetEnterPasswordViewModelValidator: AbstractValidator<SetEnterPasswordViewModel>
@@ -165,7 +216,8 @@ namespace VnManager.ViewModels.Windows
 
             When(x => x.IsUnlockPasswordVisible && x.IsPasswordCheckClicked, () =>
             {
-                RuleFor(x => x.Password).Must(DidEnterRightPassword).WithMessage(rm.GetString("PassIncorrect"));
+                RuleFor(x => x.Password).Cascade(CascadeMode.StopOnFirstFailure)
+                    .Must(IsNoDbError).WithMessage(CreateDbErrorMessage);
 
             });
         }
@@ -177,13 +229,19 @@ namespace VnManager.ViewModels.Windows
             return Secure.SecureStringEqual(instance.Password, confirmPass);
         }
 
-        private bool DidEnterRightPassword(SecureString password)
+        
+
+        private bool IsNoDbError(SecureString password)
         {
             try
             {
                 if (password == null) return false;
                 using var db = new LiteDatabase($"Filename={Path.Combine(App.ConfigDirPath, @"database\Data.db")};Password={Marshal.PtrToStringBSTR(Marshal.SecureStringToBSTR(password))}");
                 return true;
+            }
+            catch (IOException ex)
+            {
+                return false;
             }
             catch (LiteException ex)
             {
@@ -196,6 +254,29 @@ namespace VnManager.ViewModels.Windows
             }
         }
 
+        private string CreateDbErrorMessage(SetEnterPasswordViewModel instance)
+        {
+            try
+            {
+                if (instance.Password == null) return App.ResMan.GetString("PasswordNoEmpty");
+                using var db = new LiteDatabase($"Filename={Path.Combine(App.ConfigDirPath, @"database\Data.db")};Password={Marshal.PtrToStringBSTR(Marshal.SecureStringToBSTR(instance.Password))}");
+                return String.Empty;
+            }
+            catch (IOException ex)
+            {
+                return App.ResMan.GetString("DbIsLockedProc");
+            }
+            catch (LiteException ex)
+            {
+                return ex.Message == "Invalid password" ? App.ResMan.GetString("PassIncorrect") : ex.Message;
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error("CreateDbErrorMessage an unknown error occurred");
+                return App.ResMan.GetString("UnknownException");
+            }
+        }
+        
     }
 
 

@@ -99,36 +99,5 @@ namespace VnManager.Initializers
 
         }
 
-        internal static void ValidateFiles()
-        {
-            var configFile = Path.Combine(App.ConfigDirPath, @"config\config.xml");
-            var secretStore = Path.Combine(App.ConfigDirPath, @"secure\secrets.store");
-            var secretKey = Path.Combine(App.ConfigDirPath, @"secure\secrets.key");
-
-            if (File.Exists(configFile))
-            {
-                if (!ValidateXml.IsValidXml(configFile))
-                {
-                    File.Delete(configFile);
-                }
-            }
-            
-
-            if (!File.Exists(secretStore) || !File.Exists(Path.Combine(secretKey)))
-            {
-                Directory.Delete(Path.Combine(App.ConfigDirPath, @"secure"), true);
-                Directory.CreateDirectory(Path.Combine(App.ConfigDirPath, @"secure"));
-                return;
-            }
-
-            string[] secKeys = new[] {"FileEnc", "ConnStr"};
-            var encSt = new Secure();
-            if (secKeys.Select(key => encSt.TestSecret(key)).Any(output => output == false))
-            {
-                Directory.Delete(Path.Combine(App.ConfigDirPath, @"secure"), true);
-                Directory.CreateDirectory(Path.Combine(App.ConfigDirPath, @"secure"));
-            }
-        }
-        
     }
 }
