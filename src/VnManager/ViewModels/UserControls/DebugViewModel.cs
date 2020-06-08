@@ -16,6 +16,7 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.PortableExecutable;
 using System.Resources;
+using System.Threading;
 using System.Threading.Tasks;
 using StyletIoC;
 using VndbSharp;
@@ -105,19 +106,21 @@ namespace VnManager.ViewModels.UserControls
             var vmTestPassword = _container.Get<SetEnterPasswordViewModel>();
 
             _windowManager.ShowWindow(vmTestPassword);
+            App.StatusBar.IsProgressBarVisible = true;
+            App.StatusBar.IsProgressBarInfinite = false;
         }
 
+        private double currentVal = 5.0;
         public void TestStatusBar()
         {
-            var sb = _container.Get<StatusBarViewModel>();
-            sb.IsProgressBarVisible = true;
-            sb.IsProgressBarInfinite = false;
-            sb.ProgressBarValue = 85;
-            sb.IsWorking = true;
-            sb.InfoText = "debug test";
-            sb.IsDatabaseProcessing = true;
-            var foo = _container.Get<AddGameMainViewModel>();
-            _windowManager.ShowDialog(foo);
+            
+            
+            //App.StatusBar.ProgressBarValue = 0;
+            //App.StatusBar.IsWorking = true;
+            //App.StatusBar.InfoText = "debug test";
+            //App.StatusBar.IsDatabaseProcessing = true;
+            currentVal += 10;
+            App.StatusBar.ProgressBarValue = currentVal;
         }
 
 

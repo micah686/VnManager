@@ -31,23 +31,43 @@ namespace VnManager.MetadataProviders.Vndb
 				using (var client = new VndbSharp.Vndb(true))
                 {
                     App.StatusBar.IsWorking = true;
-					
-                    
-                    RequestOptions ro = new RequestOptions { Count = 25 };
+					App.StatusBar.StatusString = App.ResMan.GetString("Working");
+                    double increment = 100 / 7;
+                    double current = increment;
+
+                    App.StatusBar.IsProgressBarVisible = true;
+                    App.StatusBar.ProgressBarValue = 0;
+                    App.StatusBar.IsProgressBarInfinite = false;
+
+					RequestOptions ro = new RequestOptions { Count = 25 };
 					stopwatch.Start();
-                    App.StatusBar.InfoText = "Downloading visual novel information";
+                    App.StatusBar.InfoText = App.ResMan.GetString("DownVnInfo");
 					var visualNovel = await GetVisualNovel(client, vnid);
-                    App.StatusBar.InfoText = "Downloading releases information";
+                    current += increment;
+                    App.StatusBar.ProgressBarValue = current;
+
+                    App.StatusBar.InfoText = App.ResMan.GetString("DownReleasesInfo");
 					var releases = await GetReleases(client, vnid, ro);
+                    current += increment;
+                    App.StatusBar.ProgressBarValue = current;
+
 					uint[] producerIds = releases.SelectMany(x => x.Producers.Select(y => y.Id)).Distinct().ToArray();
-                    App.StatusBar.InfoText = "Downloading producers information";
+                    App.StatusBar.InfoText = App.ResMan.GetString("DownProducersInfo");
 					var producers = await GetProducers(client, producerIds, ro);
-                    App.StatusBar.InfoText = "Downloading characters information";
+					current += increment;
+                    App.StatusBar.ProgressBarValue = current;
+
+					App.StatusBar.InfoText = App.ResMan.GetString("DownCharacterInfo");
 					var characters = await GetCharacters(client, vnid, ro);
+					current += increment;
+                    App.StatusBar.ProgressBarValue = current;
 
 					uint[] staffIds = visualNovel.Staff.Select(x => x.StaffId).Distinct().ToArray();
-                    App.StatusBar.InfoText = "Downloading staff information";
+                    App.StatusBar.InfoText = App.ResMan.GetString("DownStaffInfo");
 					var staff = await GetStaff(client, staffIds, ro);
+					current += increment;
+                    App.StatusBar.ProgressBarValue = current;
+
 					stopwatch.Stop();
 					stopwatch.Reset();
 
@@ -64,7 +84,7 @@ namespace VnManager.MetadataProviders.Vndb
 						//run code to add info to database
                         
 						SaveVnDataToDb save = new SaveVnDataToDb();
-						await save.SortVnInfo(entry, visualNovel, releases, producers, characters, staff);
+						await save.SortVnInfo(entry, visualNovel, releases, producers, characters, staff, current);
                     }
 
 					
@@ -74,6 +94,7 @@ namespace VnManager.MetadataProviders.Vndb
 			catch (Exception ex)
 			{
 				App.Logger.Error(ex, "An error occured when trying to get the vndb data from the API");
+                App.StatusBar.ResetValues();
 				throw;
 			}
         }

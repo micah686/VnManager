@@ -232,6 +232,69 @@ namespace VnManager.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Downloading characters information.
+        /// </summary>
+        public static string DownCharacterInfo {
+            get {
+                return ResourceManager.GetString("DownCharacterInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Downloading producers information.
+        /// </summary>
+        public static string DownProducersInfo {
+            get {
+                return ResourceManager.GetString("DownProducersInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Downloading releases information.
+        /// </summary>
+        public static string DownReleasesInfo {
+            get {
+                return ResourceManager.GetString("DownReleasesInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Downloading staff information.
+        /// </summary>
+        public static string DownStaffInfo {
+            get {
+                return ResourceManager.GetString("DownStaffInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Downloading tag dump.
+        /// </summary>
+        public static string DownTagDump {
+            get {
+                return ResourceManager.GetString("DownTagDump", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Downloading trait dump.
+        /// </summary>
+        public static string DownTraitDump {
+            get {
+                return ResourceManager.GetString("DownTraitDump", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Downloading visual novel information.
+        /// </summary>
+        public static string DownVnInfo {
+            get {
+                return ResourceManager.GetString("DownVnInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Enable Custom Arguments.
         /// </summary>
         public static string EnableCustomArgs {
@@ -336,6 +399,15 @@ namespace VnManager.Strings {
         public static string FirstSetupRequirePass {
             get {
                 return ResourceManager.GetString("FirstSetupRequirePass", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Games.
+        /// </summary>
+        public static string Games {
+            get {
+                return ResourceManager.GetString("Games", resourceCulture);
             }
         }
         
@@ -493,6 +565,15 @@ namespace VnManager.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ready.
+        /// </summary>
+        public static string Ready {
+            get {
+                return ResourceManager.GetString("Ready", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Remove.
         /// </summary>
         public static string Remove {
@@ -534,6 +615,15 @@ namespace VnManager.Strings {
         public static string SaveNsfwImagesInDatabase {
             get {
                 return ResourceManager.GetString("SaveNsfwImagesInDatabase", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to get Vndb ID from selected name.
+        /// </summary>
+        public static string SetIdFromNameFail {
+            get {
+                return ResourceManager.GetString("SetIdFromNameFail", resourceCulture);
             }
         }
         
@@ -741,6 +831,15 @@ namespace VnManager.Strings {
         public static string VnName {
             get {
                 return ResourceManager.GetString("VnName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Working.
+        /// </summary>
+        public static string Working {
+            get {
+                return ResourceManager.GetString("Working", resourceCulture);
             }
         }
         

@@ -18,6 +18,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
         public IEnumerable<string> SourceCollection { get; set; } = new[] {"Vndb", "No Source"};
         public string SelectedSource { get; set; }
         public AddGameSourceType SelectedSourceEnum = AddGameSourceType.NotSet;
+        public bool CanChangeSource { get; set; }
 
 
         private readonly IWindowManager _windowManager;
@@ -26,6 +27,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
         {
             _container = container;
             _windowManager = windowManager;
+            CanChangeSource = true;
             SourceChanged();
             SelectedIndex = 0;
         }

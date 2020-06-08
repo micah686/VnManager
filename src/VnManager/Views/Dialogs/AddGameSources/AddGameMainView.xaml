@@ -27,7 +27,7 @@
             </Grid.ColumnDefinitions>
             <Label Grid.Column="0" Content="{x:Static res:Resources.Source}" MinWidth="50"/>
             <ComboBox Grid.Column="1" MinWidth="70" ItemsSource="{Binding SourceCollection, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectionChanged="{s:Action SourceChanged}" SelectedItem="{Binding SelectedSource}" 
-                      SelectedIndex="{Binding SelectedIndex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                      SelectedIndex="{Binding SelectedIndex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding CanChangeSource, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
         </Grid>
 
         <Grid Grid.Row="1">

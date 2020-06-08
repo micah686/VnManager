@@ -29,26 +29,20 @@ namespace VnManager.MetadataProviders.Vndb
     public class SaveVnDataToDb
     {
 
-        public async Task SortVnInfo(AddItemDbModel entry, VisualNovel vn, List<Release>rel,List<Producer> prod, List<Character> character, List<Staff> staff)
+        private double _currentProgressValue = 0;
+        public async Task SortVnInfo(AddItemDbModel entry, VisualNovel vn, List<Release>rel,List<Producer> prod, List<Character> character, List<Staff> staff, double currentProgress)
         {
+            _currentProgressValue = currentProgress;
             App.StatusBar.IsDatabaseProcessing = true;
-            App.StatusBar.InfoText = "Saving visual novel info to database";
             SaveVnInfo(vn);
-            App.StatusBar.InfoText = "Saving character information to database";
             SaveVnCharacters(character, vn.Id);
-            App.StatusBar.InfoText = "Saving releases information to database";
             SaveVnReleases(rel);
-            App.StatusBar.InfoText = "Saving producers information to database";
             SaveProducers(prod);
-            App.StatusBar.InfoText = "Saving staff information to database";
             SaveStaff(staff, (int)vn.Id);
-            App.StatusBar.InfoText = "Saving user information to database";
             SaveUserData(entry);
             await GetAndSaveTagDump();
             await GetAndSaveTraitDump();
-            App.StatusBar.IsWorking = false;
-            App.StatusBar.IsDatabaseProcessing = false;
-            App.StatusBar.InfoText = "";
+            App.StatusBar.ResetValues();
         }
 
 
@@ -742,11 +736,13 @@ namespace VnManager.MetadataProviders.Vndb
             {
                 using (var db = new LiteDatabase(App.GetDatabaseString()))
                 {
+                    double increment = 100 / 7;
                     App.StatusBar.IsWorking = true;
                     var dbTags = db.GetCollection<VnTagData>("VnDump_TagData");
-                    App.StatusBar.InfoText = "Downloading tag dump";
+                    App.StatusBar.InfoText = App.ResMan.GetString("DownTagDump");
                     List<Tag> tagDump = (await VndbUtils.GetTagsDumpAsync()).ToList();
-                    App.StatusBar.InfoText = "Saving tag dump to database";
+                    _currentProgressValue += increment;
+                    App.StatusBar.ProgressBarValue = _currentProgressValue;
                     App.StatusBar.IsDatabaseProcessing = true;
                     List<VnTagData> tagsToAdd = new List<VnTagData>();
                     var prevEntry = dbTags.Query().ToList();
@@ -774,16 +770,14 @@ namespace VnManager.MetadataProviders.Vndb
                     App.StatusBar.IsDatabaseProcessing = false;
                     App.StatusBar.InfoText = "";
                     App.StatusBar.IsWorking = false;
+                    App.StatusBar.StatusString = App.ResMan.GetString("Ready");
                 }
 
             }
             catch (Exception ex)
             {
                 App.Logger.Error(ex, "An error happened while getting/saving the tag dump");
-                App.StatusBar.IsDatabaseProcessing = false;
-                App.StatusBar.InfoText = "";
-                App.StatusBar.IsWorking = false;
-                throw;
+                App.StatusBar.ResetValues();
             }
         }
 
@@ -793,11 +787,13 @@ namespace VnManager.MetadataProviders.Vndb
             {
                 using (var db = new LiteDatabase(App.GetDatabaseString()))
                 {
+                    double increment = 100 / 7;
                     App.StatusBar.IsWorking = true;
                     var dbTraits = db.GetCollection<VnTraitData>("VnDump_TraitData");
-                    App.StatusBar.InfoText = "Downloading trait dump";
+                    App.StatusBar.InfoText = App.ResMan.GetString("DownTraitDump");
                     List<Trait> traitDump = (await VndbUtils.GetTraitsDumpAsync()).ToList();
-                    App.StatusBar.InfoText = "Saving trait dump to database";
+                    _currentProgressValue += increment;
+                    App.StatusBar.ProgressBarValue = _currentProgressValue;
                     App.StatusBar.IsDatabaseProcessing = true;
                     List<VnTraitData> traitsToAdd = new List<VnTraitData>();
                     var prevEntry = dbTraits.Query().ToList();
@@ -823,14 +819,13 @@ namespace VnManager.MetadataProviders.Vndb
                     App.StatusBar.IsDatabaseProcessing = false;
                     App.StatusBar.InfoText = "";
                     App.StatusBar.IsWorking = false;
+                    App.StatusBar.StatusString = App.ResMan.GetString("Ready");
                 }
             }
             catch (Exception ex)
             {
                 App.Logger.Error(ex, "An error happened while getting/saving the trait dump");
-                App.StatusBar.IsDatabaseProcessing = false;
-                App.StatusBar.InfoText = "";
-                App.StatusBar.IsWorking = false;
+                App.StatusBar.ResetValues();
                 throw;
             }
         }

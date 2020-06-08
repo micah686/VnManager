@@ -16,7 +16,10 @@
              mvd:DialogServiceViews.IsRegistered="True"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
+    <UserControl.Resources>
+        <conv:InverseBoolConverter x:Key="InverseBoolConverter"/>
+    </UserControl.Resources>
+    <Grid IsEnabled="{Binding IsLockDown, Converter={StaticResource InverseBoolConverter}}">
         <Grid.Resources>
             <s:BoolToVisibilityConverter x:Key="BoolToVisConverter" TrueVisibility="Visible" FalseVisibility="Hidden"/>
             <conv:EnumToBooleanConverter x:Key="EnumToBooleanConverter"/>
@@ -71,7 +74,7 @@
                 <TextBlock  Text="{Binding VnIdOrName}" Margin="0,5,0,0"/>
                 <ComboBox Width="150" Height="25" IsEditable="{Binding CanChangeVnName, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Margin="10,0,0,0" Text="{Binding VnName}"
                                   ItemsSource="{Binding SuggestedNamesCollection, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" IsDropDownOpen="{Binding IsNameDropDownOpen, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                                  SelectedItem="{Binding SelectedName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                  SelectedItem="{Binding SelectedName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedIndex="{Binding DropDownIndex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                     <ComboBox.Resources>
                         <Style TargetType="{x:Type TextBox}">
                             <Setter Property="MaxLength" Value="70"/>

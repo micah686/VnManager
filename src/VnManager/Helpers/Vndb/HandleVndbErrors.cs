@@ -38,14 +38,15 @@ namespace VnManager.Helpers.Vndb
                     App.Logger.Warning($"A InvalidFilter Error occured, the filter combination of {invalidFilter.Field}, {invalidFilter.Operator}, {invalidFilter.Value} is not a valid combination.");
                     break;
                 case BadAuthenticationError badAuthentication:
-                    Debug.WriteLine($"A BadAuthenticationError occured. This is caused by an incorrect username or pasword.\nMessage: {badAuthentication.Message}");
-                    App.Logger.Warning($"A BadAuthenticationError occured. This is caused by an incorrect username or pasword.\nMessage: {badAuthentication.Message}");
+                    Debug.WriteLine($"A BadAuthenticationError occured. This is caused by an incorrect username or password.\nMessage: {badAuthentication.Message}");
+                    App.Logger.Warning($"A BadAuthenticationError occured. This is caused by an incorrect username or password.\nMessage: {badAuthentication.Message}");
                     break;
                 default:
                     Debug.WriteLine($"A {error.Type} Error occured.\nMessage: {error.Message}");
                     App.Logger.Warning($"A {error.Type} Error occured.\nMessage: {error.Message}");
                     break;
             }
+            App.StatusBar.ResetValues();
         }
         public static async Task ThrottledWait(ThrottledError throttled, int counter)
         {

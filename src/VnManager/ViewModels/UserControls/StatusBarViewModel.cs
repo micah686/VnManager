@@ -33,9 +33,9 @@ namespace VnManager.ViewModels.UserControls
 
         private void SetInitialValues()
         {
-            StatusString = "Ready";
+            StatusString = App.ResMan.GetString("Ready");
             IsWorking = false;
-            GameCount = "0 Items";
+            GameCount = $"0 {App.ResMan.GetString("Games")}";
             InfoText = "";
             IsProgressBarVisible = false;
             ProgressBarValue = 0;
@@ -47,7 +47,20 @@ namespace VnManager.ViewModels.UserControls
 
         }
 
-
+        public void ResetValues()
+        {
+            App.StatusBar.StatusString = App.ResMan.GetString("Ready");
+            App.StatusBar.IsWorking = false;
+            App.StatusBar.GameCount = $"0 {App.ResMan.GetString("Games")}";
+            App.StatusBar.InfoText = "";
+            App.StatusBar.IsProgressBarVisible = false;
+            App.StatusBar.ProgressBarValue = 0;
+            App.StatusBar.IsProgressBarInfinite = false;
+            App.StatusBar.IsDatabaseProcessing = false;
+            App.StatusBar.StatusIcon = PackIconMaterialKind.CheckCircleOutline;
+            App.StatusBar.StatusIconColor = Brushes.LimeGreen;
+            App.StatusBar.StatusIconTooltip = null;
+        }
         
     }
 }

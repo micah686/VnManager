@@ -33,7 +33,10 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
     {
 
         internal readonly List<MultiExeGamePaths> ExeCollection = new List<MultiExeGamePaths>();
+        internal VndbResponse<VisualNovel> VnNameList;
         public BindableCollection<string> SuggestedNamesCollection { get; private set; }
+
+        public bool IsLockDown { get; set; } = false;
 
         public int VnId { get; set; }
         public string VnName { get; set; }
@@ -55,6 +58,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
 
         public bool CanChangeVnName { get; set; }
         public bool IsNameDropDownOpen { get; set; } = false;
+        public int DropDownIndex { get; set; }
         public string SelectedName { get; set; }
         public bool IsSearchNameButtonEnabled { get; set; } = true;
         public bool IsResetNameButtonEnabled { get; set; } = true;
@@ -130,21 +134,6 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
         }
 
 
-        //public bool HideArgumentsError { get; private set; } = false;
-        //public bool HideIconError { get; private set; } = false;
-
-
-
-
-
-
-
-
-        //public AddGameSourceType SourceTypes { get; set; } = AddGameSourceType.Vndb;
-
-
-
-
         private readonly IWindowManager _windowManager;
         private readonly IDialogService _dialogService;
         private readonly IContainer _container;
@@ -181,21 +170,21 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
                     {
                         if (stopwatch.Elapsed > maxTime) return;
                         shouldContinue = false;
-                        var vnNameList = await client.GetVisualNovelAsync(VndbFilters.Search.Fuzzy(VnName), VndbFlags.Basic);
+                        VnNameList = await client.GetVisualNovelAsync(VndbFilters.Search.Fuzzy(VnName), VndbFlags.Basic);
                         //do I need to check for null?
-                        if (vnNameList.Count < 1 && client.GetLastError().Type == ErrorType.Throttled)
+                        if (VnNameList.Count < 1 && client.GetLastError().Type == ErrorType.Throttled)
                         {
                             await HandleVndbErrors.ThrottledWait((ThrottledError)client.GetLastError(), 0);
                             shouldContinue = true;
                         }
-                        else if (vnNameList.Count < 1)
+                        else if (VnNameList.Count < 1)
                         {
                             HandleVndbErrors.HandleErrors(client.GetLastError(), 0);
                             return;
                         }
                         else
                         {
-                            List<string> nameList = IsJapaneseText(VnName) == true ? vnNameList.Select(item => item.OriginalName).ToList() : vnNameList.Select(item => item.Name).ToList();
+                            List<string> nameList = IsJapaneseText(VnName) == true ? VnNameList.Select(item => item.OriginalName).ToList() : VnNameList.Select(item => item.Name).ToList();
                             SuggestedNamesCollection.AddRange(nameList.Where(x => !string.IsNullOrEmpty(x)).ToList());
                             IsNameDropDownOpen = true;
                             SelectedName = SuggestedNamesCollection.FirstOrDefault();
@@ -220,7 +209,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             CanChangeVnName = false;
             IsResetNameButtonEnabled = false;
             IsResetNameButtonEnabled = false;
-            await ValidateAsync();
+            //await ValidateAsync();
             var retryCount = 5;
             bool didSucceed = false;
             for (int i = 0; i < retryCount; i++)
@@ -306,13 +295,22 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
 
         public async Task Submit()
         {
+            IsLockDown = true;
+            var parent = (AddGameMainViewModel)Parent;
+            parent.CanChangeSource = false;
             bool result = await ValidateAsync();
             if (result == true)
             {
-                var parent = (AddGameMainViewModel)Parent;
+                IsLockDown = false;
+                parent.CanChangeSource = true;
                 parent.RequestClose(true);
             }
+
+            IsLockDown = false;
+            parent.CanChangeSource = true;
         }
+
+        
 
         public void Cancel()
         {
@@ -350,7 +348,9 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             When(x => x.IsNameChecked == true, () =>
             {
                 RuleFor(x => x.CanChangeVnName).NotEqual(true).WithMessage(rm.GetString("ValidationVnNameSelection"));
-                RuleFor(x => x.VnName).NotEmpty().When(x => x.CanChangeVnName == false).WithMessage(rm.GetString("ValidationVnNameEmpty"));
+                RuleFor(x => x.VnName).Cascade(CascadeMode.StopOnFirstFailure).NotEmpty().When(x => x.CanChangeVnName == false)
+                    .WithMessage(rm.GetString("ValidationVnNameEmpty"))
+                    .Must(TrySetNameId).Unless(x => x.IsLockDown == false).WithMessage(App.ResMan.GetString("SetIdFromNameFail"));
             });
 
 
@@ -447,13 +447,12 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
                     if (instance == null) return false;
                     var id = instance.VnId;
                     var exeType = instance.ExeType;
-                    var dbUserData = db.GetCollection<UserDataGames>("UserData_Games").Query()
-                        .Where(x => x.SourceType == AddGameSourceType.NoSource).ToEnumerable();
+                    var dbUserData = db.GetCollection<UserDataGames>("UserData_Games").Query().ToEnumerable();
                     switch (exeType)
                     {
                         case ExeTypeEnum.Normal:
                             {
-                                var count = dbUserData.Count(x => x.ExePath == exePath || x.GameId == id);
+                                var count = dbUserData.Count(x => x.ExePath == exePath);
                                 return count <= 0;
                             }
                         case ExeTypeEnum.Launcher:
@@ -490,7 +489,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
                     {
                         case ExeTypeEnum.Normal:
                             {
-                                var count = dbUserData.Count(x => x.GameId == id || x.ExePath == exePath);
+                                var count = dbUserData.Count(x => x.GameId == id);
                                 return count <= 0;
                             }
                         case ExeTypeEnum.Collection:
@@ -512,6 +511,26 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             }
         }
 
+        private bool TrySetNameId(AddGameVndbViewModel instance, string name)
+        {
+            try
+            {
+                if (instance.VnIdOrName == App.ResMan.GetString("Name"))
+                {
+                    if (instance.VnNameList == null) return false;
+                    if (instance.VnNameList.Count < 0) return false;
+                    instance.VnId = (int)instance.VnNameList.Items[instance.DropDownIndex].Id;
+                    if (instance.VnId == 0) return false;
+                    return true;
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error(ex,"Failed to set ID from selected Vndb Name");
+                throw;
+            }
+        }
 
     }
 
