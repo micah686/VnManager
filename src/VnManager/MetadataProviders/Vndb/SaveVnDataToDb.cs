@@ -1,10 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 using LiteDB;
 using VndbSharp;
 using VndbSharp.Models.Character;
@@ -14,6 +20,7 @@ using VndbSharp.Models.Release;
 using VndbSharp.Models.Staff;
 using VndbSharp.Models.VisualNovel;
 using VnManager.Converters;
+using VnManager.Helpers;
 using VnManager.Models;
 using VnManager.Models.Db.User;
 using VnManager.Models.Db.Vndb.Character;
@@ -34,12 +41,19 @@ namespace VnManager.MetadataProviders.Vndb
         {
             _currentProgressValue = currentProgress;
             App.StatusBar.IsDatabaseProcessing = true;
+            //await DownloadCharacterImages(character, vn.Id);
+            
+
+
             SaveVnInfo(vn);
             SaveVnCharacters(character, vn.Id);
             SaveVnReleases(rel);
             SaveProducers(prod);
             SaveStaff(staff, (int)vn.Id);
             SaveUserData(entry);
+
+            await DownloadCoverImage(vn.Id);
+
             await GetAndSaveTagDump();
             await GetAndSaveTraitDump();
             App.StatusBar.ResetValues();
@@ -723,6 +737,208 @@ namespace VnManager.MetadataProviders.Vndb
         
 
         #endregion
+
+        internal async Task DownloadCharacterImages(uint vnId)
+        {
+            try
+            {
+                using (var db = new LiteDatabase(App.GetDatabaseString()))
+                {
+                    var entries = db.GetCollection<VnCharacterInfo>("VnCharacter").Query().Where(x => x.VnId == vnId)
+                        .ToList();
+                    if (entries.Count > 0)
+                    {
+                        var directory = Path.Combine(App.AssetDirPath, @$"sources\vndb\images\characters\{vnId}");
+                        List<string> characterList = entries.Select(x => x.ImageLink).ToList();
+                        using var client = new WebClient();
+                        foreach (var character in characterList)
+                        {
+                            if (!Directory.Exists(directory))
+                            {
+                                Directory.CreateDirectory(directory);
+                            }
+                            string file = $@"{directory}\{Path.GetFileName(character)}";
+                            if (!File.Exists(file) && !string.IsNullOrEmpty(character))
+                            {
+                                await client.DownloadFileTaskAsync(new Uri(character), file);
+                            }
+                        }
+                    }
+
+                }
+
+            }
+            catch (Exception e)
+            {
+                App.Logger.Warning(e, "Failed to download character image");
+            }
+        }
+
+        internal async Task DownloadCoverImage(uint vnId)
+        {
+            try
+            {
+                using var db = new LiteDatabase(App.GetDatabaseString());
+                VnInfo entry = db.GetCollection<VnInfo>("VnInfo").Query().Where(x => x.VnId == vnId).FirstOrDefault();
+                if(entry == null)return;
+                using var client = new WebClient();
+                if (entry.ImageLink != null)
+                {
+                    string url = entry.ImageLink;
+                    string path = $@"{App.AssetDirPath}\sources\vndb\images\cover\{Path.GetFileName(url)}";
+                    if (entry.ImageNsfw && App.UserSettings.IsVisibleSavedNsfwContent == false)
+                    {
+                        var sec = new Secure();
+                        var result = await client.DownloadDataTaskAsync(new Uri(url));
+                        var memStr = new MemoryStream(result);
+                        sec.FileEncryptStream(memStr, path, "FileEnc");
+                    }
+                    else
+                    {
+                        await client.DownloadFileTaskAsync(new Uri(url), path);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Warning(ex, "Failed to download cover image");
+            }
+        }
+
+
+        internal async Task DownloadScreenshots(uint vnId)
+        {
+            try
+            {
+                using (var db = new LiteDatabase(App.GetDatabaseString()))
+                {
+                    using var client = new WebClient();
+                    var entries = db.GetCollection<VnInfoScreens>("VnInfo_Screens").Query().Where(x => x.VnId == vnId)
+                        .ToList();
+                    if (entries.Count > 0)
+                    {
+                        var directory = Path.Combine(App.AssetDirPath, @$"sources\vndb\images\screenshots\{vnId}");
+                        if (!Directory.Exists($@"{directory}\thumbs"))
+                        {
+                            Directory.CreateDirectory($@"{directory}\thumbs");
+                        }
+                        List<ScreenShot> scrList = entries.Select(screen => new ScreenShot() {IsNsfw = screen.Nsfw, Url = screen.ImageUrl}).ToList();
+
+                        foreach (var screen in scrList)
+                        {
+                            if (screen.Url == null) continue;
+                            var screenshot = $@"{directory}\{Path.GetFileName(screen.Url)}";
+                            var thumb = $@"{directory}\thumbs\{Path.GetFileName(screen.Url)}";
+
+                            var mainImageStr = new MemoryStream(await client.DownloadDataTaskAsync(new Uri(screen.Url)));
+                            var thumbImg = GetThumbnailImage(mainImageStr);
+                            if(thumbImg == null) continue;
+                            if (screen.IsNsfw && App.UserSettings.IsVisibleSavedNsfwContent == false)
+                            {
+                                var sec = new Secure();
+                                sec.FileEncryptStream(mainImageStr, screenshot, "FileEnc");
+
+                                var thumbStr = new MemoryStream();
+                                thumbImg.Save(thumbStr, ImageFormat.Jpeg);
+                                sec.FileEncryptStream(thumbStr, thumb, "FileEnc");
+                            }
+                            else
+                            {
+                                Image.FromStream(mainImageStr).Save(screenshot);
+                                thumbImg.Save(thumb);
+                            }
+                        }
+
+
+
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
+
+        static Size GetThumbnailSize(BitmapImage original)
+        {
+            // Maximum size of any dimension.
+            const int maxPixels = 80;
+
+            // Width and height.
+            double originalWidth = original.Width;
+            double originalHeight = original.Height;
+
+            // Compute best factor to scale entire image based on larger dimension.
+            double factor;
+            if (originalWidth > originalHeight)
+            {
+                factor = (double)maxPixels / originalWidth;
+            }
+            else
+            {
+                factor = (double)maxPixels / originalHeight;
+            }
+
+            // Return thumbnail size.
+            return new Size((int)(originalWidth * factor), (int)(originalHeight * factor));
+        }
+
+
+        public static Image GetThumbnailImage(MemoryStream stream, int maxPixels = 150)
+        {
+            //const int maxPixels = 150;
+            if (stream == null) return null;
+            if (stream.Length < 20) return null; //memory streams for an image should be big, this should prevent streams with only a few bytes
+
+            Image originalImg = Image.FromStream(stream);
+            if (originalImg == null) return null;
+
+            //get thumbnail size
+            double originalWidth = originalImg.Width;
+            double originalHeight = originalImg.Height;
+            double factor;
+            if (originalWidth > originalHeight)
+            {
+                factor = (double)maxPixels / originalWidth;
+            }
+            else
+            {
+                factor = (double)maxPixels / originalHeight;
+            }
+            Size thumbnailSize = new Size((int)(originalWidth * factor), (int)(originalHeight * factor));
+
+
+            Bitmap bitmap = new Bitmap(thumbnailSize.Width, thumbnailSize.Height);
+            Graphics g = Graphics.FromImage((Image)bitmap);
+            g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+            g.DrawImage(originalImg, 0, 0, thumbnailSize.Width, thumbnailSize.Height);
+
+            var img = (Image)bitmap;
+            return img;
+
+        }
+
+
+        private struct ScreenShot
+        {
+            public string Url;
+            public bool IsNsfw;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

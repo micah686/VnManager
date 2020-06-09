@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 using LiteDB;
@@ -13,6 +14,7 @@ using VnManager.Converters;
 using VnManager.MetadataProviders.Vndb;
 using VnManager.Models.Db.Vndb.Main;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.Reflection.PortableExecutable;
 using System.Resources;
@@ -111,16 +113,15 @@ namespace VnManager.ViewModels.UserControls
         }
 
         private double currentVal = 5.0;
-        public void TestStatusBar()
+        public async Task TestStatusBar()
         {
             
             
-            //App.StatusBar.ProgressBarValue = 0;
-            //App.StatusBar.IsWorking = true;
-            //App.StatusBar.InfoText = "debug test";
-            //App.StatusBar.IsDatabaseProcessing = true;
-            currentVal += 10;
-            App.StatusBar.ProgressBarValue = currentVal;
+            //var client = new WebClient(); 
+            //var stream = new MemoryStream(await client.DownloadDataTaskAsync(new Uri("https://s2.vndb.org/sf/33/233.jpg")));
+            //var img = SaveVnDataToDb.GetThumbnailImage(stream);
+            var sv = new SaveVnDataToDb().DownloadScreenshots(4857);
+
         }
 
 
