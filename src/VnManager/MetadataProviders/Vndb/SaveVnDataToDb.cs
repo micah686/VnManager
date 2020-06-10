@@ -824,33 +824,7 @@ namespace VnManager.MetadataProviders.Vndb
                         }
                         List<ScreenShot> scrList = entries.Select(screen => new ScreenShot() {IsNsfw = screen.Nsfw, Url = screen.ImageUrl}).ToList();
 
-                        foreach (var screen in scrList)
-                        {
-                            if (screen.Url == null) continue;
-                            var screenshot = $@"{directory}\{Path.GetFileName(screen.Url)}";
-                            var thumb = $@"{directory}\thumbs\{Path.GetFileName(screen.Url)}";
-
-                            var mainImageStr = new MemoryStream(await client.DownloadDataTaskAsync(new Uri(screen.Url)));
-                            var thumbImg = GetThumbnailImage(mainImageStr);
-                            if(thumbImg == null) continue;
-                            if (screen.IsNsfw && App.UserSettings.IsVisibleSavedNsfwContent == false)
-                            {
-                                var sec = new Secure();
-                                sec.FileEncryptStream(mainImageStr, screenshot, "FileEnc");
-
-                                var thumbStr = new MemoryStream();
-                                thumbImg.Save(thumbStr, ImageFormat.Jpeg);
-                                sec.FileEncryptStream(thumbStr, thumb, "FileEnc");
-                            }
-                            else
-                            {
-                                Image.FromStream(mainImageStr).Save(screenshot);
-                                thumbImg.Save(thumb);
-                            }
-                        }
-
-
-
+                        await ImageHelper.DownloadImagesWithThumbnails(scrList, directory);
 
                     }
                 }
@@ -922,11 +896,11 @@ namespace VnManager.MetadataProviders.Vndb
         }
 
 
-        private struct ScreenShot
-        {
-            public string Url;
-            public bool IsNsfw;
-        }
+        //private struct ScreenShot
+        //{
+        //    public string Url;
+        //    public bool IsNsfw;
+        //}
 
 
 
