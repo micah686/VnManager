@@ -784,19 +784,8 @@ namespace VnManager.MetadataProviders.Vndb
                 using var client = new WebClient();
                 if (entry.ImageLink != null)
                 {
-                    string url = entry.ImageLink;
-                    string path = $@"{App.AssetDirPath}\sources\vndb\images\cover\{Path.GetFileName(url)}";
-                    if (entry.ImageNsfw && App.UserSettings.IsVisibleSavedNsfwContent == false)
-                    {
-                        var sec = new Secure();
-                        var result = await client.DownloadDataTaskAsync(new Uri(url));
-                        var memStr = new MemoryStream(result);
-                        sec.FileEncryptStream(memStr, path, "FileEnc");
-                    }
-                    else
-                    {
-                        await client.DownloadFileTaskAsync(new Uri(url), path);
-                    }
+                    string path = $@"{App.AssetDirPath}\sources\vndb\images\cover\{Path.GetFileName(entry.ImageLink)}";
+                    await ImageHelper.DownloadImage(entry.ImageLink, entry.ImageNsfw, path);
                 }
             }
             catch (Exception ex)
@@ -836,88 +825,7 @@ namespace VnManager.MetadataProviders.Vndb
             }
         }
 
-        static Size GetThumbnailSize(BitmapImage original)
-        {
-            // Maximum size of any dimension.
-            const int maxPixels = 80;
-
-            // Width and height.
-            double originalWidth = original.Width;
-            double originalHeight = original.Height;
-
-            // Compute best factor to scale entire image based on larger dimension.
-            double factor;
-            if (originalWidth > originalHeight)
-            {
-                factor = (double)maxPixels / originalWidth;
-            }
-            else
-            {
-                factor = (double)maxPixels / originalHeight;
-            }
-
-            // Return thumbnail size.
-            return new Size((int)(originalWidth * factor), (int)(originalHeight * factor));
-        }
-
-
-        public static Image GetThumbnailImage(MemoryStream stream, int maxPixels = 150)
-        {
-            //const int maxPixels = 150;
-            if (stream == null) return null;
-            if (stream.Length < 20) return null; //memory streams for an image should be big, this should prevent streams with only a few bytes
-
-            Image originalImg = Image.FromStream(stream);
-            if (originalImg == null) return null;
-
-            //get thumbnail size
-            double originalWidth = originalImg.Width;
-            double originalHeight = originalImg.Height;
-            double factor;
-            if (originalWidth > originalHeight)
-            {
-                factor = (double)maxPixels / originalWidth;
-            }
-            else
-            {
-                factor = (double)maxPixels / originalHeight;
-            }
-            Size thumbnailSize = new Size((int)(originalWidth * factor), (int)(originalHeight * factor));
-
-
-            Bitmap bitmap = new Bitmap(thumbnailSize.Width, thumbnailSize.Height);
-            Graphics g = Graphics.FromImage((Image)bitmap);
-            g.InterpolationMode = InterpolationMode.HighQualityBicubic;
-            g.DrawImage(originalImg, 0, 0, thumbnailSize.Width, thumbnailSize.Height);
-
-            var img = (Image)bitmap;
-            return img;
-
-        }
-
-
-        //private struct ScreenShot
-        //{
-        //    public string Url;
-        //    public bool IsNsfw;
-        //}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        
 
         //Tag and Trait Dumps
         public async Task GetAndSaveTagDump()
