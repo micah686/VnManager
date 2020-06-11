@@ -126,7 +126,7 @@ namespace VnManager
 
         public static UserSettings UserSettings { get; set; }
 
-        public static ResourceManager ResMan = new ResourceManager("VnManager.Strings.Resources", Assembly.GetExecutingAssembly());
+        public static readonly ResourceManager ResMan = new ResourceManager("VnManager.Strings.Resources", Assembly.GetExecutingAssembly());
 
         public static string GetDatabaseString()
         {

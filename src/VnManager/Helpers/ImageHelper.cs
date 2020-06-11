@@ -54,6 +54,7 @@ namespace VnManager.Helpers
             g.DrawImage(originalImg, 0, 0, thumbnailSize.Width, thumbnailSize.Height);
 
             var img = (Image)bitmap;
+            bitmap.Dispose();
             return img;
 
         }

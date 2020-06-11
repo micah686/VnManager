@@ -820,7 +820,7 @@ namespace VnManager.MetadataProviders.Vndb
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
+                App.Logger.Warning(ex, "Failed to download screenshots");
                 throw;
             }
         }
@@ -834,7 +834,7 @@ namespace VnManager.MetadataProviders.Vndb
             {
                 using (var db = new LiteDatabase(App.GetDatabaseString()))
                 {
-                    double increment = 100 / 7;
+                    double increment = (double)100 / 7;
                     App.StatusBar.IsWorking = true;
                     var dbTags = db.GetCollection<VnTagData>("VnDump_TagData");
                     App.StatusBar.InfoText = App.ResMan.GetString("DownTagDump");
@@ -885,7 +885,7 @@ namespace VnManager.MetadataProviders.Vndb
             {
                 using (var db = new LiteDatabase(App.GetDatabaseString()))
                 {
-                    double increment = 100 / 7;
+                    double increment = (double)100 / 7;
                     App.StatusBar.IsWorking = true;
                     var dbTraits = db.GetCollection<VnTraitData>("VnDump_TraitData");
                     App.StatusBar.InfoText = App.ResMan.GetString("DownTraitDump");

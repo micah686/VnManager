@@ -160,8 +160,8 @@ namespace VnManager.Helpers
             byte[] salt = new byte[32];
             var outputFile = Path.GetFileNameWithoutExtension(inputFile);
             FileStream fsCrypt = new FileStream(inputFile, FileMode.Open);
-            fsCrypt.Read(salt, 0, salt.Length);
-            if (fsCrypt.Length < 1) return;
+            var bytesRead = fsCrypt.Read(salt, 0, salt.Length);
+            if (bytesRead < 1) return;
             RijndaelManaged AES = new RijndaelManaged()
             {
                 KeySize = 256,
@@ -218,8 +218,8 @@ namespace VnManager.Helpers
             byte[] passwordBytes = System.Text.Encoding.UTF8.GetBytes(ReadSecret(keyName));
             byte[] salt = new byte[32];
             FileStream fsCrypt = new FileStream(inputFile, FileMode.Open);
-            fsCrypt.Read(salt, 0, salt.Length);
-            if (fsCrypt.Length < 1) return null;
+            var bytesRead = fsCrypt.Read(salt, 0, salt.Length);
+            if (bytesRead < 1) return null;
             RijndaelManaged AES = new RijndaelManaged()
             {
                 KeySize = 256,
@@ -325,6 +325,93 @@ namespace VnManager.Helpers
         #endregion
 
 
+        #region Hashing
+        //PasswordHash has a 32 byte salt, and a 20 byte hash
+        private PassHashStruct GenerateHash(SecureString secPassword, byte[] prevSalt)
+        {
+            byte[] salt = prevSalt;
+            var pbkdf2 = new Rfc2898DeriveBytes(Marshal.PtrToStringBSTR(Marshal.SecureStringToBSTR(secPassword)), salt,20000);
+
+            byte[] hash = pbkdf2.GetBytes(20);
+            byte[] hashBytes = new byte[52];
+            Array.Copy(salt,0, hashBytes,0,32);
+            Array.Copy(hash,0, hashBytes,32,20);
+
+            string savedPasswordHash = Convert.ToBase64String(hashBytes);
+            string savedSalt = Convert.ToBase64String(salt);
+
+            var passHash = new PassHashStruct()
+            {
+                salt = savedSalt, hash = savedPasswordHash
+            };
+
+            return passHash;
+
+        }
+
+        private bool ValidatePassword(SecureString secPassword, string prevSalt, string prevHash)
+        {
+            try
+            {
+                byte[] hashBytes = Convert.FromBase64String(prevHash);
+
+                byte[] salt = Convert.FromBase64String(prevSalt); //32 byte salt, as used from generate salt function
+                var pbkdf2 = new Rfc2898DeriveBytes(Marshal.PtrToStringBSTR(Marshal.SecureStringToBSTR(secPassword)), salt, 20000);
+
+                byte[] hash = pbkdf2.GetBytes(20);
+
+                int ok = 1;
+                for (int i = 0; i < 20; i++)
+                    if (hashBytes[i + 32] != hash[i])
+                        ok = 0;
+
+                return ok == 1;
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Warning(ex, "Couldn't validate password");
+                return false;
+
+            }
+        }
+
+
+        public void TestPassHash()
+        {
+            var securePass1 = new SecureString();
+            securePass1.AppendChar('H');
+            securePass1.AppendChar('e');
+            securePass1.AppendChar('l');
+            securePass1.AppendChar('l');
+            securePass1.AppendChar('o');
+
+            var badPass2 = new SecureString();
+            Random random = new Random();
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            var randStr = new string(Enumerable.Repeat(chars, 52)
+                .Select(s => s[random.Next(s.Length)]).ToArray());
+            foreach (var character in randStr)
+            {
+                badPass2.AppendChar(character);
+            }
+
+            
+            var stream = new LiteDB.Engine.AesStream("hello", new MemoryStream());
+
+            byte[] salt = GenerateRandomSalt();
+            var hashStruct = GenerateHash(securePass1, salt);
+
+            var value1 = ValidatePassword(securePass1, hashStruct.salt, hashStruct.hash);
+            
+            var value2 = ValidatePassword(badPass2, hashStruct.salt, Convert.ToBase64String(Encoding.ASCII.GetBytes(randStr)));
+        }
+
+
+
+        #endregion
+
+
+
 
         public static bool SecureStringEqual(SecureString secureString1, SecureString secureString2)
         {
@@ -371,5 +458,11 @@ namespace VnManager.Helpers
             }
         }
 
+
+        public struct PassHashStruct
+        {
+            public string salt;
+            public string hash;
+        }
     }
 }

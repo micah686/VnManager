@@ -120,7 +120,8 @@ namespace VnManager.ViewModels.UserControls
             //var client = new WebClient(); 
             //var stream = new MemoryStream(await client.DownloadDataTaskAsync(new Uri("https://s2.vndb.org/sf/33/233.jpg")));
             //var img = SaveVnDataToDb.GetThumbnailImage(stream);
-            var sv = new SaveVnDataToDb().DownloadScreenshots(4857);
+            //var sv = new SaveVnDataToDb().DownloadScreenshots(4857);
+            new Secure().TestPassHash();
 
         }
 
