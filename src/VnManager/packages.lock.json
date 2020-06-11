@@ -11,6 +11,12 @@
           "AdonisUI": "1.15.0"
         }
       },
+      "AdysTech.CredentialManager": {
+        "type": "Direct",
+        "requested": "[2.2.0, )",
+        "resolved": "2.2.0",
+        "contentHash": "RcjusdpJJzRQcgp4yr2qotv6WMFMUxMVMIV4QyP0g6MlroFhTS2p9sANOClcmi9sF8cT9DFAUOd6bihhMiiZrQ=="
+      },
       "FluentValidation": {
         "type": "Direct",
         "requested": "[8.6.2, )",
@@ -52,15 +58,6 @@
         "dependencies": {
           "Fody": "6.1.1",
           "NETStandard.Library": "1.6.1"
-        }
-      },
-      "SecureStore": {
-        "type": "Direct",
-        "requested": "[1.0.3, )",
-        "resolved": "1.0.3",
-        "contentHash": "ypsHD2/gXCUCMaZD6OoqDuqGHEbKD1AtmZxF8M0vcvWiSh5Wq+5WmEYukVtVVB7gQt/NP6mQ/FZHdRIkrGEa+g==",
-        "dependencies": {
-          "Newtonsoft.Json": "10.0.3"
         }
       },
       "Serilog": {

@@ -23,7 +23,7 @@ namespace VnManager
     public partial class App : Application
     {
         private static Assembly Assembly { get; } = typeof(App).Assembly;
-        public static string VersionString { get; } = Assembly.GetName().Version.ToString(3);
+        public static string VersionString { get; } = Assembly.GetName().Version?.ToString(3);
 
         public static string ExecutableDirPath { get; } = AppDomain.CurrentDomain.BaseDirectory!;
 
@@ -128,11 +128,11 @@ namespace VnManager
 
         public static readonly ResourceManager ResMan = new ResourceManager("VnManager.Strings.Resources", Assembly.GetExecutingAssembly());
 
-        public static string GetDatabaseString()
+        public static string GetDbStringWithoutPass()
         {
             try
             {
-                return new Secure().ReadSecret("ConnStr");
+                return $"Filename={Path.Combine(App.ConfigDirPath, @"database\Data.db")};Password=";
             }
             catch (Exception e)
             {

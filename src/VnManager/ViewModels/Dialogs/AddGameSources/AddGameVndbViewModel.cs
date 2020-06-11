@@ -11,6 +11,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
+using AdysTech.CredentialManager;
 using FluentValidation;
 using LiteDB;
 using MvvmDialogs;
@@ -442,7 +443,9 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             //if type is normal and game id in db or exe in db
             try
             {
-                using (var db = new LiteDatabase(App.GetDatabaseString()))
+                var cred = CredentialManager.GetCredentials("VnManager.DbEnc");
+                if (cred == null || cred.UserName.Length < 1) return false;
+                using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass()}{cred.Password}"))
                 {
                     if (instance == null) return false;
                     var id = instance.VnId;
@@ -478,7 +481,9 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
         {
             try
             {
-                using (var db = new LiteDatabase(App.GetDatabaseString()))
+                var cred = CredentialManager.GetCredentials("VnManager.DbEnc");
+                if (cred == null || cred.UserName.Length < 1) return false;
+                using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass()}{cred.Password}"))
                 {
                     if (instance == null) return false;
                     var exePath = instance.ExePath;

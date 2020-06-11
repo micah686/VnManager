@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Resources;
 using System.Text;
 using System.Threading.Tasks;
+using AdysTech.CredentialManager;
 using FluentValidation;
 using LiteDB;
 using MvvmDialogs;
@@ -160,7 +161,9 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
 
         private bool IsNotDuplicateExe(string exePath)
         {
-            using (var db = new LiteDatabase(App.GetDatabaseString()))
+            var cred = CredentialManager.GetCredentials("VnManager.DbEnc");
+            if (cred == null || cred.UserName.Length < 1) return false;
+            using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass()}{cred.Password}"))
             {
                 var dbUserData = db.GetCollection<UserDataGames>("UserData_Games").Query()
                     .Where(x => x.SourceType == AddGameMainViewModel.AddGameSourceType.NoSource).ToEnumerable();

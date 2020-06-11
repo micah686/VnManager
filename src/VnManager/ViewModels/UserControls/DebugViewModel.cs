@@ -20,6 +20,7 @@ using System.Reflection.PortableExecutable;
 using System.Resources;
 using System.Threading;
 using System.Threading.Tasks;
+using AdysTech.CredentialManager;
 using StyletIoC;
 using VndbSharp;
 using VndbSharp.Models.Dumps;
@@ -70,7 +71,9 @@ namespace VnManager.ViewModels.UserControls
 
         public void AddUserData()
         {
-            using (var db = new LiteDatabase(App.GetDatabaseString()))
+            var cred = CredentialManager.GetCredentials("VnManager.DbEnc");
+            if (cred == null || cred.UserName.Length < 1) return;
+            using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass()}{cred.Password}"))
             {
                 var dbUserData = db.GetCollection<UserDataGames>("UserData_Games");
                 var entry = new UserDataGames();
@@ -91,8 +94,8 @@ namespace VnManager.ViewModels.UserControls
         public void CreateSecure()
         {
             //new Helpers.EncryptedStore().FileEncrypt("test.txt", "FileEnc");
-            new Helpers.Secure().SetSecret("VndbPass", "samplepassword12345!@#");
-            var foo = new Helpers.Secure().ReadSecret("VndbPass");
+            //new Helpers.Secure().SetSecret("VndbPass", "samplepassword12345!@#");
+            //var foo = new Helpers.Secure().ReadSecret("VndbPass");
         }
 
         public void TestStrings()
@@ -121,7 +124,7 @@ namespace VnManager.ViewModels.UserControls
             //var stream = new MemoryStream(await client.DownloadDataTaskAsync(new Uri("https://s2.vndb.org/sf/33/233.jpg")));
             //var img = SaveVnDataToDb.GetThumbnailImage(stream);
             //var sv = new SaveVnDataToDb().DownloadScreenshots(4857);
-            new Secure().TestPassHash();
+            //new Secure().TestPassHash();
 
         }
 

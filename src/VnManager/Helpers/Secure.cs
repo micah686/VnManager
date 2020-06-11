@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
-using NeoSmart.SecureStore;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Security.Cryptography;
@@ -12,18 +11,14 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Windows;
+using AdysTech.CredentialManager;
 
 namespace VnManager.Helpers
 {
 
     
-    internal class Secure
+    internal static class Secure
     {
-        private readonly string _secretStore = Path.Combine(App.ConfigDirPath, @"secure\secrets.store");
-        private readonly string _secretKey = Path.Combine(App.ConfigDirPath, @"secure\secrets.key");
-
-
-
 
         #region FileEncryption
         /// <summary>
@@ -51,11 +46,13 @@ namespace VnManager.Helpers
         /// </summary>
         /// <param name="inputFile"></param>
         /// <param name="keyName"></param>
-        public void FileEncrypt(string inputFile, string keyName)
+        public static void FileEncrypt(string inputFile, string keyName)
         {
             byte[] salt = GenerateRandomSalt();
             FileStream fsCrypt = new FileStream(inputFile + ".aes", FileMode.Create);
-            byte[] passwordBytes = System.Text.Encoding.UTF8.GetBytes(ReadSecret(keyName));
+            var cred = CredentialManager.GetCredentials("VnManager.FileEnc");
+            if(cred == null) return;
+            byte[] passwordBytes = System.Text.Encoding.UTF8.GetBytes(cred.Password);
 
             RijndaelManaged AES = new RijndaelManaged()
             {
@@ -103,11 +100,13 @@ namespace VnManager.Helpers
         /// <param name="ms">The MemoryStream</param>
         /// <param name="inputFile">The full filename WITHOUT the .aes extension</param>
         /// <param name="keyName">Name of Key for SecureStore</param>
-        public void FileEncryptStream(MemoryStream ms, string inputFile, string keyName)
+        public static void FileEncryptStream(MemoryStream ms, string inputFile, string keyName)
         {
             byte[] salt = GenerateRandomSalt();
             FileStream fsCrypt = new FileStream(inputFile + ".aes", FileMode.Create);
-            byte[] passwordBytes = System.Text.Encoding.UTF8.GetBytes(ReadSecret(keyName));
+            var cred = CredentialManager.GetCredentials("VnManager.FileEnc");
+            if (cred == null) return;
+            byte[] passwordBytes = System.Text.Encoding.UTF8.GetBytes(cred.Password);
 
             RijndaelManaged AES = new RijndaelManaged()
             {
@@ -154,9 +153,11 @@ namespace VnManager.Helpers
         /// </summary>
         /// <param name="inputFile"></param>
         /// <param name="keyName"></param>
-        public void FileDecrypt(string inputFile, string keyName)
+        public static void FileDecrypt(string inputFile, string keyName)
         {
-            byte[] passwordBytes = System.Text.Encoding.UTF8.GetBytes(ReadSecret(keyName));
+            var cred = CredentialManager.GetCredentials("VnManager.FileEnc");
+            if (cred == null) return;
+            byte[] passwordBytes = System.Text.Encoding.UTF8.GetBytes(cred.Password);
             byte[] salt = new byte[32];
             var outputFile = Path.GetFileNameWithoutExtension(inputFile);
             FileStream fsCrypt = new FileStream(inputFile, FileMode.Open);
@@ -213,9 +214,11 @@ namespace VnManager.Helpers
         }
 
 
-        public MemoryStream FileDecryptStream(string inputFile, string keyName)
+        public static MemoryStream FileDecryptStream(string inputFile, string keyName)
         {
-            byte[] passwordBytes = System.Text.Encoding.UTF8.GetBytes(ReadSecret(keyName));
+            var cred = CredentialManager.GetCredentials("VnManager.FileEnc");
+            if (cred == null) return null;
+            byte[] passwordBytes = System.Text.Encoding.UTF8.GetBytes(cred.Password);
             byte[] salt = new byte[32];
             FileStream fsCrypt = new FileStream(inputFile, FileMode.Open);
             var bytesRead = fsCrypt.Read(salt, 0, salt.Length);
@@ -271,85 +274,38 @@ namespace VnManager.Helpers
 
         #endregion
 
-
-        #region SecureStore
-        internal bool TestSecret(string keyName)
-        {
-            using (var secMan = SecretsManager.LoadStore(_secretStore))
-            {
-                secMan.LoadKeyFromFile(_secretKey);
-                return secMan.TryGetValue(keyName, out string value);
-            }
-        }
-
-        internal void SetSecret(string keyName, string secretValue)
-        {
-            using (var secMan = SecretsManager.LoadStore(_secretStore))
-            {
-                secMan.LoadKeyFromFile(_secretKey);
-                secMan.Set(keyName, secretValue);
-                secMan.SaveStore(_secretStore);
-            }
-        }
-
-        internal string ReadSecret(string keyName)
-        {
-            using (var secMan = SecretsManager.LoadStore(_secretStore))
-            {
-                secMan.LoadKeyFromFile(_secretKey);
-                return secMan.TryGetValue(keyName, out string value) ? value : "";
-            }
-        }
-
-        internal void CreateSecureStore()
-        {
-            if (File.Exists(_secretStore)) return;
-            using (var secMan = SecretsManager.CreateStore())
-            {
-                secMan.LoadKeyFromPassword(GenerateSecureKey(128)); //securely derive key from password
-                secMan.Set("FileEnc", GenerateSecureKey(128));
-
-                secMan.ExportKey(_secretKey);
-                secMan.SaveStore(_secretStore);
-            }
-
-        }
-
-        private static string GenerateSecureKey(int length)
-        {
-            RNGCryptoServiceProvider rngCryptoServiceProvider = new RNGCryptoServiceProvider();
-            byte[] randomBytes = new byte[length];
-            rngCryptoServiceProvider.GetBytes(randomBytes);
-            return Convert.ToBase64String(randomBytes);
-        }
-        #endregion
-
-
         #region Hashing
         //PasswordHash has a 32 byte salt, and a 20 byte hash
-        private PassHashStruct GenerateHash(SecureString secPassword, byte[] prevSalt)
+        internal static PassHashStruct GenerateHash(SecureString secPassword, byte[] prevSalt)
         {
-            byte[] salt = prevSalt;
-            var pbkdf2 = new Rfc2898DeriveBytes(Marshal.PtrToStringBSTR(Marshal.SecureStringToBSTR(secPassword)), salt,20000);
-
-            byte[] hash = pbkdf2.GetBytes(20);
-            byte[] hashBytes = new byte[52];
-            Array.Copy(salt,0, hashBytes,0,32);
-            Array.Copy(hash,0, hashBytes,32,20);
-
-            string savedPasswordHash = Convert.ToBase64String(hashBytes);
-            string savedSalt = Convert.ToBase64String(salt);
-
-            var passHash = new PassHashStruct()
+            try
             {
-                salt = savedSalt, hash = savedPasswordHash
-            };
+                byte[] salt = prevSalt;
+                var pbkdf2 = new Rfc2898DeriveBytes(Marshal.PtrToStringBSTR(Marshal.SecureStringToBSTR(secPassword)), salt,20000);
 
-            return passHash;
+                byte[] hash = pbkdf2.GetBytes(20);
+                byte[] hashBytes = new byte[52];
+                Array.Copy(salt,0, hashBytes,0,32);//copy salt into hashBytes
+                Array.Copy(hash,0, hashBytes,32,20);//copy hash into hashBytes
+
+                string savedPasswordHash = Convert.ToBase64String(hashBytes);
+                string savedSalt = Convert.ToBase64String(salt);
+
+                var passHash = new PassHashStruct()
+                {
+                    Salt = savedSalt, Hash = savedPasswordHash
+                };
+                return passHash;
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error(ex, "Could not generate password hash");
+                return new PassHashStruct();
+            }
 
         }
 
-        private bool ValidatePassword(SecureString secPassword, string prevSalt, string prevHash)
+        internal static bool ValidatePassword(SecureString secPassword, string prevSalt, string prevHash)
         {
             try
             {
@@ -375,94 +331,83 @@ namespace VnManager.Helpers
             }
         }
 
-
-        public void TestPassHash()
-        {
-            var securePass1 = new SecureString();
-            securePass1.AppendChar('H');
-            securePass1.AppendChar('e');
-            securePass1.AppendChar('l');
-            securePass1.AppendChar('l');
-            securePass1.AppendChar('o');
-
-            var badPass2 = new SecureString();
-            Random random = new Random();
-            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-            var randStr = new string(Enumerable.Repeat(chars, 52)
-                .Select(s => s[random.Next(s.Length)]).ToArray());
-            foreach (var character in randStr)
-            {
-                badPass2.AppendChar(character);
-            }
-
-            
-            var stream = new LiteDB.Engine.AesStream("hello", new MemoryStream());
-
-            byte[] salt = GenerateRandomSalt();
-            var hashStruct = GenerateHash(securePass1, salt);
-
-            var value1 = ValidatePassword(securePass1, hashStruct.salt, hashStruct.hash);
-            
-            var value2 = ValidatePassword(badPass2, hashStruct.salt, Convert.ToBase64String(Encoding.ASCII.GetBytes(randStr)));
-        }
-
-
-
         #endregion
 
+        private static readonly char[] Punctuations = "!@#$%^&*()_-+=[{]};:>|./?".ToCharArray();
 
-
-
-        public static bool SecureStringEqual(SecureString secureString1, SecureString secureString2)
+        public static string GenerateSecurePassword(int length, int numberOfNonAlphanumericCharacters)
         {
-            if (secureString1 == null)
+            if (length < 1 || length > 128)
             {
-                return false;
-                //throw new ArgumentNullException("s1");
-            }
-            if (secureString2 == null)
-            {
-                return false;
-                //throw new ArgumentNullException("s2");
+                throw new ArgumentException(nameof(length));
             }
 
-            if (secureString1.Length != secureString2.Length)
+            if (numberOfNonAlphanumericCharacters > length || numberOfNonAlphanumericCharacters < 0)
             {
-                return false;
+                throw new ArgumentException(nameof(numberOfNonAlphanumericCharacters));
             }
 
-            IntPtr ssBstr1Ptr = IntPtr.Zero;
-            IntPtr ssBstr2Ptr = IntPtr.Zero;
-
-            try
+            using (var rng = RandomNumberGenerator.Create())
             {
-                ssBstr1Ptr = Marshal.SecureStringToBSTR(secureString1);
-                ssBstr2Ptr = Marshal.SecureStringToBSTR(secureString2);
+                var byteBuffer = new byte[length];
 
-                String str1 = Marshal.PtrToStringBSTR(ssBstr1Ptr);
-                String str2 = Marshal.PtrToStringBSTR(ssBstr2Ptr);
+                rng.GetBytes(byteBuffer);
 
-                return Marshal.PtrToStringBSTR(ssBstr1Ptr).Equals(Marshal.PtrToStringBSTR(ssBstr2Ptr));
-            }
-            finally
-            {
-                if (ssBstr1Ptr != IntPtr.Zero)
+                var count = 0;
+                var characterBuffer = new char[length];
+
+                for (var iter = 0; iter < length; iter++)
                 {
-                    Marshal.ZeroFreeBSTR(ssBstr1Ptr);
+                    var i = byteBuffer[iter] % 87;
+
+                    if (i < 10)
+                    {
+                        characterBuffer[iter] = (char)('0' + i);
+                    }
+                    else if (i < 36)
+                    {
+                        characterBuffer[iter] = (char)('A' + i - 10);
+                    }
+                    else if (i < 62)
+                    {
+                        characterBuffer[iter] = (char)('a' + i - 36);
+                    }
+                    else
+                    {
+                        characterBuffer[iter] = Punctuations[i - 62];
+                        count++;
+                    }
                 }
 
-                if (ssBstr2Ptr != IntPtr.Zero)
+                if (count >= numberOfNonAlphanumericCharacters)
                 {
-                    Marshal.ZeroFreeBSTR(ssBstr2Ptr);
+                    return new string(characterBuffer);
                 }
+
+                int j;
+                var rand = new Random();
+
+                for (j = 0; j < numberOfNonAlphanumericCharacters - count; j++)
+                {
+                    int k;
+                    do
+                    {
+                        k = rand.Next(0, length);
+                    }
+                    while (!char.IsLetterOrDigit(characterBuffer[k]));
+
+                    characterBuffer[k] = Punctuations[rand.Next(0, Punctuations.Length)];
+                }
+
+                return new string(characterBuffer);
             }
         }
 
 
         public struct PassHashStruct
         {
-            public string salt;
-            public string hash;
+            public string Salt;
+            public string Hash;
         }
     }
 }

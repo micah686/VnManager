@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Resources;
 using System.Windows;
 using System.Windows.Media;
+using AdysTech.CredentialManager;
 using VnManager.Helpers;
 using VnManager.ViewModels.Dialogs;
 using VnManager.ViewModels.UserControls;
@@ -141,8 +142,7 @@ namespace VnManager.ViewModels
             var configFile = Path.Combine(App.ConfigDirPath, @"config\config.json");
             if (!File.Exists(configFile)) return false;
             if (!UserSettingsHelper.ValidateConfigFile()) return false;
-            if (!File.Exists(Path.Combine(App.ConfigDirPath, @"secure\secrets.store")) ||
-                !File.Exists(Path.Combine(App.ConfigDirPath, @"secure\secrets.key"))) return false;
+            if (CredentialManager.GetCredentials("VnManager.DbEnc") == null) return false;
             App.UserSettings = UserSettingsHelper.ReadUserSettings();
             var useEncryption = App.UserSettings.EncryptionEnabled;
             return !useEncryption;

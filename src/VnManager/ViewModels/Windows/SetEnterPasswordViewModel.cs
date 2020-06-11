@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.Resources;
 using System.Runtime.InteropServices;
@@ -10,9 +11,9 @@ using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using AdysTech.CredentialManager;
 using FluentValidation;
 using LiteDB;
-using NeoSmart.SecureStore;
 using Stylet;
 using StyletIoC;
 using VnManager.Helpers;
@@ -60,46 +61,67 @@ namespace VnManager.ViewModels.Windows
             Title = rm.GetString("CreatePassTitle");
             if (!App.UserSettings.EncryptionEnabled) return;
             IsCreatePasswordVisible = false; //sets form to unlock mode
+
             Title = rm.GetString("UnlockDbTitle");
-            if ((!File.Exists(Path.Combine(App.ConfigDirPath, @"secure\secrets.store")) || 
-                 !File.Exists(Path.Combine(Path.Combine(App.ConfigDirPath, @"secure\secrets.key")))))
+            if (CredentialManager.GetCredentials("VnManager.DbEnc") == null)
             {
                 File.Delete(Path.Combine(App.ConfigDirPath, @"config\config.json"));
                 Environment.Exit(0);
             }
-            if (new Secure().TestSecret("ConnStr") == false)
-            {
-                File.Delete(Path.Combine(App.ConfigDirPath, @"database\Data.db"));
-                Environment.Exit(0);
-            }
         }
 
-        public void CreatePasswordClick()
+        public async Task CreatePasswordClick()
         {
             
             try
             {
                 if (RequirePasswordChecked)
                 {
-                    var enc = new Secure();
-                    enc.CreateSecureStore();
 
-                    enc.SetSecret("ConnStr", $"Filename={Path.Combine(App.ConfigDirPath, @"database\Data.db")};Password={Marshal.PtrToStringBSTR(Marshal.SecureStringToBSTR(Password))}");
-                    using (var db = new LiteDatabase(enc.ReadSecret("ConnStr"))) { }
+                    var hashStruct = Secure.GenerateHash(ConfirmPassword, Secure.GenerateRandomSalt());
+                    string username = $"{hashStruct.Hash}|{hashStruct.Salt}";
+                    
+                    var cred = new NetworkCredential(username, ConfirmPassword);
+                    CredentialManager.SaveCredentials("VnManager.DbEnc", cred);
+
+                    using var db = new LiteDatabase($"Filename={Path.Combine(App.ConfigDirPath, @"database\Data.db")};Password={cred.Password}") { };
+
                     var settings = new UserSettings
                     {
                         EncryptionEnabled = true,
                         IsVisibleSavedNsfwContent = false
                     };
                     UserSettingsHelper.SaveUserSettings(settings);
-                    RequestClose(true);
+                    bool result = await ValidateAsync();
+                    if (result)
+                    {
+                        RequestClose(true);
+                    }
                 }
                 else
                 {
-                    var enc = new Secure();
-                    enc.CreateSecureStore();
-                    enc.SetSecret("ConnStr", $"Filename={Path.Combine(App.ConfigDirPath, @"database\Data.db")};Password={enc.ReadSecret("FileEnc")}");
-                    using (var db = new LiteDatabase(enc.ReadSecret("ConnStr"))) { }
+                    
+                    var password = new SecureString();
+
+#if DEBUG
+                    foreach (var character in "123456") //TODO:note-use 123456 for easy password when debugging the database
+                    {
+                        password.AppendChar(character);
+                    }
+#else
+                    foreach (var character in Secure.GenerateSecurePassword(64,16))
+                    {
+                        password.AppendChar(character);
+                    }
+#endif
+                    var hashStruct = Secure.GenerateHash(password, Secure.GenerateRandomSalt());
+                    string username = $"{hashStruct.Hash}|{hashStruct.Salt}";
+
+                    var cred = new NetworkCredential(username, password);
+                    CredentialManager.SaveCredentials("VnManager.DbEnc", cred);
+
+                    using var db = new LiteDatabase($"Filename={Path.Combine(App.ConfigDirPath, @"database\Data.db")};Password={cred.Password}") { };
+
                     RequestClose(true);
                 }
             }
@@ -165,8 +187,6 @@ namespace VnManager.ViewModels.Windows
         private void ValidateFiles()
         {
             var configFile = Path.Combine(App.ConfigDirPath, @"config\config.json");
-            var secretStore = Path.Combine(App.ConfigDirPath, @"secure\secrets.store");
-            var secretKey = Path.Combine(App.ConfigDirPath, @"secure\secrets.key");
             var database = Path.Combine(App.ConfigDirPath, @"database\Data.db");
 
             if (!File.Exists(configFile))
@@ -186,20 +206,13 @@ namespace VnManager.ViewModels.Windows
                 App.UserSettings = UserSettingsHelper.ReadUserSettings();
             }
 
-            if (!File.Exists(secretStore) || !File.Exists(Path.Combine(secretKey)))
+            if (CredentialManager.GetCredentials("VnManager.FileEnc") == null)
             {
-                Directory.Delete(Path.Combine(App.ConfigDirPath, @"secure"), true);
-                Directory.CreateDirectory(Path.Combine(App.ConfigDirPath, @"secure"));
-                return;
+                var cred = new NetworkCredential("", Secure.GenerateSecurePassword(64,16));
+                CredentialManager.SaveCredentials("VnManager.FileEnc", cred);
             }
 
-            string[] secKeys = new[] { "FileEnc", "ConnStr" };
-            var encSt = new Secure();
-            if (secKeys.Select(key => encSt.TestSecret(key)).Any(output => output == false))
-            {
-                Directory.Delete(Path.Combine(App.ConfigDirPath, @"secure"), true);
-                Directory.CreateDirectory(Path.Combine(App.ConfigDirPath, @"secure"));
-            }
+
 
         }
 
@@ -232,7 +245,15 @@ namespace VnManager.ViewModels.Windows
 
         private bool DoPasswordsMatch(SetEnterPasswordViewModel instance, SecureString confirmPass)
         {
-            return Secure.SecureStringEqual(instance.Password, confirmPass);
+            var cred = CredentialManager.GetCredentials("VnManager.DbEnc");
+            if (cred == null|| cred.UserName.Length <1) return false;
+            var split = cred.UserName.Split('|');
+            var hashSalt = new  Secure.PassHashStruct()
+            {
+                Hash = split[0], Salt = split[1]
+            };
+            bool result = Secure.ValidatePassword(instance.Password, hashSalt.Salt, hashSalt.Hash);
+            return result;
         }
 
         
@@ -241,22 +262,22 @@ namespace VnManager.ViewModels.Windows
         {
             try
             {
-                if (password == null) return false;
-                if (password.Length < 1) return false;
-                using var db = new LiteDatabase($"Filename={Path.Combine(App.ConfigDirPath, @"database\Data.db")};Password={Marshal.PtrToStringBSTR(Marshal.SecureStringToBSTR(password))}");
+                var cred = CredentialManager.GetCredentials("VnManager.DbEnc");
+                if (cred == null || cred.UserName.Length < 1) return false;
+                using var db = new LiteDatabase($"Filename={Path.Combine(App.ConfigDirPath, @"database\Data.db")};Password={cred.Password}");
                 return true;
             }
-            catch (IOException ex)
+            catch (IOException)
             {
                 return false;
             }
-            catch (LiteException ex)
+            catch (LiteException)
             {
                 return false;
             }
             catch (Exception ex)
             {
-                App.Logger.Error("DidEnterWithRightPassword an unknown error occurred");
+                App.Logger.Error(ex,"DidEnterWithRightPassword an unknown error occurred");
                 return false;
             }
         }
@@ -265,12 +286,12 @@ namespace VnManager.ViewModels.Windows
         {
             try
             {
-                if (instance.Password == null) return App.ResMan.GetString("PasswordNoEmpty");
-                if (instance.Password.Length <1) return App.ResMan.GetString("PasswordNoEmpty");
-                using var db = new LiteDatabase($"Filename={Path.Combine(App.ConfigDirPath, @"database\Data.db")};Password={Marshal.PtrToStringBSTR(Marshal.SecureStringToBSTR(instance.Password))}");
+                var cred = CredentialManager.GetCredentials("VnManager.DbEnc");
+                if (cred == null || cred.UserName.Length < 1) return App.ResMan.GetString("PasswordNoEmpty");
+                using var db = new LiteDatabase($"Filename={Path.Combine(App.ConfigDirPath, @"database\Data.db")};Password={cred.Password}");
                 return String.Empty;
             }
-            catch (IOException ex)
+            catch (IOException)
             {
                 return App.ResMan.GetString("DbIsLockedProc");
             }
@@ -280,7 +301,7 @@ namespace VnManager.ViewModels.Windows
             }
             catch (Exception ex)
             {
-                App.Logger.Error("CreateDbErrorMessage an unknown error occurred");
+                App.Logger.Error(ex,"CreateDbErrorMessage an unknown error occurred");
                 return App.ResMan.GetString("UnknownException");
             }
         }

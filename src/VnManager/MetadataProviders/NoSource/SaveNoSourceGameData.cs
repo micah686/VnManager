@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using AdysTech.CredentialManager;
 using LiteDB;
 using Stylet;
 using StyletIoC;
@@ -17,8 +18,9 @@ namespace VnManager.MetadataProviders.NoSource
             App.StatusBar.IsWorking = true;
             App.StatusBar.StatusString = App.ResMan.GetString("WritingToDb");
             App.StatusBar.IsDatabaseProcessing = true;
-            
-            using (var db = new LiteDatabase(App.GetDatabaseString()))
+            var cred = CredentialManager.GetCredentials("VnManager.DbEnc");
+            if (cred == null || cred.UserName.Length < 1) return;
+            using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass()}{cred.Password}"))
             {
                 var dbUserData = db.GetCollection<UserDataGames>("UserData_Games");
                 List<UserDataGames> gamesList = new List<UserDataGames>();
