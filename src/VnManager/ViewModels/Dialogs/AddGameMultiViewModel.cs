@@ -152,25 +152,24 @@ namespace VnManager.ViewModels.Dialogs
     {
         public AddGameMultiViewModelValidator()
         {
-            var rm = new ResourceManager("VnManager.Strings.Resources", Assembly.GetExecutingAssembly());
             RuleFor(x => x.ExePath).Cascade(CascadeMode.StopOnFirstFailure)
-               .NotEmpty().Unless(x => x.ShowValidationErrors == false).WithMessage(rm.GetString("ValidationExePathEmpty"))
-               .Must(ValidateFiles.EndsWithExe).Unless(x => x.ShowValidationErrors == false).WithMessage(rm.GetString("ValidationExePathNotValid"))
-               .Must(ValidateFiles.ValidateExe).Unless(x => x.ShowValidationErrors == false).WithMessage(rm.GetString("ValidationExeNotValid"));
+               .NotEmpty().Unless(x => x.ShowValidationErrors == false).WithMessage(App.ResMan.GetString("ValidationExePathEmpty"))
+               .Must(ValidateFiles.EndsWithExe).Unless(x => x.ShowValidationErrors == false).WithMessage(App.ResMan.GetString("ValidationExePathNotValid"))
+               .Must(ValidateFiles.ValidateExe).Unless(x => x.ShowValidationErrors == false).WithMessage(App.ResMan.GetString("ValidationExeNotValid"));
                         
             When(x => x.IsIconChecked == true, () =>
             {
                 RuleFor(x => x.IconPath).Cascade(CascadeMode.StopOnFirstFailure)
-                    .NotEmpty().Unless(x => x.ShowValidationErrors == false && x.HideIconError == true).WithMessage(rm.GetString("ValidationIconPathEmpty"))
-                    .Must(ValidateFiles.EndsWithIcoOrExe).Unless(x => x.ShowValidationErrors == false).WithMessage(rm.GetString("ValidationIconPathNotValid"));
+                    .NotEmpty().Unless(x => x.ShowValidationErrors == false && x.HideIconError == true).WithMessage(App.ResMan.GetString("ValidationIconPathEmpty"))
+                    .Must(ValidateFiles.EndsWithIcoOrExe).Unless(x => x.ShowValidationErrors == false).WithMessage(App.ResMan.GetString("ValidationIconPathNotValid"));
 
             });
 
             When(x => x.IsArgsChecked == true, () =>
               {                  
                   RuleFor(x => x.ExeArguments).Cascade(CascadeMode.StopOnFirstFailure)
-                    .NotEmpty().Unless(x => x.ShowValidationErrors == false && x.HideArgumentsError == true).WithMessage(rm.GetString("ValidationArgumentsEmpty"))
-                    .Must(ContainsIllegalCharacters).Unless(x => x.ShowValidationErrors == false).WithMessage(rm.GetString("ValidationArgumentsIllegalChars"));
+                    .NotEmpty().Unless(x => x.ShowValidationErrors == false && x.HideArgumentsError == true).WithMessage(App.ResMan.GetString("ValidationArgumentsEmpty"))
+                    .Must(ContainsIllegalCharacters).Unless(x => x.ShowValidationErrors == false).WithMessage(App.ResMan.GetString("ValidationArgumentsIllegalChars"));
               });
                         
         }

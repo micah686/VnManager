@@ -335,22 +335,21 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
     {
         public AddGameVndbViewModelValidator()
         {
-            var rm = new ResourceManager("VnManager.Strings.Resources", Assembly.GetExecutingAssembly());
 
             //VnId
             RuleFor(x => x.VnId).Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().When(x => x.IsNameChecked == false)
-                    .WithMessage(rm.GetString("ValidationVnIdNotAboveZero")).MustAsync(IsNotAboveMaxId)
-                    .When(x => x.IsNameChecked == false).WithMessage(rm.GetString("ValidationVnIdAboveMax"))
-                .MustAsync(IsNotDeletedVn).When(x => x.IsNameChecked == false).WithMessage(rm.GetString("ValidationVnIdDoesNotExist"))
-                .Must(IsNotDuplicateId).WithMessage(rm.GetString("VnIdAlreadyExistsInDb"));
+                    .WithMessage(App.ResMan.GetString("ValidationVnIdNotAboveZero")).MustAsync(IsNotAboveMaxId)
+                    .When(x => x.IsNameChecked == false).WithMessage(App.ResMan.GetString("ValidationVnIdAboveMax"))
+                .MustAsync(IsNotDeletedVn).When(x => x.IsNameChecked == false).WithMessage(App.ResMan.GetString("ValidationVnIdDoesNotExist"))
+                .Must(IsNotDuplicateId).WithMessage(App.ResMan.GetString("VnIdAlreadyExistsInDb"));
 
             //Vn name validation
             When(x => x.IsNameChecked == true, () =>
             {
-                RuleFor(x => x.CanChangeVnName).NotEqual(true).WithMessage(rm.GetString("ValidationVnNameSelection"));
+                RuleFor(x => x.CanChangeVnName).NotEqual(true).WithMessage(App.ResMan.GetString("ValidationVnNameSelection"));
                 RuleFor(x => x.VnName).Cascade(CascadeMode.StopOnFirstFailure).NotEmpty().When(x => x.CanChangeVnName == false)
-                    .WithMessage(rm.GetString("ValidationVnNameEmpty"))
+                    .WithMessage(App.ResMan.GetString("ValidationVnNameEmpty"))
                     .Must(TrySetNameId).Unless(x => x.IsLockDown == false).WithMessage(App.ResMan.GetString("SetIdFromNameFail"));
             });
 
@@ -359,17 +358,17 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
 
             //Exe Path Validation
             RuleFor(x => x.ExePath).Cascade(CascadeMode.StopOnFirstFailure)
-                .NotEmpty().WithMessage(rm.GetString("ValidationExePathEmpty"))
-                .Must(ValidateFiles.EndsWithExe).WithMessage(rm.GetString("ValidationExePathNotValid"))
-                .Must(ValidateFiles.ValidateExe).WithMessage(rm.GetString("ValidationExeNotValid"))
-                .Must(IsNotDuplicateExe).WithMessage(rm.GetString("ExeAlreadyExistsInDb"));
+                .NotEmpty().WithMessage(App.ResMan.GetString("ValidationExePathEmpty"))
+                .Must(ValidateFiles.EndsWithExe).WithMessage(App.ResMan.GetString("ValidationExePathNotValid"))
+                .Must(ValidateFiles.ValidateExe).WithMessage(App.ResMan.GetString("ValidationExeNotValid"))
+                .Must(IsNotDuplicateExe).WithMessage(App.ResMan.GetString("ExeAlreadyExistsInDb"));
 
             //Icon
             When(x => x.IsIconChecked == true, () =>
             {
                 RuleFor(x => x.IconPath).Cascade(CascadeMode.StopOnFirstFailure)
-                    .NotEmpty().WithMessage(rm.GetString("ValidationIconPathEmpty"))
-                    .Must(ValidateFiles.EndsWithIcoOrExe).WithMessage(rm.GetString("ValidationIconPathNotValid"));
+                    .NotEmpty().WithMessage(App.ResMan.GetString("ValidationIconPathEmpty"))
+                    .Must(ValidateFiles.EndsWithIcoOrExe).WithMessage(App.ResMan.GetString("ValidationIconPathNotValid"));
             });
 
 
@@ -378,8 +377,8 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             When(x => x.IsArgsChecked == true, () =>
             {
                 RuleFor(x => x.ExeArguments).Cascade(CascadeMode.StopOnFirstFailure)
-                    .NotEmpty().WithMessage(rm.GetString("ValidationArgumentsEmpty"))
-                    .Must(AddGameMultiViewModelValidator.ContainsIllegalCharacters).WithMessage(rm.GetString("ValidationArgumentsIllegalChars"));
+                    .NotEmpty().WithMessage(App.ResMan.GetString("ValidationArgumentsEmpty"))
+                    .Must(AddGameMultiViewModelValidator.ContainsIllegalCharacters).WithMessage(App.ResMan.GetString("ValidationArgumentsIllegalChars"));
             });
 
         }

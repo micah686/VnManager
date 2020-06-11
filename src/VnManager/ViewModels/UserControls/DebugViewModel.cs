@@ -102,8 +102,7 @@ namespace VnManager.ViewModels.UserControls
         {
             System.Threading.Thread.CurrentThread.CurrentCulture = new CultureInfo("ja-JP");
             System.Threading.Thread.CurrentThread.CurrentUICulture = new CultureInfo("ja-JP");
-            ResourceManager rm = new ResourceManager("VnManager.Strings.Resources", Assembly.GetExecutingAssembly());
-            var value = rm.GetString("AddGameCollectionTitle");
+            var value = App.ResMan.GetString("AddGameCollectionTitle");
         }
 
         public void TestPasswordEntry()

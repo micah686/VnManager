@@ -46,6 +46,7 @@ namespace VnManager.ViewModels.Windows
 
         public bool IsPasswordCheckClicked { get; set; } = false;
         public bool IsUnlockPasswordButtonEnabled { get; set; } = true;
+        internal bool IsClickChecked = false;
         private int _attemptCounter = 0;
 
         #endregion
@@ -57,27 +58,32 @@ namespace VnManager.ViewModels.Windows
             _container = container;
             _windowManager = windowManager;
             ValidateFiles();
-            var rm = new ResourceManager("VnManager.Strings.Resources", Assembly.GetExecutingAssembly());
-            Title = rm.GetString("CreatePassTitle");
-            if (!App.UserSettings.EncryptionEnabled) return;
-            IsCreatePasswordVisible = false; //sets form to unlock mode
-
-            Title = rm.GetString("UnlockDbTitle");
-            if (CredentialManager.GetCredentials("VnManager.DbEnc") == null)
+            Title = App.ResMan.GetString("CreatePassTitle");
+            if (App.UserSettings.EncryptionEnabled)
             {
-                File.Delete(Path.Combine(App.ConfigDirPath, @"config\config.json"));
-                Environment.Exit(0);
+                IsCreatePasswordVisible = false; //sets form to unlock mode
+                Title = App.ResMan.GetString("UnlockDbTitle");
+                if (CredentialManager.GetCredentials("VnManager.DbEnc") == null)
+                {
+                    File.Delete(Path.Combine(App.ConfigDirPath, @"config\config.json"));
+                    Environment.Exit(0);
+                }
             }
+            
         }
 
         public async Task CreatePasswordClick()
         {
-            
+            IsClickChecked = true;
             try
             {
                 if (RequirePasswordChecked)
                 {
-
+                    if (Password == null || Password.Length < 1 || ConfirmPassword == null || ConfirmPassword.Length <1)
+                    {
+                        await ValidateAsync();
+                        return;
+                    }
                     var hashStruct = Secure.GenerateHash(ConfirmPassword, Secure.GenerateRandomSalt());
                     string username = $"{hashStruct.Hash}|{hashStruct.Salt}";
                     
@@ -122,12 +128,17 @@ namespace VnManager.ViewModels.Windows
 
                     using var db = new LiteDatabase($"Filename={Path.Combine(App.ConfigDirPath, @"database\Data.db")};Password={cred.Password}") { };
 
-                    RequestClose(true);
+                    bool result = await ValidateAsync();
+                    if (result)
+                    {
+                        RequestClose(true);
+                    }
                 }
             }
             catch (Exception ex)
             {
                 App.Logger.Error(ex, "Couldn't Create Password");
+                IsClickChecked = false;
                 RequestClose(false);
             }
         }
@@ -135,6 +146,7 @@ namespace VnManager.ViewModels.Windows
         public async Task UnlockPasswordClick()
         {
             IsPasswordCheckClicked = true;
+            IsClickChecked = true;
            // var validator = new SetEnterPasswordViewModelValidator();
            // await validator.ValidateAsync(this);
             bool result = await ValidateAsync();
@@ -145,6 +157,7 @@ namespace VnManager.ViewModels.Windows
             _attemptCounter += 1;
             await PasswordAttemptChecker();
             IsPasswordCheckClicked = false;
+            IsClickChecked = false;
         }
 
         public async Task UnlockPasswordKeyPressed(KeyEventArgs e)
@@ -177,7 +190,7 @@ namespace VnManager.ViewModels.Windows
                 await Task.Delay(TimeSpan.FromSeconds(30));
                 IsUnlockPasswordButtonEnabled = true;
             }
-            else if(_attemptCounter > 50)
+            else //this should only trigger at or after 50 tries
             {
                 Environment.Exit(0);
             }
@@ -222,21 +235,21 @@ namespace VnManager.ViewModels.Windows
     {
         public SetEnterPasswordViewModelValidator()
         {
-            var rm = new ResourceManager("VnManager.Strings.Resources", Assembly.GetExecutingAssembly());
-            When(x => x.IsCreatePasswordVisible && x.RequirePasswordChecked, () =>
+            When(x => x.IsCreatePasswordVisible && x.RequirePasswordChecked && x.IsClickChecked, () =>
             {
-                RuleFor(x => x.Password).NotNull().WithMessage(rm.GetString("PasswordNoEmpty"));
+                RuleFor(x => x.Password).NotNull().WithMessage(App.ResMan.GetString("PasswordNoEmpty"));
 
                 RuleFor(x => x.ConfirmPassword).Cascade(CascadeMode.StopOnFirstFailure)
-                    .NotNull().WithMessage(rm.GetString("PasswordNoEmpty"))
-                    .Must(DoPasswordsMatch).WithMessage(rm.GetString("PasswordsNoMatch"));
+                    .NotNull().WithMessage(App.ResMan.GetString("PasswordNoEmpty"))
+                    .Must(DoPasswordsMatch).WithMessage(App.ResMan.GetString("PasswordsNoMatch"));
 
             });
 
-            When(x => x.IsUnlockPasswordVisible && x.IsPasswordCheckClicked, () =>
+            When(x => x.IsUnlockPasswordVisible && x.IsPasswordCheckClicked && x.IsClickChecked, () =>
             {
                 RuleFor(x => x.Password).Cascade(CascadeMode.StopOnFirstFailure)
-                    .Must(IsNoDbError).WithMessage(CreateDbErrorMessage);
+                    .Must(IsNoDbError).WithMessage(CreateDbErrorMessage)
+                    .Must(DoPasswordsMatch).WithMessage(App.ResMan.GetString("PasswordsNoMatch"));
 
             });
         }

@@ -18,7 +18,6 @@ namespace VnManager.ViewModels
 {
     public class RootViewModel: Conductor<Screen>
     {
-        private static readonly ResourceManager Rm = new ResourceManager("VnManager.Strings.Resources", Assembly.GetExecutingAssembly());
         public StatusBarViewModel StatusBarPage { get; set; }
 
         private readonly IContainer _container;
@@ -27,7 +26,7 @@ namespace VnManager.ViewModels
         private int _windowButtonPressedCounter = 0;
 
         public static RootViewModel Instance { get; private set; }
-        public string WindowTitle { get; } = string.Format($"{Rm.GetString("ApplicationTitle")} {App.VersionString}");
+        public string WindowTitle { get; } = string.Format($"{App.ResMan.GetString("ApplicationTitle")} {App.VersionString}");
 
         #region SettingsPressed
         private bool _isSettingsPressed;
