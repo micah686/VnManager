@@ -441,7 +441,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             {
                 var cred = CredentialManager.GetCredentials("VnManager.DbEnc");
                 if (cred == null || cred.UserName.Length < 1) return false;
-                using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass()}{cred.Password}"))
+                using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
                 {
                     if (instance == null) return false;
                     var id = instance.VnId;
@@ -479,7 +479,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             {
                 var cred = CredentialManager.GetCredentials("VnManager.DbEnc");
                 if (cred == null || cred.UserName.Length < 1) return false;
-                using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass()}{cred.Password}"))
+                using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
                 {
                     if (instance == null) return false;
                     var exePath = instance.ExePath;
