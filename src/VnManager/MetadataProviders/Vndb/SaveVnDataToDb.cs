@@ -41,7 +41,7 @@ namespace VnManager.MetadataProviders.Vndb
         public async Task SortVnInfo(AddItemDbModel entry, VisualNovel vn, List<Release>rel,List<Producer> prod, List<Character> character, List<Staff> staff, double currentProgress)
         {
             _currentProgressValue = currentProgress;
-            App.StatusBar.IsDatabaseProcessing = true;
+            
             //await DownloadCharacterImages(character, vn.Id);
             
 
@@ -54,7 +54,12 @@ namespace VnManager.MetadataProviders.Vndb
             SaveUserData(entry);
 
             await DownloadCoverImage(vn.Id);
+            await DownloadCharacterImages(vn.Id);
+            await DownloadScreenshots(vn.Id);
+            App.StatusBar.IsFileDownloading = false;
 
+
+            App.StatusBar.IsDatabaseProcessing = true;
             await GetAndSaveTagDump();
             await GetAndSaveTraitDump();
             App.StatusBar.ResetValues();
@@ -747,14 +752,41 @@ namespace VnManager.MetadataProviders.Vndb
                 dbUserData.Insert(gamesList);
             }
         }
-        
+
 
         #endregion
+
+
+
+        internal async Task DownloadCoverImage(uint vnId)
+        {
+            try
+            {
+                App.StatusBar.InfoText = App.ResMan.GetString("DownCoverImage");
+                var cred = CredentialManager.GetCredentials("VnManager.DbEnc");
+                if (cred == null || cred.UserName.Length < 1) return;
+                using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
+                VnInfo entry = db.GetCollection<VnInfo>("VnInfo").Query().Where(x => x.VnId == vnId).FirstOrDefault();
+                if (entry == null) return;
+                using var client = new WebClient();
+                if (entry.ImageLink != null)
+                {
+                    App.StatusBar.IsFileDownloading = true;
+                    string path = $@"{App.AssetDirPath}\sources\vndb\images\cover\{Path.GetFileName(entry.ImageLink)}";
+                    await ImageHelper.DownloadImage(entry.ImageLink, entry.ImageNsfw, path);
+                }
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Warning(ex, "Failed to download cover image");
+            }
+        }
 
         internal async Task DownloadCharacterImages(uint vnId)
         {
             try
             {
+                App.StatusBar.InfoText = App.ResMan.GetString("DownCharImages");
                 var cred = CredentialManager.GetCredentials("VnManager.DbEnc");
                 if (cred == null || cred.UserName.Length < 1) return;
                 using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
@@ -771,6 +803,7 @@ namespace VnManager.MetadataProviders.Vndb
                         string file = $@"{directory}\{Path.GetFileName(character)}";
                         if (!File.Exists(file) && !string.IsNullOrEmpty(character))
                         {
+                            App.StatusBar.IsFileDownloading = true;
                             await client.DownloadFileTaskAsync(new Uri(character), file);
                         }
                     }
@@ -782,33 +815,11 @@ namespace VnManager.MetadataProviders.Vndb
             }
         }
 
-        internal async Task DownloadCoverImage(uint vnId)
-        {
-            try
-            {
-                var cred = CredentialManager.GetCredentials("VnManager.DbEnc");
-                if (cred == null || cred.UserName.Length < 1) return;
-                using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
-                VnInfo entry = db.GetCollection<VnInfo>("VnInfo").Query().Where(x => x.VnId == vnId).FirstOrDefault();
-                if(entry == null)return;
-                using var client = new WebClient();
-                if (entry.ImageLink != null)
-                {
-                    string path = $@"{App.AssetDirPath}\sources\vndb\images\cover\{Path.GetFileName(entry.ImageLink)}";
-                    await ImageHelper.DownloadImage(entry.ImageLink, entry.ImageNsfw, path);
-                }
-            }
-            catch (Exception ex)
-            {
-                App.Logger.Warning(ex, "Failed to download cover image");
-            }
-        }
-
-
         internal async Task DownloadScreenshots(uint vnId)
         {
             try
             {
+                App.StatusBar.InfoText = App.ResMan.GetString("DownScreenshots");
                 var cred = CredentialManager.GetCredentials("VnManager.DbEnc");
                 if (cred == null || cred.UserName.Length < 1) return;
                 using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
@@ -823,8 +834,9 @@ namespace VnManager.MetadataProviders.Vndb
                         {
                             Directory.CreateDirectory($@"{directory}\thumbs");
                         }
-                        List<ScreenShot> scrList = entries.Select(screen => new ScreenShot() {IsNsfw = screen.Nsfw, Url = screen.ImageUrl}).ToList();
+                        List<ScreenShot> scrList = entries.Select(screen => new ScreenShot() { IsNsfw = screen.Nsfw, Url = screen.ImageUrl }).ToList();
 
+                        App.StatusBar.IsFileDownloading = true;
                         await ImageHelper.DownloadImagesWithThumbnails(scrList, directory);
 
                     }

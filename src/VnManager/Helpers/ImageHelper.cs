@@ -39,7 +39,6 @@ namespace VnManager.Helpers
 
             Image originalImg = Image.FromStream(stream);
             if (originalImg == null) return null;
-            stream.Dispose();
             //get thumbnail size
             double originalWidth = originalImg.Width;
             double originalHeight = originalImg.Height;
@@ -60,10 +59,9 @@ namespace VnManager.Helpers
             g.InterpolationMode = InterpolationMode.HighQualityBicubic;
             g.DrawImage(originalImg, 0, 0, thumbnailSize.Width, thumbnailSize.Height);
 
-            var img = (Image)bitmap;
+            var img = bitmap.Clone(new Rectangle(0, 0, bitmap.Width, bitmap.Height), PixelFormat.DontCare);
             bitmap.Dispose();
             return img;
-
         }
 
 
@@ -97,6 +95,7 @@ namespace VnManager.Helpers
                         {
                             Image.FromStream(imageStream).Save(imageDir);
                             thumbImg.Save(thumbDir);
+                            await imageStream.DisposeAsync();
                         }
                         await imageStream.DisposeAsync();
                     }

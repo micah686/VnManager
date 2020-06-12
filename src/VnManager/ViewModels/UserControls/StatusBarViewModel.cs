@@ -20,6 +20,7 @@ namespace VnManager.ViewModels.UserControls
         public bool IsProgressBarVisible { get; set; }
         public double ProgressBarValue { get; set; }
         public bool IsProgressBarInfinite { get; set; }
+        public bool IsFileDownloading { get; set; }
         public bool IsDatabaseProcessing { get; set; }
         public PackIconMaterialKind StatusIcon { get; set; }
         public Brush StatusIconColor { get; set; }
@@ -40,6 +41,7 @@ namespace VnManager.ViewModels.UserControls
             IsProgressBarVisible = false;
             ProgressBarValue = 0;
             IsProgressBarInfinite = false;
+            IsFileDownloading = false;
             IsDatabaseProcessing = false;
             StatusIcon = PackIconMaterialKind.CheckCircleOutline;
             StatusIconColor = Brushes.LimeGreen;
@@ -56,6 +58,7 @@ namespace VnManager.ViewModels.UserControls
             App.StatusBar.IsProgressBarVisible = false;
             App.StatusBar.ProgressBarValue = 0;
             App.StatusBar.IsProgressBarInfinite = false;
+            App.StatusBar.IsFileDownloading = false;
             App.StatusBar.IsDatabaseProcessing = false;
             App.StatusBar.StatusIcon = PackIconMaterialKind.CheckCircleOutline;
             App.StatusBar.StatusIconColor = Brushes.LimeGreen;

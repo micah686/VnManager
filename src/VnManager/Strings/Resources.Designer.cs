@@ -241,6 +241,24 @@ namespace VnManager.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Downloading Character Images.
+        /// </summary>
+        public static string DownCharImages {
+            get {
+                return ResourceManager.GetString("DownCharImages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Downloading Cover Image.
+        /// </summary>
+        public static string DownCoverImage {
+            get {
+                return ResourceManager.GetString("DownCoverImage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Downloading producers information.
         /// </summary>
         public static string DownProducersInfo {
@@ -255,6 +273,15 @@ namespace VnManager.Strings {
         public static string DownReleasesInfo {
             get {
                 return ResourceManager.GetString("DownReleasesInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Downloading Screenshots.
+        /// </summary>
+        public static string DownScreenshots {
+            get {
+                return ResourceManager.GetString("DownScreenshots", resourceCulture);
             }
         }
         

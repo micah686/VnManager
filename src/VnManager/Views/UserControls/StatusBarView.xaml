@@ -34,6 +34,7 @@
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                     </Grid>
                 </ItemsPanelTemplate>
@@ -53,7 +54,34 @@
             </StatusBarItem>
 
             <Separator Grid.Column="8" />
-            <StatusBarItem Grid.Column="9" Visibility="{Binding IsDatabaseProcessing, Converter={StaticResource BoolToVisibilityConverter}}" Margin="5,0,5,0">
+
+            <StatusBarItem Grid.Column="9" Visibility="{Binding IsFileDownloading, Converter={StaticResource BoolToVisibilityConverter}}" Margin="5,0,5,0">
+                <StatusBarItem.Style>
+                    <Style TargetType="{x:Type StatusBarItem}">
+                        <Style.Resources>
+                            <Storyboard x:Key="FlashAnimation">
+                                <DoubleAnimation Storyboard.TargetProperty="Opacity" From="1" To="0" AutoReverse="True" Duration="0:0:0.4" RepeatBehavior="Forever" />
+                            </Storyboard>
+                        </Style.Resources>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsFileDownloading}" Value="True">
+                                <DataTrigger.EnterActions>
+                                    <BeginStoryboard Storyboard="{StaticResource FlashAnimation}"/>
+                                </DataTrigger.EnterActions>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </StatusBarItem.Style>
+                <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.ProgressDownload}"  />
+            </StatusBarItem>
+
+
+
+
+
+
+
+            <StatusBarItem Grid.Column="10" Visibility="{Binding IsDatabaseProcessing, Converter={StaticResource BoolToVisibilityConverter}}" Margin="5,0,5,0">
                 <StatusBarItem.Style>
                     <Style TargetType="{x:Type StatusBarItem}">
                         <Style.Resources>
@@ -72,7 +100,7 @@
                 </StatusBarItem.Style>
                 <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.Database}"  />
             </StatusBarItem>
-            <StatusBarItem Grid.Column="10" Margin="5,0,5,0" ToolTip="{Binding StatusIconTooltip}">
+            <StatusBarItem Grid.Column="11" Margin="5,0,5,0" ToolTip="{Binding StatusIconTooltip}">
                 <iconPacks:PackIconMaterial x:Name="DbProc" Kind="{Binding StatusIcon}" Foreground="{Binding StatusIconColor}"/>
             </StatusBarItem>
 
