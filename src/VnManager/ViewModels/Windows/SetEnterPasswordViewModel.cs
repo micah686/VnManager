@@ -190,9 +190,13 @@ namespace VnManager.ViewModels.Windows
                 await Task.Delay(TimeSpan.FromSeconds(30));
                 IsUnlockPasswordButtonEnabled = true;
             }
-            else //this should only trigger at or after 50 tries
+            else if (_attemptCounter >= 50)
             {
                 Environment.Exit(0);
+            }
+            else 
+            {
+                return;
             }
         }
 

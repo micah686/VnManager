@@ -46,7 +46,7 @@ namespace VnManager.Helpers
         /// </summary>
         /// <param name="inputFile"></param>
         /// <param name="keyName"></param>
-        public static void FileEncrypt(string inputFile, string keyName)
+        public static void FileEncrypt(string inputFile)
         {
 
             CryptoStream cs = FileEncryptPrep(inputFile);
