@@ -48,8 +48,25 @@ namespace VnManager.Helpers
         /// <param name="keyName"></param>
         public static void FileEncrypt(string inputFile)
         {
+            byte[] salt = GenerateRandomSalt();
+            FileStream fsCrypt = new FileStream(inputFile + ".aes", FileMode.Create);
+            var cred = CredentialManager.GetCredentials("VnManager.FileEnc");
+            if (cred == null) return;
+            byte[] passwordBytes = System.Text.Encoding.UTF8.GetBytes(cred.Password);
 
-            CryptoStream cs = FileEncryptPrep(inputFile);
+            RijndaelManaged AES = new RijndaelManaged()
+            {
+                KeySize = 256,
+                BlockSize = 128,
+                Padding = PaddingMode.PKCS7,
+                Mode = CipherMode.CBC
+            };
+            var key = new Rfc2898DeriveBytes(passwordBytes, salt, 50000);
+            AES.Key = key.GetBytes(AES.KeySize / 8);
+            AES.IV = key.GetBytes(AES.BlockSize / 8);
+
+            fsCrypt.Write(salt, 0, salt.Length);
+            CryptoStream cs = new CryptoStream(fsCrypt, AES.CreateEncryptor(), CryptoStreamMode.Write);
 
             FileStream fsIn = new FileStream(inputFile, FileMode.Open);
 
@@ -73,6 +90,7 @@ namespace VnManager.Helpers
             finally
             {
                 cs.Close();
+                fsCrypt.Close();
             }
         }
 
@@ -82,9 +100,27 @@ namespace VnManager.Helpers
         /// <param name="ms">The MemoryStream</param>
         /// <param name="inputFile">The full filename WITHOUT the .aes extension</param>
         /// <param name="keyName">Name of Key for SecureStore</param>
-        public static void FileEncryptStream(MemoryStream ms, string inputFile, string keyName)
+        public static void FileEncryptStream(MemoryStream ms, string inputFile)
         {
-            CryptoStream cs = FileEncryptPrep(inputFile);
+            byte[] salt = GenerateRandomSalt();
+            FileStream fsCrypt = new FileStream(inputFile + ".aes", FileMode.Create);
+            var cred = CredentialManager.GetCredentials("VnManager.FileEnc");
+            if (cred == null) return;
+            byte[] passwordBytes = System.Text.Encoding.UTF8.GetBytes(cred.Password);
+
+            RijndaelManaged AES = new RijndaelManaged()
+            {
+                KeySize = 256,
+                BlockSize = 128,
+                Padding = PaddingMode.PKCS7,
+                Mode = CipherMode.CBC
+            };
+            var key = new Rfc2898DeriveBytes(passwordBytes, salt, 50000);
+            AES.Key = key.GetBytes(AES.KeySize / 8);
+            AES.IV = key.GetBytes(AES.BlockSize / 8);
+
+            fsCrypt.Write(salt, 0, salt.Length);
+            CryptoStream cs = new CryptoStream(fsCrypt, AES.CreateEncryptor(), CryptoStreamMode.Write);
 
             //FileStream fsIn = new FileStream(inputFile, FileMode.Open);
 
@@ -108,42 +144,17 @@ namespace VnManager.Helpers
             finally
             {
                 cs.Close();
+                fsCrypt.Close();
             }
         }
 
-
-
-        private static CryptoStream FileEncryptPrep(string inputFile)
-        {
-            byte[] salt = GenerateRandomSalt();
-            FileStream fsCrypt = new FileStream(inputFile + ".aes", FileMode.Create);
-            var cred = CredentialManager.GetCredentials("VnManager.FileEnc");
-            if (cred == null) return null;
-            byte[] passwordBytes = System.Text.Encoding.UTF8.GetBytes(cred.Password);
-
-            RijndaelManaged AES = new RijndaelManaged()
-            {
-                KeySize = 256,
-                BlockSize = 128,
-                Padding = PaddingMode.PKCS7,
-                Mode = CipherMode.CBC
-            };
-            var key = new Rfc2898DeriveBytes(passwordBytes, salt, 50000);
-            AES.Key = key.GetBytes(AES.KeySize / 8);
-            AES.IV = key.GetBytes(AES.BlockSize / 8);
-
-            fsCrypt.Write(salt, 0, salt.Length);
-            CryptoStream cs = new CryptoStream(fsCrypt, AES.CreateEncryptor(), CryptoStreamMode.Write);
-            fsCrypt.Close();
-            return cs;
-        }
 
         /// <summary>
         /// Decrypts an encrypted file with the FileEncrypt method through its path and the plain password.
         /// </summary>
         /// <param name="inputFile"></param>
         /// <param name="keyName"></param>
-        public static void FileDecrypt(string inputFile, string keyName)
+        public static void FileDecrypt(string inputFile)
         {
             var cred = CredentialManager.GetCredentials("VnManager.FileEnc");
             if (cred == null) return;
@@ -151,8 +162,8 @@ namespace VnManager.Helpers
             byte[] salt = new byte[32];
             var outputFile = Path.GetFileNameWithoutExtension(inputFile);
             FileStream fsCrypt = new FileStream(inputFile, FileMode.Open);
-            var bytesRead = fsCrypt.Read(salt, 0, salt.Length);
-            if (bytesRead < 1) return;
+            fsCrypt.Read(salt, 0, salt.Length);
+            if (fsCrypt.Length < 1) return;
             RijndaelManaged AES = new RijndaelManaged()
             {
                 KeySize = 256,
@@ -204,15 +215,15 @@ namespace VnManager.Helpers
         }
 
 
-        public static MemoryStream FileDecryptStream(string inputFile, string keyName)
+        public static MemoryStream FileDecryptStream(string inputFile)
         {
             var cred = CredentialManager.GetCredentials("VnManager.FileEnc");
             if (cred == null) return null;
             byte[] passwordBytes = System.Text.Encoding.UTF8.GetBytes(cred.Password);
             byte[] salt = new byte[32];
             FileStream fsCrypt = new FileStream(inputFile, FileMode.Open);
-            var bytesRead = fsCrypt.Read(salt, 0, salt.Length);
-            if (bytesRead < 1) return null;
+            fsCrypt.Read(salt, 0, salt.Length);
+            if (fsCrypt.Length < 1) return null;
             RijndaelManaged AES = new RijndaelManaged()
             {
                 KeySize = 256,
@@ -263,6 +274,7 @@ namespace VnManager.Helpers
         }
 
         #endregion
+
 
         #region Hashing
         //PasswordHash has a 32 byte salt, and a 20 byte hash
@@ -323,6 +335,7 @@ namespace VnManager.Helpers
 
         #endregion
 
+        #region Password Generator
         private static readonly char[] Punctuations = "!@#$%^&*()_-+=[{]};:>|./?".ToCharArray();
 
         public static string GenerateSecurePassword(int length, int numberOfNonAlphanumericCharacters)
@@ -392,6 +405,11 @@ namespace VnManager.Helpers
                 return new string(characterBuffer);
             }
         }
+
+
+        #endregion
+
+
 
 
         public struct PassHashStruct

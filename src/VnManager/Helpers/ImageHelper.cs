@@ -84,11 +84,11 @@ namespace VnManager.Helpers
                         if (thumbImg == null) continue;
                         if (screen.IsNsfw && App.UserSettings.IsVisibleSavedNsfwContent == false)
                         {
-                            Secure.FileEncryptStream(imageStream, imageDir, "FileEnc");
+                            Secure.FileEncryptStream(imageStream, imageDir);
 
                             var thumbStream = new MemoryStream();
                             thumbImg.Save(thumbStream, ImageFormat.Jpeg);
-                            Secure.FileEncryptStream(thumbStream, thumbDir, "FileEnc");
+                            Secure.FileEncryptStream(thumbStream, thumbDir);
                             await thumbStream.DisposeAsync();
                         }
                         else
@@ -125,7 +125,7 @@ namespace VnManager.Helpers
                         byte[] imageBytes = await client.DownloadDataTaskAsync(new Uri(url));
                         var memStream = new MemoryStream(imageBytes);
                         if (memStream.Length < 1) return;
-                        Secure.FileEncryptStream(memStream, path, "FileEnc");
+                        Secure.FileEncryptStream(memStream, path);
                         await memStream.DisposeAsync();
                     }
                     else
