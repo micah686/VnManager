@@ -48,25 +48,8 @@ namespace VnManager.Helpers
         /// <param name="keyName"></param>
         public static void FileEncrypt(string inputFile, string keyName)
         {
-            byte[] salt = GenerateRandomSalt();
-            FileStream fsCrypt = new FileStream(inputFile + ".aes", FileMode.Create);
-            var cred = CredentialManager.GetCredentials("VnManager.FileEnc");
-            if(cred == null) return;
-            byte[] passwordBytes = System.Text.Encoding.UTF8.GetBytes(cred.Password);
 
-            RijndaelManaged AES = new RijndaelManaged()
-            {
-                KeySize = 256,
-                BlockSize = 128,
-                Padding = PaddingMode.PKCS7,
-                Mode = CipherMode.CBC
-            };
-            var key = new Rfc2898DeriveBytes(passwordBytes, salt, 50000);
-            AES.Key = key.GetBytes(AES.KeySize / 8);
-            AES.IV = key.GetBytes(AES.BlockSize / 8);
-
-            fsCrypt.Write(salt, 0, salt.Length);
-            CryptoStream cs = new CryptoStream(fsCrypt, AES.CreateEncryptor(), CryptoStreamMode.Write);
+            CryptoStream cs = FileEncryptPrep(inputFile);
 
             FileStream fsIn = new FileStream(inputFile, FileMode.Open);
 
@@ -90,7 +73,6 @@ namespace VnManager.Helpers
             finally
             {
                 cs.Close();
-                fsCrypt.Close();
             }
         }
 
@@ -102,25 +84,7 @@ namespace VnManager.Helpers
         /// <param name="keyName">Name of Key for SecureStore</param>
         public static void FileEncryptStream(MemoryStream ms, string inputFile, string keyName)
         {
-            byte[] salt = GenerateRandomSalt();
-            FileStream fsCrypt = new FileStream(inputFile + ".aes", FileMode.Create);
-            var cred = CredentialManager.GetCredentials("VnManager.FileEnc");
-            if (cred == null) return;
-            byte[] passwordBytes = System.Text.Encoding.UTF8.GetBytes(cred.Password);
-
-            RijndaelManaged AES = new RijndaelManaged()
-            {
-                KeySize = 256,
-                BlockSize = 128,
-                Padding = PaddingMode.PKCS7,
-                Mode = CipherMode.CBC
-            };
-            var key = new Rfc2898DeriveBytes(passwordBytes, salt, 50000);
-            AES.Key = key.GetBytes(AES.KeySize / 8);
-            AES.IV = key.GetBytes(AES.BlockSize / 8);
-
-            fsCrypt.Write(salt, 0, salt.Length);
-            CryptoStream cs = new CryptoStream(fsCrypt, AES.CreateEncryptor(), CryptoStreamMode.Write);
+            CryptoStream cs = FileEncryptPrep(inputFile);
 
             //FileStream fsIn = new FileStream(inputFile, FileMode.Open);
 
@@ -144,8 +108,34 @@ namespace VnManager.Helpers
             finally
             {
                 cs.Close();
-                fsCrypt.Close();
             }
+        }
+
+
+
+        private static CryptoStream FileEncryptPrep(string inputFile)
+        {
+            byte[] salt = GenerateRandomSalt();
+            FileStream fsCrypt = new FileStream(inputFile + ".aes", FileMode.Create);
+            var cred = CredentialManager.GetCredentials("VnManager.FileEnc");
+            if (cred == null) return null;
+            byte[] passwordBytes = System.Text.Encoding.UTF8.GetBytes(cred.Password);
+
+            RijndaelManaged AES = new RijndaelManaged()
+            {
+                KeySize = 256,
+                BlockSize = 128,
+                Padding = PaddingMode.PKCS7,
+                Mode = CipherMode.CBC
+            };
+            var key = new Rfc2898DeriveBytes(passwordBytes, salt, 50000);
+            AES.Key = key.GetBytes(AES.KeySize / 8);
+            AES.IV = key.GetBytes(AES.BlockSize / 8);
+
+            fsCrypt.Write(salt, 0, salt.Length);
+            CryptoStream cs = new CryptoStream(fsCrypt, AES.CreateEncryptor(), CryptoStreamMode.Write);
+            fsCrypt.Close();
+            return cs;
         }
 
         /// <summary>

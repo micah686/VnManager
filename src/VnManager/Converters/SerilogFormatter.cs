@@ -23,36 +23,32 @@ namespace VnManager.Converters
             {
                 if (logEvent.Exception != null)
                 {
-                    output.Write("[ {0} | {1} {2}] Msg: {3}\n Ex: {4}", logEvent.Level, datestr, timestr, logEvent.MessageTemplate, logEvent.Exception);
+                    output.Write($"[ {logEvent.Level} | {datestr} {timestr}] Msg: {logEvent.MessageTemplate}\n Ex: {logEvent.Exception}");
                 }
                 else
                 {
-                    output.Write("[ {0} | {1} {2}] Msg: {3}\n", logEvent.Level, datestr, timestr, logEvent.MessageTemplate);
+                    output.Write($"[ {logEvent.Level} | {datestr} {timestr}] Msg: {logEvent.MessageTemplate}\n");
                 }
 
             }
-            else if (LogManager.LogLevel == LogLevel.Verbose)
+            else //should be LogLevel.Verbose
             {
                 StringBuilder outstrBuilder = new StringBuilder();
                 Exception ex = logEvent.Exception;
-                outstrBuilder.Append(string.Format("[ {0} | {1} {2}] Msg: {3}\n", logEvent.Level, datestr, timestr, logEvent.MessageTemplate));
+                outstrBuilder.Append($"[ {logEvent.Level} | {datestr} {timestr}] Msg: {logEvent.MessageTemplate}\n");
                 if (logEvent.Exception != null)
                 {
-                    outstrBuilder.Append(string.Format("Ex Message: {0}\nStackTrace: {1}\nInner Ex: {2}\nSource: {3}\nData: {4}\nHResult: {5}\nTargetSite: {6}\n\n", ex.Message, ex.StackTrace, ex.InnerException, ex.Source, ex.Data, ex.HResult, ex.TargetSite));                    
+                    outstrBuilder.Append(
+                        $"Ex Message: {ex.Message}\nStackTrace: {ex.StackTrace}\nInner Ex: {ex.InnerException}\nSource: {ex.Source}\nData: {ex.Data}\nHResult: {ex.HResult}\nTargetSite: {ex.TargetSite}\n\n");                    
                 }
                 if (logEvent.Properties.Count > 0)
                 {
                     foreach (var item in logEvent.Properties)
                     {
-                        outstrBuilder.Append(string.Format("Prop Key: {0} Value: {1}\n", item.Key, item.Value));
+                        outstrBuilder.Append($"Prop Key: {item.Key} Value: {item.Value}\n");
                     }
                 }
                 output.Write("{0}\n", outstrBuilder.ToString());
-            }
-            else
-            {
-                //should not reach here
-                throw new NotImplementedException();
             }
         }
     }

@@ -32,7 +32,7 @@ namespace VnManager.MetadataProviders.Vndb
                 {
                     App.StatusBar.IsWorking = true;
 					App.StatusBar.StatusString = App.ResMan.GetString("Working");
-                    double increment = (double)100 / 7;
+                    const double increment = (double)100 / 7;
                     double current = increment;
 
                     App.StatusBar.IsProgressBarVisible = true;

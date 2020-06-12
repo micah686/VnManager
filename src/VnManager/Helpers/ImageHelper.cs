@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
@@ -23,9 +24,15 @@ namespace VnManager.Helpers
 
 
 
-
-        public static Image GetThumbnailImage(MemoryStream stream, int maxPixels = 150)
+        /// <summary>
+        /// Creates a thumbnail image from a specified image stream
+        /// </summary>
+        /// <param name="stream">MemoryStream of Image</param>
+        /// <param name="maxPixels">Factor of original size. If 0, defaults to 80</param>
+        /// <returns></returns>
+        public static Image GetThumbnailImage(Stream stream, int maxPixels)
         {
+            if (maxPixels < 80) maxPixels = 80;
             //const int maxPixels = 150;
             if (stream == null) return null;
             if (stream.Length < 20) return null; //memory streams for an image should be big, this should prevent streams with only a few bytes
@@ -66,33 +73,35 @@ namespace VnManager.Helpers
             try
             {
                 if (imageList == null || !imageList.Any()) return;
-                using var client = new WebClient();
-                foreach (var screen in imageList)
+                using (var client = new WebClient())
                 {
-                    if (screen.Url == null) continue;
-                    var imageDir = $@"{imageDirectory}\{Path.GetFileName(screen.Url)}";
-                    var thumbDir = $@"{imageDirectory}\thumbs\{Path.GetFileName(screen.Url)}";
-
-                    var imageStream = new MemoryStream(await client.DownloadDataTaskAsync(new Uri(screen.Url)));
-                    var thumbImg = GetThumbnailImage(imageStream);
-                    if (thumbImg == null) continue;
-                    if (screen.IsNsfw && App.UserSettings.IsVisibleSavedNsfwContent == false)
+                    foreach (var screen in imageList)
                     {
-                        Secure.FileEncryptStream(imageStream, imageDir, "FileEnc");
+                        if (screen.Url == null) continue;
+                        var imageDir = $@"{imageDirectory}\{Path.GetFileName(screen.Url)}";
+                        var thumbDir = $@"{imageDirectory}\thumbs\{Path.GetFileName(screen.Url)}";
 
-                        var thumbStream = new MemoryStream();
-                        thumbImg.Save(thumbStream, ImageFormat.Jpeg);
-                        Secure.FileEncryptStream(thumbStream, thumbDir, "FileEnc");
-                        await thumbStream.DisposeAsync();
+                        var imageStream = new MemoryStream(await client.DownloadDataTaskAsync(new Uri(screen.Url)));
+                        var thumbImg = GetThumbnailImage(imageStream,0);
+                        if (thumbImg == null) continue;
+                        if (screen.IsNsfw && App.UserSettings.IsVisibleSavedNsfwContent == false)
+                        {
+                            Secure.FileEncryptStream(imageStream, imageDir, "FileEnc");
+
+                            var thumbStream = new MemoryStream();
+                            thumbImg.Save(thumbStream, ImageFormat.Jpeg);
+                            Secure.FileEncryptStream(thumbStream, thumbDir, "FileEnc");
+                            await thumbStream.DisposeAsync();
+                        }
+                        else
+                        {
+                            Image.FromStream(imageStream).Save(imageDir);
+                            thumbImg.Save(thumbDir);
+                        }
+                        await imageStream.DisposeAsync();
                     }
-                    else
-                    {
-                        Image.FromStream(imageStream).Save(imageDir);
-                        thumbImg.Save(thumbDir);
-                    }
-                    await imageStream.DisposeAsync();
                 }
-                client.Dispose();
+                
             }
             catch (Exception ex)
             {
@@ -136,9 +145,15 @@ namespace VnManager.Helpers
 
         
     }
-    public struct ScreenShot
+    public struct ScreenShot : IEquatable<ScreenShot>
     {
         public string Url;
         public bool IsNsfw;
+
+        public bool Equals([AllowNull] ScreenShot other)
+        {
+            return Url == other.Url && IsNsfw == other.IsNsfw;
+        }
+
     }
 }

@@ -128,19 +128,7 @@ namespace VnManager
 
         public static readonly ResourceManager ResMan = new ResourceManager("VnManager.Strings.Resources", Assembly.GetExecutingAssembly());
 
-        public static string GetDbStringWithoutPass()
-        {
-            try
-            {
-                return $"Filename={Path.Combine(App.ConfigDirPath, @"database\Data.db")};Password=";
-            }
-            catch (Exception e)
-            {
-                App.Logger.Error(e, "Couldn't read ConnString");
-                return String.Empty;
-            }
-
-        }
+        public static string GetDbStringWithoutPass => $"Filename={Path.Combine(App.ConfigDirPath, @"database\Data.db")};Password=";
 
         public static StatusBarViewModel StatusBar { get; set; }
 

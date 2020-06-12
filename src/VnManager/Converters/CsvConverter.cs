@@ -7,7 +7,7 @@ namespace VnManager.Converters
 {
     public static class CsvConverter
     {
-        public static string ConvertToCsv(ReadOnlyCollection<string> input)
+        public static string ConvertToCsv(IEnumerable<string> input)
         {
             return input != null ? string.Join(",", input) : null;
         }

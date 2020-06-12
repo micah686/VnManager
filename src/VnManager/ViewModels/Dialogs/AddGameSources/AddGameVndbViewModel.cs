@@ -211,7 +211,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             IsResetNameButtonEnabled = false;
             IsResetNameButtonEnabled = false;
             //await ValidateAsync();
-            var retryCount = 5;
+            const int retryCount = 5;
             bool didSucceed = false;
             for (int i = 0; i < retryCount; i++)
             {
@@ -262,14 +262,11 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
         {
             var multiVm = _container.Get<AddGameMultiViewModel>();
             var result = _windowManager.ShowDialog(multiVm);
-            if (result != null)
+            if (result != null && (result == true && multiVm.GameCollection != null))
             {
-                if (result == true && multiVm.GameCollection != null)
-                {
-                    ExeCollection.Clear();
-                    ExeCollection.AddRange(from item in multiVm.GameCollection
-                                                   select new MultiExeGamePaths { ExePath = item.ExePath, IconPath = item.IconPath, ArgumentsString = item.ArgumentsString });
-                }
+                ExeCollection.Clear();
+                ExeCollection.AddRange(from item in multiVm.GameCollection
+                    select new MultiExeGamePaths { ExePath = item.ExePath, IconPath = item.IconPath, ArgumentsString = item.ArgumentsString });
             }
             multiVm.Remove();
         }

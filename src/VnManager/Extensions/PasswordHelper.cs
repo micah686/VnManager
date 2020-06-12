@@ -62,7 +62,7 @@ namespace VnManager.Extensions
             if (!(sender is PasswordBox passwordBox)) return;
             passwordBox.PasswordChanged -= PasswordChanged;
 
-            if (!(bool) GetIsUpdating(passwordBox))
+            if (!GetIsUpdating(passwordBox))
             {
                 var secureStr = Marshal.SecureStringToBSTR((SecureString)e.NewValue);
                 passwordBox.Password = Marshal.PtrToStringBSTR(secureStr);
