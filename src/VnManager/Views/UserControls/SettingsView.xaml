@@ -50,7 +50,7 @@
                     </StackPanel>
                 </iconPacks:PackIconMaterial.ToolTip>
             </iconPacks:PackIconMaterial>
-            <CheckBox Grid.Column="2" Margin="8,0,0,0" Content="Yes"/>
+            <CheckBox Grid.Column="2" Margin="8,0,0,0" Content="Yes" IsChecked="{Binding NsfwContentSavedVisible}"/>
 
         </Grid>
 

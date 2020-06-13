@@ -225,7 +225,7 @@ namespace VnManager.ViewModels.Windows
 
             if (CredentialManager.GetCredentials("VnManager.FileEnc") == null)
             {
-                var cred = new NetworkCredential("", Secure.GenerateSecurePassword(64,16));
+                var cred = new NetworkCredential(Convert.ToBase64String(Secure.GenerateRandomSalt()), Secure.GenerateSecurePassword(64,16));
                 CredentialManager.SaveCredentials("VnManager.FileEnc", cred);
             }
 

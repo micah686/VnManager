@@ -33,247 +33,179 @@ namespace VnManager.Helpers
             {
                 for (int i = 0; i < 10; i++)
                 {
-                    // Fill the buffer with the generated data
+                    // Fill the whole array with secure random data 10 times(to make sure it's good and random)
                     rng.GetBytes(data);
                 }
             }
-
             return data;
         }
 
-        /// <summary>
-        /// Encrypts a file from its path and a plain password.
-        /// </summary>
-        /// <param name="inputFile"></param>
-        /// <param name="keyName"></param>
-        public static void FileEncrypt(string inputFile)
+
+        private static byte[] Encrypt(byte[] input)
         {
-            byte[] salt = GenerateRandomSalt();
-            FileStream fsCrypt = new FileStream(inputFile + ".aes", FileMode.Create);
-            var cred = CredentialManager.GetCredentials("VnManager.FileEnc");
-            if (cred == null) return;
-            byte[] passwordBytes = System.Text.Encoding.UTF8.GetBytes(cred.Password);
-
-            RijndaelManaged AES = new RijndaelManaged()
-            {
-                KeySize = 256,
-                BlockSize = 128,
-                Padding = PaddingMode.PKCS7,
-                Mode = CipherMode.CBC
-            };
-            var key = new Rfc2898DeriveBytes(passwordBytes, salt, 50000);
-            AES.Key = key.GetBytes(AES.KeySize / 8);
-            AES.IV = key.GetBytes(AES.BlockSize / 8);
-
-            fsCrypt.Write(salt, 0, salt.Length);
-            CryptoStream cs = new CryptoStream(fsCrypt, AES.CreateEncryptor(), CryptoStreamMode.Write);
-
-            FileStream fsIn = new FileStream(inputFile, FileMode.Open);
-
-            //create a buffer (1mb) so only this amount will allocate in the memory and not the whole file
-            byte[] buffer = new byte[1048576];
-
             try
             {
-                int read;
-                while ((read = fsIn.Read(buffer, 0, buffer.Length)) > 0)
-                {
-                    //MediaTypeNames.Application.DoEvents(); // -> for responsive GUI, using Task will be better!
-                    cs.Write(buffer, 0, read);
-                }
-                fsIn.Close();
+                var cred = CredentialManager.GetCredentials("VnManager.FileEnc");
+                if (cred == null) return new byte[0];
+                byte[] passwordBytes = Encoding.UTF8.GetBytes(cred.Password);
+                byte[] salt = Convert.FromBase64String(cred.UserName);
+                var key = new Rfc2898DeriveBytes(passwordBytes, salt, 20000);
+                Aes aes = new AesManaged();
+                aes.Key = key.GetBytes(aes.KeySize / 8);
+                aes.IV = key.GetBytes(aes.BlockSize / 8);
+                aes.Padding = PaddingMode.PKCS7;
+
+                MemoryStream ms = new MemoryStream();
+                CryptoStream cs = new CryptoStream(ms, aes.CreateEncryptor(), CryptoStreamMode.Write);
+                cs.Write(input, 0, input.Length);
+                cs.Close();
+                return ms.ToArray();
             }
             catch (Exception ex)
             {
-                App.Logger.Error(ex, "FileEncrypt Failed");
+                App.Logger.Error(ex, "failed to encrypt byte array");
+                return new byte[0];
             }
-            finally
+        }
+
+        private static byte[] Decrypt(byte[] input)
+        {
+            try
             {
+                var cred = CredentialManager.GetCredentials("VnManager.FileEnc");
+                if (cred == null) return new byte[0];
+                byte[] passwordBytes = Encoding.UTF8.GetBytes(cred.Password);
+                byte[] salt = Convert.FromBase64String(cred.UserName);
+                var key = new Rfc2898DeriveBytes(passwordBytes, salt, 20000);
+                Aes aes = new AesManaged();
+                aes.Key = key.GetBytes(aes.KeySize / 8);
+                aes.IV = key.GetBytes(aes.BlockSize / 8);
+                aes.Padding = PaddingMode.PKCS7;
+                MemoryStream ms = new MemoryStream();
+                CryptoStream cs = new CryptoStream(ms, aes.CreateDecryptor(), CryptoStreamMode.Write);
+                cs.Write(input, 0, input.Length);
                 cs.Close();
-                fsCrypt.Close();
+                return ms.ToArray();
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error(ex, "Failed to decrypt byte array");
+                return new byte[0];
+            }
+
+
+        }
+
+        /// <summary>
+        /// Encrypts the file at at the specified filepath
+        /// </summary>
+        /// <param name="path">Path to the file to encrypt. Should not include the .aes extension</param>
+        public static void EncFile(string path)
+        {
+            try
+            {
+                if(!File.Exists(path))return;
+                byte[] bytes = File.ReadAllBytes(path);
+                if (bytes.Length < 20) return;
+                byte[] encBytes = Encrypt(bytes);
+                if (encBytes == null || encBytes.Length < 20) return;
+                File.WriteAllBytes($"{path}.aes", encBytes);
+                File.Delete(path);
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error(ex, "Failed to Encrypt File");
             }
         }
 
         /// <summary>
-        /// Encrypts a memory stream to a file on the disk
+        /// Encrypts the file at at the specified filepath
         /// </summary>
-        /// <param name="ms">The MemoryStream</param>
-        /// <param name="inputFile">The full filename WITHOUT the .aes extension</param>
-        /// <param name="keyName">Name of Key for SecureStore</param>
-        public static void FileEncryptStream(MemoryStream ms, string inputFile)
+        /// <param name="path">Path to the file to decrypt. Should not include the .aes extension</param>
+        public static void DecFile(string path)
         {
-            byte[] salt = GenerateRandomSalt();
-            FileStream fsCrypt = new FileStream(inputFile + ".aes", FileMode.Create);
-            var cred = CredentialManager.GetCredentials("VnManager.FileEnc");
-            if (cred == null) return;
-            byte[] passwordBytes = System.Text.Encoding.UTF8.GetBytes(cred.Password);
-
-            RijndaelManaged AES = new RijndaelManaged()
-            {
-                KeySize = 256,
-                BlockSize = 128,
-                Padding = PaddingMode.PKCS7,
-                Mode = CipherMode.CBC
-            };
-            var key = new Rfc2898DeriveBytes(passwordBytes, salt, 50000);
-            AES.Key = key.GetBytes(AES.KeySize / 8);
-            AES.IV = key.GetBytes(AES.BlockSize / 8);
-
-            fsCrypt.Write(salt, 0, salt.Length);
-            CryptoStream cs = new CryptoStream(fsCrypt, AES.CreateEncryptor(), CryptoStreamMode.Write);
-
-            //FileStream fsIn = new FileStream(inputFile, FileMode.Open);
-
-            //create a buffer (1mb) so only this amount will allocate in the memory and not the whole file
-            byte[] buffer = new byte[1048576];
-
             try
             {
-                int read;
-                while ((read = ms.Read(buffer, 0, buffer.Length)) > 0)
-                {
-                    //MediaTypeNames.Application.DoEvents(); // -> for responsive GUI, using Task will be better!
-                    cs.Write(buffer, 0, read);
-                }
-                ms.Close();
+                string encImagePath = $"{path}.aes";
+                byte[] encBytes = File.ReadAllBytes(encImagePath);
+                if (encBytes.Length < 20) return;
+                byte[] bytes = Decrypt(encBytes);
+                if (bytes == null || bytes.Length < 20) return;
+                string newPath = $@"{Path.GetDirectoryName(encImagePath)}\{Path.GetFileNameWithoutExtension(encImagePath)}";
+                File.WriteAllBytes(newPath, bytes);
+                File.Delete(path);
             }
             catch (Exception ex)
             {
-                App.Logger.Error(ex, "FileEncrypt Failed");
-            }
-            finally
-            {
-                cs.Close();
-                fsCrypt.Close();
+                App.Logger.Error(ex, "Failed to Decrypt file");
             }
         }
-
 
         /// <summary>
-        /// Decrypts an encrypted file with the FileEncrypt method through its path and the plain password.
+        /// Take a Stream, encrypt it, and write it out to a file
         /// </summary>
-        /// <param name="inputFile"></param>
-        /// <param name="keyName"></param>
-        public static void FileDecrypt(string inputFile)
+        /// <param name="stream">Stream of the object you want to encrypt</param>
+        /// <param name="path">Path of where you want the file saved. Should not include the .aes extension</param>
+        public static void EncStream(MemoryStream stream, string path)
         {
-            var cred = CredentialManager.GetCredentials("VnManager.FileEnc");
-            if (cred == null) return;
-            byte[] passwordBytes = System.Text.Encoding.UTF8.GetBytes(cred.Password);
-            byte[] salt = new byte[32];
-            var outputFile = Path.GetFileNameWithoutExtension(inputFile);
-            FileStream fsCrypt = new FileStream(inputFile, FileMode.Open);
-            fsCrypt.Read(salt, 0, salt.Length);
-            if (fsCrypt.Length < 1) return;
-            RijndaelManaged AES = new RijndaelManaged()
-            {
-                KeySize = 256,
-                BlockSize = 128,
-                Padding = PaddingMode.PKCS7,
-                Mode = CipherMode.CBC
-            };
-
-            var key = new Rfc2898DeriveBytes(passwordBytes, salt, 50000);
-            AES.Key = key.GetBytes(AES.KeySize / 8);
-            AES.IV = key.GetBytes(AES.BlockSize / 8);
-
-            CryptoStream cs = new CryptoStream(fsCrypt, AES.CreateDecryptor(), CryptoStreamMode.Read);
-
-            FileStream fsOut = new FileStream(outputFile, FileMode.Create);
-
-            byte[] buffer = new byte[1048576];
             try
             {
-                int read;
-                while ((read = cs.Read(buffer, 0, buffer.Length)) > 0)
-                {
-                    //MediaTypeNames.Application.DoEvents();
-                    fsOut.Write(buffer, 0, read);
-                }
-            }
-            catch (CryptographicException ex)
-            {
-                App.Logger.Error(ex, "FileDecrypt CryptographicException error");
+                byte[] bytes = stream.ToArray();
+                if (bytes.Length < 20) return;
+                byte[] encBytes = Encrypt(bytes);
+                if (encBytes == null || encBytes.Length < 20) return;
+                File.WriteAllBytes($"{path}.aes", encBytes);
+                File.Delete(path);
             }
             catch (Exception ex)
             {
-                App.Logger.Error(ex, "FileDecrypt Error");
-            }
-
-            try
-            {
-                cs.Close();
-            }
-            catch (Exception ex)
-            {
-                App.Logger.Error(ex, "FileDecrypt Error by closing CryptoStream");
-            }
-            finally
-            {
-                fsOut.Close();
-                fsCrypt.Close();
+                App.Logger.Error(ex, "Failed to encrypt stream");
             }
         }
 
-
-        public static MemoryStream FileDecryptStream(string inputFile)
+        /// <summary>
+        /// Take a Stream, decrypt it, and write it out to a file
+        /// </summary>
+        /// <param name="stream">Stream of the object you want to decrypt</param>
+        /// <param name="path">Path of where you want the file saved. Should not include the .aes extension</param>
+        public static void DecStream(MemoryStream stream, string path)
         {
-            var cred = CredentialManager.GetCredentials("VnManager.FileEnc");
-            if (cred == null) return null;
-            byte[] passwordBytes = System.Text.Encoding.UTF8.GetBytes(cred.Password);
-            byte[] salt = new byte[32];
-            FileStream fsCrypt = new FileStream(inputFile, FileMode.Open);
-            fsCrypt.Read(salt, 0, salt.Length);
-            if (fsCrypt.Length < 1) return null;
-            RijndaelManaged AES = new RijndaelManaged()
-            {
-                KeySize = 256,
-                BlockSize = 128,
-                Padding = PaddingMode.PKCS7,
-                Mode = CipherMode.CBC
-            };
-
-            var key = new Rfc2898DeriveBytes(passwordBytes, salt, 50000);
-            AES.Key = key.GetBytes(AES.KeySize / 8);
-            AES.IV = key.GetBytes(AES.BlockSize / 8);
-
-            CryptoStream cs = new CryptoStream(fsCrypt, AES.CreateDecryptor(), CryptoStreamMode.Read);
-
-            MemoryStream memoryStream = new MemoryStream();
-            byte[] buffer = new byte[1048576];
             try
             {
-                int read;
-                while ((read = cs.Read(buffer, 0, buffer.Length)) > 0)
-                {
-                    //MediaTypeNames.Application.DoEvents();
-                    memoryStream.Write(buffer, 0, read);
-                }
-            }
-            catch (CryptographicException ex)
-            {
-                App.Logger.Error(ex, "FileDecrypt CryptographicException error");
+                string encPath = $"{path}.aes";
+                byte[] encBytes = stream.ToArray();
+                if (encBytes.Length < 20) return;
+                byte[] bytes = Decrypt(encBytes);
+                if (bytes == null || bytes.Length < 20) return;
+                string newPath = $@"{Path.GetDirectoryName(path)}\{Path.GetFileNameWithoutExtension(path)}";
+                File.WriteAllBytes(path, bytes);
+                File.Delete(encPath);
             }
             catch (Exception ex)
             {
-                App.Logger.Error(ex, "FileDecrypt Error");
+                App.Logger.Error(ex, "Failed to decrypt stream");
             }
 
-            try
-            {
-                cs.Close();
-            }
-            catch (Exception ex)
-            {
-                App.Logger.Error(ex, "FileDecrypt Error by closing CryptoStream");
-            }
-            finally
-            {
-                fsCrypt.Close();
-            }
-            return memoryStream;
         }
 
         #endregion
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
         #region Hashing

@@ -97,8 +97,8 @@ namespace VnManager.ViewModels.UserControls
             //new Helpers.Secure().SetSecret("VndbPass", "samplepassword12345!@#");
             //var foo = new Helpers.Secure().ReadSecret("VndbPass");
             //Secure.FileEncrypt("test.txt");
-            Secure.FileEncrypt("aaa.jpg");
-            Secure.FileDecrypt("aaa.jpg.aes");
+            //Secure.FileEncrypt("aaa.jpg");
+            //Secure.FileDecrypt("aaa.jpg.aes");
         }
 
         public void TestStrings()
@@ -127,7 +127,8 @@ namespace VnManager.ViewModels.UserControls
             //var img = SaveVnDataToDb.GetThumbnailImage(stream);
             //var sv = new SaveVnDataToDb().DownloadScreenshots(4857);
             //new Secure().TestPassHash();
-
+            var save = new SaveVnDataToDb();
+            await save.DownloadScreenshots(15538);
         }
 
 

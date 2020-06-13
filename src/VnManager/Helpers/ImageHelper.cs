@@ -79,16 +79,18 @@ namespace VnManager.Helpers
                         var imageDir = $@"{imageDirectory}\{Path.GetFileName(screen.Url)}";
                         var thumbDir = $@"{imageDirectory}\thumbs\{Path.GetFileName(screen.Url)}";
 
+                        if(File.Exists(imageDir))continue;
+
                         var imageStream = new MemoryStream(await client.DownloadDataTaskAsync(new Uri(screen.Url)));
                         var thumbImg = GetThumbnailImage(imageStream,0);
                         if (thumbImg == null) continue;
                         if (screen.IsNsfw && App.UserSettings.IsVisibleSavedNsfwContent == false)
                         {
-                            Secure.FileEncryptStream(imageStream, imageDir);
 
+                            Secure.EncStream(imageStream, imageDir);
                             var thumbStream = new MemoryStream();
                             thumbImg.Save(thumbStream, ImageFormat.Jpeg);
-                            Secure.FileEncryptStream(thumbStream, thumbDir);
+                            Secure.EncStream(thumbStream, thumbDir);
                             await thumbStream.DisposeAsync();
                         }
                         else
@@ -125,7 +127,7 @@ namespace VnManager.Helpers
                         byte[] imageBytes = await client.DownloadDataTaskAsync(new Uri(url));
                         var memStream = new MemoryStream(imageBytes);
                         if (memStream.Length < 1) return;
-                        Secure.FileEncryptStream(memStream, path);
+                        Secure.EncStream(memStream, path);
                         await memStream.DisposeAsync();
                     }
                     else
