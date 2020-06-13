@@ -53,7 +53,7 @@ namespace VnManager.Helpers
                 Aes aes = new AesManaged();
                 aes.Key = key.GetBytes(aes.KeySize / 8);
                 aes.IV = key.GetBytes(aes.BlockSize / 8);
-                aes.Padding = PaddingMode.PKCS7;
+                
 
                 MemoryStream ms = new MemoryStream();
                 CryptoStream cs = new CryptoStream(ms, aes.CreateEncryptor(), CryptoStreamMode.Write);
@@ -80,7 +80,8 @@ namespace VnManager.Helpers
                 Aes aes = new AesManaged();
                 aes.Key = key.GetBytes(aes.KeySize / 8);
                 aes.IV = key.GetBytes(aes.BlockSize / 8);
-                aes.Padding = PaddingMode.PKCS7;
+
+
                 MemoryStream ms = new MemoryStream();
                 CryptoStream cs = new CryptoStream(ms, aes.CreateDecryptor(), CryptoStreamMode.Write);
                 cs.Write(input, 0, input.Length);
@@ -177,7 +178,6 @@ namespace VnManager.Helpers
                 if (encBytes.Length < 20) return;
                 byte[] bytes = Decrypt(encBytes);
                 if (bytes == null || bytes.Length < 20) return;
-                string newPath = $@"{Path.GetDirectoryName(path)}\{Path.GetFileNameWithoutExtension(path)}";
                 File.WriteAllBytes(path, bytes);
                 File.Delete(encPath);
             }
