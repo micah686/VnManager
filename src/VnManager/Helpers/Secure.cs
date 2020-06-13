@@ -50,10 +50,12 @@ namespace VnManager.Helpers
                 byte[] passwordBytes = Encoding.UTF8.GetBytes(cred.Password);
                 byte[] salt = Convert.FromBase64String(cred.UserName);
                 var key = new Rfc2898DeriveBytes(passwordBytes, salt, 20000);
+
                 Aes aes = new AesManaged();
                 aes.Key = key.GetBytes(aes.KeySize / 8);
                 aes.IV = key.GetBytes(aes.BlockSize / 8);
-                
+                aes.Mode = CipherMode.CBC;
+                aes.Padding = PaddingMode.PKCS7;
 
                 MemoryStream ms = new MemoryStream();
                 CryptoStream cs = new CryptoStream(ms, aes.CreateEncryptor(), CryptoStreamMode.Write);
@@ -80,7 +82,8 @@ namespace VnManager.Helpers
                 Aes aes = new AesManaged();
                 aes.Key = key.GetBytes(aes.KeySize / 8);
                 aes.IV = key.GetBytes(aes.BlockSize / 8);
-
+                aes.Mode = CipherMode.CBC;
+                aes.Padding = PaddingMode.PKCS7;
 
                 MemoryStream ms = new MemoryStream();
                 CryptoStream cs = new CryptoStream(ms, aes.CreateDecryptor(), CryptoStreamMode.Write);
