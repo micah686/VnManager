@@ -41,37 +41,6 @@ namespace VnManager.Helpers
             return data;
         }
 
-
-        //private static byte[] Encrypt(byte[] input)
-        //{
-        //    try
-        //    {
-        //        var cred = CredentialManager.GetCredentials("VnManager.FileEnc");
-        //        if (cred == null) return new byte[0];
-        //        byte[] passwordBytes = Encoding.UTF8.GetBytes(cred.Password);
-        //        byte[] salt = Convert.FromBase64String(cred.UserName);
-        //        var key = new Rfc2898DeriveBytes(passwordBytes, salt, 20000);
-
-        //        Aes aes = new AesManaged();
-        //        aes.Key = key.GetBytes(aes.KeySize / 8);
-        //        aes.IV = key.GetBytes(aes.BlockSize / 8);
-        //        aes.Mode = CipherMode.CBC;
-        //        aes.Padding = PaddingMode.PKCS7;
-
-        //        MemoryStream ms = new MemoryStream();
-        //        CryptoStream cs = new CryptoStream(ms, aes.CreateEncryptor(), CryptoStreamMode.Write);
-        //        cs.Write(input, 0, input.Length);
-        //        cs.Close();
-        //        return ms.ToArray();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        App.Logger.Error(ex, "failed to encrypt byte array");
-        //        return new byte[0];
-        //    }
-        //}
-
-
         //used from https://stackoverflow.com/questions/60889345/using-the-aesgcm-class/60891115#60891115
         private static byte[] Encrypt(byte[] input)
         {
@@ -110,8 +79,6 @@ namespace VnManager.Helpers
             }
         }
 
-
-
         private static byte[] Decrypt(byte[] input)
         {
             try
@@ -124,19 +91,19 @@ namespace VnManager.Helpers
 
 
                 Span<byte> encryptedData = input.AsSpan();
-
+                // Extract parameter sizes
                 int nonceSize = BinaryPrimitives.ReadInt32LittleEndian(encryptedData.Slice(0, 4));
                 int tagSize = BinaryPrimitives.ReadInt32LittleEndian(encryptedData.Slice(4 + nonceSize, 4));
                 int cipherSize = encryptedData.Length - 4 - nonceSize - 4 - tagSize;
-
+                // Extract parameters
                 var nonce = encryptedData.Slice(4, nonceSize);
                 var tag = encryptedData.Slice(4 + nonceSize + 4, tagSize);
                 var cipherBytes = encryptedData.Slice(4 + nonceSize + 4 + tagSize, cipherSize);
-
+                // Decrypt
                 Span<byte> plainBytes = cipherSize < 1024 ? stackalloc byte[cipherSize] : new byte[cipherSize];
                 new AesGcm(key).Decrypt(nonce, cipherBytes, tag, plainBytes);
-                return plainBytes.ToArray();
 
+                return plainBytes.ToArray();
             }
             catch (Exception ex)
             {
@@ -145,43 +112,6 @@ namespace VnManager.Helpers
             }
         }
 
-
-
-
-
-
-
-
-
-        //private static byte[] Decrypt(byte[] input)
-        //{
-        //    try
-        //    {
-        //        var cred = CredentialManager.GetCredentials("VnManager.FileEnc");
-        //        if (cred == null) return new byte[0];
-        //        byte[] passwordBytes = Encoding.UTF8.GetBytes(cred.Password);
-        //        byte[] salt = Convert.FromBase64String(cred.UserName);
-        //        var key = new Rfc2898DeriveBytes(passwordBytes, salt, 20000);
-        //        Aes aes = new AesManaged();
-        //        aes.Key = key.GetBytes(aes.KeySize / 8);
-        //        aes.IV = key.GetBytes(aes.BlockSize / 8);
-        //        aes.Mode = CipherMode.CBC;
-        //        aes.Padding = PaddingMode.PKCS7;
-
-        //        MemoryStream ms = new MemoryStream();
-        //        CryptoStream cs = new CryptoStream(ms, aes.CreateDecryptor(), CryptoStreamMode.Write);
-        //        cs.Write(input, 0, input.Length);
-        //        cs.Close();
-        //        return ms.ToArray();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        App.Logger.Error(ex, "Failed to decrypt byte array");
-        //        return new byte[0];
-        //    }
-
-
-        //}
 
         /// <summary>
         /// Encrypts the file at at the specified filepath
