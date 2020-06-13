@@ -131,6 +131,12 @@ namespace VnManager.ViewModels.UserControls
             await save.DownloadScreenshots(15538);
         }
 
+        public void TestEncryption()
+        {
+            Secure.EncFile("sample.jpg");
+
+            Secure.DecFile("sample.jpg");
+        }
 
         public void CauseException()
         {

@@ -28,6 +28,7 @@
             <Button Content="Create Secure" Command="{s:Action CreateSecure}"/>
             <Button Content="Test Password Entry" Command="{s:Action TestPasswordEntry}"/>
             <Button Content="Test Statusbar" Command="{s:Action TestStatusBar}"/>
+            <Button Content="Test Encryption" Command="{s:Action TestEncryption}"/>
         </StackPanel>
 
     </Grid>

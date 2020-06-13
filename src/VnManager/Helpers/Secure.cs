@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
@@ -41,27 +42,66 @@ namespace VnManager.Helpers
         }
 
 
+        //private static byte[] Encrypt(byte[] input)
+        //{
+        //    try
+        //    {
+        //        var cred = CredentialManager.GetCredentials("VnManager.FileEnc");
+        //        if (cred == null) return new byte[0];
+        //        byte[] passwordBytes = Encoding.UTF8.GetBytes(cred.Password);
+        //        byte[] salt = Convert.FromBase64String(cred.UserName);
+        //        var key = new Rfc2898DeriveBytes(passwordBytes, salt, 20000);
+
+        //        Aes aes = new AesManaged();
+        //        aes.Key = key.GetBytes(aes.KeySize / 8);
+        //        aes.IV = key.GetBytes(aes.BlockSize / 8);
+        //        aes.Mode = CipherMode.CBC;
+        //        aes.Padding = PaddingMode.PKCS7;
+
+        //        MemoryStream ms = new MemoryStream();
+        //        CryptoStream cs = new CryptoStream(ms, aes.CreateEncryptor(), CryptoStreamMode.Write);
+        //        cs.Write(input, 0, input.Length);
+        //        cs.Close();
+        //        return ms.ToArray();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        App.Logger.Error(ex, "failed to encrypt byte array");
+        //        return new byte[0];
+        //    }
+        //}
+
+
+        //used from https://stackoverflow.com/questions/60889345/using-the-aesgcm-class/60891115#60891115
         private static byte[] Encrypt(byte[] input)
         {
             try
             {
+                //get encryption key and salt
                 var cred = CredentialManager.GetCredentials("VnManager.FileEnc");
                 if (cred == null) return new byte[0];
                 byte[] passwordBytes = Encoding.UTF8.GetBytes(cred.Password);
                 byte[] salt = Convert.FromBase64String(cred.UserName);
-                var key = new Rfc2898DeriveBytes(passwordBytes, salt, 20000);
+                var key = new Rfc2898DeriveBytes(passwordBytes, salt, 20000).GetBytes(16);
+                // Get parameter sizes
+                int nonceSize = AesGcm.NonceByteSizes.MaxSize;
+                int tagSize = AesGcm.TagByteSizes.MaxSize;
+                int cipherSize = input.Length;
+                // We write everything into one big array for easier encoding
+                int encryptedDataLength = 4 + nonceSize + 4 + tagSize + cipherSize;
+                Span<byte> encryptedData = encryptedDataLength < 1024 ? stackalloc byte[encryptedDataLength] : new byte[encryptedDataLength].AsSpan();
+                // Copy parameters
+                BinaryPrimitives.WriteInt32LittleEndian(encryptedData.Slice(0, 4), nonceSize);
+                BinaryPrimitives.WriteInt32LittleEndian(encryptedData.Slice(4 + nonceSize, 4), tagSize);
+                var nonce = encryptedData.Slice(4, nonceSize);
+                var tag = encryptedData.Slice(4 + nonceSize + 4, tagSize);
+                var cipherBytes = encryptedData.Slice(4 + nonceSize + 4 + tagSize, cipherSize);
+                // Generate secure nonce
+                RandomNumberGenerator.Fill(nonce);
+                // Encrypt
+                new AesGcm(key).Encrypt(nonce, input.AsSpan(), cipherBytes, tag);
 
-                Aes aes = new AesManaged();
-                aes.Key = key.GetBytes(aes.KeySize / 8);
-                aes.IV = key.GetBytes(aes.BlockSize / 8);
-                aes.Mode = CipherMode.CBC;
-                aes.Padding = PaddingMode.PKCS7;
-
-                MemoryStream ms = new MemoryStream();
-                CryptoStream cs = new CryptoStream(ms, aes.CreateEncryptor(), CryptoStreamMode.Write);
-                cs.Write(input, 0, input.Length);
-                cs.Close();
-                return ms.ToArray();
+                return encryptedData.ToArray();
             }
             catch (Exception ex)
             {
@@ -69,6 +109,8 @@ namespace VnManager.Helpers
                 return new byte[0];
             }
         }
+
+
 
         private static byte[] Decrypt(byte[] input)
         {
@@ -78,27 +120,68 @@ namespace VnManager.Helpers
                 if (cred == null) return new byte[0];
                 byte[] passwordBytes = Encoding.UTF8.GetBytes(cred.Password);
                 byte[] salt = Convert.FromBase64String(cred.UserName);
-                var key = new Rfc2898DeriveBytes(passwordBytes, salt, 20000);
-                Aes aes = new AesManaged();
-                aes.Key = key.GetBytes(aes.KeySize / 8);
-                aes.IV = key.GetBytes(aes.BlockSize / 8);
-                aes.Mode = CipherMode.CBC;
-                aes.Padding = PaddingMode.PKCS7;
+                var key = new Rfc2898DeriveBytes(passwordBytes, salt, 20000).GetBytes(16);
 
-                MemoryStream ms = new MemoryStream();
-                CryptoStream cs = new CryptoStream(ms, aes.CreateDecryptor(), CryptoStreamMode.Write);
-                cs.Write(input, 0, input.Length);
-                cs.Close();
-                return ms.ToArray();
+
+                Span<byte> encryptedData = input.AsSpan();
+
+                int nonceSize = BinaryPrimitives.ReadInt32LittleEndian(encryptedData.Slice(0, 4));
+                int tagSize = BinaryPrimitives.ReadInt32LittleEndian(encryptedData.Slice(4 + nonceSize, 4));
+                int cipherSize = encryptedData.Length - 4 - nonceSize - 4 - tagSize;
+
+                var nonce = encryptedData.Slice(4, nonceSize);
+                var tag = encryptedData.Slice(4 + nonceSize + 4, tagSize);
+                var cipherBytes = encryptedData.Slice(4 + nonceSize + 4 + tagSize, cipherSize);
+
+                Span<byte> plainBytes = cipherSize < 1024 ? stackalloc byte[cipherSize] : new byte[cipherSize];
+                new AesGcm(key).Decrypt(nonce, cipherBytes, tag, plainBytes);
+                return plainBytes.ToArray();
+
             }
             catch (Exception ex)
             {
-                App.Logger.Error(ex, "Failed to decrypt byte array");
+                App.Logger.Error(ex, "failed to decrypt byte array");
                 return new byte[0];
             }
-
-
         }
+
+
+
+
+
+
+
+
+
+        //private static byte[] Decrypt(byte[] input)
+        //{
+        //    try
+        //    {
+        //        var cred = CredentialManager.GetCredentials("VnManager.FileEnc");
+        //        if (cred == null) return new byte[0];
+        //        byte[] passwordBytes = Encoding.UTF8.GetBytes(cred.Password);
+        //        byte[] salt = Convert.FromBase64String(cred.UserName);
+        //        var key = new Rfc2898DeriveBytes(passwordBytes, salt, 20000);
+        //        Aes aes = new AesManaged();
+        //        aes.Key = key.GetBytes(aes.KeySize / 8);
+        //        aes.IV = key.GetBytes(aes.BlockSize / 8);
+        //        aes.Mode = CipherMode.CBC;
+        //        aes.Padding = PaddingMode.PKCS7;
+
+        //        MemoryStream ms = new MemoryStream();
+        //        CryptoStream cs = new CryptoStream(ms, aes.CreateDecryptor(), CryptoStreamMode.Write);
+        //        cs.Write(input, 0, input.Length);
+        //        cs.Close();
+        //        return ms.ToArray();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        App.Logger.Error(ex, "Failed to decrypt byte array");
+        //        return new byte[0];
+        //    }
+
+
+        //}
 
         /// <summary>
         /// Encrypts the file at at the specified filepath
@@ -135,9 +218,8 @@ namespace VnManager.Helpers
                 if (encBytes.Length < 20) return;
                 byte[] bytes = Decrypt(encBytes);
                 if (bytes == null || bytes.Length < 20) return;
-                string newPath = $@"{Path.GetDirectoryName(encImagePath)}\{Path.GetFileNameWithoutExtension(encImagePath)}";
-                File.WriteAllBytes(newPath, bytes);
-                File.Delete(path);
+                File.WriteAllBytes(path, bytes);
+                File.Delete(encImagePath);
             }
             catch (Exception ex)
             {
