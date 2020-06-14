@@ -15,7 +15,7 @@
         ShowInTaskbar="False"
         MinWidth="160" MaxWidth="485"
         x:Name="RootObject"
-        >
+        Width="450" Height="200">
     <Grid Margin="0,0,0,0">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="6"/>
