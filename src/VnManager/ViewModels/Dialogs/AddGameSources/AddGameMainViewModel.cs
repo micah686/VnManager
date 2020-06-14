@@ -17,7 +17,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
 
         public IEnumerable<string> SourceCollection { get; set; } = new[] {"Vndb", "No Source"};
         public string SelectedSource { get; set; }
-        private AddGameSourceType _selectedSourceEnum = AddGameSourceType.NotSet;
+        internal AddGameSourceType SelectedSourceEnum = AddGameSourceType.NotSet;
         public bool CanChangeSource { get; set; }
 
 
@@ -35,13 +35,13 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             switch (SelectedSource)
             {
                 case "Vndb":
-                    _selectedSourceEnum = AddGameSourceType.Vndb;
+                    SelectedSourceEnum = AddGameSourceType.Vndb;
                     var vndb = _container.Get<AddGameVndbViewModel>();
                     ActivateItem(vndb);
                     
                     break;
                 case "No Source":
-                    _selectedSourceEnum = AddGameSourceType.NoSource;
+                    SelectedSourceEnum = AddGameSourceType.NoSource;
                     var noSource = _container.Get<AddGameNoSourceViewModel>();
                     ActivateItem(noSource);
                     break;
