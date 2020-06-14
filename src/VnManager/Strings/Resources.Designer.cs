@@ -223,6 +223,24 @@ namespace VnManager.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Delete ALL user data?.
+        /// </summary>
+        public static string DeleteEverythingTitle {
+            get {
+                return ResourceManager.GetString("DeleteEverythingTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to THIS WILL DELETE ALL USER DATA! ARE YOU SURE YOU WANT TO CONTINUE?.
+        /// </summary>
+        public static string DeleteEverythingWarning {
+            get {
+                return ResourceManager.GetString("DeleteEverythingWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Done.
         /// </summary>
         public static string Done {

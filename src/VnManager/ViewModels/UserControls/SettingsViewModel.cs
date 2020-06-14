@@ -17,6 +17,7 @@ using System.Threading.Tasks;
 using AdysTech.CredentialManager;
 using LiteDB;
 using VnManager.Models.Db.Vndb.Main;
+using VnManager.ViewModels.Dialogs;
 
 namespace VnManager.ViewModels.UserControls
 {
@@ -45,8 +46,13 @@ namespace VnManager.ViewModels.UserControls
         public int SpoilerIndex { get; set; } = 0;
         #endregion
 
-        public SettingsViewModel()
+
+        private readonly IContainer _container;
+        private readonly IWindowManager _windowManager;
+        public SettingsViewModel(IContainer container, IWindowManager windowManager)
         {
+            _container = container;
+            _windowManager = windowManager;
             NsfwEnabled = App.UserSettings.IsNsfwEnabled;
             NsfwContentSavedVisible = App.UserSettings.IsVisibleSavedNsfwContent;
             if (App.UserSettings.SettingsVndb != null)
@@ -198,17 +204,27 @@ namespace VnManager.ViewModels.UserControls
 
         public void ResetApplication()
         {
-            //add a messageBox with a 5 second delay and warning
-            if (App.AssetDirPath.Equals(App.ConfigDirPath))
+            var warning = _container.Get<DeleteEverythingViewModel>();
+            bool? result = _windowManager.ShowDialog(warning);
+            switch (result)
             {
-                Directory.Delete(App.AssetDirPath, true);
+                case null:
+                    return;
+                case true:
+                {
+                    if (App.AssetDirPath.Equals(App.ConfigDirPath))
+                    {
+                        Directory.Delete(App.AssetDirPath, true);
+                    }
+                    else
+                    {
+                        Directory.Delete(App.AssetDirPath, true);
+                        Directory.Delete(App.ConfigDirPath, true);
+                    }
+                    Environment.Exit(0);
+                    break;
+                }
             }
-            else
-            {
-                Directory.Delete(App.AssetDirPath, true);
-                Directory.Delete(App.ConfigDirPath, true);
-            }
-            Environment.Exit(0);
         }
 
 

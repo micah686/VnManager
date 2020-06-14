@@ -171,6 +171,12 @@
   <data name="DebugPageWarning3" xml:space="preserve">
     <value>IF YOU ARE NOT DEBUGGING, CREATE A TICKET ON GITHUB STATING: "Able to access Debug page while in Release"</value>
   </data>
+  <data name="DeleteEverythingTitle" xml:space="preserve">
+    <value>Delete ALL user data?</value>
+  </data>
+  <data name="DeleteEverythingWarning" xml:space="preserve">
+    <value>THIS WILL DELETE ALL USER DATA! ARE YOU SURE YOU WANT TO CONTINUE?</value>
+  </data>
   <data name="Done" xml:space="preserve">
     <value>Done</value>
   </data>
