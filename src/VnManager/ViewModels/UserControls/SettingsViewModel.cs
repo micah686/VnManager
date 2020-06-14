@@ -23,7 +23,6 @@ namespace VnManager.ViewModels.UserControls
 {
     public class SettingsViewModel :Screen
     {
-        public string Theme { get; set; } = "DarkTheme";
         public bool NsfwEnabled { get; set; }
         //public bool NsfwContentSavedVisible { get; set; }
         private bool _didChangeNsfwContentVisible = false;
@@ -44,6 +43,10 @@ namespace VnManager.ViewModels.UserControls
         public Collection<string> SpoilerList { get;} = new Collection<string>(new string[] { App.ResMan.GetString("None"), App.ResMan.GetString("Minor"), App.ResMan.GetString("Major") });
         public string SpoilerString { get; set; }
         public int SpoilerIndex { get; set; } = 0;
+
+        public Collection<string> ThemeList { get; } = new Collection<string>(new string[] { App.ResMan.GetString("DarkTheme"), App.ResMan.GetString("LightTheme") });
+        public  int ThemeIndex { get; set; }
+        public string ThemeString { get; set; } = "DarkTheme";
         #endregion
 
 
@@ -74,6 +77,20 @@ namespace VnManager.ViewModels.UserControls
                         SpoilerIndex = 0;
                         break;
                 }
+
+                ThemeString = App.UserSettings.ColorTheme;
+                switch (ThemeString)
+                {
+                    case "DarkTheme":
+                        ThemeIndex = 0;
+                        break;
+                    case "LightTheme":
+                        ThemeIndex = 1;
+                        break;
+                    default:
+                        ThemeIndex = 0;
+                        break;
+                }
             }
             
         }
@@ -81,13 +98,24 @@ namespace VnManager.ViewModels.UserControls
         public void SaveUserSettings(bool useEncryption)
         {
             Enum.TryParse(SpoilerString, out SpoilerLevel spoiler);
+            string theme= String.Empty;
+            switch (ThemeString)
+            {
+                case "Dark Theme":
+                    theme = "DarkTheme";
+                    break;
+                case "Light Theme":
+                    theme = "LightTheme";
+                    break;
+            }
+            
             UserSettingsVndb vndb = new UserSettingsVndb
             {
                 Spoiler = spoiler
             };
             UserSettings settings = new UserSettings
             {
-                ColorTheme = Theme,
+                ColorTheme = theme,
                 IsNsfwEnabled = NsfwEnabled,
                 IsVisibleSavedNsfwContent = NsfwContentSavedVisible,
                 SettingsVndb = vndb,
@@ -104,6 +132,7 @@ namespace VnManager.ViewModels.UserControls
                     //add messagebox
                     DeleteNsfwImages();
                 }
+                UserSettingsHelper.UpdateColorTheme();
                 
             }
             catch (Exception ex)
@@ -221,9 +250,13 @@ namespace VnManager.ViewModels.UserControls
                         Directory.Delete(App.AssetDirPath, true);
                         Directory.Delete(App.ConfigDirPath, true);
                     }
+                    CredentialManager.RemoveCredentials("VnManager.DbEnc");
+                    CredentialManager.RemoveCredentials("VnManager.FileEnc");
                     Environment.Exit(0);
                     break;
                 }
+                default:
+                    return;
             }
         }
 

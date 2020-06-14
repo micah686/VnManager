@@ -501,7 +501,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
                         case ExeTypeEnum.Launcher:
                             return true;
                         default:
-                            throw new ArgumentOutOfRangeException();
+                            throw new ArgumentOutOfRangeException($"Unknown Enum Source");
                     }
                 }
             }

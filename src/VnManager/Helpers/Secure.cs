@@ -206,23 +206,6 @@ namespace VnManager.Helpers
         #endregion
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         #region Hashing
         //PasswordHash has a 32 byte salt, and a 20 byte hash
         internal static PassHashStruct GenerateHash(SecureString secPassword, byte[] prevSalt)
@@ -434,10 +417,25 @@ namespace VnManager.Helpers
 
 
 
-        public struct PassHashStruct
+        public struct PassHashStruct: IEquatable<PassHashStruct>
         {
             public string Salt;
             public string Hash;
+
+            public bool Equals(PassHashStruct other)
+            {
+                return Salt == other.Salt && Hash == other.Hash;
+            }
+
+            public override bool Equals(object obj)
+            {
+                return obj is PassHashStruct other && Equals(other);
+            }
+
+            public override int GetHashCode()
+            {
+                return HashCode.Combine(Salt, Hash);
+            }
         }
     }
 }

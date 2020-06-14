@@ -22,6 +22,8 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <TextBlock Grid.Row="0" Margin="5,0,0,0" Text="{x:Static res:Resources.Settings}" FontSize="18"/>
 
@@ -59,13 +61,22 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0" Text="{x:Static res:Resources.VndbSpoilerLevel}"/>
+            <TextBlock Grid.Column="0" Text="{x:Static res:Resources.VndbSpoilerLevel}" Margin="0,3,0,0"/>
             <ComboBox Grid.Column="1" Margin="5,0,0,0" ItemsSource="{Binding SpoilerList}" SelectedItem="{Binding SpoilerString}" SelectedIndex="{Binding SpoilerIndex}"  Width="70"/>
         </Grid>
 
-        <Button Grid.Row="4" Content="{x:Static res:Resources.Save}" Command="{s:Action SaveUserSettings}" Margin="10" Width="70" Style="{DynamicResource {x:Static adonisUi:Styles.AccentButton}}"/>
+        <Grid Grid.Row="4" Margin="5,10,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="{x:Static res:Resources.SelectTheme}" Margin="0,3,0,0"/>
+            <ComboBox Grid.Column="1" Margin="5,0,0,0" ItemsSource="{Binding ThemeList}" SelectedItem="{Binding ThemeString}" SelectedIndex="{Binding ThemeIndex}"  Width="100"/>
+        </Grid>
 
-        <Button Grid.Row="5" Margin="0,20,0,0" Width="120" Background="Crimson" Foreground="White" adExt:RippleExtension.BackgroundBrush="Crimson" adExt:RippleExtension.BorderBrush="Red" adExt:RippleExtension.ForegroundBrush="White"
+        <Button Grid.Row="5" Content="{x:Static res:Resources.Save}" Command="{s:Action SaveUserSettings}" Margin="10" Width="70" Style="{DynamicResource {x:Static adonisUi:Styles.AccentButton}}"/>
+
+        <Button Grid.Row="6" Margin="0,20,0,0" Width="120" Background="Crimson" Foreground="White" adExt:RippleExtension.BackgroundBrush="Crimson" adExt:RippleExtension.BorderBrush="Red" adExt:RippleExtension.ForegroundBrush="White"
                 adExt:CursorSpotlightExtension.BorderBrush="Red" adExt:CursorSpotlightExtension.BackgroundBrush="Crimson" 
                 Content="{x:Static res:Resources.ResetApplication}" Command="{s:Action ResetApplication}"/>
 

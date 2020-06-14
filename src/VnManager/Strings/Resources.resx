@@ -159,6 +159,9 @@
   <data name="CreatePassTitle" xml:space="preserve">
     <value>Set a password</value>
   </data>
+  <data name="DarkTheme" xml:space="preserve">
+    <value>Dark Theme</value>
+  </data>
   <data name="DbIsLockedProc" xml:space="preserve">
     <value>Database is locked by another process</value>
   </data>
@@ -261,6 +264,9 @@
   <data name="Launcher" xml:space="preserve">
     <value>Launcher</value>
   </data>
+  <data name="LightTheme" xml:space="preserve">
+    <value>Light Theme</value>
+  </data>
   <data name="Major" xml:space="preserve">
     <value>Major</value>
   </data>
@@ -317,6 +323,9 @@
   </data>
   <data name="SaveNsfwImagesInDatabase" xml:space="preserve">
     <value>Save Nsfw Images in Database</value>
+  </data>
+  <data name="SelectTheme" xml:space="preserve">
+    <value>Select Theme:</value>
   </data>
   <data name="SetIdFromNameFail" xml:space="preserve">
     <value>Failed to get Vndb ID from selected name</value>

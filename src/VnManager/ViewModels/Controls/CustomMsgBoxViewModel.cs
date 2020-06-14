@@ -112,19 +112,7 @@ namespace VnManager.ViewModels.Controls
 
             var buttonList = new BindableCollection<LabelledValue<MessageBoxResult>>();
             this.ButtonList = buttonList;
-            foreach (var val in ButtonToResults[buttons])
-            {
-                string label;
-                if (buttonLabels == null || !buttonLabels.TryGetValue(val, out label))
-                    label = ButtonLabels[val];
-
-                var lbv = new LabelledValue<MessageBoxResult>(label, val);
-                buttonList.Add(lbv);
-                if (val == defaultResult)
-                    this.DefaultButton = lbv;
-                else if (val == cancelResult)
-                    this.CancelButton = lbv;
-            }
+            SetButtonLabels(ref buttonList, buttons, buttonLabels, defaultResult, cancelResult);
             // If they didn't specify a button which we showed, then pick a default, if we can
             if (this.DefaultButton == null)
             {
@@ -143,6 +131,25 @@ namespace VnManager.ViewModels.Controls
 
             this.FlowDirection = flowDirection ?? DefaultFlowDirection;
             this.TextAlignment = textAlignment ?? DefaultTextAlignment;
+        }
+
+        private void SetButtonLabels(ref BindableCollection<LabelledValue<MessageBoxResult>> buttonList, MessageBoxButton buttons, IDictionary<MessageBoxResult, string> buttonLabels, MessageBoxResult defaultResult, MessageBoxResult cancelResult)
+        {
+            foreach (var val in ButtonToResults[buttons])
+            {
+                string label;
+                if (buttonLabels == null || !buttonLabels.TryGetValue(val, out label))
+                    label = ButtonLabels[val];
+
+                var lbv = new LabelledValue<MessageBoxResult>(label, val);
+                buttonList.Add(lbv);
+                if (val == defaultResult)
+                    this.DefaultButton = lbv;
+                else if (val == cancelResult)
+                    this.CancelButton = lbv;
+                else
+                    return;
+            }
         }
 
         /// <summary>

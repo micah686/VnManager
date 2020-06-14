@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
+using System.Windows;
+using AdonisUI;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using VndbSharp.Models.Common;
@@ -25,7 +27,7 @@ namespace VnManager.Helpers
                 {
                     Spoiler = SpoilerLevel.None
                 };
-                settings.ColorTheme = "Dark";
+                settings.ColorTheme = "DarkTheme";
                 settings.SettingsVndb = vndb;
                 var json = JsonConvert.SerializeObject(settings);
                 File.WriteAllText(ConfigFile, json);
@@ -95,6 +97,28 @@ namespace VnManager.Helpers
             {
                 App.Logger.Error(ex, "Failed to save user settings");
                 throw;
+            }
+        }
+
+        public static void UpdateColorTheme()
+        {
+            bool isDark = true;
+            if(App.UserSettings == null) return;
+            var theme = App.UserSettings.ColorTheme;
+            switch (theme)
+            {
+                case "DarkTheme":
+                    isDark = true;
+                    ResourceLocator.SetColorScheme(Application.Current.Resources, ResourceLocator.DarkColorScheme);
+                    break;
+                case "LightTheme":
+                    isDark = false;
+                    ResourceLocator.SetColorScheme(Application.Current.Resources, ResourceLocator.LightColorScheme);
+                    break;
+                default:
+                    isDark = true;
+                    ResourceLocator.SetColorScheme(Application.Current.Resources, ResourceLocator.DarkColorScheme);
+                    break;
             }
         }
 
