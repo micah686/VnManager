@@ -1,0 +1,81 @@
+﻿<controls:AdonisWindow x:Class="VnManager.Views.Controls.CustomMsgBoxView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:VnManager.Views.Controls"
+        xmlns:controls="clr-namespace:AdonisUI.Controls;assembly=AdonisUI"
+        xmlns:vm="clr-namespace:VnManager.ViewModels.Controls"
+        xmlns:s="https://github.com/canton7/Stylet"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance vm:CustomMsgBoxViewModel}"
+        ResizeMode="NoResize"
+        SizeToContent="WidthAndHeight"
+        FlowDirection="{Binding FlowDirection}"
+        ShowInTaskbar="False"
+        MinWidth="160" MaxWidth="485"
+        x:Name="RootObject"
+        >
+    <Grid Margin="0,0,0,0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="6"/>
+            <!-- Padding -->
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="50"/>
+        </Grid.RowDefinitions>
+
+        <Image Grid.Row="0" Grid.Column="1"
+               Source="{Binding ImageIcon, Converter={x:Static s:IconToBitmapSourceConverter.Instance}}"
+               Visibility="{Binding ImageIcon, Converter={x:Static s:BoolToVisibilityConverter.Instance}}">
+            <Image.Style>
+                <Style TargetType="Image">
+                    <Setter Property="VerticalAlignment" Value="Center"/>
+                    <Setter Property="Margin" Value="19,0,0,0"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding TextIsMultiline}" Value="True">
+                            <Setter Property="VerticalAlignment" Value="Top"/>
+                            <Setter Property="Margin" Value="19,25,0,0"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Image.Style>
+        </Image>
+
+        <TextBlock Grid.Row="0" Grid.Column="2" Text="{Binding Text}" Margin="8,25,15,30" TextWrapping="Wrap" TextAlignment="{Binding TextAlignment}"/>
+
+        <Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3">
+            <ItemsControl ItemsSource="{Binding ButtonList}"
+                          HorizontalAlignment="Right" VerticalAlignment="Center" Margin="43,0,0,0">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Button Content="{Binding Label}" Width="85" Height="25" Margin="0,0,10,0"
+                                Command="{s:Action ButtonClicked}" CommandParameter="{Binding Value}">
+                            <Button.IsDefault>
+                                <MultiBinding Converter="{x:Static s:EqualityConverter.Instance}">
+                                    <Binding/>
+                                    <Binding Path="DataContext.DefaultButton" ElementName="RootObject"/>
+                                </MultiBinding>
+                            </Button.IsDefault>
+                            <Button.IsCancel>
+                                <MultiBinding Converter="{x:Static s:EqualityConverter.Instance}">
+                                    <Binding/>
+                                    <Binding Path="DataContext.CancelButton" ElementName="RootObject"/>
+                                </MultiBinding>
+                            </Button.IsCancel>
+                        </Button>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Grid>
+
+    </Grid>
+</controls:AdonisWindow>

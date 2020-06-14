@@ -13,6 +13,7 @@ using VnManager.Helpers;
 using VnManager.ViewModels.Dialogs.AddGameSources;
 using VnManager.ViewModels.UserControls;
 using VnManager.ViewModels.Windows;
+using VnManager.ViewModels.Controls;
 
 namespace VnManager
 {
@@ -43,6 +44,7 @@ namespace VnManager
             builder.Bind<StatusBarViewModel>().ToSelf().InSingletonScope();
             builder.Bind<AddGameNoSourceViewModel>().ToSelf().InSingletonScope();
             builder.Bind<AddGameVndbViewModel>().ToSelf().InSingletonScope();
+            builder.Bind<IMessageBoxViewModel>().To<CustomMsgBoxViewModel>();
         }
 
         protected override void Configure()

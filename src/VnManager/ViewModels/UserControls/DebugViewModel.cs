@@ -20,6 +20,7 @@ using System.Reflection.PortableExecutable;
 using System.Resources;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using AdysTech.CredentialManager;
 using StyletIoC;
 using VndbSharp;
@@ -133,9 +134,11 @@ namespace VnManager.ViewModels.UserControls
 
         public void TestEncryption()
         {
-            Secure.EncFile("sample.jpg");
+            //Secure.EncFile("sample.jpg");
 
-            Secure.DecFile("sample.jpg");
+            //Secure.DecFile("sample.jpg");
+            _windowManager.ShowMessageBox("This is a sample message", "Sample Title", MessageBoxButton.OKCancel,
+                MessageBoxImage.Information);
         }
 
         public void CauseException()
