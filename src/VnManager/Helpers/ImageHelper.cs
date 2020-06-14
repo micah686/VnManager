@@ -146,15 +146,9 @@ namespace VnManager.Helpers
 
         
     }
-    public struct ScreenShot : IEquatable<ScreenShot>
+    public class ScreenShot
     {
-        public string Url;
-        public bool IsNsfw;
-
-        public bool Equals([AllowNull] ScreenShot other)
-        {
-            return Url == other.Url && IsNsfw == other.IsNsfw;
-        }
-
+        public string Url { get; set; }
+        public bool IsNsfw { get; set; }
     }
 }

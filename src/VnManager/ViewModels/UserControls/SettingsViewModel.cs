@@ -107,6 +107,9 @@ namespace VnManager.ViewModels.UserControls
                 case "Light Theme":
                     theme = "LightTheme";
                     break;
+                default:
+                    theme = "DarkTheme";
+                    break;
             }
             
             UserSettingsVndb vndb = new UserSettingsVndb

@@ -261,7 +261,7 @@ namespace VnManager.ViewModels.Windows
             var cred = CredentialManager.GetCredentials("VnManager.DbEnc");
             if (cred == null|| cred.UserName.Length <1) return false;
             var split = cred.UserName.Split('|');
-            var hashSalt = new  Secure.PassHashStruct()
+            var hashSalt = new  Secure.PassHash()
             {
                 Hash = split[0], Salt = split[1]
             };

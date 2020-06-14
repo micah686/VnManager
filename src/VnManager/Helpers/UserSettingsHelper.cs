@@ -102,24 +102,10 @@ namespace VnManager.Helpers
 
         public static void UpdateColorTheme()
         {
-            bool isDark = true;
             if(App.UserSettings == null) return;
             var theme = App.UserSettings.ColorTheme;
-            switch (theme)
-            {
-                case "DarkTheme":
-                    isDark = true;
-                    ResourceLocator.SetColorScheme(Application.Current.Resources, ResourceLocator.DarkColorScheme);
-                    break;
-                case "LightTheme":
-                    isDark = false;
-                    ResourceLocator.SetColorScheme(Application.Current.Resources, ResourceLocator.LightColorScheme);
-                    break;
-                default:
-                    isDark = true;
-                    ResourceLocator.SetColorScheme(Application.Current.Resources, ResourceLocator.DarkColorScheme);
-                    break;
-            }
+            ResourceLocator.SetColorScheme(Application.Current.Resources,
+                theme == "LightTheme" ? ResourceLocator.LightColorScheme : ResourceLocator.DarkColorScheme);
         }
 
     }
