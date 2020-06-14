@@ -24,13 +24,53 @@ namespace VnManager.ViewModels.UserControls
     {
         public string Theme { get; set; } = "DarkTheme";
         public bool NsfwEnabled { get; set; }
-        public bool NsfwContentSavedVisible { get; set; }
+        //public bool NsfwContentSavedVisible { get; set; }
+        private bool _didChangeNsfwContentVisible = false;
+
+        private bool _nsfwSavedContentVisible;
+        public bool NsfwContentSavedVisible
+        {
+            get => _nsfwSavedContentVisible;
+            set
+            {
+                _nsfwSavedContentVisible = value;
+                SetAndNotify(ref _nsfwSavedContentVisible, value);
+                _didChangeNsfwContentVisible = true;
+            }
+        }
 
         #region SpoilerList
         public Collection<string> SpoilerList { get;} = new Collection<string>(new string[] { App.ResMan.GetString("None"), App.ResMan.GetString("Minor"), App.ResMan.GetString("Major") });
         public string SpoilerString { get; set; }
         public int SpoilerIndex { get; set; } = 0;
         #endregion
+
+        public SettingsViewModel()
+        {
+            NsfwEnabled = App.UserSettings.IsNsfwEnabled;
+            NsfwContentSavedVisible = App.UserSettings.IsVisibleSavedNsfwContent;
+            if (App.UserSettings.SettingsVndb != null)
+            {
+                SpoilerString = App.UserSettings.SettingsVndb.Spoiler.ToString();
+
+                switch (SpoilerString)
+                {
+                    case "None":
+                        SpoilerIndex = 0;
+                        break;
+                    case "Minor":
+                        SpoilerIndex = 1;
+                        break;
+                    case "Major":
+                        SpoilerIndex = 2;
+                        break;
+                    default:
+                        SpoilerIndex = 0;
+                        break;
+                }
+            }
+            
+        }
 
         public void SaveUserSettings(bool useEncryption)
         {
@@ -52,7 +92,13 @@ namespace VnManager.ViewModels.UserControls
             {
                 UserSettingsHelper.SaveUserSettings(settings);
                 App.UserSettings = settings;
-                DeleteNsfwImages();
+
+                if (_didChangeNsfwContentVisible == true)
+                {
+                    //add messagebox
+                    DeleteNsfwImages();
+                }
+                
             }
             catch (Exception ex)
             {
