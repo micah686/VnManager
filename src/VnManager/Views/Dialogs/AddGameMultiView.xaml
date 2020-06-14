@@ -12,7 +12,7 @@
         xmlns:mvd="https://github.com/fantasticfiasco/mvvm-dialogs"
         mvd:DialogServiceViews.IsRegistered="True"
         mc:Ignorable="d"
-        Title="{x:Static res:Resources.AddGameCollectionTitle}" Height="450" Width="500" ResizeMode="NoResize">
+        Title="{x:Static res:Resources.AddGameCollectionTitle}" Height="450" Width="500" ResizeMode="NoResize" ShowInTaskbar="False">
     <Grid>
         <Grid Margin="10">
             <Grid.RowDefinitions>

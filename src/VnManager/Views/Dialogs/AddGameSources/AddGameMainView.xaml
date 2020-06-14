@@ -9,7 +9,7 @@
              xmlns:res="clr-namespace:VnManager.Strings"
              xmlns:conv="clr-namespace:VnManager.Converters"
              mc:Ignorable="d" 
-             Title="{x:Static res:Resources.AddGame}" Height="410" Width="500" ResizeMode="NoResize">
+             Title="{x:Static res:Resources.AddGame}" Height="410" Width="500" ResizeMode="NoResize" ShowInTaskbar="False">
     <Grid Margin="10">
         <Grid.Resources>
             <s:BoolToVisibilityConverter x:Key="BoolToVisConverter"/>
