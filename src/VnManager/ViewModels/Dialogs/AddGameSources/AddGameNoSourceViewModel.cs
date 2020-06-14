@@ -55,15 +55,10 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
 
 
 
-        private readonly IWindowManager _windowManager;
         private readonly IDialogService _dialogService;
-        private readonly IContainer _container;
 
-        public AddGameNoSourceViewModel(IContainer container, IWindowManager windowManager,
-            IDialogService dialogService, IModelValidator<AddGameNoSourceViewModel> validator): base(validator)
+        public AddGameNoSourceViewModel(IDialogService dialogService, IModelValidator<AddGameNoSourceViewModel> validator): base(validator)
         {
-            _container = container;
-            _windowManager = windowManager;
             _dialogService = dialogService;
         }
 

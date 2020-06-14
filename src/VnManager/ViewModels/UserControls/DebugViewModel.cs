@@ -117,7 +117,7 @@ namespace VnManager.ViewModels.UserControls
             App.StatusBar.IsProgressBarInfinite = false;
         }
 
-        private double currentVal = 5.0;
+        
         public async Task TestStatusBar()
         {
             

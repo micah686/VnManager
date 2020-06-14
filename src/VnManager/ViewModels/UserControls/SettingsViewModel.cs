@@ -32,7 +32,7 @@ namespace VnManager.ViewModels.UserControls
         public int SpoilerIndex { get; set; } = 0;
         #endregion
 
-        public void SaveUserSettings(bool useEncryption = false)
+        public void SaveUserSettings(bool useEncryption)
         {
             Enum.TryParse(SpoilerString, out SpoilerLevel spoiler);
             UserSettingsVndb vndb = new UserSettingsVndb
@@ -84,46 +84,71 @@ namespace VnManager.ViewModels.UserControls
             if (cred == null || cred.UserName.Length < 1) return;
             using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
             {
-                var dbVnInfo = db.GetCollection<VnInfoScreens>("VnInfo_Screens");
-                var vnScreens = dbVnInfo.Query().Where(x => x.Nsfw == true).ToList();
-                foreach (var screen in vnScreens)
+                List<VnInfoScreens> vnScreens = db.GetCollection<VnInfoScreens>("VnInfo_Screens").Query().Where(x => x.Nsfw == true).ToList();
+                List<VnInfo> vnCovers = db.GetCollection<VnInfo>("VnInfo").Query().Where(x => x.ImageNsfw == true).ToList();
+
+                ResetNsfwScreenshots(vnScreens);
+                ResetNsfwCoverImages(vnCovers);
+            }
+
+        }
+
+        private void ResetNsfwScreenshots(List<VnInfoScreens> vnScreens)
+        {
+            foreach (var screen in vnScreens)
+            {
+                var directory = Path.Combine(App.AssetDirPath, @$"sources\vndb\images\screenshots\{screen.VnId}");
+                var imageFile = $@"{directory}\{Path.GetFileName(screen.ImageUrl)}";
+                var thumbFile = $@"{directory}\thumbs\{Path.GetFileName(screen.ImageUrl)}";
+
+                if (App.UserSettings.IsVisibleSavedNsfwContent == false)
                 {
-                    var directory = Path.Combine(App.AssetDirPath, @$"sources\vndb\images\screenshots\{screen.VnId}");
-                    var imageFile = $@"{directory}\{Path.GetFileName(screen.ImageUrl)}";
-                    var thumbFile = $@"{directory}\thumbs\{Path.GetFileName(screen.ImageUrl)}";
-
-                    if (App.UserSettings.IsVisibleSavedNsfwContent == false)
+                    if (File.Exists(imageFile) && File.Exists(thumbFile))
                     {
-                        if (File.Exists(imageFile) && File.Exists(thumbFile))
-                        {
-                            Secure.EncFile(imageFile);
-                            File.Delete(imageFile);
+                        Secure.EncFile(imageFile);
 
-                            Secure.EncFile(thumbFile);
-                            File.Delete(thumbFile);
-                        }
-                        
+                        Secure.EncFile(thumbFile);
                     }
-                    else
+                }
+                else
+                {
+                    if (File.Exists($"{imageFile}.aes") && File.Exists($"{thumbFile}.aes"))
                     {
-                        if (File.Exists($"{imageFile}.aes") && File.Exists($"{thumbFile}.aes"))
-                        {
-                            Secure.DecFile(imageFile);
-                            File.Delete($"{imageFile}.aes");
+                        Secure.DecFile(imageFile);
 
-                            Secure.DecFile(thumbFile);
-                            File.Delete($"{thumbFile}.aes");
-                        }
-                        
+                        Secure.DecFile(thumbFile);
                     }
-
-
 
                 }
             }
-
-
         }
+
+        private void ResetNsfwCoverImages(List<VnInfo> vnCovers)
+        {
+            foreach (var cover in vnCovers)
+            {
+                var directory = Path.Combine(App.AssetDirPath, @"sources\vndb\images\cover");
+                var imageFile = $@"{directory}\{Path.GetFileName(cover.ImageLink)}";
+                if (App.UserSettings.IsVisibleSavedNsfwContent == false)
+                {
+                    if (File.Exists(imageFile))
+                    {
+                        Secure.EncFile(imageFile);
+                    }
+                }
+                else
+                {
+                    if (File.Exists(imageFile))
+                    {
+                        Secure.DecFile(imageFile);
+                    }
+                }
+
+            }
+        }
+
+
+
 
         public void ResetApplication()
         {

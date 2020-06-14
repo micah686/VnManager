@@ -51,12 +51,8 @@ namespace VnManager.ViewModels.Windows
 
         #endregion
 
-        private readonly IWindowManager _windowManager;
-        private readonly IContainer _container;
-        public SetEnterPasswordViewModel(IContainer container, IWindowManager windowManager, IModelValidator<SetEnterPasswordViewModel> validator) : base(validator)
+        public SetEnterPasswordViewModel(IModelValidator<SetEnterPasswordViewModel> validator) : base(validator)
         {
-            _container = container;
-            _windowManager = windowManager;
             ValidateFiles();
             Title = App.ResMan.GetString("CreatePassTitle");
             if (App.UserSettings.EncryptionEnabled)

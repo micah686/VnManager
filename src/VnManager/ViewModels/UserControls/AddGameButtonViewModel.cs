@@ -42,7 +42,7 @@ namespace VnManager.ViewModels.UserControls
                     await AddVndbGame();
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    throw new ArgumentOutOfRangeException($"Unknown Enum Source");
             }
 
         }
