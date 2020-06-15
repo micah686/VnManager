@@ -4,15 +4,18 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:VnManager.Views.UserControls"
+             xmlns:adonisExtensions="clr-namespace:AdonisUI.Extensions;assembly=AdonisUI"
+             xmlns:res="clr-namespace:VnManager.Strings"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="5"/>
         </Grid.RowDefinitions>
-        <TextBox Grid.Row="0" Text="Search Cateogry"/>
-        <ListBox Grid.Row="1" ItemsSource="{Binding CategoryCollection, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,5,0,0"/>
-
+        <TextBox Grid.Row="0" adonisExtensions:WatermarkExtension.Watermark="{x:Static res:Resources.SearchCategory}"/>
+        <ListBox Grid.Row="1" ItemsSource="{Binding CategoryCollection, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,5,0,0" adonisExtensions:ScrollViewerExtension.VerticalScrollBarExpansionMode="NeverExpand"/>
+        <Separator Grid.Row="2"/>
     </Grid>
 </UserControl>

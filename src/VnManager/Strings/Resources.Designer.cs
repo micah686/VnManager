@@ -574,6 +574,15 @@ namespace VnManager.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Could not find any games. Please add some games to the database.
+        /// </summary>
+        public static string NoGamesFound {
+            get {
+                return ResourceManager.GetString("NoGamesFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to None.
         /// </summary>
         public static string None {
@@ -696,6 +705,15 @@ namespace VnManager.Strings {
         public static string SaveNsfwImagesInDatabase {
             get {
                 return ResourceManager.GetString("SaveNsfwImagesInDatabase", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search Category.
+        /// </summary>
+        public static string SearchCategory {
+            get {
+                return ResourceManager.GetString("SearchCategory", resourceCulture);
             }
         }
         

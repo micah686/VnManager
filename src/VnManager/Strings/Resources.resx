@@ -288,6 +288,9 @@
   <data name="No" xml:space="preserve">
     <value>No</value>
   </data>
+  <data name="NoGamesFound" xml:space="preserve">
+    <value>Could not find any games. Please add some games to the database</value>
+  </data>
   <data name="None" xml:space="preserve">
     <value>None</value>
   </data>
@@ -329,6 +332,9 @@
   </data>
   <data name="SaveNsfwImagesInDatabase" xml:space="preserve">
     <value>Save Nsfw Images in Database</value>
+  </data>
+  <data name="SearchCategory" xml:space="preserve">
+    <value>Search Category</value>
   </data>
   <data name="SelectTheme" xml:space="preserve">
     <value>Select Theme:</value>

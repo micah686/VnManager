@@ -18,7 +18,7 @@
         <!--<Button Content="Button" HorizontalAlignment="Left" Margin="223,189,0,0" VerticalAlignment="Top" Height="51" Width="92" Command="{s:Action Click}"/>-->
         <DockPanel LastChildFill="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <Grid DockPanel.Dock="Top">
-                <ContentControl s:View.Model="{Binding TopInfoBarPage}" MinHeight="70"/>
+                <ContentControl s:View.Model="{Binding TopInfoBarPage}" MinHeight="30"/>
             </Grid>
 
             <Grid>
@@ -29,13 +29,13 @@
 
                 <Grid Grid.Column="0" x:Name="grdSideBar">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="70"/>
+                        <RowDefinition Height="160"/>
                         <RowDefinition Height="90*"/>
                         <RowDefinition Height="40"/>
                     </Grid.RowDefinitions>
-                    <ContentControl Grid.Row="0"  Margin="5,0,0,0" s:View.Model="{Binding LastPlayedPage}"/>
-                    <ContentControl Grid.Row="1"  Margin="5,0,0,0" s:View.Model="{Binding CategoryListPage}"/>
-                    <ContentControl Grid.Row="2"  Margin="5,0,0,0" s:View.Model="{Binding AddGamePage}"/>
+                    <ContentControl Grid.Row="0"   s:View.Model="{Binding LastPlayedPage}"/>
+                    <ContentControl Grid.Row="1"   s:View.Model="{Binding CategoryListPage}"/>
+                    <ContentControl Grid.Row="2"   s:View.Model="{Binding AddGamePage}"/>
                 </Grid>
 
 

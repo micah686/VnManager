@@ -3,6 +3,7 @@ using Stylet;
 using StyletIoC;
 using VnManager.ViewModels.Dialogs;
 using VnManager.ViewModels.UserControls;
+using VnManager.ViewModels.UserControls.GameGrid;
 using VnManager.ViewModels.Windows;
 
 namespace VnManager.ViewModels.UserControls
@@ -13,7 +14,6 @@ namespace VnManager.ViewModels.UserControls
         public TopInfoBarViewModel TopInfoBarPage { get; set; }
         public LastPlayedViewModel LastPlayedPage { get; set; }
         public CategoryListViewModel CategoryListPage { get; set; }
-        public GameGridViewModel GameGridPage { get; set; }
         public AddGameButtonViewModel AddGamePage { get; set; }
 
         private readonly IContainer _container;
@@ -32,7 +32,7 @@ namespace VnManager.ViewModels.UserControls
             CategoryListPage = _container.Get<CategoryListViewModel>();
             AddGamePage = _container.Get<AddGameButtonViewModel>();
 
-            var gg = _container.Get<GameGridViewModel>();
+            var gg = _container.Get<NoGamesViewModel>();
             ActivateItem(gg);
         }
 
