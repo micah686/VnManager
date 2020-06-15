@@ -112,8 +112,29 @@ namespace VnManager.ViewModels.Controls
 
             var buttonList = new BindableCollection<LabelledValue<MessageBoxResult>>();
             this.ButtonList = buttonList;
-            SetButtonLabels(ref buttonList, buttons, buttonLabels, defaultResult, cancelResult);
+            foreach (var val in ButtonToResults[buttons])
+            {
+                string label;
+                if (buttonLabels == null || !buttonLabels.TryGetValue(val, out label))
+                    label = ButtonLabels[val];
+
+                var lbv = new LabelledValue<MessageBoxResult>(label, val);
+                buttonList.Add(lbv);
+                if (val == defaultResult)
+                    this.DefaultButton = lbv;
+                else if (val == cancelResult)
+                    this.CancelButton = lbv;
+            }
             // If they didn't specify a button which we showed, then pick a default, if we can
+            SetButtons(defaultResult, cancelResult, buttonList);
+
+            this.FlowDirection = flowDirection ?? DefaultFlowDirection;
+            this.TextAlignment = textAlignment ?? DefaultTextAlignment;
+        }
+
+        private void SetButtons(MessageBoxResult defaultResult, MessageBoxResult cancelResult,
+            BindableCollection<LabelledValue<MessageBoxResult>> buttonList)
+        {
             if (this.DefaultButton == null)
             {
                 if (defaultResult == MessageBoxResult.None && this.ButtonList.Any())
@@ -127,28 +148,6 @@ namespace VnManager.ViewModels.Controls
                     this.CancelButton = buttonList.Last();
                 else
                     throw new ArgumentException("CancelButton set to a button which doesn't appear in Buttons");
-            }
-
-            this.FlowDirection = flowDirection ?? DefaultFlowDirection;
-            this.TextAlignment = textAlignment ?? DefaultTextAlignment;
-        }
-
-        private void SetButtonLabels(ref BindableCollection<LabelledValue<MessageBoxResult>> buttonList, MessageBoxButton buttons, IDictionary<MessageBoxResult, string> buttonLabels, MessageBoxResult defaultResult, MessageBoxResult cancelResult)
-        {
-            foreach (var val in ButtonToResults[buttons])
-            {
-                string label;
-                if (buttonLabels == null || !buttonLabels.TryGetValue(val, out label))
-                    label = ButtonLabels[val];
-
-                var lbv = new LabelledValue<MessageBoxResult>(label, val);
-                buttonList.Add(lbv);
-                if (val == defaultResult)
-                    this.DefaultButton = lbv;
-                else if (val == cancelResult)
-                    this.CancelButton = lbv;
-                else
-                    return;
             }
         }
 

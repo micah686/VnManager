@@ -150,6 +150,12 @@
   <data name="Cancel" xml:space="preserve">
     <value>Cancel</value>
   </data>
+  <data name="ChangeNsfwVisibilityMessage" xml:space="preserve">
+    <value>Changing the nsfw content visibility may make nsfw images visible to photo viewers. Do you want to continue?</value>
+  </data>
+  <data name="ChangeNsfwVisibilityTitle" xml:space="preserve">
+    <value>Change Nsfw Visibility?</value>
+  </data>
   <data name="Collection" xml:space="preserve">
     <value>Collection</value>
   </data>
@@ -332,6 +338,12 @@
   </data>
   <data name="Settings" xml:space="preserve">
     <value>Settings</value>
+  </data>
+  <data name="SettingsSavedMessage" xml:space="preserve">
+    <value>Settings have been saved</value>
+  </data>
+  <data name="SettingsSavedTitle" xml:space="preserve">
+    <value>Settings Saved</value>
   </data>
   <data name="Source" xml:space="preserve">
     <value>Source:</value>

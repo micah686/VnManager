@@ -780,6 +780,10 @@ namespace VnManager.MetadataProviders.Vndb
             {
                 App.Logger.Warning(ex, "Failed to download cover image");
             }
+            finally
+            {
+                App.StatusBar.IsFileDownloading = false;
+            }
         }
 
         internal async Task DownloadCharacterImages(uint vnId)
@@ -812,6 +816,10 @@ namespace VnManager.MetadataProviders.Vndb
             catch (Exception e)
             {
                 App.Logger.Warning(e, "Failed to download character image");
+            }
+            finally
+            {
+                App.StatusBar.IsFileDownloading = false;
             }
         }
 
@@ -847,6 +855,10 @@ namespace VnManager.MetadataProviders.Vndb
             {
                 App.Logger.Warning(ex, "Failed to download screenshots");
                 throw;
+            }
+            finally
+            {
+                App.StatusBar.IsFileDownloading = false;
             }
         }
 

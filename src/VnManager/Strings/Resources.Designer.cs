@@ -160,6 +160,24 @@ namespace VnManager.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Changing the nsfw content visibility may make nsfw images visible to photo viewers. Do you want to continue?.
+        /// </summary>
+        public static string ChangeNsfwVisibilityMessage {
+            get {
+                return ResourceManager.GetString("ChangeNsfwVisibilityMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Change Nsfw Visibility?.
+        /// </summary>
+        public static string ChangeNsfwVisibilityTitle {
+            get {
+                return ResourceManager.GetString("ChangeNsfwVisibilityTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Collection.
         /// </summary>
         public static string Collection {
@@ -705,6 +723,24 @@ namespace VnManager.Strings {
         public static string Settings {
             get {
                 return ResourceManager.GetString("Settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Settings have been saved.
+        /// </summary>
+        public static string SettingsSavedMessage {
+            get {
+                return ResourceManager.GetString("SettingsSavedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Settings Saved.
+        /// </summary>
+        public static string SettingsSavedTitle {
+            get {
+                return ResourceManager.GetString("SettingsSavedTitle", resourceCulture);
             }
         }
         

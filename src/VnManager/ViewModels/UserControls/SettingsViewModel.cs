@@ -14,6 +14,7 @@ using System.Linq;
 using System.Reflection;
 using System.Resources;
 using System.Threading.Tasks;
+using System.Windows;
 using AdysTech.CredentialManager;
 using LiteDB;
 using VnManager.Models.Db.Vndb.Main;
@@ -97,8 +98,24 @@ namespace VnManager.ViewModels.UserControls
 
         public void SaveUserSettings(bool useEncryption)
         {
+            if (_didChangeNsfwContentVisible == true)
+            {
+                var message = App.ResMan.GetString("ChangeNsfwVisibilityMessage")
+                    ?.Replace(@"\n", Environment.NewLine);
+                var result = _windowManager.ShowMessageBox($"{message}",
+                    App.ResMan.GetString("ChangeNsfwVisibilityTitle"), MessageBoxButton.YesNo);
+                if (result == MessageBoxResult.Yes)
+                {
+                    DeleteNsfwImages();
+                }
+                else
+                {
+                    return;
+                }
+
+            }
             Enum.TryParse(SpoilerString, out SpoilerLevel spoiler);
-            string theme= String.Empty;
+            string theme;
             switch (ThemeString)
             {
                 case "Dark Theme":
@@ -130,13 +147,9 @@ namespace VnManager.ViewModels.UserControls
                 UserSettingsHelper.SaveUserSettings(settings);
                 App.UserSettings = settings;
 
-                if (_didChangeNsfwContentVisible == true)
-                {
-                    //add messagebox
-                    DeleteNsfwImages();
-                }
-                UserSettingsHelper.UpdateColorTheme();
                 
+                UserSettingsHelper.UpdateColorTheme();
+                _windowManager.ShowMessageBox(App.ResMan.GetString("SettingsSavedMessage"), App.ResMan.GetString("SettingsSavedTitle"));
             }
             catch (Exception ex)
             {

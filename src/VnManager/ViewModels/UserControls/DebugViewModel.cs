@@ -137,8 +137,7 @@ namespace VnManager.ViewModels.UserControls
             //Secure.EncFile("sample.jpg");
 
             //Secure.DecFile("sample.jpg");
-            _windowManager.ShowMessageBox("This is a sample message", "Sample Title", MessageBoxButton.OKCancel,
-                MessageBoxImage.Information);
+            _windowManager.ShowMessageBox("THis is a test message", "Title Here", MessageBoxButton.OKCancel, MessageBoxImage.Asterisk);
         }
 
         public void CauseException()
