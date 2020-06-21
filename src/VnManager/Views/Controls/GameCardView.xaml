@@ -18,30 +18,34 @@
 
         <Grid>
             <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="30"/>
-        </Grid.RowDefinitions>
-            <Border Name="Mask" Background="#32323F" CornerRadius="10" Width="{Binding ElementName=ImgMain, Path=ActualWidth}"></Border>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="30"/>
+            </Grid.RowDefinitions>
             <Grid Grid.Row="0" Height="220">
-                <Grid.OpacityMask>
-                    <VisualBrush Visual="{Binding ElementName=Mask}"/>
-                </Grid.OpacityMask>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="170"/>
                     <RowDefinition MaxHeight="50"/>
                 </Grid.RowDefinitions>
                 <Grid Grid.Row="0" >
-                    <Image x:Name="ImgMain" Source="{Binding CoverImage}"/>
+                    <Border Grid.Row="0" Name="ImgMask" Background="Black" CornerRadius="6,6,0,0" Width="{Binding ElementName=ImgMain, Path=ActualWidth}"/>
+                    <Image x:Name="ImgMain" Source="{Binding CoverImage}">
+                        <Image.OpacityMask>
+                            <VisualBrush Visual="{Binding ElementName=ImgMask}"/>
+                        </Image.OpacityMask>
+                    </Image>
                     <Image Source="{Binding CoverImage}" Visibility="{Binding IsNsfwDisabled, Converter={StaticResource BoolToVisibilityConverter}}" Margin="3"  >
+                        <Image.OpacityMask>
+                            <VisualBrush Visual="{Binding ElementName=ImgMask}"/>
+                        </Image.OpacityMask>
                         <Image.Effect>
                             <BlurEffect RenderingBias="Quality" KernelType="Box" Radius="5"/>
                         </Image.Effect>
                     </Image>
                 </Grid>
 
-                <Grid Grid.Row="1" Background="{DynamicResource {x:Static adonisUi:Brushes.Layer3HighlightBorderBrush}}"  Width="{Binding ElementName=ImgMain, Path=ActualWidth}">
+                <Border Grid.Row="1" Name="TitleMask" Background="{DynamicResource {x:Static adonisUi:Brushes.Layer3HighlightBorderBrush}}" CornerRadius="0,0,6,6" Width="{Binding ElementName=ImgMain, Path=ActualWidth}">
                     <TextBlock Text="{Binding Title}" ToolTip="{Binding Title}" TextWrapping="WrapWithOverflow" TextTrimming="CharacterEllipsis" FontSize="12" FontWeight="Medium"/>
-                </Grid>
+                </Border>
 
             </Grid>
 
