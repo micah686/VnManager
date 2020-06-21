@@ -11,5 +11,7 @@ namespace VnManager.ViewModels.Controls
         public BitmapImage CoverImage { get; set; }
         public string LastPlayedString { get; set; }
         public string TotalTimeString { get; set; }
+        public string Title { get; set; }
+        public bool IsNsfwDisabled { get; set; }
     }
 }

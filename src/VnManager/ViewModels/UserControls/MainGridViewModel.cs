@@ -32,7 +32,10 @@ namespace VnManager.ViewModels.UserControls
             CategoryListPage = _container.Get<CategoryListViewModel>();
             AddGamePage = _container.Get<AddGameButtonViewModel>();
 
-            var gg = _container.Get<NoGamesViewModel>();
+            //var gg = _container.Get<NoGamesViewModel>();
+            //ActivateItem(gg);
+
+            var gg = _container.Get<GameGridViewModel>();
             ActivateItem(gg);
         }
 

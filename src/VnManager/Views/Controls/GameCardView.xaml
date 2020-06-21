@@ -4,22 +4,55 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:VnManager.Views.Controls"
-             mc:Ignorable="d" 
-             Width="200"
-             d:DesignHeight="450">
-    <Grid Background="WhiteSmoke">
-          <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="50" />
+             xmlns:s="https://github.com/canton7/Stylet"
+             xmlns:vm="clr-namespace:VnManager.ViewModels.Controls"
+             xmlns:adonisUi="clr-namespace:AdonisUI;assembly=AdonisUI"
+             mc:Ignorable="d"
+             Width="144" Height="250"
+             d:DataContext="{d:DesignInstance {x:Type vm:GameCardViewModel}}">
+    <UserControl.Resources>
+        <s:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+    </UserControl.Resources>
+    <Grid>
+
+
+        <Grid>
+            <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="30"/>
         </Grid.RowDefinitions>
+            <Grid Grid.Row="0" Height="220">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="170"/>
+                    <RowDefinition MaxHeight="50"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0" >
+                    <Image x:Name="ImgMain" Source="{Binding CoverImage}"/>
+                    <Image Source="{Binding CoverImage}" Visibility="{Binding IsNsfwDisabled, Converter={StaticResource BoolToVisibilityConverter}}" Margin="3"  >
+                        <Image.Effect>
+                            <BlurEffect RenderingBias="Quality" KernelType="Box" Radius="5"/>
+                        </Image.Effect>
+                    </Image>
+                </Grid>
 
-        <Image Grid.Row="0" Source="{Binding CoverImage}"/>
-        <!-- blurred image -->
-        <Image Grid.Row="0" Source="{Binding CoverImage}">
+                <Grid Grid.Row="1" Background="{DynamicResource {x:Static adonisUi:Brushes.Layer3HighlightBorderBrush}}"  Width="{Binding ElementName=ImgMain, Path=ActualWidth}">
+                    <!--<TextBlock Text="{Binding Title}" HorizontalAlignment="Left" TextWrapping="WrapWithOverflow" FontSize="14" ToolTip="{Binding Title}" Margin="3" VerticalAlignment="Center"
+                               FontWeight="Medium" TextTrimming="CharacterEllipsis" MaxWidth="144"></TextBlock>-->
+                    <TextBlock Text="{Binding Title}" ToolTip="{Binding Title}" TextWrapping="WrapWithOverflow" TextTrimming="CharacterEllipsis" FontSize="12" FontWeight="Medium"
+                               />
+                </Grid>
 
-        </Image>
+            </Grid>
 
+
+
+
+
+            <StackPanel Grid.Row="1" HorizontalAlignment="Center">
+                <TextBlock Text="{Binding LastPlayedString}"/>
+                <TextBlock Text="{Binding TotalTimeString}"/>
+            </StackPanel>
+        </Grid>
 
     </Grid>
 </UserControl>
