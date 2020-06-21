@@ -34,6 +34,28 @@
                     <RowDefinition MaxHeight="50"/>
                 </Grid.RowDefinitions>
                 <Grid Grid.Row="0" >
+                    <Grid.Style>
+                        <Style TargetType="Grid">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsMouseOver}" Value="True">
+                                    <DataTrigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetProperty="Height" From="170" To="200" Duration="0:0:.1" />
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.EnterActions>
+                                    <DataTrigger.ExitActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetProperty="Height" From="200" To="170" Duration="0:0:0.1" />
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.ExitActions>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Grid.Style>
                     <Border Grid.Row="0" Name="ImgMask" Background="Black" CornerRadius="6,6,0,0" Width="{Binding ElementName=ImgMain, Path=ActualWidth}"/>
                     <Image x:Name="ImgMain" Source="{Binding CoverImage}">
                         <Image.OpacityMask>
@@ -64,7 +86,6 @@
             <StackPanel Grid.Row="1" HorizontalAlignment="Center" Margin="0,3,0,0" Visibility="{Binding IsMouseOver, Converter={StaticResource BoolToVisibilityConverter}}">
                 <TextBlock Text="{Binding LastPlayedString}"/>
                 <TextBlock Text="{Binding TotalTimeString}"/>
-                <Separator Foreground="Crimson"/>
             </StackPanel>
         </Grid>
 
