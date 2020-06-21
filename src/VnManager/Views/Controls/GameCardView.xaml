@@ -7,21 +7,28 @@
              xmlns:s="https://github.com/canton7/Stylet"
              xmlns:vm="clr-namespace:VnManager.ViewModels.Controls"
              xmlns:adonisUi="clr-namespace:AdonisUI;assembly=AdonisUI"
+             xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:ext="clr-namespace:VnManager.Extensions"
              mc:Ignorable="d"
-             Width="144" Height="250"
+             Width="144" Height="260"
              d:DataContext="{d:DesignInstance {x:Type vm:GameCardViewModel}}">
     <UserControl.Resources>
         <s:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
     </UserControl.Resources>
-    <Grid>
+    <Grid Focusable="False">
 
 
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="30"/>
+                <RowDefinition Height="40"/>
             </Grid.RowDefinitions>
-            <Grid Grid.Row="0" Height="220">
+            <Grid x:Name="MainGrid" Grid.Row="0" Height="220" ext:MouseObserver.Observe="True" ext:MouseObserver.ObservedMouseOver="{Binding IsMouseOver, Mode=OneWayToSource}">
+                <Grid.Effect>
+                    <DropShadowEffect BlurRadius="15" Direction="-90" RenderingBias="Quality" ShadowDepth="2"/>
+                </Grid.Effect>
+                
+
                 <Grid.RowDefinitions>
                     <RowDefinition Height="170"/>
                     <RowDefinition MaxHeight="50"/>
@@ -44,7 +51,8 @@
                 </Grid>
 
                 <Border Grid.Row="1" Name="TitleMask" Background="{DynamicResource {x:Static adonisUi:Brushes.Layer3HighlightBorderBrush}}" CornerRadius="0,0,6,6" Width="{Binding ElementName=ImgMain, Path=ActualWidth}">
-                    <TextBlock Text="{Binding Title}" ToolTip="{Binding Title}" TextWrapping="WrapWithOverflow" TextTrimming="CharacterEllipsis" FontSize="12" FontWeight="Medium"/>
+                    <TextBlock Text="{Binding Title}" ToolTip="{Binding Title}" TextWrapping="WrapWithOverflow" TextTrimming="CharacterEllipsis" FontSize="12" FontWeight="Medium"
+                               Margin="0,3,0,0" HorizontalAlignment="Center"/>
                 </Border>
 
             </Grid>
@@ -53,9 +61,10 @@
 
 
 
-            <StackPanel Grid.Row="1" HorizontalAlignment="Center">
+            <StackPanel Grid.Row="1" HorizontalAlignment="Center" Margin="0,3,0,0" Visibility="{Binding IsMouseOver, Converter={StaticResource BoolToVisibilityConverter}}">
                 <TextBlock Text="{Binding LastPlayedString}"/>
                 <TextBlock Text="{Binding TotalTimeString}"/>
+                <Separator Foreground="Crimson"/>
             </StackPanel>
         </Grid>
 

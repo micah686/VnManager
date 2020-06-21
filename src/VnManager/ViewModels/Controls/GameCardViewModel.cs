@@ -13,5 +13,6 @@ namespace VnManager.ViewModels.Controls
         public string TotalTimeString { get; set; }
         public string Title { get; set; }
         public bool IsNsfwDisabled { get; set; }
+        public bool IsMouseOver { get; set; } = false;
     }
 }
