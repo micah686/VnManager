@@ -19,12 +19,12 @@ namespace VnManager.ViewModels.UserControls.MainPage
                 var bol = rand.Next() > (Int32.MaxValue / 2);
                 var bi = new BitmapImage();
                 bi.BeginInit();
-                bi.UriSource = new Uri("https://s2.vndb.org/cv/23/23223.jpg");
+                bi.UriSource = new Uri("https://upload.wikimedia.org/wikipedia/en/c/c2/Tron_Legacy_poster.jpg"); /*new Uri("https://s2.vndb.org/cv/23/23223.jpg");*/
                 bi.EndInit();
                 var card = new GameCardViewModel()
                 {
                     CoverImage = bi,
-                    Title = $"Osanan ajimi wa Daitou ryou ~My Girlf riend is the Pres ident.~ Fandisc {i}",
+                    Title = $"Title {i}",
                     LastPlayedString = $"Last Played: {i}",
                     TotalTimeString = $"Total Time: {i}",
                     IsNsfwDisabled = bol

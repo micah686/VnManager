@@ -21,10 +21,14 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="30"/>
         </Grid.RowDefinitions>
+            <Border Name="Mask" Background="#32323F" CornerRadius="10" Width="{Binding ElementName=ImgMain, Path=ActualWidth}"></Border>
             <Grid Grid.Row="0" Height="220">
+                <Grid.OpacityMask>
+                    <VisualBrush Visual="{Binding ElementName=Mask}"/>
+                </Grid.OpacityMask>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="170"/>
-                    <RowDefinition MaxHeight="50"></RowDefinition>
+                    <RowDefinition MaxHeight="50"/>
                 </Grid.RowDefinitions>
                 <Grid Grid.Row="0" >
                     <Image x:Name="ImgMain" Source="{Binding CoverImage}"/>
@@ -36,10 +40,7 @@
                 </Grid>
 
                 <Grid Grid.Row="1" Background="{DynamicResource {x:Static adonisUi:Brushes.Layer3HighlightBorderBrush}}"  Width="{Binding ElementName=ImgMain, Path=ActualWidth}">
-                    <!--<TextBlock Text="{Binding Title}" HorizontalAlignment="Left" TextWrapping="WrapWithOverflow" FontSize="14" ToolTip="{Binding Title}" Margin="3" VerticalAlignment="Center"
-                               FontWeight="Medium" TextTrimming="CharacterEllipsis" MaxWidth="144"></TextBlock>-->
-                    <TextBlock Text="{Binding Title}" ToolTip="{Binding Title}" TextWrapping="WrapWithOverflow" TextTrimming="CharacterEllipsis" FontSize="12" FontWeight="Medium"
-                               />
+                    <TextBlock Text="{Binding Title}" ToolTip="{Binding Title}" TextWrapping="WrapWithOverflow" TextTrimming="CharacterEllipsis" FontSize="12" FontWeight="Medium"/>
                 </Grid>
 
             </Grid>
