@@ -5,9 +5,13 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:VnManager.Views.UserControls.MainPage"
              xmlns:s="https://github.com/canton7/Stylet"
+             xmlns:ext="clr-namespace:VnManager.Extensions"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <ListBox ItemsSource="{Binding GameCollection, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+    <UserControl.Resources>
+        <ResourceDictionary Source="../../../Style/Listbox/NoHighlight.xaml"/>
+    </UserControl.Resources>
+    <ListBox ItemsSource="{Binding GameCollection, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ItemContainerStyle="{DynamicResource NoHighlightItem}">
         <ListBox.ItemsPanel>
             <ItemsPanelTemplate>
                 <WrapPanel/>
@@ -19,4 +23,16 @@
             </DataTemplate>
         </ListBox.ItemTemplate>
     </ListBox>
+    <!--<ListBox ItemsSource="{Binding GameCollection, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+        <ListBox.ItemsPanel>
+            <ItemsPanelTemplate>
+                <WrapPanel/>
+            </ItemsPanelTemplate>
+        </ListBox.ItemsPanel>
+        <ListBox.ItemTemplate>
+            <DataTemplate>
+                <ContentControl s:View.Model="{Binding}"></ContentControl>
+            </DataTemplate>
+        </ListBox.ItemTemplate>
+    </ListBox>-->
 </UserControl>
