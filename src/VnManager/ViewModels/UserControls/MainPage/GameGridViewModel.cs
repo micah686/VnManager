@@ -14,7 +14,7 @@ namespace VnManager.ViewModels.UserControls.MainPage
         public GameGridViewModel()
         {
             var rand = new Random();
-            for (int i = 0; i < 15; i++)
+            for (int i = 0; i < 30; i++)
             {
                 var bol = rand.Next() > (Int32.MaxValue / 2);
                 var bi = new BitmapImage();
