@@ -11,18 +11,16 @@
     <UserControl.Resources>
         <ResourceDictionary Source="../../../Style/Listbox/NoHighlight.xaml"/>
     </UserControl.Resources>
-    <ScrollViewer Margin="0" Padding="0">
-        <ItemsControl ItemsSource="{Binding GameCollection, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <WrapPanel/>
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <ContentControl s:View.Model="{Binding}"/>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
-    </ScrollViewer>
+    <ListBox ItemsSource="{Binding GameCollection, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ItemContainerStyle="{DynamicResource NoHighlightItem}" ScrollViewer.VerticalScrollBarVisibility="Auto">
+        <ListBox.ItemsPanel>
+            <ItemsPanelTemplate>
+                <WrapPanel/>
+            </ItemsPanelTemplate>
+        </ListBox.ItemsPanel>
+        <ListBox.ItemTemplate>
+            <DataTemplate>
+                <ContentControl s:View.Model="{Binding}"></ContentControl>
+            </DataTemplate>
+        </ListBox.ItemTemplate>
+    </ListBox>
 </UserControl>

@@ -10,7 +10,7 @@
         xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
         xmlns:diag="clr-namespace:System.Diagnostics;assembly=mscorlib"
         mc:Ignorable="d"
-        Title="{Binding WindowTitle}" MinWidth="1050" MinHeight="768" Width="1050" Height="768">
+        Title="{Binding WindowTitle}" MinWidth="1075" MinHeight="768" Width="1075" Height="768">
     <controls:AdonisWindow.Resources>
         <s:BoolToVisibilityConverter x:Key="boolToVisConverter" TrueVisibility="Visible" FalseVisibility="Hidden"/>
     </controls:AdonisWindow.Resources>

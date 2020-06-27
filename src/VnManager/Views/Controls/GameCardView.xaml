@@ -10,7 +10,7 @@
              xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:ext="clr-namespace:VnManager.Extensions"
              mc:Ignorable="d"
-             Width="144" Height="260"
+             Width="144" Height="270"
              d:DataContext="{d:DesignInstance {x:Type vm:GameCardViewModel}}">
     <UserControl.Resources>
         <s:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
@@ -21,7 +21,7 @@
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="40"/>
+                <RowDefinition Height="80"/>
             </Grid.RowDefinitions>
             <Grid x:Name="MainGrid" Grid.Row="0" Height="220" ext:MouseObserver.Observe="True" ext:MouseObserver.ObservedMouseOver="{Binding IsMouseOver, Mode=OneWayToSource}">
                 <Grid.Effect>
@@ -74,7 +74,7 @@
 
                 <Border Grid.Row="1" Name="TitleMask" Background="{DynamicResource {x:Static adonisUi:Brushes.Layer3HighlightBorderBrush}}" CornerRadius="0,0,6,6" Width="{Binding ElementName=ImgMain, Path=ActualWidth}">
                     <TextBlock Text="{Binding Title}" ToolTip="{Binding Title}" TextWrapping="WrapWithOverflow" TextTrimming="CharacterEllipsis" FontSize="12" FontWeight="Medium"
-                               Margin="0,3,0,0" HorizontalAlignment="Center"/>
+                               Margin="0,3,0,0" HorizontalAlignment="Center" Foreground="{DynamicResource {x:Static adonisUi:Brushes.ForegroundBrush}}"/>
                 </Border>
 
             </Grid>
@@ -84,8 +84,9 @@
 
 
             <StackPanel Grid.Row="1" HorizontalAlignment="Center" Margin="0,3,0,0" Visibility="{Binding IsMouseOver, Converter={StaticResource BoolToVisibilityConverter}}">
-                <TextBlock Text="{Binding LastPlayedString}"/>
-                <TextBlock Text="{Binding TotalTimeString}"/>
+                <TextBlock Text="{Binding LastPlayedString}" Foreground="{DynamicResource {x:Static adonisUi:Brushes.ForegroundBrush}}"/>
+                <TextBlock Text="{Binding TotalTimeString}" Foreground="{DynamicResource {x:Static adonisUi:Brushes.ForegroundBrush}}"/>
+                <Separator Background="Transparent" Margin="0,15,0,0"></Separator>
             </StackPanel>
         </Grid>
 
