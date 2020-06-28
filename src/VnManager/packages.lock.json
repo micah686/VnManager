@@ -4,11 +4,11 @@
     ".NETCoreApp,Version=v3.1": {
       "AdonisUI.ClassicTheme": {
         "type": "Direct",
-        "requested": "[1.15.0, )",
-        "resolved": "1.15.0",
-        "contentHash": "z/7aNwFXK6Lpg6rA8Jn35tYQuWFnQRTPBK8U4ilQ6dmN72vj+xIuZZu3UyJP54qidlWkmx1q/tHKjzzWeWjz/w==",
+        "requested": "[1.16.0, )",
+        "resolved": "1.16.0",
+        "contentHash": "vx1oqFXO2HrFAUtU5UXvY/FkaEhY146EHktQiPCHuxObwslCVX+/jBMY+vmROzEpp5/Tv7R9hYAE1oS8CjdTsw==",
         "dependencies": {
-          "AdonisUI": "1.15.0"
+          "AdonisUI": "1.16.0"
         }
       },
       "AdysTech.CredentialManager": {
@@ -46,9 +46,9 @@
       },
       "MvvmDialogs": {
         "type": "Direct",
-        "requested": "[7.0.0, )",
-        "resolved": "7.0.0",
-        "contentHash": "x7QKRibJZ7FPoKyMIsTHda+Oi2wCFLtOHF/WDfE4j0XCzD8URtuza078M2vBGWyio5cWX9rX2qaq7B6Ah+a6PQ=="
+        "requested": "[7.1.0, )",
+        "resolved": "7.1.0",
+        "contentHash": "TK71KrN7SaV1ZGquZxZGGN5JnQLfQwrH7VorF+FTfI8GJ7ZEczXqC6mH/R4pv9Wig+qhqFEvrD8dzGPJ+PjQ0w=="
       },
       "PropertyChanged.Fody": {
         "type": "Direct",
@@ -80,26 +80,26 @@
       },
       "Stylet": {
         "type": "Direct",
-        "requested": "[1.3.2, )",
-        "resolved": "1.3.2",
-        "contentHash": "LlME5eWBxwlH3gnllxGH/gnQgn/o9pwulArYiNt9eRRAMyUqI8uKwgexPohD6VjcolAh4KtdWKPostS7Y+vPrA==",
+        "requested": "[1.3.3, )",
+        "resolved": "1.3.3",
+        "contentHash": "XPofWt6eT6xCtERwupWqLmP8Vwk2TdivRrwg/xbE6uSPCvmFCX1hRu1zQIo+wxa0m6qhvz/567xhxgfEFv6Yyw==",
         "dependencies": {
           "System.Drawing.Common": "4.6.0"
         }
       },
       "System.IO.Abstractions.TestingHelpers": {
         "type": "Direct",
-        "requested": "[11.0.7, )",
-        "resolved": "11.0.7",
-        "contentHash": "3RLDM8AdsAHiHLcTIXxyZ7kg5ltjY0Jifjsry5LIkZ5IRayAQJXmOJ81vB1rPnT75LNCllDtiIBbfJlP07RYhw==",
+        "requested": "[12.0.2, )",
+        "resolved": "12.0.2",
+        "contentHash": "48xPDx7t14tSKs4q9zp63KQY6UFnBYvvGkvWXkByySpTmjjyoPnsFCM7hrarpkMWbRMY/InNJFvSbxh3vUWo6g==",
         "dependencies": {
-          "System.IO.Abstractions": "11.0.7"
+          "System.IO.Abstractions": "12.0.2"
         }
       },
       "AdonisUI": {
         "type": "Transitive",
-        "resolved": "1.15.0",
-        "contentHash": "CguKjfoiAM3S+lS0N7wdJkVFLLm5/EcNY5XmqxLCNFtRXzRcqi4o2k4JPg78vcLnGRWyW1Uyhc43A+T532k9ng==",
+        "resolved": "1.16.0",
+        "contentHash": "FJdHAyIqAHA8JDqev4qUHVGFcgly/EydaTtBwACNl4B73k2WAy18CTGn4NDnokpprI9eTtWrQaLkdGUWcLyVCQ==",
         "dependencies": {
           "System.Drawing.Common": "4.6.0"
         }
@@ -591,8 +591,8 @@
       },
       "System.IO.Abstractions": {
         "type": "Transitive",
-        "resolved": "11.0.7",
-        "contentHash": "Q67kQFcsdw3of9/kNbv303TYU5MNIGiQvYGsDOjgi7+Ii/HABw7E/TUgMOtwCFiwkZTyEvnHj/m7CEe/ybELfg==",
+        "resolved": "12.0.2",
+        "contentHash": "chFbui60DJpCWYJwq0wdynkvWPJosnKPfzUmw+lmiw5GxNmSOxvN/MEPihmbZKgVVqwSrGybLC0VhFtqs1fUjQ==",
         "dependencies": {
           "System.IO.FileSystem.AccessControl": "4.7.0"
         }
