@@ -58,7 +58,6 @@ namespace VnManager.Initializers
         
         private static void CreateFolders()
         {
-            fs.Directory.CreateDirectory(Path.Combine(App.ExecutableDirPath, @"res\icons\countryFlags"));
             //Assets folder ( images, logs,...)
             fs.Directory.CreateDirectory(Path.Combine(App.AssetDirPath, @"sources\vndb\images\cover"));
             fs.Directory.CreateDirectory(Path.Combine(App.AssetDirPath, @"sources\vndb\images\cover"));

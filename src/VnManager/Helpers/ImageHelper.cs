@@ -9,10 +9,13 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media.Imaging;
 using VnManager.MetadataProviders.Vndb;
 using System.Windows.Media;
+using Color = System.Windows.Media.Color;
 using PixelFormat = System.Drawing.Imaging.PixelFormat;
+using Size = System.Drawing.Size;
 
 namespace VnManager.Helpers
 {
@@ -67,6 +70,34 @@ namespace VnManager.Helpers
             return img;
         }
 
+
+        public static BitmapSource GetCoverImage(string path)
+        {
+            try
+            {
+                if (File.Exists(path))
+                {
+                    var fileStream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+                    var img = new BitmapImage();
+                    img.BeginInit();
+                    img.CacheOption = BitmapCacheOption.OnLoad;
+                    img.StreamSource = fileStream;
+                    img.EndInit();
+                    img.Freeze();
+                    fileStream.Dispose();
+                    return img;
+                }
+                else
+                {
+                    return CreateEmptyBitmapImage();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
 
 
         public static async Task DownloadImagesWithThumbnails(List<ScreenShot> imageList, string imageDirectory)
@@ -146,39 +177,33 @@ namespace VnManager.Helpers
         }
 
 
-        //TODO:Method not used yet
-        public static BitmapImage CreateEmptyBitmapImage()
+        public static BitmapSource CreateEmptyBitmapImage()
         {
-            BitmapSource bitmap = BitmapSource.Create(
-                2, 2, 96, 96, PixelFormats.Indexed1, new BitmapPalette(new List<System.Windows.Media.Color> { Colors.Transparent }),
-                new byte[] { 0, 0, 0, 0 }, 1);
-            MemoryStream stream = new MemoryStream();
-            StreamWriter writer = new StreamWriter(stream);
-            writer.Write(bitmap);
-            writer.Flush();
-            stream.Position = 0;
-
-            BitmapImage bitmapImage = new BitmapImage();
-            bitmapImage.BeginInit();
-            bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-            bitmapImage.StreamSource = stream;
-            bitmapImage.EndInit();
-
-            stream.Close();
-            writer.Close();
-            return bitmapImage;
+            try
+            {
+                var bitmapPath = $@"{App.ExecutableDirPath}\Resources\Placeholders\empty_bitmap.png";
+                BitmapSource bs = new BitmapImage(new Uri(bitmapPath));
+                return bs;
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error(ex, "Failed to load empty image");
+                throw;
+            }
         }
+
+        
 
         //TODO: Method not used yet
         public static BitmapSource CreateIcon(string path)
         {
             if (path == null)
             {
-                return BitmapSource.Create(1, 1, 96, 96, PixelFormats.Bgra32, null, new byte[] { 0, 0, 0, 0 }, 4);
+                return CreateEmptyBitmapImage();
             }
             Icon sysIcon = Icon.ExtractAssociatedIcon(path);
             if (sysIcon == null)
-                return BitmapSource.Create(1, 1, 96, 96, PixelFormats.Bgra32, null, new byte[] { 0, 0, 0, 0 }, 4);
+                return CreateEmptyBitmapImage();
             BitmapSource bmpSrc = System.Windows.Interop.Imaging.CreateBitmapSourceFromHIcon(
                 sysIcon.Handle, System.Windows.Int32Rect.Empty,
                 BitmapSizeOptions.FromEmptyOptions());

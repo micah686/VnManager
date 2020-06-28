@@ -21,6 +21,7 @@ using System.Resources;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media.Imaging;
 using AdysTech.CredentialManager;
 using StyletIoC;
 using VndbSharp;
@@ -44,6 +45,22 @@ namespace VnManager.ViewModels.UserControls
         {
             _container = container;
             _windowManager = windowManager;
+        }
+
+        private BitmapSource _testImg;
+
+        public BitmapSource TestImg
+        {
+            get
+            {
+                _testImg = ImageHelper.CreateEmptyBitmapImage();
+                return _testImg;
+            }
+            set
+            {
+                _testImg = value;
+                SetAndNotify(ref _testImg, value);
+            }
         }
 
 
