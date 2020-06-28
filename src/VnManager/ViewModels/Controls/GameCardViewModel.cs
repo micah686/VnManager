@@ -24,10 +24,14 @@ namespace VnManager.ViewModels.Controls
         public bool IsNsfwDisabled { get; set; }
         public bool IsMouseOver { get; set; } = false;
 
+        public Guid UserDataId { get; set; }
+
         public void MouseClick()
         {
             var vm = _container.Get<VndbContentViewModel>();
             RootViewModel.Instance.ActivateItem(vm);
+            vm.SetUserDataId(UserDataId);
+
         }
     }
 }

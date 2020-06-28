@@ -74,7 +74,7 @@ namespace VnManager.ViewModels.UserControls.MainPage
                             Title = game.Title,
                             LastPlayedString = $"Last Played: {TimeDateChanger.GetHumanDate(entry.LastPlayed)}",
                             TotalTimeString = $"Play Time: {TimeDateChanger.GetHumanTime(entry.PlayTime)}",
-
+                            UserDataId = entry.Id
                         };
                         GameCollection.Add(card);
                     }
