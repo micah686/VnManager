@@ -1,9 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Windows.Media.Imaging;
+using AdysTech.CredentialManager;
+using LiteDB;
 using Stylet;
 using StyletIoC;
+using VnManager.Helpers;
+using VnManager.Models.Db.User;
+using VnManager.Models.Db.Vndb.Main;
 
 namespace VnManager.ViewModels.UserControls.MainPage
 {
@@ -22,10 +28,25 @@ namespace VnManager.ViewModels.UserControls.MainPage
                 }
             }
         }
+        internal void SetUserDataId(Guid guid)
+        {
+            UserDataId = guid;
+        }
         #endregion
 
-        private int vnId;
-        public BitmapSource CoverSource { get; set; }
+
+        private int _vnId;
+        public BitmapSource BackgroundImage { get; set; }
+
+        #region Binding Properties
+        public string MainTitle { get; set; }
+        public string JpnTitle { get; set; }
+        public BitmapSource CoverImage { get; set; }
+
+
+        #endregion
+
+
 
         private readonly IContainer _container;
         private readonly IWindowManager _windowManager;
@@ -33,13 +54,28 @@ namespace VnManager.ViewModels.UserControls.MainPage
         {
             _container = container;
             _windowManager = windowManager;
-            LoadImage();
+            
         }
 
-        internal void SetUserDataId(Guid guid)
+        protected override void OnViewLoaded()
         {
-            UserDataId = guid;
+            GetGameId();
+            LoadImage();
+            LoadMainData();
         }
+        private void GetGameId()
+        {
+            var cred = CredentialManager.GetCredentials("VnManager.DbEnc");
+            if (cred == null || cred.UserName.Length < 1) return;
+            using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
+            var dbUserData = db.GetCollection<UserDataGames>("UserData_Games").Query()
+                .Where(x => x.Id == UserDataId).FirstOrDefault();
+            if (dbUserData != null)
+            {
+                _vnId = dbUserData.GameId;
+            }
+        }
+
 
         public void CloseClick()
         {
@@ -52,7 +88,24 @@ namespace VnManager.ViewModels.UserControls.MainPage
             var filePath = $@"{App.AssetDirPath}\sources\vndb\images\screenshots\2002\41869.jpg";
             var uri = new Uri(filePath);
             BitmapSource bs = new BitmapImage(uri);
-            CoverSource = bs;
+            BackgroundImage = bs;
         }
+
+        private void LoadMainData()
+        {
+            if(_vnId ==0)return;
+            var cred = CredentialManager.GetCredentials("VnManager.DbEnc");
+            if (cred == null || cred.UserName.Length < 1) return;
+            using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
+            {
+                var vnInfoEntry = db.GetCollection<VnInfo>("VnInfo").Query().Where(x => x.VnId == _vnId).FirstOrDefault();
+                MainTitle = vnInfoEntry.Title;
+                JpnTitle = vnInfoEntry.Original;
+
+                var coverPath = $@"{App.AssetDirPath}\sources\vndb\images\cover\{Path.GetFileName(vnInfoEntry.ImageLink)}";
+                CoverImage = ImageHelper.GetCoverImage(coverPath);
+            }
+        }
+
     }
 }

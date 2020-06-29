@@ -21,13 +21,16 @@
             </Grid.RowDefinitions>
 
             <Grid Grid.Row="0" ZIndex="1">
-                <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Width="24" Height="24" Margin="0,5,20,0" MouseLeftButtonDown="{s:Action CloseClick}">
-                    <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.Close}" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{DynamicResource {x:Static adonisUi:Brushes.AccentHighlightBrush}}"/>
-
+                <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Width="32" Height="32"  Margin="0,5,20,0" Background="#01FFFFFF" MouseLeftButtonDown="{s:Action CloseClick}">
+                    <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.WindowClose}" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Black" BorderThickness="0">
+                        <iconPacks:PackIconMaterial.Effect>
+                            <DropShadowEffect Color="Crimson" ShadowDepth="0" BlurRadius="7"/>
+                        </iconPacks:PackIconMaterial.Effect>
+                    </iconPacks:PackIconMaterial>
                 </Grid>
             </Grid>
             <Grid Grid.Row="0" ZIndex="0">
-                <Image Source="{Binding CoverSource, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Stretch="UniformToFill">
+                <Image Source="{Binding BackgroundImage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Stretch="UniformToFill">
                     <Image.OpacityMask>
 
                         <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
@@ -41,13 +44,15 @@
                         </LinearGradientBrush>
                     </Image.OpacityMask>
                 </Image>
+
             </Grid>
 
-            <StackPanel Grid.Row="1">
-                <Image  MaxWidth="256" MaxHeight="400" HorizontalAlignment="Left" RenderOptions.BitmapScalingMode="Fant"></Image>
-                <Label Content="Main Title" Margin="0,5,0,0"></Label>
-                <Label Content="Jpn Title" Margin="0,5,0,0"></Label>
-            </StackPanel>
+            <Grid Grid.Row="1" ZIndex="5">
+                <Image  MaxWidth="256" MaxHeight="400" HorizontalAlignment="Left" RenderOptions.BitmapScalingMode="Fant" Source="{Binding CoverImage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                
+                <Label Content="{Binding MainTitle}" Margin="0,5,0,0"></Label>
+                <Label Content="{Binding JpnTitle}" Margin="0,5,0,0"></Label>
+            </Grid>
 
             <!--End Content -->
         </Grid>
