@@ -157,6 +157,12 @@ namespace VnManager.ViewModels.UserControls
             _windowManager.ShowMessageBox("THis is a test message", "Title Here", MessageBoxButton.OKCancel, MessageBoxImage.Asterisk);
         }
 
+        public void ExportImport()
+        {
+            var vm = _container.Get<ImportExportDataViewModel>();
+            _windowManager.ShowDialog(vm);
+        }
+
         public void CauseException()
         {
             RaiseException(13, 0, 0, new IntPtr(1));

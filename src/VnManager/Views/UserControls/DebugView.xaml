@@ -29,6 +29,7 @@
             <Button Content="Test Password Entry" Command="{s:Action TestPasswordEntry}"/>
             <Button Content="Test Statusbar" Command="{s:Action TestStatusBar}"/>
             <Button Content="Test Encryption" Command="{s:Action TestEncryption}"/>
+            <Button Content="Export/Import" Command="{s:Action ExportImport}"/>
             <Image Source="{Binding TestImg, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="32" Height="32"></Image>
         </StackPanel>
 

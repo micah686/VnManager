@@ -21,6 +21,7 @@ namespace VnManager.Models.Db.User
         /// Used for various metadata game Ids, like vndb's Vndb ID
         /// </summary>
         public int GameId { get; set; }
+        public string GameName { get; set; }
         public DateTime LastPlayed { get; set; }
         public TimeSpan PlayTime { get; set; }
         public string ExePath { get; set; }
