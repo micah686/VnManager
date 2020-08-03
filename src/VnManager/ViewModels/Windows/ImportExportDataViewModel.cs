@@ -236,7 +236,34 @@ namespace VnManager.ViewModels.Windows
 
             RuleFor(x => x.Arguments).Cascade(CascadeMode.StopOnFirstFailure).ArgsValidation();
 
+            RuleFor(x => x.Id).Cascade(CascadeMode.StopOnFirstFailure)
+                .Must(IsValidGuid).WithMessage("Not a valid GUID")
+                .Must(IsNotDuplicateGuid).WithMessage("This ID already exists in the database");
 
+
+
+        }
+
+        public bool IsValidGuid(Guid guid)
+        {
+            Guid x;
+            bool isValid = Guid.TryParse(guid.ToString(), out x);
+            if (isValid && guid.Equals(Guid.Empty))
+            {
+                isValid = false;
+            }
+            return isValid;
+        }
+
+        public bool IsNotDuplicateGuid(Guid id)
+        {
+            var cred = CredentialManager.GetCredentials("VnManager.DbEnc");
+            if (cred == null || cred.UserName.Length < 1) return false;
+            using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
+            {
+                var dbUserData = db.GetCollection<UserDataGames>("UserData_Games").Query().Select(x => x.Id).ToList();
+                return !dbUserData.Contains(id);
+            }
         }
     }
 }
