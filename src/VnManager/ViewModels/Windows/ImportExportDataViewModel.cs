@@ -4,7 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using AdysTech.CredentialManager;
+using FluentValidation;
 using LiteDB;
 using MvvmDialogs;
 using MvvmDialogs.FrameworkDialogs.FolderBrowser;
@@ -12,7 +14,9 @@ using MvvmDialogs.FrameworkDialogs.OpenFile;
 using MvvmDialogs.FrameworkDialogs.SaveFile;
 using Stylet;
 using StyletIoC;
+using VnManager.Helpers;
 using VnManager.Models.Db.User;
+using VnManager.ViewModels.Dialogs.AddGameSources;
 
 namespace VnManager.ViewModels.Windows
 {
@@ -25,7 +29,7 @@ namespace VnManager.ViewModels.Windows
         private readonly IDialogService _dialogService;
         private readonly IContainer _container;
         private readonly IWindowManager _windowManager;
-        public ImportExportDataViewModel(IContainer container, IWindowManager windowManager, IDialogService dialogService)
+        public ImportExportDataViewModel(IContainer container, IWindowManager windowManager, IDialogService dialogService, IModelValidator<ImportExportDataViewModel> validator):base(validator)
         {
             _container = container;
             _windowManager = windowManager;
@@ -82,7 +86,47 @@ namespace VnManager.ViewModels.Windows
             }
         }
 
-        public void ImportData()
+
+        public void FillDatabaseWithDupe()
+        {
+            string savePath = string.Empty;
+            var settings = new FolderBrowserDialogSettings()
+            {
+                Description = "Choose a location to export the user data"
+            };
+            bool? result = _dialogService.ShowFolderBrowserDialog(this, settings);
+            if (result == true)
+            {
+                savePath = settings.SelectedPath;
+            }
+
+            var fileName = $@"{savePath}\VnManager_Export_{DateTime.UtcNow:yyyy-MMMM-dd}.db";
+            using (var exportDatabase = new LiteDatabase(fileName))
+            {
+                var exportUserData = exportDatabase.GetCollection<UserDataGames>("UserData_Games");
+                for (int i = 0; i < 7; i++)
+                {
+                    var userdata = new UserDataGames()
+                    {
+                        Id = Guid.NewGuid(),
+                        GameId = i,
+                        GameName = $"Game{i}",
+                        SourceType = AddGameMainViewModel.AddGameSourceType.NotSet,
+                        LastPlayed = DateTime.MinValue,
+                        PlayTime = TimeSpan.MinValue,
+                        Categories = null,
+                        ExePath = @"C:\Users\Micah\Downloads\vs_Community.exe",
+                        IconPath = String.Empty,
+                        Arguments = "-quiet"
+                    };
+                    exportUserData.Insert(userdata);
+                }
+                _windowManager.ShowMessageBox($"User Data exported to: \n{fileName}", "User Data exported");
+
+            }
+        }
+
+        public void BrowseImportDump()
         {
             string filename = "VnManager_Export_YYYY-Month-DD.db";
             var settings = new OpenFileDialogSettings
@@ -101,13 +145,38 @@ namespace VnManager.ViewModels.Windows
             {
                 //IconPath = settings.FileName;
                 var filepath = settings.FileName;
-                using (var db = new LiteDatabase($"{filepath}"))
+                //using (var db = new LiteDatabase($"{filepath}"))
+                //{
+                //    IEnumerable<UserDataGames> dbUserData = db.GetCollection<UserDataGames>("UserData_Games").FindAll();
+                //    UserDataGamesCollection.AddRange(dbUserData);
+                //    IsDataGridEnabled = true;
+                //}
+                LoadDatabase(filepath);
+
+            }
+        }
+
+        private void LoadDatabase(string filePath)
+        {
+            using (var db = new LiteDatabase($"{filePath}"))
+            {
+                IEnumerable<UserDataGames> dbUserData =
+                    db.GetCollection<UserDataGames>("UserData_Games").FindAll().ToArray();
+                var addList = new List<UserDataGames>();
+                var validator = new ImportUserDataValidator();
+                foreach (var item in dbUserData)
                 {
-                    IEnumerable<UserDataGames> dbUserData = db.GetCollection<UserDataGames>("UserData_Games").FindAll();
-                    UserDataGamesCollection.AddRange(dbUserData);
-                    IsDataGridEnabled = true;
+                    var result = validator.Validate(item);
+                    foreach (var error in result.Errors)
+                    {
+                        item.SetError(error.PropertyName, error.ErrorMessage);
+                    }
+                    addList.Add(item);
                 }
 
+
+                UserDataGamesCollection.AddRange(addList);
+                IsDataGridEnabled = true;
             }
         }
 
@@ -118,6 +187,53 @@ namespace VnManager.ViewModels.Windows
 
         public void BrowseIcon()
         {
+
+        }
+
+        public void ImportData()
+        {
+            //var validator = new ImportExportDataViewModelValidator();
+            //var result = validator.Validate(this);
+            //Validate();
+
+            //foreach (var model in UserDataGamesCollection)
+            //{
+            //    var validator = new ImportExportDataViewModelValidator();
+            //    var result = validator.Validate(model);
+            //}
+
+            var validator = new ImportUserDataValidator();
+            foreach (var item in UserDataGamesCollection)
+            {
+                var result = validator.Validate(item);
+                foreach (var error in result.Errors)
+                {
+                    item.SetError(error.PropertyName, error.ErrorMessage);
+                }
+                
+            }
+        }
+    }
+
+    public class ImportExportDataViewModelValidator : AbstractValidator<ImportExportDataViewModel>
+    {
+        public ImportExportDataViewModelValidator()
+        {
+            //RuleForEach(x => x.UserDataGamesCollection).SetValidator(new ImportUserDataValidator());
+            RuleFor(x => x.UserDataGamesCollection[9].ExePath)
+                .NotEmpty().WithMessage("empty")
+                .NotEqual("BAD").WithMessage("bad value");
+        }
+    }
+
+    public class ImportUserDataValidator : AbstractValidator<UserDataGames>
+    {
+        public ImportUserDataValidator()
+        {
+            RuleFor(x => x.ExePath).Cascade(CascadeMode.StopOnFirstFailure)
+                .NotEmpty().WithMessage(App.ResMan.GetString("ValidationExePathEmpty"))
+                .Must(ValidateFiles.EndsWithExe).WithMessage(App.ResMan.GetString("ValidationExePathNotValid"))
+                .Must(ValidateFiles.ValidateExe).WithMessage(App.ResMan.GetString("ValidationExeNotValid"));
 
         }
     }

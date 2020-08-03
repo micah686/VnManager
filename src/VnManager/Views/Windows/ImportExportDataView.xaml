@@ -16,6 +16,7 @@
             <TabItem Header="Export Data">
                 <StackPanel Margin="15">
                     <Button Width="100"  HorizontalAlignment="Center" Content="Export Data" Command="{s:Action ExportData}"/>
+                    <Button Width="150"  HorizontalAlignment="Center" Content="Fill and Export UserData" Command="{s:Action FillDatabaseWithDupe}"/>
                 </StackPanel>
             </TabItem>
             <TabItem Header="Import Data">
@@ -31,42 +32,25 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <Label Grid.Column="0" Content="Browse for database dump:"/>
-                        <Button Grid.Column="1" Content="Browse" HorizontalAlignment="Left" Margin="5,0,0,0" Width="70" VerticalAlignment="Top" Command="{s:Action ImportData}"/>
+                        <Button Grid.Column="1" Content="Browse" HorizontalAlignment="Left" Margin="5,0,0,0" Width="70" VerticalAlignment="Top" Command="{s:Action BrowseImportDump}"/>
                     </Grid>
                     <Grid Grid.Row="1">
                         <DataGrid ItemsSource="{Binding UserDataGamesCollection, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False"
                                   CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False" CanUserSortColumns="False"
                                   IsEnabled="{Binding IsDataGridEnabled}">
+                            <DataGrid.Resources>
+                            </DataGrid.Resources>
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="Name" Binding="{Binding GameName}" IsReadOnly="True"></DataGridTextColumn>
-                                <DataGridTextColumn Header="Exe Path" Binding="{Binding ExePath}" IsReadOnly="True"></DataGridTextColumn>
-                                <DataGridTemplateColumn Header="Choose Exe">
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <Button Content="Browse" Command="{s:Action BrowseExe}"/>
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
-                                <DataGridTextColumn Header="IconPath" Binding="{Binding IconPath}" IsReadOnly="True"></DataGridTextColumn>
-                                <DataGridTemplateColumn Header="Choose Icon">
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <Button Content="Browse" Command="{s:Action BrowseIcon}"/>
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
-                                <DataGridTextColumn Header="Arguments" Binding="{Binding Arguments}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="DSName" Binding="{Binding ExePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
+                                <DataGridTextColumn Header="Description" Binding="{Binding GameId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True, StringFormat='\{0:D\}'}"/>
+                                <DataGridTextColumn Header="DBType" Binding="{Binding GameName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
 
-                                <DataGridTextColumn Header="Source Type" Binding="{Binding SourceType}" IsReadOnly="True"></DataGridTextColumn>
-                                <DataGridTextColumn Header="Last Played" Binding="{Binding LastPlayed}" IsReadOnly="True"></DataGridTextColumn>
-                                <DataGridTextColumn Header="PlayTime" Binding="{Binding PlayTime}"  IsReadOnly="True"></DataGridTextColumn>
-                                <DataGridTextColumn Header="Categories" Binding="{Binding Categories}" IsReadOnly="True"></DataGridTextColumn>
                             </DataGrid.Columns>
                         </DataGrid>
 
                     </Grid>
                     <Grid Grid.Row="2">
-                        <Button Width="150" Height="30" Content="Import Into Database"></Button>
+                        <Button Width="150" Height="30" Content="Import Into Database" Command="{s:Action ImportData}"></Button>
                     </Grid>
 
 

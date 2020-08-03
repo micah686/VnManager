@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Text;
 using LiteDB;
+using VnManager.Extensions;
+using VnManager.Helpers;
 using VnManager.ViewModels.Dialogs.AddGameSources;
 using VnManager.ViewModels.Windows;
 
 namespace VnManager.Models.Db.User
 {
-    public class UserDataGames
+    public class UserDataGames: ValidationBase
     {
         [BsonId]
         public int Index { get; set; }
@@ -20,7 +22,7 @@ namespace VnManager.Models.Db.User
         /// <summary>
         /// Used for various metadata game Ids, like vndb's Vndb ID
         /// </summary>
-        public int GameId { get; set; }
+        public Stringable<int> GameId { get; set; }
         public string GameName { get; set; }
         public DateTime LastPlayed { get; set; }
         public TimeSpan PlayTime { get; set; }
