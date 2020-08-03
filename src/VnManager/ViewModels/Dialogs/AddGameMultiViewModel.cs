@@ -152,25 +152,20 @@ namespace VnManager.ViewModels.Dialogs
     {
         public AddGameMultiViewModelValidator()
         {
-            RuleFor(x => x.ExePath).Cascade(CascadeMode.StopOnFirstFailure)
-               .NotEmpty().Unless(x => x.ShowValidationErrors == false).WithMessage(App.ResMan.GetString("ValidationExePathEmpty"))
-               .Must(ValidateFiles.EndsWithExe).Unless(x => x.ShowValidationErrors == false).WithMessage(App.ResMan.GetString("ValidationExePathNotValid"))
-               .Must(ValidateFiles.ValidateExe).Unless(x => x.ShowValidationErrors == false).WithMessage(App.ResMan.GetString("ValidationExeNotValid"));
-                        
+            RuleFor(x => x.ExePath).Cascade(CascadeMode.StopOnFirstFailure).ExeValidation()
+                .Unless(x => x.ShowValidationErrors == false);
+
             When(x => x.IsIconChecked == true, () =>
             {
-                RuleFor(x => x.IconPath).Cascade(CascadeMode.StopOnFirstFailure)
-                    .NotEmpty().Unless(x => x.ShowValidationErrors == false && x.HideIconError == true).WithMessage(App.ResMan.GetString("ValidationIconPathEmpty"))
-                    .Must(ValidateFiles.EndsWithIcoOrExe).Unless(x => x.ShowValidationErrors == false).WithMessage(App.ResMan.GetString("ValidationIconPathNotValid"));
-
+                RuleFor(x => x.IconPath).Cascade(CascadeMode.StopOnFirstFailure).IcoValidation()
+                    .Unless(x => x.ShowValidationErrors == false && x.HideIconError == true);
             });
 
             When(x => x.IsArgsChecked == true, () =>
-              {                  
-                  RuleFor(x => x.ExeArguments).Cascade(CascadeMode.StopOnFirstFailure)
-                    .NotEmpty().Unless(x => x.ShowValidationErrors == false && x.HideArgumentsError == true).WithMessage(App.ResMan.GetString("ValidationArgumentsEmpty"))
-                    .Must(ContainsIllegalCharacters).Unless(x => x.ShowValidationErrors == false).WithMessage(App.ResMan.GetString("ValidationArgumentsIllegalChars"));
-              });
+            {
+                RuleFor(x => x.ExeArguments).Cascade(CascadeMode.StopOnFirstFailure).ArgsValidation()
+                    .Unless(x => x.ShowValidationErrors == false && x.HideArgumentsError == true);
+            });
                         
         }
 

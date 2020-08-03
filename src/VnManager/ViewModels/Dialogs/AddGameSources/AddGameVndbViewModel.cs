@@ -354,18 +354,13 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
 
 
             //Exe Path Validation
-            RuleFor(x => x.ExePath).Cascade(CascadeMode.StopOnFirstFailure)
-                .NotEmpty().WithMessage(App.ResMan.GetString("ValidationExePathEmpty"))
-                .Must(ValidateFiles.EndsWithExe).WithMessage(App.ResMan.GetString("ValidationExePathNotValid"))
-                .Must(ValidateFiles.ValidateExe).WithMessage(App.ResMan.GetString("ValidationExeNotValid"))
+            RuleFor(x => x.ExePath).Cascade(CascadeMode.StopOnFirstFailure).ExeValidation()
                 .Must(IsNotDuplicateExe).WithMessage(App.ResMan.GetString("ExeAlreadyExistsInDb"));
-
+            
             //Icon
             When(x => x.IsIconChecked == true, () =>
             {
-                RuleFor(x => x.IconPath).Cascade(CascadeMode.StopOnFirstFailure)
-                    .NotEmpty().WithMessage(App.ResMan.GetString("ValidationIconPathEmpty"))
-                    .Must(ValidateFiles.EndsWithIcoOrExe).WithMessage(App.ResMan.GetString("ValidationIconPathNotValid"));
+                RuleFor(x => x.IconPath).Cascade(CascadeMode.StopOnFirstFailure).IcoValidation();
             });
 
 
@@ -373,9 +368,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             //Arguments
             When(x => x.IsArgsChecked == true, () =>
             {
-                RuleFor(x => x.ExeArguments).Cascade(CascadeMode.StopOnFirstFailure)
-                    .NotEmpty().WithMessage(App.ResMan.GetString("ValidationArgumentsEmpty"))
-                    .Must(AddGameMultiViewModelValidator.ContainsIllegalCharacters).WithMessage(App.ResMan.GetString("ValidationArgumentsIllegalChars"));
+                RuleFor(x => x.ExeArguments).Cascade(CascadeMode.StopOnFirstFailure).ArgsValidation();
             });
 
         }

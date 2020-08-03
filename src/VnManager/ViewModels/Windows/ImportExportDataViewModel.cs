@@ -230,10 +230,12 @@ namespace VnManager.ViewModels.Windows
     {
         public ImportUserDataValidator()
         {
-            RuleFor(x => x.ExePath).Cascade(CascadeMode.StopOnFirstFailure)
-                .NotEmpty().WithMessage(App.ResMan.GetString("ValidationExePathEmpty"))
-                .Must(ValidateFiles.EndsWithExe).WithMessage(App.ResMan.GetString("ValidationExePathNotValid"))
-                .Must(ValidateFiles.ValidateExe).WithMessage(App.ResMan.GetString("ValidationExeNotValid"));
+            RuleFor(x => x.ExePath).Cascade(CascadeMode.StopOnFirstFailure).ExeValidation();
+
+            RuleFor(x => x.IconPath).Cascade(CascadeMode.StopOnFirstFailure).IcoValidation();
+
+            RuleFor(x => x.Arguments).Cascade(CascadeMode.StopOnFirstFailure).ArgsValidation();
+
 
         }
     }
