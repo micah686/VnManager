@@ -13,8 +13,8 @@ namespace VnManager.Models.Db.User
     {
         [BsonId]
         public int Index { get; set; }
-        public AddGameMainViewModel.AddGameSourceType SourceType { get; set; }
-        public AddGameMainViewModel.ExeTypeEnum ExeType { get; set; }
+        public AddGameSourceType SourceType { get; set; }
+        public ExeTypeEnum ExeType { get; set; }
         /// <summary>
         /// Used for a unique value per entry
         /// </summary>

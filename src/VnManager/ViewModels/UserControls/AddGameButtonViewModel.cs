@@ -35,10 +35,10 @@ namespace VnManager.ViewModels.UserControls
             //MUST add the views as singleton providers in Bootstrapper, otherwise the values will be empty
             switch (parent.SelectedSourceEnum)
             {
-                case AddGameMainViewModel.AddGameSourceType.NoSource:
+                case AddGameSourceType.NoSource:
                     AddNoSourceGame();
                     break;
-                case AddGameMainViewModel.AddGameSourceType.Vndb:
+                case AddGameSourceType.Vndb:
                     await AddVndbGame();
                     break;
                 default:
@@ -53,8 +53,8 @@ namespace VnManager.ViewModels.UserControls
             if (vmAddGame == null) return;
 
             var gameEntry = new AddItemDbModel();
-            gameEntry.SourceType = AddGameMainViewModel.AddGameSourceType.NoSource;
-            gameEntry.ExeType = AddGameMainViewModel.ExeTypeEnum.Normal;
+            gameEntry.SourceType = AddGameSourceType.NoSource;
+            gameEntry.ExeType = ExeTypeEnum.Normal;
             gameEntry.IsCollectionEnabled = false;
             gameEntry.ExeCollection = null;
             gameEntry.GameId = 0;
@@ -74,9 +74,9 @@ namespace VnManager.ViewModels.UserControls
             if (vmAddGame == null) return;
 
             var gameEntry = new AddItemDbModel();
-            gameEntry.SourceType = AddGameMainViewModel.AddGameSourceType.Vndb;
+            gameEntry.SourceType = AddGameSourceType.Vndb;
             gameEntry.ExeType = vmAddGame.ExeType;
-            gameEntry.IsCollectionEnabled = vmAddGame.ExeType == AddGameMainViewModel.ExeTypeEnum.Collection;
+            gameEntry.IsCollectionEnabled = vmAddGame.ExeType == ExeTypeEnum.Collection;
             gameEntry.ExeCollection = null;
             gameEntry.GameId = vmAddGame.VnId;
             gameEntry.ExePath = vmAddGame.ExePath;

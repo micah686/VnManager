@@ -61,7 +61,7 @@ namespace VnManager.ViewModels.UserControls.MainPage
 
                 foreach (var entry in dbUserData)
                 {
-                    if (entry.SourceType == AddGameMainViewModel.AddGameSourceType.Vndb)
+                    if (entry.SourceType == AddGameSourceType.Vndb)
                     {
                         var game = dbVnInfo.FirstOrDefault(x => x.VnId == entry.GameId);
                         if(game== null)continue;

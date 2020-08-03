@@ -150,7 +150,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
             {
                 var dbUserData = db.GetCollection<UserDataGames>("UserData_Games").Query()
-                    .Where(x => x.SourceType == AddGameMainViewModel.AddGameSourceType.NoSource).ToEnumerable();
+                    .Where(x => x.SourceType == AddGameSourceType.NoSource).ToEnumerable();
                 var count = dbUserData.Count(x => x.ExePath == exePath);
                 return count <= 0;
             }

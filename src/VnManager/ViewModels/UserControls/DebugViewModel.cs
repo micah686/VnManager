@@ -95,8 +95,8 @@ namespace VnManager.ViewModels.UserControls
             {
                 var dbUserData = db.GetCollection<UserDataGames>("UserData_Games");
                 var entry = new UserDataGames();
-                entry.SourceType = AddGameMainViewModel.AddGameSourceType.Vndb;
-                entry.ExeType = AddGameMainViewModel.ExeTypeEnum.Launcher;
+                entry.SourceType = AddGameSourceType.Vndb;
+                entry.ExeType = ExeTypeEnum.Launcher;
                 entry.Id = Guid.NewGuid();
                 entry.GameId = new Random().Next();
                 entry.LastPlayed = DateTime.UtcNow;

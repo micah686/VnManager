@@ -111,7 +111,7 @@ namespace VnManager.ViewModels.Windows
                         Id = Guid.NewGuid(),
                         GameId = i,
                         GameName = $"Game{i}",
-                        SourceType = AddGameMainViewModel.AddGameSourceType.NotSet,
+                        SourceType = AddGameSourceType.NotSet,
                         LastPlayed = DateTime.MinValue,
                         PlayTime = TimeSpan.MinValue,
                         Categories = null,

@@ -9,8 +9,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
 {
     public class AddGameMainViewModel: Conductor<Screen>
     {
-        public enum AddGameSourceType { NotSet, NoSource, Vndb }
-        public enum ExeTypeEnum { Normal, Launcher, Collection }
+        
         //public AddGameSourceType SourceType { get; set; } = AddGameSourceType.Vndb;
 
         public int SelectedIndex { get; set; }
@@ -50,4 +49,6 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             }
         }
     }
+    public enum AddGameSourceType { NotSet, NoSource, Vndb }
+    public enum ExeTypeEnum { Normal, Launcher, Collection }
 }

@@ -9,8 +9,8 @@ namespace VnManager.Models
 {
     public class AddItemDbModel
     {
-        public AddGameMainViewModel.AddGameSourceType SourceType { get; set; }
-        public AddGameMainViewModel.ExeTypeEnum ExeType { get; set; }
+        public AddGameSourceType SourceType { get; set; }
+        public ExeTypeEnum ExeType { get; set; }
         public bool IsCollectionEnabled { get; set; }
         public  List<MultiExeGamePaths> ExeCollection { get; set; }
         public int GameId { get; set; }
