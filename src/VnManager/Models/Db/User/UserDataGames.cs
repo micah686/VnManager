@@ -13,8 +13,6 @@ namespace VnManager.Models.Db.User
     {
         [BsonId]
         public int Index { get; set; }
-        public AddGameSourceType SourceType { get; set; }
-        public ExeTypeEnum ExeType { get; set; }
         /// <summary>
         /// Used for a unique value per entry
         /// </summary>
@@ -24,6 +22,8 @@ namespace VnManager.Models.Db.User
         /// </summary>
         public Stringable<int> GameId { get; set; }
         public string GameName { get; set; }
+        public AddGameSourceType SourceType { get; set; }
+        public ExeTypeEnum ExeType { get; set; }
         public DateTime LastPlayed { get; set; }
         public TimeSpan PlayTime { get; set; }
         public string ExePath { get; set; }

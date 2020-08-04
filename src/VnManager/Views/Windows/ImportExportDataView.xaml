@@ -44,6 +44,7 @@
                                 <DataGridTextColumn Header="DSName" Binding="{Binding ExePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
                                 <DataGridTextColumn Header="Description" Binding="{Binding GameId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True, StringFormat='\{0:D\}'}"/>
                                 <DataGridTextColumn Header="DBType" Binding="{Binding GameName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
+                                <DataGridTextColumn Header="ST" Binding="{Binding SourceType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
 
                             </DataGrid.Columns>
                         </DataGrid>

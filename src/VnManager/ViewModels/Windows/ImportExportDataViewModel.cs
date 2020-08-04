@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -213,6 +214,7 @@ namespace VnManager.ViewModels.Windows
                 
             }
         }
+
     }
 
     public class ImportExportDataViewModelValidator : AbstractValidator<ImportExportDataViewModel>
@@ -230,15 +232,29 @@ namespace VnManager.ViewModels.Windows
     {
         public ImportUserDataValidator()
         {
+            RuleFor(x => x.Id).Cascade(CascadeMode.StopOnFirstFailure)
+                .Must(IsValidGuid).WithMessage("Not a valid GUID")
+                .Must(IsNotDuplicateGuid).WithMessage("This ID already exists in the database");
+
+            RuleFor(x => x.GameId).Cascade(CascadeMode.StopOnFirstFailure)
+                .Must(ValidateInteger).WithMessage("Not a valid integer");
+
+            RuleFor(x => x.SourceType).Must((x, y) => IsDefinedInEnum(x.SourceType, y.GetType()))
+                .WithMessage("Not valid SourceType");
+
+            RuleFor(x => x.ExeType).Must((x, y) => IsDefinedInEnum(x.ExeType, y.GetType()))
+                .WithMessage("Not valid ExeType");
+
+            RuleFor(x => x.LastPlayed).Must(IsValidDateTime).WithMessage("not valid datetime");
+
+
             RuleFor(x => x.ExePath).Cascade(CascadeMode.StopOnFirstFailure).ExeValidation();
 
             RuleFor(x => x.IconPath).Cascade(CascadeMode.StopOnFirstFailure).IcoValidation();
 
             RuleFor(x => x.Arguments).Cascade(CascadeMode.StopOnFirstFailure).ArgsValidation();
 
-            RuleFor(x => x.Id).Cascade(CascadeMode.StopOnFirstFailure)
-                .Must(IsValidGuid).WithMessage("Not a valid GUID")
-                .Must(IsNotDuplicateGuid).WithMessage("This ID already exists in the database");
+            
 
 
 
@@ -246,8 +262,7 @@ namespace VnManager.ViewModels.Windows
 
         public bool IsValidGuid(Guid guid)
         {
-            Guid x;
-            bool isValid = Guid.TryParse(guid.ToString(), out x);
+            bool isValid = Guid.TryParse(guid.ToString(), out _);
             if (isValid && guid.Equals(Guid.Empty))
             {
                 isValid = false;
@@ -265,5 +280,28 @@ namespace VnManager.ViewModels.Windows
                 return !dbUserData.Contains(id);
             }
         }
+
+        internal bool ValidateInteger(Stringable<int> id)
+        {
+            var result = int.TryParse(id.StringValue, out _);
+            return result;
+        }
+
+
+        public  bool IsDefinedInEnum(Enum value, Type enumType)
+        {
+            if (value.GetType() != enumType)
+                return false;
+
+            return Enum.IsDefined(enumType, value);
+        }
+
+        private bool IsValidDateTime(DateTime dateTime)
+        {
+            var result = DateTime.TryParse(dateTime.ToString(CultureInfo.InvariantCulture), out _);
+            return result;
+        }
     }
+
+
 }
