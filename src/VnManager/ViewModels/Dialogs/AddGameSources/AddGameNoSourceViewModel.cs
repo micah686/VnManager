@@ -145,7 +145,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
 
         private bool IsNotDuplicateExe(string exePath)
         {
-            var cred = CredentialManager.GetCredentials("VnManager.DbEnc");
+            var cred = CredentialManager.GetCredentials(App.CredDb);
             if (cred == null || cred.UserName.Length < 1) return false;
             using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
             {

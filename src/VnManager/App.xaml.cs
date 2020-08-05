@@ -132,5 +132,14 @@ namespace VnManager
 
         public static StatusBarViewModel StatusBar { get; set; }
 
+        /// <summary>
+        /// Credential name for the database encryption
+        /// </summary>
+        public  const string CredDb = "VnManager.DbEnc";
+        /// <summary>
+        /// Credential name for the file encryption
+        /// </summary>
+        public const string CredFile = "VnManager.FileEnc";
+
     }
 }

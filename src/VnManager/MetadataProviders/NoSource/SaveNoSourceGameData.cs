@@ -18,7 +18,7 @@ namespace VnManager.MetadataProviders.NoSource
             App.StatusBar.IsWorking = true;
             App.StatusBar.StatusString = App.ResMan.GetString("WritingToDb");
             App.StatusBar.IsDatabaseProcessing = true;
-            var cred = CredentialManager.GetCredentials("VnManager.DbEnc");
+            var cred = CredentialManager.GetCredentials(App.CredDb);
             if (cred == null || cred.UserName.Length < 1) return;
             using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
             {

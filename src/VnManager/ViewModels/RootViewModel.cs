@@ -106,7 +106,7 @@ namespace VnManager.ViewModels
             if (!IsNormalStart())
             {
                 //remove any previous credentials
-                string[] credStrings = new[] { "VnManager.DbEnc", "VnManager.FileEnc" };
+                string[] credStrings = new[] { App.CredDb, App.CredFile };
                 foreach (var cred in credStrings)
                 {
                     var value = CredentialManager.GetCredentials(cred);
@@ -151,7 +151,7 @@ namespace VnManager.ViewModels
             var configFile = Path.Combine(App.ConfigDirPath, @"config\config.json");
             if (!File.Exists(configFile)) return false;
             if (!UserSettingsHelper.ValidateConfigFile()) return false;
-            if (CredentialManager.GetCredentials("VnManager.DbEnc") == null) return false;
+            if (CredentialManager.GetCredentials(App.CredDb) == null) return false;
             App.UserSettings = UserSettingsHelper.ReadUserSettings();
             var useEncryption = App.UserSettings.EncryptionEnabled;
             return !useEncryption;

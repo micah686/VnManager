@@ -21,7 +21,6 @@
             <TabItem Header="{x:Static res:Resources.ExportData}">
                 <StackPanel Margin="15">
                     <Button Width="100"  HorizontalAlignment="Center" Content="{x:Static res:Resources.ExportData}" Command="{s:Action ExportData}"/>
-                    <Button Width="150"  HorizontalAlignment="Center" Content="Fill and Export UserData" Command="{s:Action FillDatabaseWithDupe}"/>
                 </StackPanel>
             </TabItem>
             <TabItem Header="{x:Static res:Resources.ImportData}">

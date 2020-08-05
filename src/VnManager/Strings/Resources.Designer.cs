@@ -1105,6 +1105,15 @@ namespace VnManager.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Validation Failed. Please fix any errors and try again.
+        /// </summary>
+        public static string ValidationFailedRecheck {
+            get {
+                return ResourceManager.GetString("ValidationFailedRecheck", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Icon Path cannot be empty.
         /// </summary>
         public static string ValidationIconPathEmpty {

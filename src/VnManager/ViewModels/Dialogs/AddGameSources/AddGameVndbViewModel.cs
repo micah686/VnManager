@@ -432,7 +432,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             //if type is normal and game id in db or exe in db
             try
             {
-                var cred = CredentialManager.GetCredentials("VnManager.DbEnc");
+                var cred = CredentialManager.GetCredentials(App.CredDb);
                 if (cred == null || cred.UserName.Length < 1) return false;
                 using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
                 {
@@ -470,7 +470,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
         {
             try
             {
-                var cred = CredentialManager.GetCredentials("VnManager.DbEnc");
+                var cred = CredentialManager.GetCredentials(App.CredDb);
                 if (cred == null || cred.UserName.Length < 1) return false;
                 using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
                 {

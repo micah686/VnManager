@@ -465,6 +465,9 @@
   <data name="ValidationExePathNotValid" xml:space="preserve">
     <value>Not a valid path to exe</value>
   </data>
+  <data name="ValidationFailedRecheck" xml:space="preserve">
+    <value>Validation Failed. Please fix any errors and try again</value>
+  </data>
   <data name="ValidationIconPathEmpty" xml:space="preserve">
     <value>Icon Path cannot be empty</value>
   </data>

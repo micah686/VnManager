@@ -59,7 +59,7 @@ namespace VnManager.ViewModels.Windows
             {
                 IsCreatePasswordVisible = false; //sets form to unlock mode
                 Title = App.ResMan.GetString("UnlockDbTitle");
-                if (CredentialManager.GetCredentials("VnManager.DbEnc") == null)
+                if (CredentialManager.GetCredentials(App.CredDb) == null)
                 {
                     File.Delete(Path.Combine(App.ConfigDirPath, @"config\config.json"));
                     Environment.Exit(0);
@@ -84,7 +84,7 @@ namespace VnManager.ViewModels.Windows
                     string username = $"{hashStruct.Hash}|{hashStruct.Salt}";
                     
                     var cred = new NetworkCredential(username, ConfirmPassword);
-                    CredentialManager.SaveCredentials("VnManager.DbEnc", cred);
+                    CredentialManager.SaveCredentials(App.CredDb, cred);
 
                     using var db = new LiteDatabase($"Filename={Path.Combine(App.ConfigDirPath, @"database\Data.db")};Password={cred.Password}") { };
 
@@ -120,7 +120,7 @@ namespace VnManager.ViewModels.Windows
                     string username = $"{hashStruct.Hash}|{hashStruct.Salt}";
 
                     var cred = new NetworkCredential(username, password);
-                    CredentialManager.SaveCredentials("VnManager.DbEnc", cred);
+                    CredentialManager.SaveCredentials(App.CredDb, cred);
 
                     using var db = new LiteDatabase($"Filename={Path.Combine(App.ConfigDirPath, @"database\Data.db")};Password={cred.Password}") { };
 
@@ -219,10 +219,10 @@ namespace VnManager.ViewModels.Windows
                 App.UserSettings = UserSettingsHelper.ReadUserSettings();
             }
 
-            if (CredentialManager.GetCredentials("VnManager.FileEnc") == null)
+            if (CredentialManager.GetCredentials(App.CredFile) == null)
             {
                 var cred = new NetworkCredential(Convert.ToBase64String(Secure.GenerateRandomSalt()), Secure.GenerateSecurePassword(64,16));
-                CredentialManager.SaveCredentials("VnManager.FileEnc", cred);
+                CredentialManager.SaveCredentials(App.CredFile, cred);
             }
 
 
@@ -258,7 +258,7 @@ namespace VnManager.ViewModels.Windows
 
         private bool DoPasswordsMatch(SetEnterPasswordViewModel instance, SecureString confirmPass)
         {
-            var cred = CredentialManager.GetCredentials("VnManager.DbEnc");
+            var cred = CredentialManager.GetCredentials(App.CredDb);
             if (cred == null|| cred.UserName.Length <1) return false;
             var split = cred.UserName.Split('|');
             var hashSalt = new  Secure.PassHash()
@@ -275,7 +275,7 @@ namespace VnManager.ViewModels.Windows
         {
             try
             {
-                var cred = CredentialManager.GetCredentials("VnManager.DbEnc");
+                var cred = CredentialManager.GetCredentials(App.CredDb);
                 if (cred == null || cred.UserName.Length < 1) return false;
                 using var db = new LiteDatabase($"Filename={Path.Combine(App.ConfigDirPath, @"database\Data.db")};Password={cred.Password}");
                 return true;
@@ -299,7 +299,7 @@ namespace VnManager.ViewModels.Windows
         {
             try
             {
-                var cred = CredentialManager.GetCredentials("VnManager.DbEnc");
+                var cred = CredentialManager.GetCredentials(App.CredDb);
                 if (cred == null || cred.UserName.Length < 1) return App.ResMan.GetString("PasswordNoEmpty");
                 using var db = new LiteDatabase($"Filename={Path.Combine(App.ConfigDirPath, @"database\Data.db")};Password={cred.Password}");
                 return String.Empty;

@@ -47,7 +47,7 @@ namespace VnManager.Helpers
             try
             {
                 //get encryption key and salt
-                var cred = CredentialManager.GetCredentials("VnManager.FileEnc");
+                var cred = CredentialManager.GetCredentials(App.CredFile);
                 if (cred == null) return new byte[0];
                 byte[] passwordBytes = Encoding.UTF8.GetBytes(cred.Password);
                 byte[] salt = Convert.FromBase64String(cred.UserName);
@@ -83,7 +83,7 @@ namespace VnManager.Helpers
         {
             try
             {
-                var cred = CredentialManager.GetCredentials("VnManager.FileEnc");
+                var cred = CredentialManager.GetCredentials(App.CredFile);
                 if (cred == null) return new byte[0];
                 byte[] passwordBytes = Encoding.UTF8.GetBytes(cred.Password);
                 byte[] salt = Convert.FromBase64String(cred.UserName);

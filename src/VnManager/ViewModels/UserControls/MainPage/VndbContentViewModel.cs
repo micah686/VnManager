@@ -65,7 +65,7 @@ namespace VnManager.ViewModels.UserControls.MainPage
         }
         private void GetGameId()
         {
-            var cred = CredentialManager.GetCredentials("VnManager.DbEnc");
+            var cred = CredentialManager.GetCredentials(App.CredDb);
             if (cred == null || cred.UserName.Length < 1) return;
             using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
             var dbUserData = db.GetCollection<UserDataGames>("UserData_Games").Query()
@@ -94,7 +94,7 @@ namespace VnManager.ViewModels.UserControls.MainPage
         private void LoadMainData()
         {
             if(_vnId ==0)return;
-            var cred = CredentialManager.GetCredentials("VnManager.DbEnc");
+            var cred = CredentialManager.GetCredentials(App.CredDb);
             if (cred == null || cred.UserName.Length < 1) return;
             using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
             {

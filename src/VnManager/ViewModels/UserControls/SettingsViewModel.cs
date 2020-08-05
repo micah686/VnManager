@@ -177,7 +177,7 @@ namespace VnManager.ViewModels.UserControls
         public void DeleteNsfwImages()
         {
             //Use CheckWriteAccess to see if you can delete from the images
-            var cred = CredentialManager.GetCredentials("VnManager.DbEnc");
+            var cred = CredentialManager.GetCredentials(App.CredDb);
             if (cred == null || cred.UserName.Length < 1) return;
             using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
             {
@@ -266,8 +266,8 @@ namespace VnManager.ViewModels.UserControls
                         Directory.Delete(App.AssetDirPath, true);
                         Directory.Delete(App.ConfigDirPath, true);
                     }
-                    CredentialManager.RemoveCredentials("VnManager.DbEnc");
-                    CredentialManager.RemoveCredentials("VnManager.FileEnc");
+                    CredentialManager.RemoveCredentials(App.CredDb);
+                    CredentialManager.RemoveCredentials(App.CredFile);
                     Environment.Exit(0);
                     break;
                 }

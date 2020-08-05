@@ -54,7 +54,7 @@ namespace VnManager.ViewModels.Windows
                 return;
             }
             var fileName = $@"{savePath}\VnManager_Export_{DateTime.UtcNow:yyyy-MMMM-dd}.db";
-            var cred = CredentialManager.GetCredentials("VnManager.DbEnc");
+            var cred = CredentialManager.GetCredentials(App.CredDb);
             if (cred == null || cred.UserName.Length < 1) return;
             using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
             {
@@ -89,41 +89,6 @@ namespace VnManager.ViewModels.Windows
         }
 
 
-        public void FillDatabaseWithDupe()
-        {
-            string savePath = string.Empty;
-            var settings = new FolderBrowserDialogSettings();
-            bool? result = _dialogService.ShowFolderBrowserDialog(this, settings);
-            if (result == true)
-            {
-                savePath = settings.SelectedPath;
-            }
-
-            var fileName = $@"{savePath}\VnManager_Export_{DateTime.UtcNow:yyyy-MMMM-dd}.db";
-            using (var exportDatabase = new LiteDatabase(fileName))
-            {
-                var exportUserData = exportDatabase.GetCollection<UserDataGames>("UserData_Games");
-                for (int i = 0; i < 7; i++)
-                {
-                    var userdata = new UserDataGames()
-                    {
-                        Id = Guid.NewGuid(),
-                        GameId = i,
-                        GameName = $"Game{i}",
-                        SourceType = AddGameSourceType.NotSet,
-                        LastPlayed = DateTime.MinValue,
-                        PlayTime = TimeSpan.MinValue,
-                        Categories = null,
-                        ExePath = @"C:\Users\Micah\Downloads\vs_Community.exe",
-                        IconPath = String.Empty,
-                        Arguments = "-quiet"
-                    };
-                    exportUserData.Insert(userdata);
-                }
-                _windowManager.ShowMessageBox($"{App.ResMan.GetString("UserDataExportedPath")}\n{fileName}", $"{App.ResMan.GetString("UserDataExportedTitle")}");
-
-            }
-        }
 
         public void BrowseImportDump()
         {
@@ -248,7 +213,7 @@ namespace VnManager.ViewModels.Windows
 
             if (errorCount > 0)
             {
-                _windowManager.ShowMessageBox("Validation Failed. Please check the entries and try again");
+                _windowManager.ShowMessageBox($"{App.ResMan.GetString("ValidationFailedRecheck")}");
             }
             else
             {
@@ -303,7 +268,8 @@ namespace VnManager.ViewModels.Windows
 
             RuleFor(x => x.Arguments).Cascade(CascadeMode.StopOnFirstFailure).ArgsValidation();
 
-
+            RuleForEach(x => x.Categories).Must(ValidationHelpers.ContainsIllegalCharacters)
+                .WithMessage(App.ResMan.GetString("ValidationArgumentsIllegalChars"));
 
         }
 
@@ -319,7 +285,7 @@ namespace VnManager.ViewModels.Windows
 
         private bool IsNotDuplicateGuid(Guid id)
         {
-            var cred = CredentialManager.GetCredentials("VnManager.DbEnc");
+            var cred = CredentialManager.GetCredentials(App.CredDb);
             if (cred == null || cred.UserName.Length < 1) return false;
             using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
             {

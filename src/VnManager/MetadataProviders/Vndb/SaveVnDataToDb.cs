@@ -72,7 +72,7 @@ namespace VnManager.MetadataProviders.Vndb
             if (visualNovel == null) return;
             try
             {
-                var cred = CredentialManager.GetCredentials("VnManager.DbEnc");
+                var cred = CredentialManager.GetCredentials(App.CredDb);
                 if (cred == null || cred.UserName.Length < 1) return;
                 using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
                 {
@@ -269,7 +269,7 @@ namespace VnManager.MetadataProviders.Vndb
         public void SaveVnCharacters(List<Character> characters, uint vnid)
         {
             if (characters.Count < 1) return;
-            var cred = CredentialManager.GetCredentials("VnManager.DbEnc");
+            var cred = CredentialManager.GetCredentials(App.CredDb);
             if (cred == null || cred.UserName.Length < 1) return;
             using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
             {
@@ -414,7 +414,7 @@ namespace VnManager.MetadataProviders.Vndb
         #region VnReleases
         public void SaveVnReleases(List<Release> vnReleases)
         {
-            var cred = CredentialManager.GetCredentials("VnManager.DbEnc");
+            var cred = CredentialManager.GetCredentials(App.CredDb);
             if (cred == null || cred.UserName.Length < 1) return;
             using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
             {
@@ -535,7 +535,7 @@ namespace VnManager.MetadataProviders.Vndb
         #region VnProducers
         public void SaveProducers(List<Producer> vnProducers)
         {
-            var cred = CredentialManager.GetCredentials("VnManager.DbEnc");
+            var cred = CredentialManager.GetCredentials(App.CredDb);
             if (cred == null || cred.UserName.Length < 1) return;
             using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
             {
@@ -600,7 +600,7 @@ namespace VnManager.MetadataProviders.Vndb
         #region VnStaff
         public void SaveStaff(List<Staff> vnStaffList, int vnid)
         {
-            var cred = CredentialManager.GetCredentials("VnManager.DbEnc");
+            var cred = CredentialManager.GetCredentials(App.CredDb);
             if (cred == null || cred.UserName.Length < 1) return;
             using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
             {
@@ -715,7 +715,7 @@ namespace VnManager.MetadataProviders.Vndb
 
         private void SaveUserData(AddItemDbModel data)
         {
-            var cred = CredentialManager.GetCredentials("VnManager.DbEnc");
+            var cred = CredentialManager.GetCredentials(App.CredDb);
             if (cred == null || cred.UserName.Length < 1) return;
             using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
             {
@@ -763,7 +763,7 @@ namespace VnManager.MetadataProviders.Vndb
             try
             {
                 App.StatusBar.InfoText = App.ResMan.GetString("DownCoverImage");
-                var cred = CredentialManager.GetCredentials("VnManager.DbEnc");
+                var cred = CredentialManager.GetCredentials(App.CredDb);
                 if (cred == null || cred.UserName.Length < 1) return;
                 using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
                 VnInfo entry = db.GetCollection<VnInfo>("VnInfo").Query().Where(x => x.VnId == vnId).FirstOrDefault();
@@ -791,7 +791,7 @@ namespace VnManager.MetadataProviders.Vndb
             try
             {
                 App.StatusBar.InfoText = App.ResMan.GetString("DownCharImages");
-                var cred = CredentialManager.GetCredentials("VnManager.DbEnc");
+                var cred = CredentialManager.GetCredentials(App.CredDb);
                 if (cred == null || cred.UserName.Length < 1) return;
                 using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
                 var entries = db.GetCollection<VnCharacterInfo>("VnCharacter").Query().Where(x => x.VnId == vnId)
@@ -829,7 +829,7 @@ namespace VnManager.MetadataProviders.Vndb
             try
             {
                 App.StatusBar.InfoText = App.ResMan.GetString("DownScreenshots");
-                var cred = CredentialManager.GetCredentials("VnManager.DbEnc");
+                var cred = CredentialManager.GetCredentials(App.CredDb);
                 if (cred == null || cred.UserName.Length < 1) return;
                 using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
                 {
@@ -869,7 +869,7 @@ namespace VnManager.MetadataProviders.Vndb
         {
             try
             {
-                var cred = CredentialManager.GetCredentials("VnManager.DbEnc");
+                var cred = CredentialManager.GetCredentials(App.CredDb);
                 if (cred == null || cred.UserName.Length < 1) return;
                 using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
                 {
@@ -922,7 +922,7 @@ namespace VnManager.MetadataProviders.Vndb
         {
             try
             {
-                var cred = CredentialManager.GetCredentials("VnManager.DbEnc");
+                var cred = CredentialManager.GetCredentials(App.CredDb);
                 if (cred == null || cred.UserName.Length < 1) return;
                 using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
                 {
