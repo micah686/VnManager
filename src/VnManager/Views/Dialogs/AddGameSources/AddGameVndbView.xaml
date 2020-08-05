@@ -98,7 +98,7 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0" Text="{x:Static res:Resources.ExeType}"/>
+            <TextBlock Grid.Column="0" Text="{x:Static res:Resources.ExeTypeColon}"/>
             <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="5,0,0,0">
                 <RadioButton Content="{x:Static res:Resources.Normal}" Margin="5,0,0,0" IsChecked="{Binding ExeType, Mode=TwoWay, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Normal}"/>
                 <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.HelpCircleOutline}" Margin="3,1,0,0" Height="14" Width="14" ToolTip="{x:Static res:Resources.AddGameNormalTooltip}"/>
@@ -186,7 +186,7 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="{x:Static res:Resources.Arguments}" Width="70" Margin="0,2,0,0" IsEnabled="False"/>
+            <TextBlock Text="{x:Static res:Resources.ArgsColon}" Width="70" Margin="0,2,0,0" IsEnabled="False"/>
             <TextBox Grid.Column="1"  Width="350" MaxLength="300" Text="{Binding ExeArguments, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                              IsEnabled="{Binding IsNotExeCollection}"/>
 

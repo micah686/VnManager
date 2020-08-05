@@ -124,6 +124,15 @@ namespace VnManager.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Applications.
+        /// </summary>
+        public static string Applications {
+            get {
+                return ResourceManager.GetString("Applications", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to VnManager.
         /// </summary>
         public static string ApplicationTitle {
@@ -134,6 +143,15 @@ namespace VnManager.Strings {
         
         /// <summary>
         ///   Looks up a localized string similar to Arguments:.
+        /// </summary>
+        public static string ArgsColon {
+            get {
+                return ResourceManager.GetString("ArgsColon", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Arguments.
         /// </summary>
         public static string Arguments {
             get {
@@ -151,11 +169,65 @@ namespace VnManager.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Browse for Database Dump.
+        /// </summary>
+        public static string BrowseDbDump {
+            get {
+                return ResourceManager.GetString("BrowseDbDump", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Browse Exe.
+        /// </summary>
+        public static string BrowseExe {
+            get {
+                return ResourceManager.GetString("BrowseExe", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Browse for Game.
+        /// </summary>
+        public static string BrowseForGame {
+            get {
+                return ResourceManager.GetString("BrowseForGame", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Browse for Game Icon.
+        /// </summary>
+        public static string BrowseForIcon {
+            get {
+                return ResourceManager.GetString("BrowseForIcon", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Browse Icon.
+        /// </summary>
+        public static string BrowseIcon {
+            get {
+                return ResourceManager.GetString("BrowseIcon", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cancel.
         /// </summary>
         public static string Cancel {
             get {
                 return ResourceManager.GetString("Cancel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Categories.
+        /// </summary>
+        public static string Categories {
+            get {
+                return ResourceManager.GetString("Categories", resourceCulture);
             }
         }
         
@@ -210,6 +282,15 @@ namespace VnManager.Strings {
         public static string DarkTheme {
             get {
                 return ResourceManager.GetString("DarkTheme", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Database Dump.
+        /// </summary>
+        public static string DbDump {
+            get {
+                return ResourceManager.GetString("DbDump", resourceCulture);
             }
         }
         
@@ -448,11 +529,29 @@ namespace VnManager.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ExeType:.
+        ///   Looks up a localized string similar to ExeType.
         /// </summary>
         public static string ExeType {
             get {
                 return ResourceManager.GetString("ExeType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ExeType:.
+        /// </summary>
+        public static string ExeTypeColon {
+            get {
+                return ResourceManager.GetString("ExeTypeColon", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export Data.
+        /// </summary>
+        public static string ExportData {
+            get {
+                return ResourceManager.GetString("ExportData", resourceCulture);
             }
         }
         
@@ -471,6 +570,24 @@ namespace VnManager.Strings {
         public static string FirstSetupRequirePass {
             get {
                 return ResourceManager.GetString("FirstSetupRequirePass", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Game Id.
+        /// </summary>
+        public static string GameId {
+            get {
+                return ResourceManager.GetString("GameId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Game Name.
+        /// </summary>
+        public static string GameName {
+            get {
+                return ResourceManager.GetString("GameName", resourceCulture);
             }
         }
         
@@ -502,11 +619,65 @@ namespace VnManager.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Icons.
+        /// </summary>
+        public static string Icons {
+            get {
+                return ResourceManager.GetString("Icons", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Id.
         /// </summary>
         public static string Id {
             get {
                 return ResourceManager.GetString("Id", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Import Data.
+        /// </summary>
+        public static string ImportData {
+            get {
+                return ResourceManager.GetString("ImportData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Import/Export User Data.
+        /// </summary>
+        public static string ImportDataTitle {
+            get {
+                return ResourceManager.GetString("ImportDataTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The database is invalid/corrupted..
+        /// </summary>
+        public static string ImportInvalidDb {
+            get {
+                return ResourceManager.GetString("ImportInvalidDb", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid database.
+        /// </summary>
+        public static string ImportInvalidDbTitle {
+            get {
+                return ResourceManager.GetString("ImportInvalidDbTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last Played.
+        /// </summary>
+        public static string LastPlayed {
+            get {
+                return ResourceManager.GetString("LastPlayed", resourceCulture);
             }
         }
         
@@ -655,6 +826,15 @@ namespace VnManager.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to PlayTime.
+        /// </summary>
+        public static string PlayTime {
+            get {
+                return ResourceManager.GetString("PlayTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ready.
         /// </summary>
         public static string Ready {
@@ -772,6 +952,15 @@ namespace VnManager.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Source Type.
+        /// </summary>
+        public static string SourceType {
+            get {
+                return ResourceManager.GetString("SourceType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Submit.
         /// </summary>
         public static string Submit {
@@ -799,6 +988,24 @@ namespace VnManager.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to User Data exported to:.
+        /// </summary>
+        public static string UserDataExportedPath {
+            get {
+                return ResourceManager.GetString("UserDataExportedPath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User Data exported.
+        /// </summary>
+        public static string UserDataExportedTitle {
+            get {
+                return ResourceManager.GetString("UserDataExportedTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Arguments cannot be empty.
         /// </summary>
         public static string ValidationArgumentsEmpty {
@@ -813,6 +1020,60 @@ namespace VnManager.Strings {
         public static string ValidationArgumentsIllegalChars {
             get {
                 return ResourceManager.GetString("ValidationArgumentsIllegalChars", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not a valid Exe Type.
+        /// </summary>
+        public static string ValidationBadExeType {
+            get {
+                return ResourceManager.GetString("ValidationBadExeType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not a valid Game ID.
+        /// </summary>
+        public static string ValidationBadGameID {
+            get {
+                return ResourceManager.GetString("ValidationBadGameID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not a valid ID.
+        /// </summary>
+        public static string ValidationBadId {
+            get {
+                return ResourceManager.GetString("ValidationBadId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last Played time is not valid.
+        /// </summary>
+        public static string ValidationBadLastPlayed {
+            get {
+                return ResourceManager.GetString("ValidationBadLastPlayed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Play Time is not valid.
+        /// </summary>
+        public static string ValidationBadPlayTime {
+            get {
+                return ResourceManager.GetString("ValidationBadPlayTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not a valid Source Type.
+        /// </summary>
+        public static string ValidationBadSourceType {
+            get {
+                return ResourceManager.GetString("ValidationBadSourceType", resourceCulture);
             }
         }
         
@@ -858,6 +1119,15 @@ namespace VnManager.Strings {
         public static string ValidationIconPathNotValid {
             get {
                 return ResourceManager.GetString("ValidationIconPathNotValid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This ID already exists in the database.
+        /// </summary>
+        public static string ValidationIdAlreadyExists {
+            get {
+                return ResourceManager.GetString("ValidationIdAlreadyExists", resourceCulture);
             }
         }
         

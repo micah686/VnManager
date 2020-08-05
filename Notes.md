@@ -14,3 +14,7 @@
 		then imports that json back into the LiteDb database
 		
 - See about removing Mvvm Dialogs
+
+- Add toast when starting/stopping game
+- Add recent games to quicklaunch bar
+- minimize to taskbar when game is launched

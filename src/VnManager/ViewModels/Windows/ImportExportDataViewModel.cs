@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using AdysTech.CredentialManager;
 using FluentValidation;
 using LiteDB;
@@ -42,16 +43,16 @@ namespace VnManager.ViewModels.Windows
         {
 
             string savePath = string.Empty;
-            var settings = new FolderBrowserDialogSettings()
-            {
-                Description = "Choose a location to export the user data"
-            };
+            var settings = new FolderBrowserDialogSettings();
             bool? result = _dialogService.ShowFolderBrowserDialog(this, settings);
             if (result == true)
             {
                 savePath = settings.SelectedPath;
             }
-
+            else
+            {
+                return;
+            }
             var fileName = $@"{savePath}\VnManager_Export_{DateTime.UtcNow:yyyy-MMMM-dd}.db";
             var cred = CredentialManager.GetCredentials("VnManager.DbEnc");
             if (cred == null || cred.UserName.Length < 1) return;
@@ -79,7 +80,7 @@ namespace VnManager.ViewModels.Windows
                         .ToList();
 
                     exportUserData.Insert(userDataList);
-                    _windowManager.ShowMessageBox($"User Data exported to: \n{fileName}", "User Data exported");
+                    _windowManager.ShowMessageBox($"{App.ResMan.GetString("UserDataExportedPath")}\n{fileName}", $"{App.ResMan.GetString("UserDataExportedTitle")}");
 
                 }
 
@@ -91,10 +92,7 @@ namespace VnManager.ViewModels.Windows
         public void FillDatabaseWithDupe()
         {
             string savePath = string.Empty;
-            var settings = new FolderBrowserDialogSettings()
-            {
-                Description = "Choose a location to export the user data"
-            };
+            var settings = new FolderBrowserDialogSettings();
             bool? result = _dialogService.ShowFolderBrowserDialog(this, settings);
             if (result == true)
             {
@@ -122,7 +120,7 @@ namespace VnManager.ViewModels.Windows
                     };
                     exportUserData.Insert(userdata);
                 }
-                _windowManager.ShowMessageBox($"User Data exported to: \n{fileName}", "User Data exported");
+                _windowManager.ShowMessageBox($"{App.ResMan.GetString("UserDataExportedPath")}\n{fileName}", $"{App.ResMan.GetString("UserDataExportedTitle")}");
 
             }
         }
@@ -132,9 +130,9 @@ namespace VnManager.ViewModels.Windows
             string filename = "VnManager_Export_YYYY-Month-DD.db";
             var settings = new OpenFileDialogSettings
             {
-                Title = "Browse for Database Dump",
+                Title = $"{App.ResMan.GetString("BrowseDbDump")}",
                 DefaultExt = ".db",
-                Filter = "Database Dump (*.db)|*.db",
+                Filter = $"{App.ResMan.GetString("DbDump")} (*.db)|*.db",
                 FileName = filename,
                 DereferenceLinks = true,
                 CheckPathExists = true,
@@ -144,14 +142,7 @@ namespace VnManager.ViewModels.Windows
             bool? result = _dialogService.ShowOpenFileDialog(this, settings);
             if (result == true)
             {
-                //IconPath = settings.FileName;
                 var filepath = settings.FileName;
-                //using (var db = new LiteDatabase($"{filepath}"))
-                //{
-                //    IEnumerable<UserDataGames> dbUserData = db.GetCollection<UserDataGames>("UserData_Games").FindAll();
-                //    UserDataGamesCollection.AddRange(dbUserData);
-                //    IsDataGridEnabled = true;
-                //}
                 LoadDatabase(filepath);
 
             }
@@ -159,60 +150,115 @@ namespace VnManager.ViewModels.Windows
 
         private void LoadDatabase(string filePath)
         {
-            using (var db = new LiteDatabase($"{filePath}"))
+            try
             {
-                IEnumerable<UserDataGames> dbUserData =
-                    db.GetCollection<UserDataGames>("UserData_Games").FindAll().ToArray();
-                var addList = new List<UserDataGames>();
-                var validator = new ImportUserDataValidator();
-                foreach (var item in dbUserData)
+                using (var db = new LiteDatabase($"{filePath}"))
                 {
-                    var result = validator.Validate(item);
-                    foreach (var error in result.Errors)
+                    IEnumerable<UserDataGames> dbUserData =
+                        db.GetCollection<UserDataGames>("UserData_Games").FindAll().ToArray();
+                    var addList = new List<UserDataGames>();
+                    var validator = new ImportUserDataValidator();
+                    foreach (var item in dbUserData)
                     {
-                        item.SetError(error.PropertyName, error.ErrorMessage);
+                        var result = validator.Validate(item);
+                        foreach (var error in result.Errors)
+                        {
+                            item.SetError(error.PropertyName, error.ErrorMessage);
+                        }
+                        addList.Add(item);
                     }
-                    addList.Add(item);
+
+
+                    UserDataGamesCollection.AddRange(addList);
+                    IsDataGridEnabled = true;
                 }
-
-
-                UserDataGamesCollection.AddRange(addList);
-                IsDataGridEnabled = true;
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Warning(ex, "Failed to load database for import");
+                _windowManager.ShowMessageBox($"{App.ResMan.GetString("ImportInvalidDb")}\n{Path.GetFileName(filePath)}",
+                    $"{App.ResMan.GetString("ImportInvalidDbTitle")}", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
         }
 
-        public void BrowseExe()
+        public void BrowseExe(int idCol)
         {
-
+            if (idCol != -1)
+            {
+                var settings = new OpenFileDialogSettings
+                {
+                    Title = $"{App.ResMan.GetString("BrowseForGame")}",
+                    DefaultExt = ".exe",
+                    Filter = $"{App.ResMan.GetString("Applications")} (*.exe)|*.exe",
+                    FileName = "",
+                    DereferenceLinks = true,
+                    CheckPathExists = true,
+                    CheckFileExists = true,
+                    ValidateNames = true
+                };
+                bool? result = _dialogService.ShowOpenFileDialog(this, settings);
+                if (result == true)
+                {
+                    UserDataGamesCollection[idCol].ExePath = settings.FileName;
+                    UserDataGamesCollection.Refresh();
+                }
+            }
+            
         }
 
-        public void BrowseIcon()
+        public void BrowseIcon(int idCol)
         {
-
+            if (idCol != -1)
+            {
+                var settings = new OpenFileDialogSettings
+                {
+                    Title = $"{App.ResMan.GetString("BrowseForIcon")}",
+                    DefaultExt = ".exe",
+                    Filter = $"{App.ResMan.GetString("Icons")} (*.exe)|*.exe",
+                    FileName = "",
+                    DereferenceLinks = true,
+                    CheckPathExists = true,
+                    CheckFileExists = true,
+                    ValidateNames = true
+                };
+                bool? result = _dialogService.ShowOpenFileDialog(this, settings);
+                if (result == true)
+                {
+                    UserDataGamesCollection[idCol].IconPath = settings.FileName;
+                    UserDataGamesCollection.Refresh();
+                }
+            }
+                
         }
 
-        public void ImportData()
+        public void ValidateData()
         {
-            //var validator = new ImportExportDataViewModelValidator();
-            //var result = validator.Validate(this);
-            //Validate();
-
-            //foreach (var model in UserDataGamesCollection)
-            //{
-            //    var validator = new ImportExportDataViewModelValidator();
-            //    var result = validator.Validate(model);
-            //}
-
+            int errorCount = 0;
             var validator = new ImportUserDataValidator();
             foreach (var item in UserDataGamesCollection)
             {
                 var result = validator.Validate(item);
                 foreach (var error in result.Errors)
                 {
+                    errorCount += 1;
                     item.SetError(error.PropertyName, error.ErrorMessage);
                 }
                 
             }
+
+            if (errorCount > 0)
+            {
+                _windowManager.ShowMessageBox("Validation Failed. Please check the entries and try again");
+            }
+            else
+            {
+                ImportData();
+            }
+        }
+
+        private void ImportData()
+        {
+
         }
 
     }
@@ -233,28 +279,29 @@ namespace VnManager.ViewModels.Windows
         public ImportUserDataValidator()
         {
             RuleFor(x => x.Id).Cascade(CascadeMode.StopOnFirstFailure)
-                .Must(IsValidGuid).WithMessage("Not a valid GUID")
-                .Must(IsNotDuplicateGuid).WithMessage("This ID already exists in the database");
+                .Must(IsValidGuid).WithMessage($"{App.ResMan.GetString("ValidationBadId")}")
+                .Must(IsNotDuplicateGuid).WithMessage($"{App.ResMan.GetString("ValidationIdAlreadyExists")}");
 
             RuleFor(x => x.GameId).Cascade(CascadeMode.StopOnFirstFailure)
-                .Must(ValidateInteger).WithMessage("Not a valid integer");
+                .Must(ValidateInteger).WithMessage($"{App.ResMan.GetString("ValidationBadGameID")}");
 
             RuleFor(x => x.SourceType).Must((x, y) => IsDefinedInEnum(x.SourceType, y.GetType()))
-                .WithMessage("Not valid SourceType");
+                .WithMessage($"{App.ResMan.GetString("ValidationBadSourceType")}");
 
             RuleFor(x => x.ExeType).Must((x, y) => IsDefinedInEnum(x.ExeType, y.GetType()))
-                .WithMessage("Not valid ExeType");
+                .WithMessage($"{App.ResMan.GetString("ValidationBadExeType")}");
 
-            RuleFor(x => x.LastPlayed).Must(IsValidDateTime).WithMessage("not valid datetime");
+            RuleFor(x => x.LastPlayed).Must(ValidateDateTime).WithMessage($"{App.ResMan.GetString("ValidationBadLastPlayed")}");
+
+            RuleFor(x => x.PlayTime).Must(ValidateTimeSpan).WithMessage($"{App.ResMan.GetString("ValidationBadPlayTime")}");
 
 
             RuleFor(x => x.ExePath).Cascade(CascadeMode.StopOnFirstFailure).ExeValidation();
 
-            RuleFor(x => x.IconPath).Cascade(CascadeMode.StopOnFirstFailure).IcoValidation();
+            RuleFor(x => x.IconPath).Cascade(CascadeMode.StopOnFirstFailure).IcoValidation().Unless(x =>
+                string.IsNullOrEmpty(x.IconPath) || string.IsNullOrWhiteSpace(x.IconPath));
 
             RuleFor(x => x.Arguments).Cascade(CascadeMode.StopOnFirstFailure).ArgsValidation();
-
-            
 
 
 
@@ -270,7 +317,7 @@ namespace VnManager.ViewModels.Windows
             return isValid;
         }
 
-        public bool IsNotDuplicateGuid(Guid id)
+        private bool IsNotDuplicateGuid(Guid id)
         {
             var cred = CredentialManager.GetCredentials("VnManager.DbEnc");
             if (cred == null || cred.UserName.Length < 1) return false;
@@ -281,14 +328,14 @@ namespace VnManager.ViewModels.Windows
             }
         }
 
-        internal bool ValidateInteger(Stringable<int> id)
+        private bool ValidateInteger(Stringable<int> id)
         {
             var result = int.TryParse(id.StringValue, out _);
             return result;
         }
 
 
-        public  bool IsDefinedInEnum(Enum value, Type enumType)
+        private  bool IsDefinedInEnum(Enum value, Type enumType)
         {
             if (value.GetType() != enumType)
                 return false;
@@ -296,9 +343,15 @@ namespace VnManager.ViewModels.Windows
             return Enum.IsDefined(enumType, value);
         }
 
-        private bool IsValidDateTime(DateTime dateTime)
+        private bool ValidateDateTime(DateTime dateTime)
         {
             var result = DateTime.TryParse(dateTime.ToString(CultureInfo.InvariantCulture), out _);
+            return result;
+        }
+
+        private bool ValidateTimeSpan(TimeSpan ts)
+        {
+            var result = TimeSpan.TryParse(ts.ToString(), out _);
             return result;
         }
     }

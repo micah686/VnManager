@@ -138,17 +138,41 @@
   <data name="AddGameNormalTooltip" xml:space="preserve">
     <value>A single executable associated with a single ID</value>
   </data>
+  <data name="Applications" xml:space="preserve">
+    <value>Applications</value>
+  </data>
   <data name="ApplicationTitle" xml:space="preserve">
     <value>VnManager</value>
   </data>
-  <data name="Arguments" xml:space="preserve">
+  <data name="ArgsColon" xml:space="preserve">
     <value>Arguments:</value>
+  </data>
+  <data name="Arguments" xml:space="preserve">
+    <value>Arguments</value>
   </data>
   <data name="Browse" xml:space="preserve">
     <value>Browse</value>
   </data>
+  <data name="BrowseDbDump" xml:space="preserve">
+    <value>Browse for Database Dump</value>
+  </data>
+  <data name="BrowseExe" xml:space="preserve">
+    <value>Browse Exe</value>
+  </data>
+  <data name="BrowseForGame" xml:space="preserve">
+    <value>Browse for Game</value>
+  </data>
+  <data name="BrowseForIcon" xml:space="preserve">
+    <value>Browse for Game Icon</value>
+  </data>
+  <data name="BrowseIcon" xml:space="preserve">
+    <value>Browse Icon</value>
+  </data>
   <data name="Cancel" xml:space="preserve">
     <value>Cancel</value>
+  </data>
+  <data name="Categories" xml:space="preserve">
+    <value>Categories</value>
   </data>
   <data name="ChangeNsfwVisibilityMessage" xml:space="preserve">
     <value>Changing the nsfw content visibility may make nsfw images visible to photo viewers. Do you want to continue?</value>
@@ -167,6 +191,9 @@
   </data>
   <data name="DarkTheme" xml:space="preserve">
     <value>Dark Theme</value>
+  </data>
+  <data name="DbDump" xml:space="preserve">
+    <value>Database Dump</value>
   </data>
   <data name="DbIsLockedProc" xml:space="preserve">
     <value>Database is locked by another process</value>
@@ -247,13 +274,25 @@
     <value>Exe Path</value>
   </data>
   <data name="ExeType" xml:space="preserve">
+    <value>ExeType</value>
+  </data>
+  <data name="ExeTypeColon" xml:space="preserve">
     <value>ExeType:</value>
+  </data>
+  <data name="ExportData" xml:space="preserve">
+    <value>Export Data</value>
   </data>
   <data name="FirstSetupPassNoChange" xml:space="preserve">
     <value>The password cannot be changed once it has been set!</value>
   </data>
   <data name="FirstSetupRequirePass" xml:space="preserve">
     <value>Would you like to require a password to use this application?</value>
+  </data>
+  <data name="GameId" xml:space="preserve">
+    <value>Game Id</value>
+  </data>
+  <data name="GameName" xml:space="preserve">
+    <value>Game Name</value>
   </data>
   <data name="Games" xml:space="preserve">
     <value>Games</value>
@@ -264,8 +303,26 @@
   <data name="IconPath" xml:space="preserve">
     <value>Icon Path</value>
   </data>
+  <data name="Icons" xml:space="preserve">
+    <value>Icons</value>
+  </data>
   <data name="Id" xml:space="preserve">
     <value>Id</value>
+  </data>
+  <data name="ImportData" xml:space="preserve">
+    <value>Import Data</value>
+  </data>
+  <data name="ImportDataTitle" xml:space="preserve">
+    <value>Import/Export User Data</value>
+  </data>
+  <data name="ImportInvalidDb" xml:space="preserve">
+    <value>The database is invalid/corrupted.</value>
+  </data>
+  <data name="ImportInvalidDbTitle" xml:space="preserve">
+    <value>Invalid database</value>
+  </data>
+  <data name="LastPlayed" xml:space="preserve">
+    <value>Last Played</value>
   </data>
   <data name="Launcher" xml:space="preserve">
     <value>Launcher</value>
@@ -315,6 +372,9 @@
   <data name="Path" xml:space="preserve">
     <value>Path:</value>
   </data>
+  <data name="PlayTime" xml:space="preserve">
+    <value>PlayTime</value>
+  </data>
   <data name="Ready" xml:space="preserve">
     <value>Ready</value>
   </data>
@@ -354,6 +414,9 @@
   <data name="Source" xml:space="preserve">
     <value>Source:</value>
   </data>
+  <data name="SourceType" xml:space="preserve">
+    <value>Source Type</value>
+  </data>
   <data name="Submit" xml:space="preserve">
     <value>Submit</value>
   </data>
@@ -363,11 +426,35 @@
   <data name="UnlockDbTitle" xml:space="preserve">
     <value>Enter password to unlock the database</value>
   </data>
+  <data name="UserDataExportedPath" xml:space="preserve">
+    <value>User Data exported to:</value>
+  </data>
+  <data name="UserDataExportedTitle" xml:space="preserve">
+    <value>User Data exported</value>
+  </data>
   <data name="ValidationArgumentsEmpty" xml:space="preserve">
     <value>Arguments cannot be empty</value>
   </data>
   <data name="ValidationArgumentsIllegalChars" xml:space="preserve">
     <value>Illegal characters detected</value>
+  </data>
+  <data name="ValidationBadExeType" xml:space="preserve">
+    <value>Not a valid Exe Type</value>
+  </data>
+  <data name="ValidationBadGameID" xml:space="preserve">
+    <value>Not a valid Game ID</value>
+  </data>
+  <data name="ValidationBadId" xml:space="preserve">
+    <value>Not a valid ID</value>
+  </data>
+  <data name="ValidationBadLastPlayed" xml:space="preserve">
+    <value>Last Played time is not valid</value>
+  </data>
+  <data name="ValidationBadPlayTime" xml:space="preserve">
+    <value>Play Time is not valid</value>
+  </data>
+  <data name="ValidationBadSourceType" xml:space="preserve">
+    <value>Not a valid Source Type</value>
   </data>
   <data name="ValidationExeNotValid" xml:space="preserve">
     <value>Not a valid Executable</value>
@@ -383,6 +470,9 @@
   </data>
   <data name="ValidationIconPathNotValid" xml:space="preserve">
     <value>Not a valid path to icon</value>
+  </data>
+  <data name="ValidationIdAlreadyExists" xml:space="preserve">
+    <value>This ID already exists in the database</value>
   </data>
   <data name="ValidationVnIdAboveMax" xml:space="preserve">
     <value>ID entered is above maximum Vndb ID</value>

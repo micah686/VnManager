@@ -8,18 +8,23 @@
         xmlns:controls="clr-namespace:AdonisUI.Controls;assembly=AdonisUI"
         xmlns:mvd="https://github.com/fantasticfiasco/mvvm-dialogs"
         xmlns:adonisExtensions="clr-namespace:AdonisUI.Extensions;assembly=AdonisUI"
+        xmlns:conv="clr-namespace:VnManager.Converters"
+        xmlns:res="clr-namespace:VnManager.Strings"
         mvd:DialogServiceViews.IsRegistered="True"
         mc:Ignorable="d"
-        Title="Import/Export User Data" Height="350" Width="500" ResizeMode="NoResize">
+        Title="{x:Static res:Resources.ImportDataTitle}" Height="350" Width="500" MinHeight="350" MinWidth="500">
+    <controls:AdonisWindow.Resources>
+        <conv:DataGridRowIdConverter x:Key="RowIdConverter"/>
+    </controls:AdonisWindow.Resources>
     <Grid>
         <TabControl>
-            <TabItem Header="Export Data">
+            <TabItem Header="{x:Static res:Resources.ExportData}">
                 <StackPanel Margin="15">
-                    <Button Width="100"  HorizontalAlignment="Center" Content="Export Data" Command="{s:Action ExportData}"/>
+                    <Button Width="100"  HorizontalAlignment="Center" Content="{x:Static res:Resources.ExportData}" Command="{s:Action ExportData}"/>
                     <Button Width="150"  HorizontalAlignment="Center" Content="Fill and Export UserData" Command="{s:Action FillDatabaseWithDupe}"/>
                 </StackPanel>
             </TabItem>
-            <TabItem Header="Import Data">
+            <TabItem Header="{x:Static res:Resources.ImportData}">
                 <Grid Margin="5">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="30"/>
@@ -31,7 +36,7 @@
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <Label Grid.Column="0" Content="Browse for database dump:"/>
+                        <Label Grid.Column="0" Content="{x:Static res:Resources.BrowseDbDump}"/>
                         <Button Grid.Column="1" Content="Browse" HorizontalAlignment="Left" Margin="5,0,0,0" Width="70" VerticalAlignment="Top" Command="{s:Action BrowseImportDump}"/>
                     </Grid>
                     <Grid Grid.Row="1">
@@ -41,17 +46,42 @@
                             <DataGrid.Resources>
                             </DataGrid.Resources>
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="DSName" Binding="{Binding ExePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
-                                <DataGridTextColumn Header="Description" Binding="{Binding GameId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True, StringFormat='\{0:D\}'}"/>
-                                <DataGridTextColumn Header="DBType" Binding="{Binding GameName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
-                                <DataGridTextColumn Header="ST" Binding="{Binding SourceType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
+
+                                <DataGridTextColumn Header="{x:Static res:Resources.GameName}" IsReadOnly="True" Binding="{Binding GameName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
+                                <DataGridTextColumn Header="{x:Static res:Resources.ExePath}" IsReadOnly="True" Binding="{Binding ExePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
+                                <DataGridTemplateColumn Header="Browse Exe">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button Content="{x:Static res:Resources.BrowseExe}" Command="{s:Action BrowseExe}" 
+                                                    CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGridRow}}, Converter={StaticResource RowIdConverter}}"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTextColumn Header="{x:Static res:Resources.IconPath}" IsReadOnly="True" Binding="{Binding IconPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
+                                <DataGridTemplateColumn Header="Browse Icon">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button Content="{x:Static res:Resources.BrowseIcon}" Command="{s:Action BrowseIcon}" 
+                                                    CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGridRow}}, Converter={StaticResource RowIdConverter}}"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTextColumn Header="{x:Static res:Resources.Arguments}" Binding="{Binding Arguments, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
+
+                                <DataGridTextColumn Header="{x:Static res:Resources.Id}" IsReadOnly="True" Binding="{Binding Id, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
+                                <DataGridTextColumn Header="{x:Static res:Resources.GameId}" IsReadOnly="True" Binding="{Binding GameId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
+                                <DataGridTextColumn Header="{x:Static res:Resources.SourceType}" IsReadOnly="True" Binding="{Binding SourceType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
+                                <DataGridTextColumn Header="{x:Static res:Resources.ExeType}" IsReadOnly="True" Binding="{Binding ExeType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
+                                <DataGridTextColumn Header="{x:Static res:Resources.LastPlayed}" IsReadOnly="True" Binding="{Binding LastPlayed, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
+                                <DataGridTextColumn Header="{x:Static res:Resources.PlayTime}" IsReadOnly="True" Binding="{Binding PlayTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
+                                <DataGridTextColumn Header="{x:Static res:Resources.Categories}"  Binding="{Binding Categories, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
 
                             </DataGrid.Columns>
                         </DataGrid>
 
                     </Grid>
                     <Grid Grid.Row="2">
-                        <Button Width="150" Height="30" Content="Import Into Database" Command="{s:Action ImportData}"></Button>
+                        <Button Width="150" Height="30" Content="Import Into Database" Command="{s:Action ValidateData}"></Button>
                     </Grid>
 
 
