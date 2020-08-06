@@ -29,11 +29,9 @@ namespace VnManager.ViewModels.Windows
         
         
         private readonly IDialogService _dialogService;
-        private readonly IContainer _container;
         private readonly IWindowManager _windowManager;
-        public ImportExportDataViewModel(IContainer container, IWindowManager windowManager, IDialogService dialogService, IModelValidator<ImportExportDataViewModel> validator):base(validator)
+        public ImportExportDataViewModel(IWindowManager windowManager, IDialogService dialogService, IModelValidator<ImportExportDataViewModel> validator):base(validator)
         {
-            _container = container;
             _windowManager = windowManager;
             _dialogService = dialogService;
             UserDataGamesCollection = new BindableCollection<UserDataGames>();
@@ -92,13 +90,12 @@ namespace VnManager.ViewModels.Windows
 
         public void BrowseImportDump()
         {
-            string filename = "VnManager_Export_YYYY-Month-DD.db";
             var settings = new OpenFileDialogSettings
             {
                 Title = $"{App.ResMan.GetString("BrowseDbDump")}",
                 DefaultExt = ".db",
                 Filter = $"{App.ResMan.GetString("DbDump")} (*.db)|*.db",
-                FileName = filename,
+                FileName = "VnManager_Export_YYYY-Month-DD.db",
                 DereferenceLinks = true,
                 CheckPathExists = true,
                 CheckFileExists = true,
@@ -223,7 +220,14 @@ namespace VnManager.ViewModels.Windows
 
         private void ImportData()
         {
-
+            var cred = CredentialManager.GetCredentials(App.CredDb);
+            if (cred == null || cred.UserName.Length < 1) return;
+            using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
+            {
+                var dbUserData = db.GetCollection<UserDataGames>("UserData_Games");
+                dbUserData.Insert(UserDataGamesCollection);
+                _windowManager.ShowMessageBox($"{App.ResMan.GetString("UserDataImported")}");
+            }
         }
 
     }

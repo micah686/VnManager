@@ -135,11 +135,11 @@ namespace VnManager
         /// <summary>
         /// Credential name for the database encryption
         /// </summary>
-        public  const string CredDb = "VnManager.DbEnc";
+        internal const string CredDb = "VnManager.DbEnc";
         /// <summary>
         /// Credential name for the file encryption
         /// </summary>
-        public const string CredFile = "VnManager.FileEnc";
+        internal const string CredFile = "VnManager.FileEnc";
 
     }
 }

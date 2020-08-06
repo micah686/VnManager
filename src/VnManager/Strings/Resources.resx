@@ -432,6 +432,9 @@
   <data name="UserDataExportedTitle" xml:space="preserve">
     <value>User Data exported</value>
   </data>
+  <data name="UserDataImported" xml:space="preserve">
+    <value>Userdata has been imported into the database.</value>
+  </data>
   <data name="ValidationArgumentsEmpty" xml:space="preserve">
     <value>Arguments cannot be empty</value>
   </data>

@@ -148,7 +148,7 @@ namespace VnManager.Helpers
         public StringableConverter(Type type)
         {
             if (!type.IsGenericType || type.GetGenericTypeDefinition() != typeof(Stringable<>) || type.GetGenericArguments().Length != 1)
-                throw new ArgumentException("Incompatible type", "type");
+                throw new ArgumentException("Incompatible type", nameof(type));
 
             this.valueType = type;
 

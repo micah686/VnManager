@@ -48,14 +48,6 @@ namespace VnManager.ViewModels.UserControls.MainPage
 
 
 
-        private readonly IContainer _container;
-        private readonly IWindowManager _windowManager;
-        public VndbContentViewModel(IContainer container, IWindowManager windowManager)
-        {
-            _container = container;
-            _windowManager = windowManager;
-            
-        }
 
         protected override void OnViewLoaded()
         {

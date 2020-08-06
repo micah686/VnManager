@@ -11,11 +11,9 @@ namespace VnManager.ViewModels.Controls
     public class GameCardViewModel: Screen
     {
         private readonly IContainer _container;
-        private readonly IWindowManager _windowManager;
-        public GameCardViewModel(IContainer container, IWindowManager windowManager)
+        public GameCardViewModel(IContainer container)
         {
             _container = container;
-            _windowManager = windowManager;
         }
         public BitmapSource CoverImage { get; set; }
         public string LastPlayedString { get; set; }

@@ -7,7 +7,7 @@ using Stylet;
 
 namespace VnManager.ViewModels.Dialogs
 {
-    public class DeleteEverythingViewModel: Screen, IDisposable
+    public class DeleteEverythingViewModel: Screen
     {
         private readonly Timer _timer= new Timer(1500);
         private int _timerHitCount = 0;
@@ -50,9 +50,11 @@ namespace VnManager.ViewModels.Dialogs
                     YesButtonTest = App.ResMan.GetString("Yes");
                     CanPressDelete = true;
                     _timer.Stop();
+                    _timer.Dispose();
                     break;
                 default:
                     _timer.Stop();
+                    _timer.Dispose();
                     break;
             }
         }
@@ -67,9 +69,5 @@ namespace VnManager.ViewModels.Dialogs
             RequestClose(false);
         }
 
-        public void Dispose()
-        {
-            _timer?.Dispose();
-        }
     }
 }

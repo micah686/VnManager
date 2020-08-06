@@ -1006,6 +1006,15 @@ namespace VnManager.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Userdata has been imported into the database..
+        /// </summary>
+        public static string UserDataImported {
+            get {
+                return ResourceManager.GetString("UserDataImported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Arguments cannot be empty.
         /// </summary>
         public static string ValidationArgumentsEmpty {
