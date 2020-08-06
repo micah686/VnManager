@@ -68,7 +68,7 @@ namespace VnManager.ViewModels.UserControls.MainPage
                         var coverPath = $@"{App.AssetDirPath}\sources\vndb\images\cover\{Path.GetFileName(game.ImageLink)}";
                         
 
-                        var card = new GameCardViewModel(_container, _windowManager)
+                        var card = new GameCardViewModel(_container)
                         {
                             CoverImage = ImageHelper.GetCoverImage(coverPath),
                             Title = game.Title,
