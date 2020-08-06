@@ -72,14 +72,14 @@ namespace VnManager.Extensions
         public IEnumerable GetErrors(string propertyName)
         {
             if (String.IsNullOrEmpty(propertyName) ||
-               !_errors.ContainsKey(propertyName)) return null;
+               !_errors.ContainsKey(propertyName)) return Enumerable.Empty<string>();
             return _errors[propertyName];
         }
 
         IEnumerable INotifyDataErrorInfo.GetErrors(string propertyName)
         {
             if (String.IsNullOrEmpty(propertyName) ||
-                !_errors.ContainsKey(propertyName)) return null;
+                !_errors.ContainsKey(propertyName)) return Enumerable.Empty<string>();
             return _errors[propertyName];
         }
 

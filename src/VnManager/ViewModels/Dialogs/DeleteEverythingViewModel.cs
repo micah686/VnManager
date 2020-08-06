@@ -50,11 +50,9 @@ namespace VnManager.ViewModels.Dialogs
                     YesButtonTest = App.ResMan.GetString("Yes");
                     CanPressDelete = true;
                     _timer.Stop();
-                    _timer.Dispose();
                     break;
                 default:
                     _timer.Stop();
-                    _timer.Dispose();
                     break;
             }
         }

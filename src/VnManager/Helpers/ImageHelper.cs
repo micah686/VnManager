@@ -94,7 +94,7 @@ namespace VnManager.Helpers
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                App.Logger.Warning(e, "Failed to get cover image");
                 throw;
             }
         }

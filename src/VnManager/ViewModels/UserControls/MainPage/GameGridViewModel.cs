@@ -23,11 +23,9 @@ namespace VnManager.ViewModels.UserControls.MainPage
         public BindableCollection<GameCardViewModel> GameCollection { get; set; } = new BindableCollection<GameCardViewModel>();
 
         private readonly IContainer _container;
-        private readonly IWindowManager _windowManager;
-        public GameGridViewModel(IContainer container, IWindowManager windowManager)
+        public GameGridViewModel(IContainer container)
         {
             _container = container;
-            _windowManager = windowManager;
             //var rand = new Random();
             //for (int i = 0; i < 30; i++)
             //{

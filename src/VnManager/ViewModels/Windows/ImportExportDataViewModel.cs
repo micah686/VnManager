@@ -17,6 +17,7 @@ using MvvmDialogs.FrameworkDialogs.SaveFile;
 using Stylet;
 using StyletIoC;
 using VnManager.Helpers;
+using VnManager.Helpers.Vndb;
 using VnManager.Models.Db.User;
 using VnManager.ViewModels.Dialogs.AddGameSources;
 
@@ -193,7 +194,7 @@ namespace VnManager.ViewModels.Windows
                 
         }
 
-        public void ValidateData()
+        public async Task ValidateData()
         {
             int errorCount = 0;
             var validator = new ImportUserDataValidator();
@@ -214,11 +215,11 @@ namespace VnManager.ViewModels.Windows
             }
             else
             {
-                ImportData();
+                await ImportData();
             }
         }
 
-        private void ImportData()
+        private async Task ImportData()
         {
             var cred = CredentialManager.GetCredentials(App.CredDb);
             if (cred == null || cred.UserName.Length < 1) return;
@@ -227,6 +228,40 @@ namespace VnManager.ViewModels.Windows
                 var dbUserData = db.GetCollection<UserDataGames>("UserData_Games");
                 dbUserData.Insert(UserDataGamesCollection);
                 _windowManager.ShowMessageBox($"{App.ResMan.GetString("UserDataImported")}");
+                Stringable<int>[] vndbIds = UserDataGamesCollection.Where(x => x.SourceType == AddGameSourceType.Vndb)
+                    .Select(x => x.GameId).ToArray();
+                await UpdateVndbData(vndbIds);
+            }
+        }
+
+        private async Task UpdateVndbData(Stringable<int>[] gameIds)
+        {
+            RequestOptions ro = new RequestOptions { Count = 25 };
+            var getData = new MetadataProviders.Vndb.GetVndbData();
+            var saveData = new MetadataProviders.Vndb.SaveVnDataToDb();
+            using (var client = new VndbSharp.Vndb(true))
+            {
+                foreach (var strId in gameIds)
+                {
+                    var id = (uint)strId.Value;
+                    var visualNovel = await getData.GetVisualNovel(client, id);
+                    var releases = await getData.GetReleases(client, id, ro);
+                    uint[] producerIds = releases.SelectMany(x => x.Producers.Select(y => y.Id)).Distinct().ToArray();
+                    var producers = await getData.GetProducers(client, producerIds, ro);
+                    var characters = await getData.GetCharacters(client, id, ro);
+                    uint[] staffIds = visualNovel.Staff.Select(x => x.StaffId).Distinct().ToArray();
+                    var staff = await getData.GetStaff(client, staffIds, ro);
+
+                    saveData.SaveVnInfo(visualNovel);
+                    saveData.SaveVnCharacters(characters, id);
+                    saveData.SaveVnReleases(releases);
+                    saveData.SaveProducers(producers);
+                    saveData.SaveStaff(staff, (int) id);
+
+                    await saveData.DownloadCoverImage(id);
+                    await saveData.DownloadCharacterImages(id);
+                    await saveData.DownloadScreenshots(id);
+                }
             }
         }
 
