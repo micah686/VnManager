@@ -56,46 +56,73 @@ namespace VnManager.Helpers
             }
             else
             {
-                string days = string.Empty;
-                if (timeSpan.Duration().Days > 0)
-                {
-                    days = $"{timeSpan.Days} day";
-                    if (timeSpan.Days != 1)
-                    {
-                        days += "s";
-                    }
-                    days += ", ";
-                }
+                string days = GetHumanDays(timeSpan);
+                string hours = GetHumanHours(timeSpan);
+                string minutes = GetHumanMinutes(timeSpan);
+                string weeks = GetHumanWeeks(timeSpan);
 
-
-                string hours = string.Empty;
-                if (timeSpan.Duration().Hours > 0)
-                {
-                    hours = $"{timeSpan.Hours} hour";
-                    if (timeSpan.Hours != 1)
-                    {
-                        hours += "s";
-                    }
-
-                    hours += ", ";
-                }
-
-                string minutes = string.Empty;
-                if (timeSpan.Duration().Minutes > 0)
-                {
-                    minutes = $"{timeSpan.Minutes} minute";
-                    if (timeSpan.Minutes != 1)
-                    {
-                        minutes = minutes + "s";
-                    }
-
-                    minutes += " ";
-                }
-
-                output = $"{days}{hours}{minutes}";
+                output = $"{weeks}{days}{hours}{minutes}";
             }
 
             return output;
         }
+
+        private static string GetHumanWeeks(TimeSpan timeSpan)
+        {
+            string weeks = string.Empty;
+            var weekCount = (timeSpan.Days - (timeSpan.Days % 7)) / 7;
+            if (weekCount <= 0) return weeks;
+            weeks = $"{weekCount} week";
+            if (weekCount != 1)
+            {
+                weeks += "s";
+            }
+            weeks += ", ";
+            return weeks;
+        }
+
+        private static string GetHumanDays(TimeSpan timeSpan)
+        {
+            string days = string.Empty;
+            var dayCount = timeSpan.Days % 7;
+            if (dayCount <= 0) return days;
+            days = $"{dayCount} day";
+            if (dayCount != 1)
+            {
+                days += "s";
+            }
+            days += ", ";
+            return days;
+        }
+
+        private static string GetHumanHours(TimeSpan timeSpan)
+        {
+            string hours = string.Empty;
+            if (timeSpan.Duration().Hours <= 0) return hours;
+            hours = $"{timeSpan.Hours} hour";
+            if (timeSpan.Hours != 1)
+            {
+                hours += "s";
+            }
+
+            hours += ", ";
+            return hours;
+        }
+
+        private static string GetHumanMinutes(TimeSpan timeSpan)
+        {
+            string minutes = string.Empty;
+            if (timeSpan.Duration().Minutes <= 0) return minutes;
+            minutes = $"{timeSpan.Minutes} minute";
+            if (timeSpan.Minutes != 1)
+            {
+                minutes = minutes + "s";
+            }
+
+            minutes += " ";
+            return minutes;
+        }
+
+        
     }
 }

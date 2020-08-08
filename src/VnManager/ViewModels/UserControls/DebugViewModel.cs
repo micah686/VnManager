@@ -154,7 +154,9 @@ namespace VnManager.ViewModels.UserControls
             //Secure.EncFile("sample.jpg");
 
             //Secure.DecFile("sample.jpg");
-            _windowManager.ShowMessageBox("THis is a test message", "Title Here", MessageBoxButton.OKCancel, MessageBoxImage.Asterisk);
+            //_windowManager.ShowMessageBox("THis is a test message", "Title Here", MessageBoxButton.OKCancel, MessageBoxImage.Asterisk);
+            var ts = new  TimeSpan(7,15,1,0);
+            Helpers.TimeDateChanger.GetHumanTime(ts);
         }
 
         public void ExportImport()
