@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 
 namespace VnManager.Helpers
@@ -54,9 +56,43 @@ namespace VnManager.Helpers
             }
             else
             {
-                output = $"{(timeSpan.Duration().Days > 0 ? $"{timeSpan.Days:0} day{(timeSpan.Days == 1 ? string.Empty : "s")}, " : string.Empty)}" +
-                         $"{(timeSpan.Duration().Hours > 0 ? $"{timeSpan.Hours:0} hour{(timeSpan.Hours == 1 ? string.Empty : "s")}, " : string.Empty)}" +
-                         $"{(timeSpan.Duration().Minutes > 0 ? $"{timeSpan.Minutes:0} minute{(timeSpan.Minutes == 1 ? string.Empty : "s")} " : string.Empty)}";
+                string days = string.Empty;
+                if (timeSpan.Duration().Days > 0)
+                {
+                    days = $"{timeSpan.Days} day";
+                    if (timeSpan.Days != 1)
+                    {
+                        days += "s";
+                    }
+                    days += ", ";
+                }
+
+
+                string hours = string.Empty;
+                if (timeSpan.Duration().Hours > 0)
+                {
+                    hours = $"{timeSpan.Hours} hour";
+                    if (timeSpan.Hours != 1)
+                    {
+                        hours += "s";
+                    }
+
+                    hours += ", ";
+                }
+
+                string minutes = string.Empty;
+                if (timeSpan.Duration().Minutes > 0)
+                {
+                    minutes = $"{timeSpan.Minutes} minute";
+                    if (timeSpan.Minutes != 1)
+                    {
+                        minutes = minutes + "s";
+                    }
+
+                    minutes += " ";
+                }
+
+                output = $"{days}{hours}{minutes}";
             }
 
             return output;
