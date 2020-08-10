@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -27,6 +28,15 @@ namespace VnManager.ViewModels.Windows
     {
         public BindableCollection<UserDataGames> UserDataGamesCollection { get; set; }
         public bool IsDataGridEnabled { get; set; } = false;
+        private bool _didCancelImport = false;
+        public bool IsImportingVisible { get; set; } = false;
+
+        public string CurrentProgressMsg { get; set; }
+        public string TotalProgressMsg { get; set; }
+        public string ImportMessage { get; set; }
+        public double CurrentProgress { get; set; }
+        public double TotalProgress { get; set; }
+        
         
         
         private readonly IDialogService _dialogService;
@@ -41,7 +51,7 @@ namespace VnManager.ViewModels.Windows
         public void ExportData()
         {
 
-            string savePath = string.Empty;
+            string savePath;
             var settings = new FolderBrowserDialogSettings();
             bool? result = _dialogService.ShowFolderBrowserDialog(this, settings);
             if (result == true)
@@ -194,13 +204,31 @@ namespace VnManager.ViewModels.Windows
                 
         }
 
+        public void RemoveRow(int row)
+        {
+            try
+            {
+                UserDataGamesCollection.RemoveAt(row);
+                UserDataGamesCollection.Refresh();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                //throw;
+            }
+            
+            
+        }
+
         public async Task ValidateData()
         {
+            //await TestFooBind();
+            //return;
             int errorCount = 0;
             var validator = new ImportUserDataValidator();
             foreach (var item in UserDataGamesCollection)
             {
-                var result = validator.Validate(item);
+                var result = await validator.ValidateAsync(item);
                 foreach (var error in result.Errors)
                 {
                     errorCount += 1;
@@ -221,16 +249,41 @@ namespace VnManager.ViewModels.Windows
 
         private async Task ImportData()
         {
-            var cred = CredentialManager.GetCredentials(App.CredDb);
-            if (cred == null || cred.UserName.Length < 1) return;
-            using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
+            try
             {
+                var cred = CredentialManager.GetCredentials(App.CredDb);
+                if (cred == null || cred.UserName.Length < 1) return;
+                using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
                 var dbUserData = db.GetCollection<UserDataGames>("UserData_Games");
-                dbUserData.Insert(UserDataGamesCollection);
-                _windowManager.ShowMessageBox($"{App.ResMan.GetString("UserDataImported")}");
+                var maxId = dbUserData.Query().OrderByDescending(x => x.Index).Select(x => x.Index)
+                    .FirstOrDefault();
+                var importList = new List<UserDataGames>();
+                foreach (var item in UserDataGamesCollection)
+                {
+                    maxId = maxId + 1;
+                    item.Index = maxId;
+                    item.SourceType = AddGameSourceType.Vndb;
+                    importList.Add(item);
+                }
+                UserDataGamesCollection.Clear();
+                UserDataGamesCollection.AddRange(importList);
+                await Task.Run(() =>
+                {
+
+                    dbUserData.Insert(UserDataGamesCollection);
+                });
+
+                //dbUserData.Insert(UserDataGamesCollection);
+                
                 Stringable<int>[] vndbIds = UserDataGamesCollection.Where(x => x.SourceType == AddGameSourceType.Vndb)
                     .Select(x => x.GameId).ToArray();
+                db.Dispose();
                 await UpdateVndbData(vndbIds);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
             }
         }
 
@@ -241,9 +294,22 @@ namespace VnManager.ViewModels.Windows
             var saveData = new MetadataProviders.Vndb.SaveVnDataToDb();
             using (var client = new VndbSharp.Vndb(true))
             {
-                foreach (var strId in gameIds)
+                IsImportingVisible = true;
+                ImportMessage = "Importing. This may take a while";
+                TotalProgressMsg = $"Total Progress: 0/{gameIds.Length}";
+                double currentIncrement = Convert.ToDouble(100 / 3);
+                var totalIncrement = 100 / gameIds.Length;
+                var count = 0;
+
+                var foo = new List<int>(){92,4, 2004,93};
+
+                foreach (var strId in foo)
                 {
-                    var id = (uint)strId.Value;
+                    if (_didCancelImport) break;
+                    CurrentProgressMsg = "Getting Metadata (Step 1/3)";
+                    CurrentProgress = 0.0;
+                    //var id = (uint)strId.Value;
+                    var id = (uint) strId;
                     var visualNovel = await getData.GetVisualNovel(client, id);
                     var releases = await getData.GetReleases(client, id, ro);
                     uint[] producerIds = releases.SelectMany(x => x.Producers.Select(y => y.Id)).Distinct().ToArray();
@@ -251,18 +317,38 @@ namespace VnManager.ViewModels.Windows
                     var characters = await getData.GetCharacters(client, id, ro);
                     uint[] staffIds = visualNovel.Staff.Select(x => x.StaffId).Distinct().ToArray();
                     var staff = await getData.GetStaff(client, staffIds, ro);
+                    CurrentProgress += currentIncrement;
 
                     saveData.SaveVnInfo(visualNovel);
                     saveData.SaveVnCharacters(characters, id);
                     saveData.SaveVnReleases(releases);
                     saveData.SaveProducers(producers);
-                    saveData.SaveStaff(staff, (int) id);
+                    saveData.SaveStaff(staff, (int)id);
 
+                    CurrentProgressMsg = "Downloading Images (Step 2/3)";
                     await saveData.DownloadCoverImage(id);
                     await saveData.DownloadCharacterImages(id);
+                    CurrentProgress += currentIncrement;
+                    CurrentProgressMsg = "Downloading Screenshots (Step 3/3)";
                     await saveData.DownloadScreenshots(id);
+                    CurrentProgress += currentIncrement;
+                    Task.Delay(150);
+
+                    TotalProgress += totalIncrement;
+                    count = count + 1;
+                    TotalProgressMsg = $"Total Progress: {count}/ {foo.Count}";
                 }
+
             }
+            _windowManager.ShowMessageBox($"{App.ResMan.GetString("UserDataImported")}");
+        }
+
+
+
+        public void CancelImport()
+        {
+            _didCancelImport = true;
+            ImportMessage = "Cancelling import. Finishing up current item.";
         }
 
     }
@@ -305,7 +391,8 @@ namespace VnManager.ViewModels.Windows
             RuleFor(x => x.IconPath).Cascade(CascadeMode.StopOnFirstFailure).IcoValidation().Unless(x =>
                 string.IsNullOrEmpty(x.IconPath) || string.IsNullOrWhiteSpace(x.IconPath));
 
-            RuleFor(x => x.Arguments).Cascade(CascadeMode.StopOnFirstFailure).ArgsValidation();
+            RuleFor(x => x.Arguments).Cascade(CascadeMode.StopOnFirstFailure).ArgsValidation().Unless(x =>
+                string.IsNullOrEmpty(x.Arguments) || string.IsNullOrWhiteSpace(x.Arguments));
 
             RuleForEach(x => x.Categories).Must(ValidationHelpers.ContainsIllegalCharacters)
                 .WithMessage(App.ResMan.GetString("ValidationArgumentsIllegalChars"));

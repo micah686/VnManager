@@ -15,9 +15,34 @@
         Title="{x:Static res:Resources.ImportDataTitle}" Height="350" Width="500" MinHeight="350" MinWidth="500">
     <controls:AdonisWindow.Resources>
         <conv:DataGridRowIdConverter x:Key="RowIdConverter"/>
+        <s:BoolToVisibilityConverter x:Key="BoolToVisConverter"/>
+
+        <s:BoolToVisibilityConverter x:Key="InverseVisConverter" FalseVisibility="Visible" TrueVisibility="Collapsed"></s:BoolToVisibilityConverter>
     </controls:AdonisWindow.Resources>
     <Grid>
-        <TabControl>
+
+        <Grid HorizontalAlignment="Center" Margin="5" Visibility="{Binding IsImportingVisible, Converter={StaticResource BoolToVisConverter}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Label Grid.Row="0" Grid.ColumnSpan="2" Content="{Binding ImportMessage}" FontSize="16" />
+            <TextBlock Grid.Row="1" Grid.Column="0" Text="{Binding CurrentProgressMsg}" Margin="0,3,0,0"/>
+            <ProgressBar Grid.Row="1" Grid.Column="1" IsIndeterminate="True"  Height="25"  Width="150" Margin="20,0,0,0"/>
+
+            <TextBlock Grid.Row="2" Grid.Column="0" Text="{Binding TotalProgressMsg}" Margin="0,15,0,0"/>
+            <ProgressBar Grid.Row="2" Grid.Column="1" Value="{Binding TotalProgress}"  Height="25" Width="150" Margin="20,15,0,0"/>
+
+            <Button Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Width="70" Height="25" HorizontalAlignment="Center" Margin="0,30,0,0" Content="Cancel" Command="{s:Action CancelImport}"/>
+        </Grid>
+
+        <TabControl Visibility="{Binding IsImportingVisible, Converter={StaticResource InverseVisConverter}}">
             <TabItem Header="{x:Static res:Resources.ExportData}">
                 <StackPanel Margin="15">
                     <Button Width="100"  HorizontalAlignment="Center" Content="{x:Static res:Resources.ExportData}" Command="{s:Action ExportData}"/>
@@ -74,6 +99,14 @@
                                 <DataGridTextColumn Header="{x:Static res:Resources.LastPlayed}" IsReadOnly="True" Binding="{Binding LastPlayed, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
                                 <DataGridTextColumn Header="{x:Static res:Resources.PlayTime}" IsReadOnly="True" Binding="{Binding PlayTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
                                 <DataGridTextColumn Header="{x:Static res:Resources.Categories}"  Binding="{Binding Categories, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
+                                <DataGridTemplateColumn Header="Delete Row">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button Content="Remove Row" Command="{s:Action RemoveRow}" Background="Crimson"
+                                                    CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGridRow}}, Converter={StaticResource RowIdConverter}}"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
 
                             </DataGrid.Columns>
                         </DataGrid>
@@ -87,15 +120,6 @@
                 </Grid>
             </TabItem>
         </TabControl>
-        <!--<Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
 
-            <Button Grid.Row="0" Width="100" Margin="20,20,0,0" HorizontalAlignment="Left" Content="Export Data" Command="{s:Action ExportData}"></Button>
-            <Button Grid.Row="1" Width="100" Height="20" Margin="5" Content="Close"></Button>
-        </Grid>-->
     </Grid>
 </controls:AdonisWindow>
