@@ -31,11 +31,11 @@ namespace VnManager.ViewModels.Windows
         private bool _didCancelImport = false;
         public bool IsImportingVisible { get; set; } = false;
 
+        public string ImportMessage { get; set; }
         public string CurrentProgressMsg { get; set; }
         public string TotalProgressMsg { get; set; }
-        public string ImportMessage { get; set; }
-        public double CurrentProgress { get; set; }
         public double TotalProgress { get; set; }
+        public bool IsImportProcessing { get; set; }
         
         
         
@@ -222,8 +222,6 @@ namespace VnManager.ViewModels.Windows
 
         public async Task ValidateData()
         {
-            //await TestFooBind();
-            //return;
             int errorCount = 0;
             var validator = new ImportUserDataValidator();
             foreach (var item in UserDataGamesCollection)
@@ -251,6 +249,11 @@ namespace VnManager.ViewModels.Windows
         {
             try
             {
+                var dbPath = Path.Combine(App.ConfigDirPath, @"database\Data.db");
+                var now = $"{DateTime.Now:yyyy-MM-dd}__{DateTime.Now:h-mmtt}";
+                File.Copy(dbPath, Path.Combine(App.ConfigDirPath, $@"database\Data_BACKUP_{now}.db"));
+
+
                 var cred = CredentialManager.GetCredentials(App.CredDb);
                 if (cred == null || cred.UserName.Length < 1) return;
                 using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
@@ -262,7 +265,6 @@ namespace VnManager.ViewModels.Windows
                 {
                     maxId = maxId + 1;
                     item.Index = maxId;
-                    item.SourceType = AddGameSourceType.Vndb;
                     importList.Add(item);
                 }
                 UserDataGamesCollection.Clear();
@@ -273,7 +275,6 @@ namespace VnManager.ViewModels.Windows
                     dbUserData.Insert(UserDataGamesCollection);
                 });
 
-                //dbUserData.Insert(UserDataGamesCollection);
                 
                 Stringable<int>[] vndbIds = UserDataGamesCollection.Where(x => x.SourceType == AddGameSourceType.Vndb)
                     .Select(x => x.GameId).ToArray();
@@ -295,21 +296,18 @@ namespace VnManager.ViewModels.Windows
             using (var client = new VndbSharp.Vndb(true))
             {
                 IsImportingVisible = true;
-                ImportMessage = "Importing. This may take a while";
-                TotalProgressMsg = $"Total Progress: 0/{gameIds.Length}";
-                double currentIncrement = Convert.ToDouble(100 / 3);
+                IsImportProcessing = true;
+                ImportMessage = $"{App.ResMan.GetString("ImportDbStarting")}";
+                TotalProgressMsg = $"{App.ResMan.GetString("TotalProgressColon")} 0/{gameIds.Length}";
                 var totalIncrement = 100 / gameIds.Length;
                 var count = 0;
 
-                var foo = new List<int>(){92,4, 2004,93};
 
-                foreach (var strId in foo)
+                foreach (var strId in gameIds)
                 {
                     if (_didCancelImport) break;
-                    CurrentProgressMsg = "Getting Metadata (Step 1/3)";
-                    CurrentProgress = 0.0;
-                    //var id = (uint)strId.Value;
-                    var id = (uint) strId;
+                    CurrentProgressMsg = $"{App.ResMan.GetString("ImportDbProg1")}";
+                    var id = (uint)strId.Value;
                     var visualNovel = await getData.GetVisualNovel(client, id);
                     var releases = await getData.GetReleases(client, id, ro);
                     uint[] producerIds = releases.SelectMany(x => x.Producers.Select(y => y.Id)).Distinct().ToArray();
@@ -317,27 +315,37 @@ namespace VnManager.ViewModels.Windows
                     var characters = await getData.GetCharacters(client, id, ro);
                     uint[] staffIds = visualNovel.Staff.Select(x => x.StaffId).Distinct().ToArray();
                     var staff = await getData.GetStaff(client, staffIds, ro);
-                    CurrentProgress += currentIncrement;
 
+                    CurrentProgressMsg = $"{App.ResMan.GetString("ImportDbProg2")}";
                     saveData.SaveVnInfo(visualNovel);
                     saveData.SaveVnCharacters(characters, id);
                     saveData.SaveVnReleases(releases);
                     saveData.SaveProducers(producers);
                     saveData.SaveStaff(staff, (int)id);
 
-                    CurrentProgressMsg = "Downloading Images (Step 2/3)";
+                    CurrentProgressMsg = $"{App.ResMan.GetString("ImportDbProg3")}";
                     await saveData.DownloadCoverImage(id);
                     await saveData.DownloadCharacterImages(id);
-                    CurrentProgress += currentIncrement;
-                    CurrentProgressMsg = "Downloading Screenshots (Step 3/3)";
+                    CurrentProgressMsg = $"{App.ResMan.GetString("ImportDbProg4")}";
                     await saveData.DownloadScreenshots(id);
-                    CurrentProgress += currentIncrement;
-                    Task.Delay(150);
+
 
                     TotalProgress += totalIncrement;
                     count = count + 1;
-                    TotalProgressMsg = $"Total Progress: {count}/ {foo.Count}";
+                    TotalProgressMsg = $"{App.ResMan.GetString("TotalProgressColon")} {count}/ {gameIds.Length}";
                 }
+
+                if (_didCancelImport)
+                {
+                    ImportMessage = $"{App.ResMan.GetString("ImportDbCancel")}";
+                }
+                else
+                {
+                    ImportMessage = $"{App.ResMan.GetString("ImportComplete")}. \n {App.ResMan.GetString("CanCloseWindow")}";
+                }
+
+                CurrentProgressMsg = $"{ App.ResMan.GetString("Done")}";
+                IsImportProcessing = false;
 
             }
             _windowManager.ShowMessageBox($"{App.ResMan.GetString("UserDataImported")}");
@@ -348,7 +356,7 @@ namespace VnManager.ViewModels.Windows
         public void CancelImport()
         {
             _didCancelImport = true;
-            ImportMessage = "Cancelling import. Finishing up current item.";
+            ImportMessage = $"{App.ResMan.GetString("ImportDbCancelWorking")}";
         }
 
     }

@@ -97,5 +97,25 @@ namespace VnManager.Initializers
 
         }
 
+        internal static void DeleteOldBackupDatabase()
+        {
+            //var dbDir = Path.Combine(App.ConfigDirPath, @"database\");
+            var dbDir = Directory.EnumerateFiles(Path.Combine(App.ConfigDirPath, @"database\"), "Data_BACKUP_*.db",
+                SearchOption.AllDirectories);
+            var minDate = (DateTime.Today - new TimeSpan(14, 0, 0, 0));
+            foreach (var file in dbDir)
+            {
+                var name = Path.GetFileName(file);
+                var subst = name.Substring(12, 10).Replace('-', '/');
+                if (DateTime.TryParse(subst, out var dbDateTime))
+                {
+                    if (dbDateTime <= minDate)
+                    {
+                        File.Delete(name);
+                    }
+                }
+            }
+        }
+
     }
 }

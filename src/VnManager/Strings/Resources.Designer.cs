@@ -223,6 +223,15 @@ namespace VnManager.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You can now close this window.
+        /// </summary>
+        public static string CanCloseWindow {
+            get {
+                return ResourceManager.GetString("CanCloseWindow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Categories.
         /// </summary>
         public static string Categories {
@@ -345,6 +354,15 @@ namespace VnManager.Strings {
         public static string DeleteEverythingWarning {
             get {
                 return ResourceManager.GetString("DeleteEverythingWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete Row.
+        /// </summary>
+        public static string DeleteRow {
+            get {
+                return ResourceManager.GetString("DeleteRow", resourceCulture);
             }
         }
         
@@ -637,6 +655,15 @@ namespace VnManager.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Import was completed.
+        /// </summary>
+        public static string ImportComplete {
+            get {
+                return ResourceManager.GetString("ImportComplete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Import Data.
         /// </summary>
         public static string ImportData {
@@ -651,6 +678,78 @@ namespace VnManager.Strings {
         public static string ImportDataTitle {
             get {
                 return ResourceManager.GetString("ImportDataTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Import was cancelled.
+        /// </summary>
+        public static string ImportDbCancel {
+            get {
+                return ResourceManager.GetString("ImportDbCancel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cancelling import. Finishing up current item..
+        /// </summary>
+        public static string ImportDbCancelWorking {
+            get {
+                return ResourceManager.GetString("ImportDbCancelWorking", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Getting Metadata (Step 1/4).
+        /// </summary>
+        public static string ImportDbProg1 {
+            get {
+                return ResourceManager.GetString("ImportDbProg1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Saving to Database (Step 2/4).
+        /// </summary>
+        public static string ImportDbProg2 {
+            get {
+                return ResourceManager.GetString("ImportDbProg2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Downloading Images (Step 3/4).
+        /// </summary>
+        public static string ImportDbProg3 {
+            get {
+                return ResourceManager.GetString("ImportDbProg3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Downloading Screenshots (Step 4/4).
+        /// </summary>
+        public static string ImportDbProg4 {
+            get {
+                return ResourceManager.GetString("ImportDbProg4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Importing. This may take a while.
+        /// </summary>
+        public static string ImportDbStarting {
+            get {
+                return ResourceManager.GetString("ImportDbStarting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Import Into Database.
+        /// </summary>
+        public static string ImportIntoDb {
+            get {
+                return ResourceManager.GetString("ImportIntoDb", resourceCulture);
             }
         }
         
@@ -966,6 +1065,15 @@ namespace VnManager.Strings {
         public static string Submit {
             get {
                 return ResourceManager.GetString("Submit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Total Progress:.
+        /// </summary>
+        public static string TotalProgressColon {
+            get {
+                return ResourceManager.GetString("TotalProgressColon", resourceCulture);
             }
         }
         

@@ -171,6 +171,9 @@
   <data name="Cancel" xml:space="preserve">
     <value>Cancel</value>
   </data>
+  <data name="CanCloseWindow" xml:space="preserve">
+    <value>You can now close this window</value>
+  </data>
   <data name="Categories" xml:space="preserve">
     <value>Categories</value>
   </data>
@@ -212,6 +215,9 @@
   </data>
   <data name="DeleteEverythingWarning" xml:space="preserve">
     <value>THIS WILL DELETE ALL USER DATA! ARE YOU SURE YOU WANT TO CONTINUE?</value>
+  </data>
+  <data name="DeleteRow" xml:space="preserve">
+    <value>Delete Row</value>
   </data>
   <data name="Done" xml:space="preserve">
     <value>Done</value>
@@ -309,11 +315,38 @@
   <data name="Id" xml:space="preserve">
     <value>Id</value>
   </data>
+  <data name="ImportComplete" xml:space="preserve">
+    <value>Import was completed</value>
+  </data>
   <data name="ImportData" xml:space="preserve">
     <value>Import Data</value>
   </data>
   <data name="ImportDataTitle" xml:space="preserve">
     <value>Import/Export User Data</value>
+  </data>
+  <data name="ImportDbCancel" xml:space="preserve">
+    <value>Import was cancelled</value>
+  </data>
+  <data name="ImportDbCancelWorking" xml:space="preserve">
+    <value>Cancelling import. Finishing up current item.</value>
+  </data>
+  <data name="ImportDbProg1" xml:space="preserve">
+    <value>Getting Metadata (Step 1/4)</value>
+  </data>
+  <data name="ImportDbProg2" xml:space="preserve">
+    <value>Saving to Database (Step 2/4)</value>
+  </data>
+  <data name="ImportDbProg3" xml:space="preserve">
+    <value>Downloading Images (Step 3/4)</value>
+  </data>
+  <data name="ImportDbProg4" xml:space="preserve">
+    <value>Downloading Screenshots (Step 4/4)</value>
+  </data>
+  <data name="ImportDbStarting" xml:space="preserve">
+    <value>Importing. This may take a while</value>
+  </data>
+  <data name="ImportIntoDb" xml:space="preserve">
+    <value>Import Into Database</value>
   </data>
   <data name="ImportInvalidDb" xml:space="preserve">
     <value>The database is invalid/corrupted.</value>
@@ -419,6 +452,9 @@
   </data>
   <data name="Submit" xml:space="preserve">
     <value>Submit</value>
+  </data>
+  <data name="TotalProgressColon" xml:space="preserve">
+    <value>Total Progress:</value>
   </data>
   <data name="UnknownException" xml:space="preserve">
     <value>An unkown exception has occured</value>
