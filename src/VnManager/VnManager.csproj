@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <Compile Remove="Extensions\BooleanAndOrConverter.cs" />
+    <Compile Remove="Helpers\Vndb\RequestOptions.cs" />
     <Compile Remove="ViewModels\Windows\AddGameViewModel.cs" />
   </ItemGroup>
 

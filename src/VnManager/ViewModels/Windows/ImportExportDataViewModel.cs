@@ -17,6 +17,7 @@ using MvvmDialogs.FrameworkDialogs.OpenFile;
 using MvvmDialogs.FrameworkDialogs.SaveFile;
 using Stylet;
 using StyletIoC;
+using VndbSharp.Models;
 using VnManager.Helpers;
 using VnManager.Helpers.Vndb;
 using VnManager.Models.Db.User;
@@ -290,7 +291,7 @@ namespace VnManager.ViewModels.Windows
 
         private async Task UpdateVndbData(Stringable<int>[] gameIds)
         {
-            RequestOptions ro = new RequestOptions { Count = 25 };
+            RequestOptions ro = new RequestOptions(){Count = 25};
             var getData = new MetadataProviders.Vndb.GetVndbData();
             var saveData = new MetadataProviders.Vndb.SaveVnDataToDb();
             using (var client = new VndbSharp.Vndb(true))
