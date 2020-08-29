@@ -9,6 +9,7 @@ using System.Resources;
 using System.Windows;
 using System.Windows.Media;
 using AdysTech.CredentialManager;
+using LiteDB;
 using VnManager.Helpers;
 using VnManager.ViewModels.Dialogs;
 using VnManager.ViewModels.UserControls;
@@ -134,6 +135,7 @@ namespace VnManager.ViewModels
             }
             else
             {
+                CheckDbError();
                 var maingrid = _container.Get<MainGridViewModel>();
                 ActivateItem(maingrid);
                 StatusBarPage = _container.Get<StatusBarViewModel>();
@@ -145,6 +147,54 @@ namespace VnManager.ViewModels
 
 
         }
+
+        //should exit if it can't read the database
+        private void CheckDbError()
+        {
+            string errorStr= string.Empty;
+            try
+            {
+                var cred = CredentialManager.GetCredentials(App.CredDb);
+                if (cred == null || cred.UserName.Length < 1)
+                {
+                    errorStr = $"{App.ResMan.GetString("PasswordNoEmpty")}\n{App.ResMan.GetString("AppExit")}";
+                    _windowManager.ShowMessageBox(errorStr, "Database Error");
+                    Environment.Exit(1);
+                }
+
+                using (var db = new LiteDatabase($"Filename={Path.Combine(App.ConfigDirPath, @"database\Data.db")};Password={cred.Password}"))
+                { }
+                    
+            }
+            catch (IOException)
+            {
+                errorStr = $"{App.ResMan.GetString("DbIsLockedProc")}\n{App.ResMan.GetString("AppExit")}";
+                _windowManager.ShowMessageBox(errorStr, "Database Error");
+                Environment.Exit(1);
+            }
+            catch (LiteException ex)
+            {
+                if (ex.Message == "Invalid password")
+                {
+                    errorStr = $"{App.ResMan.GetString("PassIncorrect")}\n{App.ResMan.GetString("AppExit")}";
+                    _windowManager.ShowMessageBox(errorStr, "Database Error");
+                    Environment.Exit(1);
+                }
+                else
+                {
+                    errorStr = $"{ex.Message}\n{App.ResMan.GetString("AppExit")}";
+                    _windowManager.ShowMessageBox(errorStr, "Database Error");
+                    Environment.Exit(1);
+                }
+            }
+            catch (Exception)
+            {
+                errorStr = $"{App.ResMan.GetString("UnknownException")}\n{App.ResMan.GetString("AppExit")}";
+                _windowManager.ShowMessageBox(errorStr, "Database Error");
+                Environment.Exit(1);
+            }
+        }
+
 
         private bool IsNormalStart()
         {

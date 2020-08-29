@@ -138,6 +138,9 @@
   <data name="AddGameNormalTooltip" xml:space="preserve">
     <value>A single executable associated with a single ID</value>
   </data>
+  <data name="AppExit" xml:space="preserve">
+    <value>The application will now exit</value>
+  </data>
   <data name="Applications" xml:space="preserve">
     <value>Applications</value>
   </data>
@@ -368,6 +371,12 @@
   </data>
   <data name="ManageExecutables" xml:space="preserve">
     <value>Manage Executables</value>
+  </data>
+  <data name="MaxSexualLevel" xml:space="preserve">
+    <value>Maximum Sexual Level</value>
+  </data>
+  <data name="MaxViolenceLevel" xml:space="preserve">
+    <value>Maximum Violence Level</value>
   </data>
   <data name="Minor" xml:space="preserve">
     <value>Minor</value>

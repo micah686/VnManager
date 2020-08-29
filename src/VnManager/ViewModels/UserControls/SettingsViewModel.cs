@@ -24,8 +24,7 @@ namespace VnManager.ViewModels.UserControls
 {
     public class SettingsViewModel :Screen
     {
-        public bool NsfwEnabled { get; set; }
-        //public bool NsfwContentSavedVisible { get; set; }
+
         private bool _didChangeNsfwContentVisible = false;
 
         private bool _nsfwSavedContentVisible;
@@ -41,13 +40,10 @@ namespace VnManager.ViewModels.UserControls
         }
 
         #region SpoilerList
-        public Collection<string> SpoilerList { get;} = new Collection<string>(new string[] { App.ResMan.GetString("None"), App.ResMan.GetString("Minor"), App.ResMan.GetString("Major") });
-        public string SpoilerString { get; set; }
+        
         public int SpoilerIndex { get; set; } = 0;
-
-        public Collection<string> ThemeList { get; } = new Collection<string>(new string[] { App.ResMan.GetString("DarkTheme"), App.ResMan.GetString("LightTheme") });
-        public  int ThemeIndex { get; set; }
-        public string ThemeString { get; set; } = "DarkTheme";
+        public int MaxSexualIndex { get; set; }
+        public int MaxViolenceIndex { get; set; }
         #endregion
 
 
@@ -57,43 +53,66 @@ namespace VnManager.ViewModels.UserControls
         {
             _container = container;
             _windowManager = windowManager;
-            NsfwEnabled = App.UserSettings.IsNsfwEnabled;
+            //NsfwEnabled = App.UserSettings.IsNsfwEnabled;
             NsfwContentSavedVisible = App.UserSettings.IsVisibleSavedNsfwContent;
+            FillDropdown();
+            
+        }
+
+        private void FillDropdown()
+        {
             if (App.UserSettings.SettingsVndb != null)
             {
-                SpoilerString = App.UserSettings.SettingsVndb.Spoiler.ToString();
-
-                switch (SpoilerString)
+               
+                switch (App.UserSettings.MaxSexualRating)
                 {
-                    case "None":
+                    case SexualRating.Safe:
+                        MaxSexualIndex = 0;
+                        break;
+                    case SexualRating.Suggestive:
+                        MaxSexualIndex = 1;
+                        break;
+                    case SexualRating.Explicit:
+                        MaxSexualIndex = 1;
+                        break;
+                    default:
+                        MaxSexualIndex = 0;
+                        throw new ArgumentOutOfRangeException();
+                }
+                
+                switch (App.UserSettings.MaxViolenceRating)
+                {
+                    case ViolenceRating.Tame:
+                        MaxViolenceIndex = 0;
+                        break;
+                    case ViolenceRating.Violent:
+                        MaxViolenceIndex = 1;
+                        break;
+                    case ViolenceRating.Brutal:
+                        MaxViolenceIndex = 2;
+                        break;
+                    default:
+                        MaxViolenceIndex = 0;
+                        throw new ArgumentOutOfRangeException();
+                }
+                
+                switch (App.UserSettings.SettingsVndb.Spoiler)
+                {
+                    case SpoilerLevel.None:
                         SpoilerIndex = 0;
                         break;
-                    case "Minor":
+                    case SpoilerLevel.Minor:
                         SpoilerIndex = 1;
                         break;
-                    case "Major":
+                    case SpoilerLevel.Major:
                         SpoilerIndex = 2;
                         break;
                     default:
                         SpoilerIndex = 0;
-                        break;
+                        throw new ArgumentOutOfRangeException();
                 }
 
-                ThemeString = App.UserSettings.ColorTheme;
-                switch (ThemeString)
-                {
-                    case "DarkTheme":
-                        ThemeIndex = 0;
-                        break;
-                    case "LightTheme":
-                        ThemeIndex = 1;
-                        break;
-                    default:
-                        ThemeIndex = 0;
-                        break;
-                }
             }
-            
         }
 
         public void SaveUserSettings(bool useEncryption)
@@ -114,32 +133,19 @@ namespace VnManager.ViewModels.UserControls
                 }
 
             }
-            Enum.TryParse(SpoilerString, out SpoilerLevel spoiler);
-            string theme;
-            switch (ThemeString)
-            {
-                case "Dark Theme":
-                    theme = "DarkTheme";
-                    break;
-                case "Light Theme":
-                    theme = "LightTheme";
-                    break;
-                default:
-                    theme = "DarkTheme";
-                    break;
-            }
-            
+
+
             UserSettingsVndb vndb = new UserSettingsVndb
             {
-                Spoiler = spoiler
+                Spoiler = (SpoilerLevel)SpoilerIndex
             };
             UserSettings settings = new UserSettings
             {
-                ColorTheme = theme,
-                IsNsfwEnabled = NsfwEnabled,
                 IsVisibleSavedNsfwContent = NsfwContentSavedVisible,
                 SettingsVndb = vndb,
-                EncryptionEnabled = useEncryption
+                EncryptionEnabled = useEncryption,
+                MaxSexualRating = (SexualRating)MaxSexualIndex,
+                MaxViolenceRating = (ViolenceRating)MaxViolenceIndex
             };
 
             try
@@ -147,8 +153,6 @@ namespace VnManager.ViewModels.UserControls
                 UserSettingsHelper.SaveUserSettings(settings);
                 App.UserSettings = settings;
 
-                
-                UserSettingsHelper.UpdateColorTheme();
                 _windowManager.ShowMessageBox(App.ResMan.GetString("SettingsSavedMessage"), App.ResMan.GetString("SettingsSavedTitle"));
             }
             catch (Exception ex)

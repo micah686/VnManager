@@ -124,6 +124,15 @@ namespace VnManager.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The application will now exit.
+        /// </summary>
+        public static string AppExit {
+            get {
+                return ResourceManager.GetString("AppExit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Applications.
         /// </summary>
         public static string Applications {
@@ -813,6 +822,24 @@ namespace VnManager.Strings {
         public static string ManageExecutables {
             get {
                 return ResourceManager.GetString("ManageExecutables", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Maximum Sexual Level.
+        /// </summary>
+        public static string MaxSexualLevel {
+            get {
+                return ResourceManager.GetString("MaxSexualLevel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Maximum Violence Level.
+        /// </summary>
+        public static string MaxViolenceLevel {
+            get {
+                return ResourceManager.GetString("MaxViolenceLevel", resourceCulture);
             }
         }
         
