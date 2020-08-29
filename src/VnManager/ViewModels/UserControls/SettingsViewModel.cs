@@ -181,8 +181,8 @@ namespace VnManager.ViewModels.UserControls
             if (cred == null || cred.UserName.Length < 1) return;
             using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
             {
-                List<VnInfoScreens> vnScreens = db.GetCollection<VnInfoScreens>("VnInfo_Screens").Query().Where(x => x.Nsfw == true).ToList();
-                List<VnInfo> vnCovers = db.GetCollection<VnInfo>("VnInfo").Query().Where(x => x.ImageNsfw == true).ToList();
+                List<VnInfoScreens> vnScreens = db.GetCollection<VnInfoScreens>("VnInfo_Screens").Query().Where(x => NsfwHelper.IsNsfw(x.ImageRating) == true).ToList();
+                List<VnInfo> vnCovers = db.GetCollection<VnInfo>("VnInfo").Query().Where(x => NsfwHelper.IsNsfw(x.ImageRating) == true).ToList();
 
                 ResetNsfwScreenshots(vnScreens);
                 ResetNsfwCoverImages(vnCovers);

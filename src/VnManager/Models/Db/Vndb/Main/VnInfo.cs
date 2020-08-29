@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using LiteDB;
+using VndbSharp.Models.Common;
 using VnManager.Models.Db.Vndb.Character;
 using VnManager.Models.Db.Vndb.Release;
 
@@ -21,7 +22,7 @@ namespace VnManager.Models.Db.Vndb.Main
         public string Length { get; set; }
         public string Description { get; set; }
         public string ImageLink { get; set; }
-        public bool ImageNsfw { get; set; }
+        public ImageRating ImageRating { get; set; }
         public double? Popularity { get; set; }
         public double Rating { get; set; }
         public int VoteCount { get; set; }

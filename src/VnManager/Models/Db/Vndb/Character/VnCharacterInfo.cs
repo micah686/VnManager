@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using LiteDB;
+using VndbSharp.Models.Common;
 
 namespace VnManager.Models.Db.Vndb.Character
 {
@@ -17,6 +18,7 @@ namespace VnManager.Models.Db.Vndb.Character
         public string Aliases { get; set; }
         public string Description { get; set; }
         public string ImageLink { get; set; }
+        public ImageRating ImageRating { get; set; }
         public int? Bust { get; set; }
         public int? Waist { get; set; }
         public int? Hip { get; set; }

@@ -10,6 +10,8 @@ namespace VnManager.Models.Settings
     {
         public string ColorTheme { get; set; }
         public bool IsNsfwEnabled { get; set; }
+        public SexualRating MaxSexualRating { get; set; }
+        public ViolenceRating MaxViolenceRating { get; set; }
         public bool IsVisibleSavedNsfwContent { get; set; }
         public UserSettingsVndb SettingsVndb { get; set; }
         public bool EncryptionEnabled { get; set; } = false;
@@ -19,5 +21,19 @@ namespace VnManager.Models.Settings
     {
         public SpoilerLevel Spoiler { get; set; }
 
+    }
+
+    public enum SexualRating
+    {
+        Safe=0,
+        Suggestive =1,
+        Explicit =2
+    }
+
+    public enum ViolenceRating
+    {
+        Tame=0,
+        Violent=1,
+        Brutal=2
     }
 }

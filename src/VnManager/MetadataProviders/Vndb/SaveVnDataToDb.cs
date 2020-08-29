@@ -106,7 +106,7 @@ namespace VnManager.MetadataProviders.Vndb
                     vn.Length = visualNovel.Length?.ToString();
                     vn.Description = visualNovel.Description;
                     vn.ImageLink = visualNovel.Image;
-                    vn.ImageNsfw = visualNovel.IsImageNsfw;
+                    vn.ImageRating = visualNovel.ImageRating;
                     vn.Popularity = visualNovel.Popularity;
                     vn.Rating = visualNovel.Rating;
 
@@ -188,9 +188,9 @@ namespace VnManager.MetadataProviders.Vndb
                     entry.VnId = visualNovel.Id;
                     entry.ImageUrl = screenshot.Url;
                     entry.ReleaseId = screenshot.ReleaseId;
-                    entry.Nsfw = screenshot.IsNsfw;
                     entry.Height = screenshot.Height;
                     entry.Width = screenshot.Width;
+                    entry.ImageRating = screenshot.ImageRating;
                     vnScreenshot.Add(entry);
                 }
             }
@@ -301,6 +301,7 @@ namespace VnManager.MetadataProviders.Vndb
                         character.Aliases = CsvConverter.ConvertToCsv(vnCharacter.Aliases);
                         character.Description = vnCharacter.Description;
                         character.ImageLink = vnCharacter.Image;
+                        character.ImageRating = vnCharacter.ImageRating;
                         character.Bust = Convert.ToInt32(vnCharacter.Bust);
                         character.Waist = Convert.ToInt32(vnCharacter.Waist);
                         character.Hip = Convert.ToInt32(vnCharacter.Hip);
@@ -565,7 +566,7 @@ namespace VnManager.MetadataProviders.Vndb
                     var links = prevVnProducerLinks.FirstOrDefault() ?? new VnProducerLinks();
                     links.ProducerId = (int)vnProducer.Id;
                     links.Homepage = vnProducer.Links.Homepage;
-                    links.WikiData = vnProducer.Links.Wikipedia;
+                    links.WikiData = vnProducer.Links.Wikidata;
                     vnProducerLinksList.Add(links);
 
                     ILiteQueryable<VnProducerRelations> prevVnProducerRelations =
@@ -631,7 +632,7 @@ namespace VnManager.MetadataProviders.Vndb
                         Twitter = vnStaff.StaffLinks.Twitter,
                         AniDb = vnStaff.StaffLinks.AniDb,
                         Pixiv = vnStaff.StaffLinks.Pixiv,
-                        Wikidata = vnStaff.StaffLinks.WikiData
+                        Wikidata = vnStaff.StaffLinks.Wikidata
                     };
                     staff.Description = vnStaff.Description;
                     staff.MainAliasId = vnStaff.MainAlias;
@@ -773,7 +774,7 @@ namespace VnManager.MetadataProviders.Vndb
                 {
                     App.StatusBar.IsFileDownloading = true;
                     string path = $@"{App.AssetDirPath}\sources\vndb\images\cover\{Path.GetFileName(entry.ImageLink)}";
-                    await ImageHelper.DownloadImage(entry.ImageLink, entry.ImageNsfw, path);
+                    await ImageHelper.DownloadImage(entry.ImageLink, NsfwHelper.IsNsfw(entry.ImageRating), path);
                 }
             }
             catch (Exception ex)
@@ -843,7 +844,7 @@ namespace VnManager.MetadataProviders.Vndb
                         {
                             Directory.CreateDirectory($@"{directory}\thumbs");
                         }
-                        List<ScreenShot> scrList = entries.Select(screen => new ScreenShot() { IsNsfw = screen.Nsfw, Url = screen.ImageUrl }).ToList();
+                        List<ScreenShot> scrList = entries.Select(screen => new ScreenShot() { IsNsfw = NsfwHelper.IsNsfw(screen.ImageRating), Url = screen.ImageUrl }).ToList();
 
                         App.StatusBar.IsFileDownloading = true;
                         await ImageHelper.DownloadImagesWithThumbnails(scrList, directory);

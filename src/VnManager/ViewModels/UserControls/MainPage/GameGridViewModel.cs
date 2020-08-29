@@ -72,7 +72,8 @@ namespace VnManager.ViewModels.UserControls.MainPage
                             Title = game.Title,
                             LastPlayedString = $"Last Played: {TimeDateChanger.GetHumanDate(entry.LastPlayed)}",
                             TotalTimeString = $"Play Time: {TimeDateChanger.GetHumanTime(entry.PlayTime)}",
-                            UserDataId = entry.Id
+                            UserDataId = entry.Id,
+                            IsNsfwDisabled = NsfwHelper.IsNsfw(game.ImageRating)
                         };
                         GameCollection.Add(card);
                     }
