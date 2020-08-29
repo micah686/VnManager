@@ -86,24 +86,6 @@ namespace VnManager
         }
         #endregion
 
-        #region IsPortable
-        private static bool _isPortable;
-        public static bool IsPortable
-        {
-            get { return _isPortable; }
-            set
-            {
-                if (!StartupLockout)
-                {
-                    _isPortable = value;
-                }
-                else
-                {
-                    throw new InvalidOperationException("IsPortable can only be set once!");
-                }
-            }
-        }
-        #endregion
 
         #region Logger
         private static ILogger _logger= LogManager.Logger;
