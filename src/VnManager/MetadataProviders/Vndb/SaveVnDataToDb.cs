@@ -105,7 +105,7 @@ namespace VnManager.MetadataProviders.Vndb
                     vn.Aliases = CsvConverter.ConvertToCsv(visualNovel.Aliases);
                     vn.Length = visualNovel.Length?.ToString();
                     vn.Description = visualNovel.Description;
-                    vn.ImageLink = visualNovel.Image;
+                    vn.ImageLink = new Uri(visualNovel.Image);
                     vn.ImageRating = visualNovel.ImageRating;
                     vn.Popularity = visualNovel.Popularity;
                     vn.Rating = visualNovel.Rating;
@@ -300,7 +300,7 @@ namespace VnManager.MetadataProviders.Vndb
                         character.Birthday = BirthdayConverter.ConvertBirthday(vnCharacter.Birthday);
                         character.Aliases = CsvConverter.ConvertToCsv(vnCharacter.Aliases);
                         character.Description = vnCharacter.Description;
-                        character.ImageLink = vnCharacter.Image;
+                        character.ImageLink = new Uri(vnCharacter.Image);
                         character.ImageRating = vnCharacter.ImageRating;
                         character.Bust = Convert.ToInt32(vnCharacter.Bust);
                         character.Waist = Convert.ToInt32(vnCharacter.Waist);

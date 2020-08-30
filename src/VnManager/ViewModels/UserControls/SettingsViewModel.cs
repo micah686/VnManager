@@ -246,7 +246,7 @@ namespace VnManager.ViewModels.UserControls
             foreach (var cover in vnCovers)
             {
                 var directory = Path.Combine(App.AssetDirPath, @"sources\vndb\images\cover");
-                var imageFile = $@"{directory}\{Path.GetFileName(cover.ImageLink)}";
+                var imageFile = $@"{directory}\{Path.GetFileName(cover.ImageLink.AbsoluteUri)}";
                 if (App.UserSettings.IsVisibleSavedNsfwContent == false)
                 {
                     if (File.Exists(imageFile))

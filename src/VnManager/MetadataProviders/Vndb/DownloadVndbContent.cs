@@ -33,7 +33,7 @@ namespace VnManager.MetadataProviders.Vndb
                 if (entry.ImageLink != null)
                 {
                     App.StatusBar.IsFileDownloading = true;
-                    string path = $@"{App.AssetDirPath}\sources\vndb\images\cover\{Path.GetFileName(entry.ImageLink)}";
+                    string path = $@"{App.AssetDirPath}\sources\vndb\images\cover\{Path.GetFileName(entry.ImageLink.AbsoluteUri)}";
                     await ImageHelper.DownloadImage(entry.ImageLink, NsfwHelper.IsNsfw(entry.ImageRating), path);
                 }
             }
@@ -60,7 +60,7 @@ namespace VnManager.MetadataProviders.Vndb
                 if (entries.Count > 0)
                 {
                     var directory = Path.Combine(App.AssetDirPath, @$"sources\vndb\images\characters\{vnId}");
-                    List<string> characterList = entries.Select(x => x.ImageLink).ToList();
+                    List<string> characterList = entries.Select(x => x.ImageLink.AbsoluteUri).ToList();
                     using var client = new WebClient();
                     foreach (var character in characterList)
                     {

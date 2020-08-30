@@ -63,7 +63,7 @@ namespace VnManager.ViewModels.UserControls.MainPage
                     {
                         var game = dbVnInfo.FirstOrDefault(x => x.VnId == entry.GameId);
                         if(game== null)continue;
-                        var coverPath = $@"{App.AssetDirPath}\sources\vndb\images\cover\{Path.GetFileName(game.ImageLink)}";
+                        var coverPath = $@"{App.AssetDirPath}\sources\vndb\images\cover\{Path.GetFileName(game.ImageLink.AbsoluteUri)}";
                         
 
                         var card = new GameCardViewModel(_container)

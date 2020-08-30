@@ -94,7 +94,7 @@ namespace VnManager.ViewModels.UserControls.MainPage
                 MainTitle = vnInfoEntry.Title;
                 JpnTitle = vnInfoEntry.Original;
 
-                var coverPath = $@"{App.AssetDirPath}\sources\vndb\images\cover\{Path.GetFileName(vnInfoEntry.ImageLink)}";
+                var coverPath = $@"{App.AssetDirPath}\sources\vndb\images\cover\{Path.GetFileName(vnInfoEntry.ImageLink.AbsoluteUri)}";
                 CoverImage = ImageHelper.GetCoverImage(coverPath);
             }
         }

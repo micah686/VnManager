@@ -140,17 +140,17 @@ namespace VnManager.Helpers
 
 
 
-        public static async Task DownloadImage(string url, bool isNsfw, string path)
+        public static async Task DownloadImage(Uri uri, bool isNsfw, string path)
         {
             try
             {
-                if (string.IsNullOrEmpty(url)) return;
+                if (string.IsNullOrEmpty(uri.AbsoluteUri)) return;
                 using (var client = new WebClient())
                 {
                     if (isNsfw && App.UserSettings.IsVisibleSavedNsfwContent == false)
                     {
 
-                        byte[] imageBytes = await client.DownloadDataTaskAsync(new Uri(url));
+                        byte[] imageBytes = await client.DownloadDataTaskAsync(uri);
                         var memStream = new MemoryStream(imageBytes);
                         if (memStream.Length < 1) return;
                         Secure.EncStream(memStream, path);
@@ -158,7 +158,7 @@ namespace VnManager.Helpers
                     }
                     else
                     {
-                        await client.DownloadFileTaskAsync(new Uri(url), path);
+                        await client.DownloadFileTaskAsync(uri, path);
                     }
                 }
             }
