@@ -17,7 +17,7 @@ using VnManager.Models.Db.Vndb.TagTrait;
 
 namespace VnManager.MetadataProviders.Vndb
 {
-    internal class DownloadVndbContent
+    internal static class DownloadVndbContent
     {
         internal static async Task DownloadCoverImage(uint vnId)
         {

@@ -124,6 +124,8 @@ namespace VnManager.ViewModels.Controls
                     this.DefaultButton = lbv;
                 else if (val == cancelResult)
                     this.CancelButton = lbv;
+                else
+                    this.DefaultButton = lbv;
             }
             // If they didn't specify a button which we showed, then pick a default, if we can
             SetButtons(defaultResult, cancelResult, buttonList);

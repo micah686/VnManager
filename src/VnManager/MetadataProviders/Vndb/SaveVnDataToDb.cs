@@ -37,11 +37,9 @@ namespace VnManager.MetadataProviders.Vndb
     public class SaveVnDataToDb
     {
 
-        private double _currentProgressValue = 0;
         public async Task SortVnInfo(AddItemDbModel entry, VisualNovel vn, List<Release>rel,List<Producer> prod, List<Character> character, List<Staff> staff, double currentProgress)
         {
-            _currentProgressValue = currentProgress;
-            
+
             //await DownloadCharacterImages(character, vn.Id);
             
 
