@@ -14,7 +14,7 @@ namespace VnManager.Helpers
             var isViolenceValid = false;
             if (rating.SexualAvg != null)
             {
-                if (rating.SexualAvg <= Convert.ToDouble(App.UserSettings.MaxSexualRating))
+                if (rating.SexualAvg > Convert.ToDouble(App.UserSettings.MaxSexualRating))
                 {
                     isSexualValid = true;
                 }
@@ -22,7 +22,7 @@ namespace VnManager.Helpers
 
             if (rating.ViolenceAvg != null)
             {
-                if (rating.ViolenceAvg <= Convert.ToDouble(App.UserSettings.MaxViolenceRating))
+                if (rating.ViolenceAvg > Convert.ToDouble(App.UserSettings.MaxViolenceRating))
                 {
                     isViolenceValid = true;
                 }

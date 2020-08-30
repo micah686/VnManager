@@ -27,7 +27,6 @@ namespace VnManager.Helpers
                 {
                     Spoiler = SpoilerLevel.None
                 };
-                settings.ColorTheme = "DarkTheme";
                 settings.SettingsVndb = vndb;
                 var json = JsonConvert.SerializeObject(settings);
                 File.WriteAllText(ConfigFile, json);
@@ -100,13 +99,7 @@ namespace VnManager.Helpers
             }
         }
 
-        public static void UpdateColorTheme()
-        {
-            if(App.UserSettings == null) return;
-            var theme = App.UserSettings.ColorTheme;
-            ResourceLocator.SetColorScheme(Application.Current.Resources,
-                theme == "LightTheme" ? ResourceLocator.LightColorScheme : ResourceLocator.DarkColorScheme);
-        }
+        
 
     }
 }

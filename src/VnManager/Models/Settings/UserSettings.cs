@@ -8,8 +8,6 @@ namespace VnManager.Models.Settings
     [Serializable]
     public class UserSettings
     {
-        public string ColorTheme { get; set; }
-        public bool IsNsfwEnabled { get; set; }
         public SexualRating MaxSexualRating { get; set; }
         public ViolenceRating MaxViolenceRating { get; set; }
         public bool IsVisibleSavedNsfwContent { get; set; }
