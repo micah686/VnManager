@@ -145,8 +145,8 @@ namespace VnManager.ViewModels.UserControls
             //var img = SaveVnDataToDb.GetThumbnailImage(stream);
             //var sv = new SaveVnDataToDb().DownloadScreenshots(4857);
             //new Secure().TestPassHash();
-            var save = new SaveVnDataToDb();
-            await save.DownloadScreenshots(15538);
+            //var save = new SaveVnDataToDb();
+            //await save.DownloadScreenshots(15538);
         }
 
         public void TestEncryption()

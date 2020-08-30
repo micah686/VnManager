@@ -20,6 +20,7 @@ using StyletIoC;
 using VndbSharp.Models;
 using VnManager.Helpers;
 using VnManager.Helpers.Vndb;
+using VnManager.MetadataProviders.Vndb;
 using VnManager.Models.Db.User;
 using VnManager.ViewModels.Dialogs.AddGameSources;
 
@@ -327,10 +328,10 @@ namespace VnManager.ViewModels.Windows
                     saveData.SaveStaff(staff, (int)id);
 
                     CurrentProgressMsg = $"{App.ResMan.GetString("ImportDbProg3")}";
-                    await saveData.DownloadCoverImage(id);
-                    await saveData.DownloadCharacterImages(id);
+                    await DownloadVndbContent.DownloadCoverImage(id);
+                    await DownloadVndbContent.DownloadCharacterImages(id);
                     CurrentProgressMsg = $"{App.ResMan.GetString("ImportDbProg4")}";
-                    await saveData.DownloadScreenshots(id);
+                    await DownloadVndbContent.DownloadScreenshots(id);
 
 
                     TotalProgress += totalIncrement;
