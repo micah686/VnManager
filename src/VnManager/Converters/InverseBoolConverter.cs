@@ -5,6 +5,9 @@ using System.Windows.Data;
 
 namespace VnManager.Converters
 {
+    /// <summary>
+    /// XAML converter for inverting a boolean value
+    /// </summary>
     [ValueConversion(typeof(bool), typeof(bool))]
     public class InverseBoolConverter : IValueConverter
     {

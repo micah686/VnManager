@@ -5,6 +5,9 @@ using System.Windows;
 
 namespace VnManager.Extensions
 {
+    /// <summary>
+    /// XAML extension to Get/Set the focused state
+    /// </summary>
     public static class FocusExtension
     {
         public static bool GetIsFocused(DependencyObject obj)

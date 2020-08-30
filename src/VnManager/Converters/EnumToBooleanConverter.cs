@@ -5,6 +5,9 @@ using System.Windows.Data;
 
 namespace VnManager.Converters
 {
+    /// <summary>
+    /// XAML converter for converting a Enum to a Bool value
+    /// </summary>
     public class EnumToBooleanConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

@@ -6,6 +6,10 @@ using System.Windows.Input;
 
 namespace VnManager.Extensions
 {
+    /// <summary>
+    /// XAML extension for reading the mouseover state.
+    /// This also gets around the ReadOnly OneWayToSource binding issue
+    /// </summary>
     public static class MouseObserver
     {
         public static readonly DependencyProperty ObserveProperty = DependencyProperty.RegisterAttached(

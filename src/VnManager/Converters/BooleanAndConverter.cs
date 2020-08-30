@@ -6,6 +6,9 @@ using System.Windows.Data;
 
 namespace VnManager.Converters
 {
+    /// <summary>
+    /// XAML Converter for allowing for AND operator between 2 values
+    /// </summary>
     public class BooleanAndConverter : IMultiValueConverter
     {
         public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)

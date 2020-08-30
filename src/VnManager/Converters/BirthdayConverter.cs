@@ -8,6 +8,11 @@ namespace VnManager.Converters
 {
     public static class BirthdayConverter
     {
+        /// <summary>
+        /// Converts a SimpleDate to a string, removing empty entries
+        /// </summary>
+        /// <param name="birthday">Birthday as a SimpleDate</param>
+        /// <returns></returns>
         public static string ConvertBirthday(SimpleDate birthday)
         {
             string month;

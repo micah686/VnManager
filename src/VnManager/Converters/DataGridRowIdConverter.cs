@@ -7,6 +7,9 @@ using System.Windows.Data;
 
 namespace VnManager.Converters
 {
+    /// <summary>
+    /// XAML converter for getting index of a DataGrid Row
+    /// </summary>
     public class DataGridRowIdConverter : DependencyObject, IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter,

@@ -6,6 +6,10 @@ using System.Linq;
 
 namespace VnManager.Extensions
 {
+    /// <summary>
+    /// Abstract method for implementing validation on a model
+    /// This is used to get validation working on a DataTable
+    /// </summary>
     public abstract class ValidationBase: INotifyDataErrorInfo
     {
         private readonly Dictionary<string, List<string>> _errors = new Dictionary<string, List<string>>();

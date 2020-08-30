@@ -6,6 +6,9 @@ using System.Windows.Markup;
 namespace VnManager.Extensions
 {
     //https://brianlagunas.com/a-better-way-to-data-bind-enums-in-wpf/
+    /// <summary>
+    /// XAML converter for binding an Enum to an ItemSource
+    /// </summary>
     public class EnumBindingSourceExtension : MarkupExtension
     {
         private Type _enumType;

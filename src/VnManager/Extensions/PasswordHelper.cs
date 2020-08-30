@@ -9,6 +9,9 @@ using System.Windows.Controls;
 
 namespace VnManager.Extensions
 {
+    /// <summary>
+    /// XAML extension class that allows for binding a SecureString to a PasswordBox
+    /// </summary>
     public static class PasswordHelper
     {
         public static readonly DependencyProperty PasswordProperty =
