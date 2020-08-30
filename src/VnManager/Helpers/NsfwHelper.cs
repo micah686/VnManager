@@ -12,20 +12,14 @@ namespace VnManager.Helpers
             if (rating == null) return false;
             var isSexualValid = false;
             var isViolenceValid = false;
-            if (rating.SexualAvg != null)
+            if (rating.SexualAvg != null && rating.SexualAvg > Convert.ToDouble(App.UserSettings.MaxSexualRating))
             {
-                if (rating.SexualAvg > Convert.ToDouble(App.UserSettings.MaxSexualRating))
-                {
-                    isSexualValid = true;
-                }
+                isSexualValid = true;
             }
 
-            if (rating.ViolenceAvg != null)
+            if (rating.ViolenceAvg != null && rating.ViolenceAvg > Convert.ToDouble(App.UserSettings.MaxViolenceRating))
             {
-                if (rating.ViolenceAvg > Convert.ToDouble(App.UserSettings.MaxViolenceRating))
-                {
-                    isViolenceValid = true;
-                }
+                isViolenceValid = true;
             }
             return isSexualValid || isViolenceValid;
         }

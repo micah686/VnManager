@@ -55,15 +55,15 @@ namespace VnManager.ViewModels.UserControls
             _windowManager = windowManager;
             //NsfwEnabled = App.UserSettings.IsNsfwEnabled;
             NsfwContentSavedVisible = App.UserSettings.IsVisibleSavedNsfwContent;
-            FillDropdown();
-            
+            FillSexualDropdown();
+            FillViolenceDropdown();
+            FillSpoilerDropdown();
         }
 
-        private void FillDropdown()
+        private void FillSexualDropdown()
         {
             if (App.UserSettings.SettingsVndb != null)
             {
-               
                 switch (App.UserSettings.MaxSexualRating)
                 {
                     case SexualRating.Safe:
@@ -77,9 +77,17 @@ namespace VnManager.ViewModels.UserControls
                         break;
                     default:
                         MaxSexualIndex = 0;
-                        throw new ArgumentOutOfRangeException();
+                        _windowManager.ShowMessageBox(App.ResMan.GetString("UserSettingsInvalid"), App.ResMan.GetString("Error"));
+                        App.Logger.Warning("UserSetting Sexual Rating is invalid");
+                        break;
                 }
-                
+            }
+        }
+
+        private void FillViolenceDropdown()
+        {
+            if (App.UserSettings.SettingsVndb != null)
+            {
                 switch (App.UserSettings.MaxViolenceRating)
                 {
                     case ViolenceRating.Tame:
@@ -93,9 +101,17 @@ namespace VnManager.ViewModels.UserControls
                         break;
                     default:
                         MaxViolenceIndex = 0;
-                        throw new ArgumentOutOfRangeException();
+                        _windowManager.ShowMessageBox(App.ResMan.GetString("UserSettingsInvalid"), App.ResMan.GetString("Error"));
+                        App.Logger.Warning("UserSetting Violence Rating is invalid");
+                        break;
                 }
-                
+            }
+        }
+
+        private void FillSpoilerDropdown()
+        {
+            if (App.UserSettings.SettingsVndb != null)
+            {
                 switch (App.UserSettings.SettingsVndb.Spoiler)
                 {
                     case SpoilerLevel.None:
@@ -109,9 +125,10 @@ namespace VnManager.ViewModels.UserControls
                         break;
                     default:
                         SpoilerIndex = 0;
-                        throw new ArgumentOutOfRangeException();
+                        _windowManager.ShowMessageBox(App.ResMan.GetString("UserSettingsInvalid"), App.ResMan.GetString("Error"));
+                        App.Logger.Warning("UserSetting Spoiler Level is invalid");
+                        break;
                 }
-
             }
         }
 
@@ -199,8 +216,8 @@ namespace VnManager.ViewModels.UserControls
             foreach (var screen in vnScreens)
             {
                 var directory = Path.Combine(App.AssetDirPath, @$"sources\vndb\images\screenshots\{screen.VnId}");
-                var imageFile = $@"{directory}\{Path.GetFileName(screen.ImageUrl)}";
-                var thumbFile = $@"{directory}\thumbs\{Path.GetFileName(screen.ImageUrl)}";
+                var imageFile = $@"{directory}\{Path.GetFileName(screen.ImageUri.AbsoluteUri)}";
+                var thumbFile = $@"{directory}\thumbs\{Path.GetFileName(screen.ImageUri.AbsoluteUri)}";
 
                 if (App.UserSettings.IsVisibleSavedNsfwContent == false)
                 {

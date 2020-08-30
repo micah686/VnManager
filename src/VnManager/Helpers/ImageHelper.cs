@@ -22,14 +22,6 @@ namespace VnManager.Helpers
     public static class ImageHelper
     {
 
-
-
-
-
-
-
-
-
         /// <summary>
         /// Creates a thumbnail image from a specified image stream
         /// </summary>
@@ -109,13 +101,13 @@ namespace VnManager.Helpers
                 {
                     foreach (var screen in imageList)
                     {
-                        if (screen.Url == null) continue;
-                        var imageDir = $@"{imageDirectory}\{Path.GetFileName(screen.Url)}";
-                        var thumbDir = $@"{imageDirectory}\thumbs\{Path.GetFileName(screen.Url)}";
+                        if (screen.Uri == null || string.IsNullOrEmpty(screen.Uri.AbsoluteUri)) continue;
+                        var imageDir = $@"{imageDirectory}\{Path.GetFileName(screen.Uri.AbsoluteUri)}";
+                        var thumbDir = $@"{imageDirectory}\thumbs\{Path.GetFileName(screen.Uri.AbsoluteUri)}";
 
                         if(File.Exists(imageDir))continue;
 
-                        var imageStream = new MemoryStream(await client.DownloadDataTaskAsync(new Uri(screen.Url)));
+                        var imageStream = new MemoryStream(await client.DownloadDataTaskAsync(screen.Uri.AbsoluteUri));
                         var thumbImg = GetThumbnailImage(imageStream,0);
                         if (thumbImg == null) continue;
                         if (screen.IsNsfw && App.UserSettings.IsVisibleSavedNsfwContent == false)
@@ -214,7 +206,7 @@ namespace VnManager.Helpers
     }
     public class ScreenShot
     {
-        public string Url { get; set; }
+        public Uri Uri { get; set; }
         public bool IsNsfw { get; set; }
     }
 }

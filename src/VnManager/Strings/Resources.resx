@@ -261,9 +261,6 @@
   <data name="EnableCustomIcon" xml:space="preserve">
     <value>Enable Custom Icon</value>
   </data>
-  <data name="EnableNsfwContent" xml:space="preserve">
-    <value>Enable Nsfw Content</value>
-  </data>
   <data name="EnableNsfwDiskDisabledTooltip" xml:space="preserve">
     <value>If disabled, Nsfw images will be saved as encrypted files that will not be visible in photo viewers.</value>
   </data>
@@ -275,6 +272,9 @@
   </data>
   <data name="EnterPass" xml:space="preserve">
     <value>Please enter your password</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Error</value>
   </data>
   <data name="ExeAlreadyExistsInDb" xml:space="preserve">
     <value>This Exe already exists in the database</value>
@@ -479,6 +479,9 @@
   </data>
   <data name="UserDataImported" xml:space="preserve">
     <value>Userdata has been imported into the database.</value>
+  </data>
+  <data name="UserSettingsInvalid" xml:space="preserve">
+    <value>User Setting config is invalid.</value>
   </data>
   <data name="ValidationArgumentsEmpty" xml:space="preserve">
     <value>Arguments cannot be empty</value>

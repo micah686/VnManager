@@ -53,15 +53,15 @@ namespace VnManager.MetadataProviders.Vndb
             SaveStaff(staff, (int)vn.Id);
             SaveUserData(entry);
 
-            await DownloadCoverImage(vn.Id);
-            await DownloadCharacterImages(vn.Id);
-            await DownloadScreenshots(vn.Id);
+            await DownloadVndbContent.DownloadCoverImage(vn.Id);
+            await DownloadVndbContent.DownloadCharacterImages(vn.Id);
+            await DownloadVndbContent.DownloadScreenshots(vn.Id);
             App.StatusBar.IsFileDownloading = false;
 
 
             App.StatusBar.IsDatabaseProcessing = true;
-            await GetAndSaveTagDump();
-            await GetAndSaveTraitDump();
+            await DownloadVndbContent.GetAndSaveTagDump();
+            await DownloadVndbContent.GetAndSaveTraitDump();
             App.StatusBar.ResetValues();
         }
 
@@ -183,10 +183,10 @@ namespace VnManager.MetadataProviders.Vndb
                 var prevVnInfoScreens = dbVnInfoScreens.Query().Where(x => x.VnId == visualNovel.Id).ToList();
                 foreach (var screenshot in visualNovel.Screenshots)
                 {
-                    var entry = prevVnInfoScreens.FirstOrDefault(x => x.ImageUrl == screenshot.Url) ??
+                    var entry = prevVnInfoScreens.FirstOrDefault(x => x.ImageUri == new Uri(screenshot.Url)) ??
                                 new VnInfoScreens();
                     entry.VnId = visualNovel.Id;
-                    entry.ImageUrl = screenshot.Url;
+                    entry.ImageUri = new Uri(screenshot.Url);
                     entry.ReleaseId = screenshot.ReleaseId;
                     entry.Height = screenshot.Height;
                     entry.Width = screenshot.Width;
@@ -566,7 +566,7 @@ namespace VnManager.MetadataProviders.Vndb
                     var links = prevVnProducerLinks.FirstOrDefault() ?? new VnProducerLinks();
                     links.ProducerId = (int)vnProducer.Id;
                     links.Homepage = vnProducer.Links.Homepage;
-                    links.WikiData = vnProducer.Links.Wikidata;
+                    links.WikiData = vnProducer.Links.Wikipedia;
                     vnProducerLinksList.Add(links);
 
                     ILiteQueryable<VnProducerRelations> prevVnProducerRelations =
@@ -632,7 +632,7 @@ namespace VnManager.MetadataProviders.Vndb
                         Twitter = vnStaff.StaffLinks.Twitter,
                         AniDb = vnStaff.StaffLinks.AniDb,
                         Pixiv = vnStaff.StaffLinks.Pixiv,
-                        Wikidata = vnStaff.StaffLinks.Wikidata
+                        Wikidata = vnStaff.StaffLinks.WikiData
                     };
                     staff.Description = vnStaff.Description;
                     staff.MainAliasId = vnStaff.MainAlias;
@@ -759,215 +759,17 @@ namespace VnManager.MetadataProviders.Vndb
 
 
 
-        internal async Task DownloadCoverImage(uint vnId)
-        {
-            try
-            {
-                App.StatusBar.InfoText = App.ResMan.GetString("DownCoverImage");
-                var cred = CredentialManager.GetCredentials(App.CredDb);
-                if (cred == null || cred.UserName.Length < 1) return;
-                using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
-                VnInfo entry = db.GetCollection<VnInfo>("VnInfo").Query().Where(x => x.VnId == vnId).FirstOrDefault();
-                if (entry == null) return;
-                using var client = new WebClient();
-                if (entry.ImageLink != null)
-                {
-                    App.StatusBar.IsFileDownloading = true;
-                    string path = $@"{App.AssetDirPath}\sources\vndb\images\cover\{Path.GetFileName(entry.ImageLink)}";
-                    await ImageHelper.DownloadImage(entry.ImageLink, NsfwHelper.IsNsfw(entry.ImageRating), path);
-                }
-            }
-            catch (Exception ex)
-            {
-                App.Logger.Warning(ex, "Failed to download cover image");
-            }
-            finally
-            {
-                App.StatusBar.IsFileDownloading = false;
-            }
-        }
-
-        internal async Task DownloadCharacterImages(uint vnId)
-        {
-            try
-            {
-                App.StatusBar.InfoText = App.ResMan.GetString("DownCharImages");
-                var cred = CredentialManager.GetCredentials(App.CredDb);
-                if (cred == null || cred.UserName.Length < 1) return;
-                using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
-                var entries = db.GetCollection<VnCharacterInfo>("VnCharacter").Query().Where(x => x.VnId == vnId)
-                    .ToList();
-                if (entries.Count > 0)
-                {
-                    var directory = Path.Combine(App.AssetDirPath, @$"sources\vndb\images\characters\{vnId}");
-                    List<string> characterList = entries.Select(x => x.ImageLink).ToList();
-                    using var client = new WebClient();
-                    foreach (var character in characterList)
-                    {
-                        if (!Directory.Exists(directory)) Directory.CreateDirectory(directory);
-                        string file = $@"{directory}\{Path.GetFileName(character)}";
-                        if (!File.Exists(file) && !string.IsNullOrEmpty(character))
-                        {
-                            App.StatusBar.IsFileDownloading = true;
-                            await client.DownloadFileTaskAsync(new Uri(character), file);
-                        }
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                App.Logger.Warning(e, "Failed to download character image");
-            }
-            finally
-            {
-                App.StatusBar.IsFileDownloading = false;
-            }
-        }
-
-
-        internal async Task DownloadScreenshots(uint vnId)
-        {
-            try
-            {
-                App.StatusBar.InfoText = App.ResMan.GetString("DownScreenshots");
-                var cred = CredentialManager.GetCredentials(App.CredDb);
-                if (cred == null || cred.UserName.Length < 1) return;
-                using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
-                {
-                    using var client = new WebClient();
-                    var entries = db.GetCollection<VnInfoScreens>("VnInfo_Screens").Query().Where(x => x.VnId == vnId)
-                        .ToList();
-                    if (entries.Count > 0)
-                    {
-                        var directory = Path.Combine(App.AssetDirPath, @$"sources\vndb\images\screenshots\{vnId}");
-                        if (!Directory.Exists($@"{directory}\thumbs"))
-                        {
-                            Directory.CreateDirectory($@"{directory}\thumbs");
-                        }
-                        List<ScreenShot> scrList = entries.Select(screen => new ScreenShot() { IsNsfw = NsfwHelper.IsNsfw(screen.ImageRating), Url = screen.ImageUrl }).ToList();
-
-                        App.StatusBar.IsFileDownloading = true;
-                        await ImageHelper.DownloadImagesWithThumbnails(scrList, directory);
-
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                App.Logger.Warning(ex, "Failed to download screenshots");
-                throw;
-            }
-            finally
-            {
-                App.StatusBar.IsFileDownloading = false;
-            }
-        }
+        
 
         
 
-        //Tag and Trait Dumps
-        public async Task GetAndSaveTagDump()
-        {
-            try
-            {
-                var cred = CredentialManager.GetCredentials(App.CredDb);
-                if (cred == null || cred.UserName.Length < 1) return;
-                using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
-                {
-                    const double increment = (double)100 / 7;
-                    App.StatusBar.IsWorking = true;
-                    var dbTags = db.GetCollection<VnTagData>("VnDump_TagData");
-                    App.StatusBar.InfoText = App.ResMan.GetString("DownTagDump");
-                    List<Tag> tagDump = (await VndbUtils.GetTagsDumpAsync()).ToList();
-                    _currentProgressValue += increment;
-                    App.StatusBar.ProgressBarValue = _currentProgressValue;
-                    App.StatusBar.IsDatabaseProcessing = true;
-                    List<VnTagData> tagsToAdd = new List<VnTagData>();
-                    var prevEntry = dbTags.Query().ToList();
 
-                    foreach (var item in tagDump)
-                    {
-                        var entry = prevEntry.FirstOrDefault(x => x.TagId == item.Id) ?? new VnTagData();
-                        entry.TagId = item.Id;
-                        entry.Name = item.Name;
-                        entry.Description = item.Description;
-                        entry.IsMeta = item.IsMeta;
-                        entry.IsSearchable = item.Searchable;
-                        entry.IsApplicable = item.Applicable;
-                        entry.Vns = item.VisualNovels;
-                        entry.Category = item.TagCategory;
-                        entry.Aliases = CsvConverter.ConvertToCsv(item.Aliases);
-                        entry.Parents = item.Parents.ToArray();
-                        tagsToAdd.Add(entry);
-                    }
+        
 
-                    dbTags.Upsert(tagsToAdd);
-                    //remove any deleted tags
-                    IEnumerable<int> idsToDelete = prevEntry.Except(tagsToAdd).Select(x => x.Index);
-                    dbTags.DeleteMany(x => idsToDelete.Contains(x.Index));
-                    App.StatusBar.IsDatabaseProcessing = false;
-                    App.StatusBar.InfoText = "";
-                    App.StatusBar.IsWorking = false;
-                    App.StatusBar.StatusString = App.ResMan.GetString("Ready");
-                }
+        
 
-            }
-            catch (Exception ex)
-            {
-                App.Logger.Error(ex, "An error happened while getting/saving the tag dump");
-                App.StatusBar.ResetValues();
-            }
-        }
+        
 
-        public async Task GetAndSaveTraitDump()
-        {
-            try
-            {
-                var cred = CredentialManager.GetCredentials(App.CredDb);
-                if (cred == null || cred.UserName.Length < 1) return;
-                using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
-                {
-                    const double increment = (double)100 / 7;
-                    App.StatusBar.IsWorking = true;
-                    var dbTraits = db.GetCollection<VnTraitData>("VnDump_TraitData");
-                    App.StatusBar.InfoText = App.ResMan.GetString("DownTraitDump");
-                    List<Trait> traitDump = (await VndbUtils.GetTraitsDumpAsync()).ToList();
-                    _currentProgressValue += increment;
-                    App.StatusBar.ProgressBarValue = _currentProgressValue;
-                    App.StatusBar.IsDatabaseProcessing = true;
-                    List<VnTraitData> traitsToAdd = new List<VnTraitData>();
-                    var prevEntry = dbTraits.Query().ToList();
-                    foreach (var item in traitDump)
-                    {
-                        var entry = prevEntry.FirstOrDefault(x => x.TraitId == item.Id) ?? new VnTraitData();
-                        entry.TraitId = item.Id;
-                        entry.Name = item.Name;
-                        entry.Description = item.Description;
-                        entry.IsMeta = item.IsMeta;
-                        entry.IsSearchable = item.IsSearchable;
-                        entry.IsApplicable = item.IsApplicable;
-                        entry.Characters = item.Characters;
-                        entry.Aliases = CsvConverter.ConvertToCsv(item.Aliases);
-                        entry.Parents = item.Parents.ToArray();
-                        traitsToAdd.Add(entry);
-                    }
-
-                    dbTraits.Upsert(traitsToAdd);
-
-                    IEnumerable<int> idsToDelete = prevEntry.Except(traitsToAdd).Select(x => x.Index);
-                    dbTraits.DeleteMany(x => idsToDelete.Contains(x.Index));
-                    App.StatusBar.IsDatabaseProcessing = false;
-                    App.StatusBar.InfoText = "";
-                    App.StatusBar.IsWorking = false;
-                    App.StatusBar.StatusString = App.ResMan.GetString("Ready");
-                }
-            }
-            catch (Exception ex)
-            {
-                App.Logger.Error(ex, "An error happened while getting/saving the trait dump");
-                App.StatusBar.ResetValues();
-                throw;
-            }
-        }
+        
     }
 }

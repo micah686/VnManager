@@ -151,7 +151,7 @@ namespace VnManager.ViewModels
         //should exit if it can't read the database
         private void CheckDbError()
         {
-            string errorStr= string.Empty;
+            string errorStr;
             try
             {
                 var cred = CredentialManager.GetCredentials(App.CredDb);
@@ -161,9 +161,13 @@ namespace VnManager.ViewModels
                     _windowManager.ShowMessageBox(errorStr, "Database Error");
                     Environment.Exit(1);
                 }
+                else
+                {
+                    using (var db = new LiteDatabase($"Filename={Path.Combine(App.ConfigDirPath, @"database\Data.db")};Password={cred.Password}"))
+                    { }
+                }
 
-                using (var db = new LiteDatabase($"Filename={Path.Combine(App.ConfigDirPath, @"database\Data.db")};Password={cred.Password}"))
-                { }
+                
                     
             }
             catch (IOException)

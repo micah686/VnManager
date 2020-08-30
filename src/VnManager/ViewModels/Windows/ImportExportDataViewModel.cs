@@ -214,7 +214,7 @@ namespace VnManager.ViewModels.Windows
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                App.Logger.Warning(e,"Failed to remove row from import tool");
                 //throw;
             }
             
@@ -257,34 +257,36 @@ namespace VnManager.ViewModels.Windows
 
                 var cred = CredentialManager.GetCredentials(App.CredDb);
                 if (cred == null || cred.UserName.Length < 1) return;
-                using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
-                var dbUserData = db.GetCollection<UserDataGames>("UserData_Games");
-                var maxId = dbUserData.Query().OrderByDescending(x => x.Index).Select(x => x.Index)
-                    .FirstOrDefault();
-                var importList = new List<UserDataGames>();
-                foreach (var item in UserDataGamesCollection)
+                using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
                 {
-                    maxId = maxId + 1;
-                    item.Index = maxId;
-                    importList.Add(item);
+                    var dbUserData = db.GetCollection<UserDataGames>("UserData_Games");
+                    var maxId = dbUserData.Query().OrderByDescending(x => x.Index).Select(x => x.Index)
+                        .FirstOrDefault();
+                    var importList = new List<UserDataGames>();
+                    foreach (var item in UserDataGamesCollection)
+                    {
+                        maxId = maxId + 1;
+                        item.Index = maxId;
+                        importList.Add(item);
+                    }
+                    UserDataGamesCollection.Clear();
+                    UserDataGamesCollection.AddRange(importList);
+                    await Task.Run(() =>
+                    {
+
+                        dbUserData.Insert(UserDataGamesCollection);
+                    });
+
+
+                    Stringable<int>[] vndbIds = UserDataGamesCollection.Where(x => x.SourceType == AddGameSourceType.Vndb)
+                        .Select(x => x.GameId).ToArray();
+                    await UpdateVndbData(vndbIds);
                 }
-                UserDataGamesCollection.Clear();
-                UserDataGamesCollection.AddRange(importList);
-                await Task.Run(() =>
-                {
 
-                    dbUserData.Insert(UserDataGamesCollection);
-                });
-
-                
-                Stringable<int>[] vndbIds = UserDataGamesCollection.Where(x => x.SourceType == AddGameSourceType.Vndb)
-                    .Select(x => x.GameId).ToArray();
-                db.Dispose();
-                await UpdateVndbData(vndbIds);
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
+                App.Logger.Error(ex, "Failed to import data");
                 throw;
             }
         }

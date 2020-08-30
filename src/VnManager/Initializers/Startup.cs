@@ -89,12 +89,9 @@ namespace VnManager.Initializers
             {
                 var name = Path.GetFileName(file);
                 var subst = name.Substring(12, 10).Replace('-', '/');
-                if (DateTime.TryParse(subst, out var dbDateTime))
+                if (DateTime.TryParse(subst, out var dbDateTime)&& dbDateTime <= minDate)
                 {
-                    if (dbDateTime <= minDate)
-                    {
-                        File.Delete(name);
-                    }
+                    File.Delete(name);
                 }
             }
         }

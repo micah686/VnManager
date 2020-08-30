@@ -493,15 +493,6 @@ namespace VnManager.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable Nsfw Content.
-        /// </summary>
-        public static string EnableNsfwContent {
-            get {
-                return ResourceManager.GetString("EnableNsfwContent", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to If disabled, Nsfw images will be saved as encrypted files that will not be visible in photo viewers..
         /// </summary>
         public static string EnableNsfwDiskDisabledTooltip {
@@ -534,6 +525,15 @@ namespace VnManager.Strings {
         public static string EnterPass {
             get {
                 return ResourceManager.GetString("EnterPass", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error.
+        /// </summary>
+        public static string Error {
+            get {
+                return ResourceManager.GetString("Error", resourceCulture);
             }
         }
         
@@ -1146,6 +1146,15 @@ namespace VnManager.Strings {
         public static string UserDataImported {
             get {
                 return ResourceManager.GetString("UserDataImported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User Setting config is invalid..
+        /// </summary>
+        public static string UserSettingsInvalid {
+            get {
+                return ResourceManager.GetString("UserSettingsInvalid", resourceCulture);
             }
         }
         
