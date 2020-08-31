@@ -181,11 +181,11 @@ namespace VnManager.Helpers
             // Common case = just call the overloaded ToString - no need for reflection
             if (destinationType == typeof(string))
                 return value.ToString();
-            var valueType = value.GetType();
-            if (destinationType.IsAssignableFrom(this.valueType) && typeof(Stringable<>).IsAssignableFrom(valueType))
+            var valType = value.GetType();
+            if (destinationType.IsAssignableFrom(this.valueType) && typeof(Stringable<>).IsAssignableFrom(valType))
             {
-                var valueProperty = valueType.GetProperty("Value", BindingFlags.Public | BindingFlags.Instance);
-                return valueProperty.GetValue(value);
+                var valueProperty = valType.GetProperty("Value", BindingFlags.Public | BindingFlags.Instance);
+                return valueProperty?.GetValue(value);
             }
             return base.ConvertTo(context, culture, value, destinationType);
         }

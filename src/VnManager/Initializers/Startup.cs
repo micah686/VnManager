@@ -12,6 +12,11 @@ namespace VnManager.Initializers
     public static class Startup
     {
         private static readonly IFileSystem fs = new FileSystem();
+        
+        /// <summary>
+        /// Set the default directories for the program to use (AppData)
+        /// If debugging, the default directories will always be in the folder that the exe is located in
+        /// </summary>
         public static void SetDirectories()
         {            
             bool canReadWrite = (CheckWriteAccess.CheckWrite(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData))
@@ -34,10 +39,12 @@ namespace VnManager.Initializers
                 Environment.Exit(1);
             }
 
-
             CreateFolders();            
         }
         
+        /// <summary>
+        /// Create default folders for use with the program
+        /// </summary>
         private static void CreateFolders()
         {
             //Assets folder ( images, logs,...)
@@ -53,6 +60,9 @@ namespace VnManager.Initializers
             fs.Directory.CreateDirectory(Path.Combine(App.ConfigDirPath, @"config"));
         }
 
+        /// <summary>
+        /// This should delete any log files that are a month old or older
+        /// </summary>
         internal static void DeleteOldLogs()
         {
             //doesn't delete logs out of User Profile directory
@@ -79,6 +89,9 @@ namespace VnManager.Initializers
 
         }
 
+        /// <summary>
+        /// This will delete old database backups that are older than 14 days.
+        /// </summary>
         internal static void DeleteOldBackupDatabase()
         {
             //var dbDir = Path.Combine(App.ConfigDirPath, @"database\");

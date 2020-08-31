@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net;
 using System.Runtime.InteropServices;
 using System.Security;
@@ -11,7 +12,9 @@ namespace VnManager.Extensions
 {
     /// <summary>
     /// XAML extension class that allows for binding a SecureString to a PasswordBox
+    /// These methods have the DebuggerHidden attribute. This will need to be disabled in order to step into the method
     /// </summary>
+    [DebuggerStepThrough()]
     public static class PasswordHelper
     {
         public static readonly DependencyProperty PasswordProperty =
@@ -28,37 +31,44 @@ namespace VnManager.Extensions
            typeof(PasswordHelper));
 
 
+        [DebuggerHidden]
         public static void SetAttach(DependencyObject dp, bool value)
         {
             dp.SetValue(AttachProperty, value);
         }
 
+        [DebuggerHidden]
         public static bool GetAttach(DependencyObject dp)
         {
             return (bool)dp.GetValue(AttachProperty);
         }
 
+        [DebuggerHidden]
         public static string GetPassword(DependencyObject dp)
         {
             return (string)dp.GetValue(PasswordProperty);
         }
 
+        [DebuggerHidden]
         public static void SetPassword(DependencyObject dp, string value)
         {
             SecureString val= new NetworkCredential("", value).SecurePassword;
             dp.SetValue(PasswordProperty, val);
         }
 
+        [DebuggerHidden]
         private static bool GetIsUpdating(DependencyObject dp)
         {
             return (bool)dp.GetValue(IsUpdatingProperty);
         }
 
+        [DebuggerHidden]
         private static void SetIsUpdating(DependencyObject dp, bool value)
         {
             dp.SetValue(IsUpdatingProperty, value);
         }
 
+        [DebuggerHidden]
         private static void OnPasswordPropertyChanged(DependencyObject sender,
             DependencyPropertyChangedEventArgs e)
         {
@@ -74,6 +84,7 @@ namespace VnManager.Extensions
             passwordBox.PasswordChanged += PasswordChanged;
         }
 
+        [DebuggerHidden]
         private static void Attach(DependencyObject sender,
             DependencyPropertyChangedEventArgs e)
         {
@@ -93,6 +104,7 @@ namespace VnManager.Extensions
             }
         }
 
+        [DebuggerHidden]
         private static void PasswordChanged(object sender, RoutedEventArgs e)
         {
             PasswordBox passwordBox = sender as PasswordBox;

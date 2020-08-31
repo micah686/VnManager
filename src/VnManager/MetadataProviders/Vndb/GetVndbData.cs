@@ -114,7 +114,7 @@ namespace VnManager.MetadataProviders.Vndb
                         await HandleVndbErrors.ThrottledWait((ThrottledError)client.GetLastError(), 0);
                         break;
                     case null:
-                        HandleVndbErrors.HandleErrors(client.GetLastError(), 0);
+                        HandleVndbErrors.HandleErrors(client.GetLastError());
                         _didErrorOccur = true;
                         return null;
                     default:
@@ -144,7 +144,7 @@ namespace VnManager.MetadataProviders.Vndb
                         await HandleVndbErrors.ThrottledWait((ThrottledError)client.GetLastError(), 0);
                         break;
                     case null:
-                        HandleVndbErrors.HandleErrors(client.GetLastError(), 0);
+                        HandleVndbErrors.HandleErrors(client.GetLastError());
                         _didErrorOccur = true;
                         return null;
                     default:
@@ -184,7 +184,7 @@ namespace VnManager.MetadataProviders.Vndb
                         await HandleVndbErrors.ThrottledWait((ThrottledError)client.GetLastError(), 0);
                         break;
                     case null:
-                        HandleVndbErrors.HandleErrors(client.GetLastError(), 0);
+                        HandleVndbErrors.HandleErrors(client.GetLastError());
                         _didErrorOccur = true;
                         return null;
                     default:
@@ -223,7 +223,7 @@ namespace VnManager.MetadataProviders.Vndb
 				}
 				else if (producers == null)
 				{
-					HandleVndbErrors.HandleErrors(client.GetLastError(), 0);
+					HandleVndbErrors.HandleErrors(client.GetLastError());
                     _didErrorOccur = true;
                     return null;
 				}
@@ -261,7 +261,7 @@ namespace VnManager.MetadataProviders.Vndb
                         await HandleVndbErrors.ThrottledWait((ThrottledError)client.GetLastError(), 0);
                         break;
                     case null:
-                        HandleVndbErrors.HandleErrors(client.GetLastError(), 0);
+                        HandleVndbErrors.HandleErrors(client.GetLastError());
                         _didErrorOccur = true;
                         return null;
                     default:

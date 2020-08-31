@@ -16,8 +16,11 @@ using AdysTech.CredentialManager;
 
 namespace VnManager.Helpers
 {
-
-    
+    /// <summary>
+    /// Class used for secure functions (encryption, password generator)
+    /// These methods have the DebuggerHidden attribute. This will need to be disabled in order to step into the method
+    /// </summary>
+    [DebuggerStepThrough()]
     internal static class Secure
     {
 
@@ -26,6 +29,7 @@ namespace VnManager.Helpers
         /// Creates a random salt that will be used to encrypt your file. This method is required on FileEncrypt.
         /// </summary>
         /// <returns></returns>
+        [DebuggerHidden]
         public static byte[] GenerateRandomSalt()
         {
             byte[] data = new byte[32];
@@ -42,6 +46,12 @@ namespace VnManager.Helpers
         }
 
         //used from https://stackoverflow.com/questions/60889345/using-the-aesgcm-class/60891115#60891115
+        /// <summary>
+        /// Encrypt a byte array with AES-GCM
+        /// </summary>
+        /// <param name="input">Byte array to encrypt</param>
+        /// <returns></returns>
+        [DebuggerHidden]
         private static byte[] Encrypt(byte[] input)
         {
             try
@@ -79,6 +89,12 @@ namespace VnManager.Helpers
             }
         }
 
+        /// <summary>
+        /// Decrypt an AES-GCM encrypted byte array
+        /// </summary>
+        /// <param name="input">Bytes to decrypt</param>
+        /// <returns></returns>
+        [DebuggerHidden]
         private static byte[] Decrypt(byte[] input)
         {
             try
@@ -117,13 +133,14 @@ namespace VnManager.Helpers
         /// Encrypts the file at at the specified filepath
         /// </summary>
         /// <param name="path">Path to the file to encrypt. Should not include the .aes extension</param>
+        [DebuggerHidden]
         public static void EncFile(string path)
         {
             try
             {
                 if(!File.Exists(path))return;
                 byte[] bytes = File.ReadAllBytes(path);
-                if (bytes.Length < 20) return;
+                if (bytes.Length < 20) return; //don't encrypt files less than 20 bytes, as that indicates that the file might be bad
                 byte[] encBytes = Encrypt(bytes);
                 if (encBytes == null || encBytes.Length < 20) return;
                 File.WriteAllBytes($"{path}.aes", encBytes);
@@ -139,15 +156,16 @@ namespace VnManager.Helpers
         /// Encrypts the file at at the specified filepath
         /// </summary>
         /// <param name="path">Path to the file to decrypt. Should not include the .aes extension</param>
+        [DebuggerHidden]
         public static void DecFile(string path)
         {
             try
             {
                 string encImagePath = $"{path}.aes";
                 byte[] encBytes = File.ReadAllBytes(encImagePath);
-                if (encBytes.Length < 20) return;
+                if (encBytes.Length < 20) return; //don't decrypt files less than 20 bytes, as that indicates that the file might be bad
                 byte[] bytes = Decrypt(encBytes);
-                if (bytes == null || bytes.Length < 20) return;
+                if (bytes == null || bytes.Length < 20) return; 
                 File.WriteAllBytes(path, bytes);
                 File.Delete(encImagePath);
             }
@@ -162,12 +180,13 @@ namespace VnManager.Helpers
         /// </summary>
         /// <param name="stream">Stream of the object you want to encrypt</param>
         /// <param name="path">Path of where you want the file saved. Should not include the .aes extension</param>
+        [DebuggerHidden]
         public static void EncStream(MemoryStream stream, string path)
         {
             try
             {
                 byte[] bytes = stream.ToArray();
-                if (bytes.Length < 20) return;
+                if (bytes.Length < 20) return; //don't encrypt streams less than 20 bytes, as that indicates that the file might be bad
                 byte[] encBytes = Encrypt(bytes);
                 if (encBytes == null || encBytes.Length < 20) return;
                 File.WriteAllBytes($"{path}.aes", encBytes);
@@ -184,13 +203,15 @@ namespace VnManager.Helpers
         /// </summary>
         /// <param name="stream">Stream of the object you want to decrypt</param>
         /// <param name="path">Path of where you want the file saved. Should not include the .aes extension</param>
+        //TODO:This method is never used
+        [DebuggerHidden]
         public static void DecStream(MemoryStream stream, string path)
         {
             try
             {
                 string encPath = $"{path}.aes";
                 byte[] encBytes = stream.ToArray();
-                if (encBytes.Length < 20) return;
+                if (encBytes.Length < 20) return; //don't decrypt streams less than 20 bytes, as that indicates that the file might be bad
                 byte[] bytes = Decrypt(encBytes);
                 if (bytes == null || bytes.Length < 20) return;
                 File.WriteAllBytes(path, bytes);
@@ -207,7 +228,14 @@ namespace VnManager.Helpers
 
 
         #region Hashing
-        //PasswordHash has a 32 byte salt, and a 20 byte hash
+        /// <summary>
+        /// Generates a hash with a password(SecureString), and the bytes of the salt
+        /// PasswordHash has a 32 byte salt, and a 20 byte hash
+        /// </summary>
+        /// <param name="secPassword">Password in a SecureString</param>
+        /// <param name="prevSalt">Bytes of the salt</param>
+        /// <returns>Returns a PassHash object, which is the Hash and the Salt</returns>
+        [DebuggerHidden]
         internal static PassHash GenerateHash(SecureString secPassword, byte[] prevSalt)
         {
             try
@@ -237,6 +265,14 @@ namespace VnManager.Helpers
 
         }
 
+        /// <summary>
+        /// Validates the password against the given hash
+        /// </summary>
+        /// <param name="secPassword">Password to check</param>
+        /// <param name="prevSalt">Base64 string of the salt bytes used with the hash</param>
+        /// <param name="prevHash">Base64 string of the hash</param>
+        /// <returns></returns>
+        [DebuggerHidden]
         internal static bool ValidatePassword(SecureString secPassword, string prevSalt, string prevHash)
         {
             try
@@ -268,74 +304,13 @@ namespace VnManager.Helpers
         #region Password Generator
         private static readonly char[] Punctuations = "!@#$%^&*()_-+=[{]};:>|./?".ToCharArray();
 
-        //public static string GenerateSecurePassword(int length, int numberOfNonAlphanumericCharacters)
-        //{
-        //    if (length < 1 || length > 128)
-        //    {
-        //        throw new ArgumentException(nameof(length));
-        //    }
-
-        //    if (numberOfNonAlphanumericCharacters > length || numberOfNonAlphanumericCharacters < 0)
-        //    {
-        //        throw new ArgumentException(nameof(numberOfNonAlphanumericCharacters));
-        //    }
-
-        //    using (var rng = RandomNumberGenerator.Create())
-        //    {
-        //        var byteBuffer = new byte[length];
-
-        //        rng.GetBytes(byteBuffer);
-
-        //        var count = 0;
-        //        var characterBuffer = new char[length];
-
-        //        for (var iter = 0; iter < length; iter++)
-        //        {
-        //            var i = byteBuffer[iter] % 87;
-
-        //            if (i < 10)
-        //            {
-        //                characterBuffer[iter] = (char)('0' + i);
-        //            }
-        //            else if (i < 36)
-        //            {
-        //                characterBuffer[iter] = (char)('A' + i - 10);
-        //            }
-        //            else if (i < 62)
-        //            {
-        //                characterBuffer[iter] = (char)('a' + i - 36);
-        //            }
-        //            else
-        //            {
-        //                characterBuffer[iter] = Punctuations[i - 62];
-        //                count++;
-        //            }
-        //        }
-
-        //        if (count >= numberOfNonAlphanumericCharacters)
-        //        {
-        //            return new string(characterBuffer);
-        //        }
-
-        //        int j;
-        //        var rand = new Random();
-
-        //        for (j = 0; j < numberOfNonAlphanumericCharacters - count; j++)
-        //        {
-        //            int k;
-        //            do
-        //            {
-        //                k = rand.Next(0, length);
-        //            }
-        //            while (!char.IsLetterOrDigit(characterBuffer[k]));
-
-        //            characterBuffer[k] = Punctuations[rand.Next(0, Punctuations.Length)];
-        //        }
-
-        //        return new string(characterBuffer);
-        //    }
-        //}
-
+        /// <summary>
+        /// Generate a random secure password
+        /// </summary>
+        /// <param name="length">Length of the password. This has to be above 1 or less than 129</param>
+        /// <param name="numberOfNonAlphanumericCharacters">Number of special characters in the generated password</param>
+        /// <returns></returns>
+        [DebuggerHidden]
         public static string GenerateSecurePassword(int length, int numberOfNonAlphanumericCharacters)
         {
             if (length < 1 || length > 128)
@@ -382,6 +357,14 @@ namespace VnManager.Helpers
             }
         }
 
+        /// <summary>
+        /// Creates a character buffer of random characters from those allowed
+        /// </summary>
+        /// <param name="length">Length of the character buffer</param>
+        /// <param name="byteBuffer">Byte array of random values</param>
+        /// <param name="count">Number of special characters</param>
+        /// <returns>Returns the secure password as a char array</returns>
+        [DebuggerHidden]
         private static char[] LoopCharBuffer(int length, byte[] byteBuffer, ref int count)
         {
             var characterBuffer = new char[length];
@@ -390,6 +373,7 @@ namespace VnManager.Helpers
             {
                 var i = byteBuffer[iter] % 87;
 
+                //Set the Char to the appropriate value
                 if (i < 10)
                 {
                     characterBuffer[iter] = (char)('0' + i);

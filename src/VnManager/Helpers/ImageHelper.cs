@@ -62,8 +62,12 @@ namespace VnManager.Helpers
             return img;
         }
 
-
-        public static BitmapSource GetCoverImage(string path)
+        /// <summary>
+        /// Creates a BitmapSource from a specified path. If the file doesn't exist, it creates a blank/empty Image
+        /// </summary>
+        /// <param name="path">Path to image</param>
+        /// <returns></returns>
+        public static BitmapSource CreateBitmapFromPath(string path)
         {
             try
             {
@@ -91,8 +95,13 @@ namespace VnManager.Helpers
             }
         }
 
-
-        public static async Task DownloadImagesWithThumbnails(List<ScreenShot> imageList, string imageDirectory)
+        /// <summary>
+        /// Download a list of images, and generate thumbnails as well
+        /// </summary>
+        /// <param name="imageList">List of Images (Uri and IsNsfw)</param>
+        /// <param name="imageDirectory">Directory to save the images in</param>
+        /// <returns></returns>
+        public static async Task DownloadImagesWithThumbnailsAsync(List<ScreenShot> imageList, string imageDirectory)
         {
             try
             {
@@ -139,7 +148,13 @@ namespace VnManager.Helpers
 
 
 
-
+        /// <summary>
+        /// Downloads an an image from the specified Uri
+        /// </summary>
+        /// <param name="uri">URI/URL of the image to be downloaded</param>
+        /// <param name="isNsfw">Is the image Nsfw</param>
+        /// <param name="path">Directory and filename of where the image will be saved</param>
+        /// <returns></returns>
         public static async Task DownloadImage(Uri uri, bool isNsfw, string path)
         {
             try
@@ -169,6 +184,10 @@ namespace VnManager.Helpers
         }
 
 
+        /// <summary>
+        /// Creates a BitmapSource from a blank image
+        /// </summary>
+        /// <returns></returns>
         public static BitmapSource CreateEmptyBitmapImage()
         {
             try

@@ -68,7 +68,7 @@ namespace VnManager.ViewModels.UserControls.MainPage
 
                         var card = new GameCardViewModel(_container)
                         {
-                            CoverImage = ImageHelper.GetCoverImage(coverPath),
+                            CoverImage = ImageHelper.CreateBitmapFromPath(coverPath),
                             Title = game.Title,
                             LastPlayedString = $"Last Played: {TimeDateChanger.GetHumanDate(entry.LastPlayed)}",
                             TotalTimeString = $"Play Time: {TimeDateChanger.GetHumanTime(entry.PlayTime)}",

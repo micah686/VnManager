@@ -18,6 +18,9 @@ namespace VnManager.Helpers
         private static readonly string ConfigFile = Path.Combine(App.ConfigDirPath, @"config\config.json");
 
 
+        /// <summary>
+        /// Creates a default config file if one doesn't exist
+        /// </summary>
         public static void CreateDefaultConfig()
         {
             if (!File.Exists(ConfigFile))
@@ -35,12 +38,16 @@ namespace VnManager.Helpers
 
         }
 
+        /// <summary>
+        /// Validates that the config file is valid
+        /// </summary>
+        /// <returns></returns>
         public static bool ValidateConfigFile()
         {
             try
             {
                 var input = File.ReadAllText(ConfigFile);
-                var output = JObject.Parse(input);
+                JObject.Parse(input);
                 return true;
 
             }
@@ -52,7 +59,10 @@ namespace VnManager.Helpers
         }
 
         
-
+        /// <summary>
+        /// Reads the settings from the config file
+        /// </summary>
+        /// <returns>Returns the UserSettings</returns>
         public static UserSettings ReadUserSettings()
         {
             try
@@ -84,7 +94,10 @@ namespace VnManager.Helpers
             }
         }
 
-
+        /// <summary>
+        /// Saves UserSettings over the config file
+        /// </summary>
+        /// <param name="settings">UserSettings with updated values</param>
         public static void SaveUserSettings(UserSettings settings)
         {
             try

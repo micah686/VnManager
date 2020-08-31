@@ -8,6 +8,11 @@ namespace VnManager.Helpers
 {
     public static class ValidateFiles
     {
+        /// <summary>
+        /// Validates that a given file is a valid executable
+        /// </summary>
+        /// <param name="filepath">Path to the file to validate</param>
+        /// <returns>Returns true is the exe is valid</returns>
         public static bool ValidateExe(string filepath)
         {
             try
@@ -38,6 +43,11 @@ namespace VnManager.Helpers
             }
         }
 
+        /// <summary>
+        /// Checks if the path ends with .exe
+        /// </summary>
+        /// <param name="path">Path to the file</param>
+        /// <returns>Returns true if the file ends with .exe</returns>
         public static bool EndsWithExe(string path)
         {
             try
@@ -53,6 +63,11 @@ namespace VnManager.Helpers
             }
         }
 
+        /// <summary>
+        /// Checks if the path ends with .ico or .exe
+        /// </summary>
+        /// <param name="path">Path to the file</param>
+        /// <returns>Returns true if the file ends with .ico or .exe</returns>
         public static bool EndsWithIcoOrExe(string path)
         {
             try

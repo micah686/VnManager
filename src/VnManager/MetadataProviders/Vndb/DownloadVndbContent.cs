@@ -106,7 +106,7 @@ namespace VnManager.MetadataProviders.Vndb
                         List<ScreenShot> scrList = entries.Select(screen => new ScreenShot() { IsNsfw = NsfwHelper.IsNsfw(screen.ImageRating), Uri = screen.ImageUri }).ToList();
 
                         App.StatusBar.IsFileDownloading = true;
-                        await ImageHelper.DownloadImagesWithThumbnails(scrList, directory);
+                        await ImageHelper.DownloadImagesWithThumbnailsAsync(scrList, directory);
 
                     }
                 }

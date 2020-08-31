@@ -28,17 +28,20 @@ namespace VnManager
         public static string ExecutableDirPath { get; } = AppDomain.CurrentDomain.BaseDirectory!;
 
         #region StartupLockout
-        private static bool wasSetStartupLockout = false;
+        private static bool _wasSetStartupLockout = false;
         private static bool _startupLockout;
+        /// <summary>
+        /// Lockout variable used to prevent changing certain configurations after the application has started up
+        /// </summary>
         public static bool StartupLockout
         {
             get { return _startupLockout; }
             set
             {
-                if (!wasSetStartupLockout)
+                if (!_wasSetStartupLockout)
                 {
                     _startupLockout = value;
-                    wasSetStartupLockout = true;
+                    _wasSetStartupLockout = true;
                 }
                 else
                 {
@@ -50,6 +53,9 @@ namespace VnManager
 
         #region AssetDirPath 
         private static string _assetDirPath;
+        /// <summary>
+        /// Directory for saving assets like images, logs,...
+        /// </summary>
         public static string AssetDirPath
         {
             get { return _assetDirPath; }
@@ -69,6 +75,9 @@ namespace VnManager
 
         #region ConfigDirPath
         private static string _configDirPath;
+        /// <summary>
+        /// Configuration directory path, where the userSettings, database,... are stored
+        /// </summary>
         public static string ConfigDirPath
         {
             get { return _configDirPath; }
@@ -89,6 +98,9 @@ namespace VnManager
 
         #region Logger
         private static ILogger _logger= LogManager.Logger;
+        /// <summary>
+        /// Logger instance used for writing log files
+        /// </summary>
         public static ILogger Logger
         {
             get => _logger ?? LogManager.Logger;
@@ -106,12 +118,24 @@ namespace VnManager
         }
         #endregion
 
+        /// <summary>
+        /// Current user settings for the application
+        /// </summary>
         public static UserSettings UserSettings { get; set; }
 
+        /// <summary>
+        /// Resource Manager used to retrieve strings from the .resx files
+        /// </summary>
         public static readonly ResourceManager ResMan = new ResourceManager("VnManager.Strings.Resources", Assembly.GetExecutingAssembly());
 
+        /// <summary>
+        /// Database connection string without the password. Use CredentialManager to get the password
+        /// </summary>
         public static string GetDbStringWithoutPass => $"Filename={Path.Combine(App.ConfigDirPath, @"database\Data.db")};Password=";
 
+        /// <summary>
+        /// Static instance of the Statusbar, so any method can write values to it
+        /// </summary>
         public static StatusBarViewModel StatusBar { get; set; }
 
         /// <summary>

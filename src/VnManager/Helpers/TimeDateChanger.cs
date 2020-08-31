@@ -9,6 +9,11 @@ namespace VnManager.Helpers
 {
     public static class TimeDateChanger
     {
+        /// <summary>
+        /// Convert a DateTime to a more human readable date
+        /// </summary>
+        /// <param name="dateTime">Date you want to convert</param>
+        /// <returns></returns>
         public static string GetHumanDate(DateTime dateTime)
         {
             string output;
@@ -43,6 +48,11 @@ namespace VnManager.Helpers
             return output;
         }
 
+        /// <summary>
+        /// Convert TimeSpan to a Human Time
+        /// </summary>
+        /// <param name="timeSpan">Timespan to convert</param>
+        /// <returns></returns>
         public static string GetHumanTime(TimeSpan timeSpan)
         {
             string output;
@@ -67,6 +77,11 @@ namespace VnManager.Helpers
             return output;
         }
 
+        /// <summary>
+        /// Get weeks out of a Timespan
+        /// </summary>
+        /// <param name="timeSpan">Timespan to parse</param>
+        /// <returns></returns>
         private static string GetHumanWeeks(TimeSpan timeSpan)
         {
             string weeks = string.Empty;
@@ -81,6 +96,11 @@ namespace VnManager.Helpers
             return weeks;
         }
 
+        /// <summary>
+        /// Get days out of a Timespan
+        /// </summary>
+        /// <param name="timeSpan">Timespan to parse</param>
+        /// <returns></returns>
         private static string GetHumanDays(TimeSpan timeSpan)
         {
             string days = string.Empty;
@@ -95,6 +115,11 @@ namespace VnManager.Helpers
             return days;
         }
 
+        /// <summary>
+        /// Get hours out of a Timespan
+        /// </summary>
+        /// <param name="timeSpan">Timespan to parse</param>
+        /// <returns></returns>
         private static string GetHumanHours(TimeSpan timeSpan)
         {
             string hours = string.Empty;
@@ -109,6 +134,11 @@ namespace VnManager.Helpers
             return hours;
         }
 
+        /// <summary>
+        /// Get seconds out of a Timespan
+        /// </summary>
+        /// <param name="timeSpan">Timespan to parse</param>
+        /// <returns></returns>
         private static string GetHumanMinutes(TimeSpan timeSpan)
         {
             string minutes = string.Empty;

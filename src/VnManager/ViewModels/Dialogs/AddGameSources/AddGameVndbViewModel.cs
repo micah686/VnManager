@@ -180,7 +180,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
                         }
                         else if (VnNameList.Count < 1)
                         {
-                            HandleVndbErrors.HandleErrors(client.GetLastError(), 0);
+                            HandleVndbErrors.HandleErrors(client.GetLastError());
                             return;
                         }
                         else
@@ -388,7 +388,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
                     }
                     else
                     {
-                        HandleVndbErrors.HandleErrors(client.GetLastError(), 0);
+                        HandleVndbErrors.HandleErrors(client.GetLastError());
                         return false;
                     }
                 }
@@ -415,7 +415,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
                     }
                     else
                     {
-                        HandleVndbErrors.HandleErrors(client.GetLastError(), 0);
+                        HandleVndbErrors.HandleErrors(client.GetLastError());
                         return false;
                     }
                 }

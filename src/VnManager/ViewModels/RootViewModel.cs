@@ -149,6 +149,10 @@ namespace VnManager.ViewModels
         }
 
         //should exit if it can't read the database
+        /// <summary>
+        /// Checks if the program can successfully open the database.
+        /// If it encounters an error, the program will exit, as the program can't function if it can't read the database
+        /// </summary>
         private void CheckDbError()
         {
             string errorStr;
@@ -168,9 +172,6 @@ namespace VnManager.ViewModels
                         //do nothing. This is checking if the database can be opened
                     }
                 }
-
-                
-                    
             }
             catch (IOException)
             {

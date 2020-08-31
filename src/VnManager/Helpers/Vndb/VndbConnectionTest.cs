@@ -7,6 +7,10 @@ namespace VnManager.Helpers.Vndb
 {
     public static class VndbConnectionTest
     {
+        /// <summary>
+        /// Checks to see if the program can connect to the Vndb Api
+        /// </summary>
+        /// <returns></returns>
         public static bool VndbTcpSocketTest()
         {
             try

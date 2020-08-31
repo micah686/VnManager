@@ -8,21 +8,38 @@ using System.Threading.Tasks;
 
 namespace VnManager.Utilities
 {
+    /// <summary>
+    /// Generic class for working with the FluentValidation
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class FluentModelValidator<T> : IModelValidator<T>
     {
         private readonly IValidator<T> validator;
         private T subject;
 
+        /// <summary>
+        /// Default constructor for the FluentValidation
+        /// </summary>
+        /// <param name="validator"></param>
         public FluentModelValidator(IValidator<T> validator)
         {
             this.validator = validator;
         }
 
+        /// <summary>
+        /// Initialize the FluentValidation
+        /// </summary>
+        /// <param name="subject"></param>
         public void Initialize(object subject)
         {
             this.subject = (T)subject;
         }
 
+        /// <summary>
+        /// Checks to see if the Property is valid
+        /// </summary>
+        /// <param name="propertyName">Name of the property</param>
+        /// <returns></returns>
         public async Task<IEnumerable<string>> ValidatePropertyAsync(string propertyName)
         {
             // If someone's calling us synchronously, and ValidationAsync does not complete synchronously,
@@ -31,6 +48,10 @@ namespace VnManager.Utilities
                 .Errors.Select(x => x.ErrorMessage);
         }
 
+        /// <summary>
+        /// Checks all properties to check if any are not valid
+        /// </summary>
+        /// <returns></returns>
         public async Task<Dictionary<string, IEnumerable<string>>> ValidateAllPropertiesAsync()
         {
             // If someone's calling us synchronously, and ValidationAsync does not complete synchronously,

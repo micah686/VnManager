@@ -6,6 +6,11 @@ namespace VnManager.Helpers
 {
     public static class NormalizeWhiteSpace
     {
+        /// <summary>
+        /// Removes extra whitespace (eg: '  ', or trailing whitespace)
+        /// </summary>
+        /// <param name="input">String with extra whitespace</param>
+        /// <returns></returns>
         public static string FixWhiteSpace(string input)
         {
             if (string.IsNullOrEmpty(input))

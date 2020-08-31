@@ -13,37 +13,37 @@ namespace VnManager.Helpers.Vndb
 {
     public static class HandleVndbErrors
     {
-        public static void HandleErrors(IVndbError error, int counter)
+        public static void HandleErrors(IVndbError error)
         {
             switch (error)
             {
                 case MissingError missing:
-                    Debug.WriteLine($"A Missing Error occured, the field {missing.Field} was missing.");
-                    App.Logger.Warning($"A Missing Error occured, the field {missing.Field} was missing.");
+                    Debug.WriteLine($"A Missing Error occurred, the field {missing.Field} was missing.");
+                    App.Logger.Warning($"A Missing Error occurred, the field {missing.Field} was missing.");
                     break;
                 case BadArgumentError badArg:
-                    Debug.WriteLine($"A BadArgument Error occured, the field {badArg.Field} is invalid.");
-                    App.Logger.Warning($"A BadArgument Error occured, the field {badArg.Field} is invalid.");
+                    Debug.WriteLine($"A BadArgument Error occurred, the field {badArg.Field} is invalid.");
+                    App.Logger.Warning($"A BadArgument Error occurred, the field {badArg.Field} is invalid.");
                     break;
                 case ThrottledError throttled:
-                    Debug.WriteLine($"A Throttled Error occured, use the ThrottledWait() method to wait for the {throttled.MinimumWait.Second} seconds needed.");
-                    App.Logger.Warning($"A Throttled Error occured, use the ThrottledWait() method to wait for the {throttled.MinimumWait.Second} seconds needed.");
+                    Debug.WriteLine($"A Throttled Error occurred, use the ThrottledWait() method to wait for the {throttled.MinimumWait.Second} seconds needed.");
+                    App.Logger.Warning($"A Throttled Error occurred, use the ThrottledWait() method to wait for the {throttled.MinimumWait.Second} seconds needed.");
                     break;
                 case GetInfoError getInfo:
-                    Debug.WriteLine($"A GetInfo Error occured, the flag {getInfo.Flag} is not valid on the issued command.");
-                    App.Logger.Warning($"A GetInfo Error occured, the flag {getInfo.Flag} is not valid on the issued command.");
+                    Debug.WriteLine($"A GetInfo Error occurred, the flag {getInfo.Flag} is not valid on the issued command.");
+                    App.Logger.Warning($"A GetInfo Error occurred, the flag {getInfo.Flag} is not valid on the issued command.");
                     break;
                 case InvalidFilterError invalidFilter:
-                    Debug.WriteLine($"A InvalidFilter Error occured, the filter combination of {invalidFilter.Field}, {invalidFilter.Operator}, {invalidFilter.Value} is not a valid combination.");
-                    App.Logger.Warning($"A InvalidFilter Error occured, the filter combination of {invalidFilter.Field}, {invalidFilter.Operator}, {invalidFilter.Value} is not a valid combination.");
+                    Debug.WriteLine($"A InvalidFilter Error occurred, the filter combination of {invalidFilter.Field}, {invalidFilter.Operator}, {invalidFilter.Value} is not a valid combination.");
+                    App.Logger.Warning($"A InvalidFilter Error occurred, the filter combination of {invalidFilter.Field}, {invalidFilter.Operator}, {invalidFilter.Value} is not a valid combination.");
                     break;
                 case BadAuthenticationError badAuthentication:
-                    Debug.WriteLine($"A BadAuthenticationError occured. This is caused by an incorrect username or password.\nMessage: {badAuthentication.Message}");
-                    App.Logger.Warning($"A BadAuthenticationError occured. This is caused by an incorrect username or password.\nMessage: {badAuthentication.Message}");
+                    Debug.WriteLine($"A BadAuthenticationError occurred. This is caused by an incorrect username or password.\nMessage: {badAuthentication.Message}");
+                    App.Logger.Warning($"A BadAuthenticationError occurred. This is caused by an incorrect username or password.\nMessage: {badAuthentication.Message}");
                     break;
                 default:
-                    Debug.WriteLine($"A {error.Type} Error occured.\nMessage: {error.Message}");
-                    App.Logger.Warning($"A {error.Type} Error occured.\nMessage: {error.Message}");
+                    Debug.WriteLine($"A {error.Type} Error occurred.\nMessage: {error.Message}");
+                    App.Logger.Warning($"A {error.Type} Error occurred.\nMessage: {error.Message}");
                     break;
             }
             App.StatusBar.ResetValues();
