@@ -60,11 +60,11 @@ namespace VnManager.MetadataProviders.Vndb
                 if (entries.Count > 0)
                 {
                     var directory = Path.Combine(App.AssetDirPath, @$"sources\vndb\images\characters\{vnId}");
+                    if (!Directory.Exists(directory)) Directory.CreateDirectory(directory);
                     List<string> characterList = entries.Select(x => x.ImageLink.AbsoluteUri).ToList();
                     using var client = new WebClient();
                     foreach (var character in characterList)
                     {
-                        if (!Directory.Exists(directory)) Directory.CreateDirectory(directory);
                         string file = $@"{directory}\{Path.GetFileName(character)}";
                         if (!File.Exists(file) && !string.IsNullOrEmpty(character))
                         {
