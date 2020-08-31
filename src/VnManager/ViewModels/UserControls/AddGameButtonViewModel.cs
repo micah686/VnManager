@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using VnManager.MetadataProviders.NoSource;
+using VnManager.MetadataProviders;
 using VnManager.MetadataProviders.Vndb;
 using VnManager.Models;
 using VnManager.ViewModels.Dialogs;
@@ -63,8 +63,7 @@ namespace VnManager.ViewModels.UserControls
             gameEntry.IconPath = vmAddGame.IconPath;
             gameEntry.IsArgumentsEnabled = vmAddGame.IsArgsChecked;
             gameEntry.ExeArguments = vmAddGame.ExeArguments;
-            var saveData = new SaveNoSourceGameData();
-            saveData.SaveUserData(gameEntry);
+            MetadataCommon.SaveUserData(gameEntry);
         }
 
 

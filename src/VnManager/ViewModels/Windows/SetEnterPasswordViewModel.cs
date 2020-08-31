@@ -24,15 +24,25 @@ namespace VnManager.ViewModels.Windows
 {
     public class SetEnterPasswordViewModel: Screen
     {
-        #region Previous
         public string Title { get; set; }
+        /// <summary>
+        /// Yes has been checked for creating a new password
+        /// </summary>
         public bool RequirePasswordChecked { get; set; } //yes checked for creating a new password
         public SecureString Password { get; set; }
         public SecureString ConfirmPassword { get; set; }
-        public bool IsUnlockPasswordVisible { get; set; } //enables view for entering current password
+        /// <summary>
+        /// If true, shows the dialog to unlock the database
+        /// If false, shows the create password dialog
+        /// </summary>
+        public bool IsUnlockPasswordVisible { get; set; }
 
         private bool _isCreatePasswordVisible = true;
-        public bool IsCreatePasswordVisible // enables view for creating a password
+        /// <summary>
+        /// If true, shows the dialog to create a password
+        /// If false, shows the unlock database dialog
+        /// </summary>
+        public bool IsCreatePasswordVisible
         {
             get => _isCreatePasswordVisible;
             set
@@ -49,7 +59,6 @@ namespace VnManager.ViewModels.Windows
         internal bool IsClickChecked = false;
         private int _attemptCounter = 0;
 
-        #endregion
 
         public SetEnterPasswordViewModel(IModelValidator<SetEnterPasswordViewModel> validator) : base(validator)
         {
@@ -68,6 +77,12 @@ namespace VnManager.ViewModels.Windows
             
         }
 
+        /// <summary>
+        /// If the user has checked enable custom password, create a database with the custom password
+        /// If the user is not generating a custom password, create a database with a 64 character password with 16 special characters
+        /// Note: The password for Debug is 123456, in order to assist with debugging.
+        /// </summary>
+        /// <returns></returns>
         public async Task CreatePasswordClick()
         {
             IsClickChecked = true;
@@ -106,7 +121,7 @@ namespace VnManager.ViewModels.Windows
                     var password = new SecureString();
 
 #if DEBUG
-                    foreach (var character in "123456") //TODO:note-use 123456 for easy password when debugging the database
+                    foreach (var character in "123456") //TODO:Debug only password
                     {
                         password.AppendChar(character);
                     }
@@ -139,12 +154,15 @@ namespace VnManager.ViewModels.Windows
             }
         }
 
+        /// <summary>
+        /// Attempts to unlock the database with the entered password.
+        /// If the password is incorrect, it will create a validation error on the TextBox
+        /// </summary>
+        /// <returns></returns>
         public async Task UnlockPasswordClick()
         {
             IsPasswordCheckClicked = true;
             IsClickChecked = true;
-           // var validator = new SetEnterPasswordViewModelValidator();
-           // await validator.ValidateAsync(this);
             bool result = await ValidateAsync();
             if (result)
             {
@@ -156,6 +174,11 @@ namespace VnManager.ViewModels.Windows
             IsClickChecked = false;
         }
 
+        /// <summary>
+        /// Tries to unlock the database if [Enter] is pressed
+        /// </summary>
+        /// <param name="e"></param>
+        /// <returns></returns>
         public async Task UnlockPasswordKeyPressed(KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
@@ -164,6 +187,12 @@ namespace VnManager.ViewModels.Windows
             }
         }
 
+        /// <summary>
+        /// Checks how many password attempts were made
+        /// If too many attempts are made, the time between attempts is increased
+        /// If there have been 50 attempts, the program exits
+        /// </summary>
+        /// <returns></returns>
         private async Task PasswordAttemptChecker()
         {
             if(_attemptCounter <=5)
@@ -196,7 +225,9 @@ namespace VnManager.ViewModels.Windows
             }
         }
 
-
+        /// <summary>
+        /// Validates the settings of the config file and the database
+        /// </summary>
         private void ValidateFiles()
         {
             var configFile = Path.Combine(App.ConfigDirPath, @"config\config.json");
@@ -255,7 +286,13 @@ namespace VnManager.ViewModels.Windows
         }
 
 
-
+        /// <summary>
+        /// Checks if first password and the confirmation password match
+        /// </summary>
+        /// <param name="instance"></param>
+        /// <param name="confirmPass"></param>
+        /// <returns></returns>
+        //TODO:try to get rid of instance, if I can
         private bool DoPasswordsMatch(SetEnterPasswordViewModel instance, SecureString confirmPass)
         {
             var cred = CredentialManager.GetCredentials(App.CredDb);
@@ -270,7 +307,11 @@ namespace VnManager.ViewModels.Windows
         }
 
         
-
+        /// <summary>
+        /// Checks if trying to open the database generates an error
+        /// </summary>
+        /// <param name="password"></param>
+        /// <returns></returns>
         private bool IsNoDbError(SecureString password)
         {
             try
@@ -295,6 +336,11 @@ namespace VnManager.ViewModels.Windows
             }
         }
 
+        /// <summary>
+        /// Tries to create the database, and generates a validation error if it fails
+        /// </summary>
+        /// <param name="instance"></param>
+        /// <returns></returns>
         private string CreateDbErrorMessage(SetEnterPasswordViewModel instance)
         {
             try

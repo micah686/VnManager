@@ -9,11 +9,11 @@ using VnManager.Models;
 using VnManager.Models.Db.User;
 using VnManager.ViewModels.UserControls;
 
-namespace VnManager.MetadataProviders.NoSource
+namespace VnManager.MetadataProviders
 {
-    public class SaveNoSourceGameData
+    internal static class MetadataCommon
     {
-        public void SaveUserData(AddItemDbModel data)
+        public static void SaveUserData(AddItemDbModel data)
         {
             App.StatusBar.IsWorking = true;
             App.StatusBar.StatusString = App.ResMan.GetString("WritingToDb");

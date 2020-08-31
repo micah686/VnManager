@@ -49,7 +49,7 @@ namespace VnManager.MetadataProviders.Vndb
             SaveVnReleases(rel);
             SaveProducers(prod);
             SaveStaff(staff, (int)vn.Id);
-            SaveUserData(entry);
+            MetadataCommon.SaveUserData(entry);
 
             await DownloadVndbContent.DownloadCoverImage(vn.Id);
             await DownloadVndbContent.DownloadCharacterImages(vn.Id);
@@ -710,64 +710,5 @@ namespace VnManager.MetadataProviders.Vndb
         }
         #endregion
 
-        #region UserData
-
-        private void SaveUserData(AddItemDbModel data)
-        {
-            var cred = CredentialManager.GetCredentials(App.CredDb);
-            if (cred == null || cred.UserName.Length < 1) return;
-            using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
-            {
-                var dbUserData = db.GetCollection<UserDataGames>("UserData_Games");
-                List<UserDataGames> gamesList = new List<UserDataGames>();
-                var entry = new UserDataGames();
-                if (data.IsCollectionEnabled)
-                {
-                    foreach (var item in data.ExeCollection)
-                    {
-                        entry.ExePath = item.ExePath;
-                        entry.IconPath = item.IconPath;
-                        entry.Arguments = item.ArgumentsString;
-                        entry.SourceType = data.SourceType;
-                        entry.Id = Guid.NewGuid();
-                        entry.GameId = data.GameId;
-                        entry.LastPlayed = DateTime.MinValue;
-                        entry.PlayTime = TimeSpan.Zero;
-                        gamesList.Add(entry);
-                    }
-                }
-                else
-                {
-                    entry.SourceType = data.SourceType;
-                    entry.Id = Guid.NewGuid();
-                    entry.GameId = data.GameId;
-                    entry.LastPlayed = DateTime.MinValue;
-                    entry.PlayTime = TimeSpan.Zero;
-                    entry.ExePath = data.ExePath;
-                    entry.IconPath = data.IconPath;
-                    entry.Arguments = data.ExeArguments;
-                    gamesList.Add(entry);
-                }
-                dbUserData.Insert(gamesList);
-            }
-        }
-
-
-        #endregion
-
-
-
-        
-
-        
-
-
-        
-
-        
-
-        
-
-        
     }
 }
