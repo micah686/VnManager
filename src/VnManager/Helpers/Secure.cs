@@ -20,7 +20,7 @@ namespace VnManager.Helpers
     /// Class used for secure functions (encryption, password generator)
     /// These methods have the DebuggerHidden attribute. This will need to be disabled in order to step into the method
     /// </summary>
-    [DebuggerStepThrough()]
+    [DebuggerStepThrough]
     internal static class Secure
     {
 
@@ -251,7 +251,7 @@ namespace VnManager.Helpers
                 string savedPasswordHash = Convert.ToBase64String(hashBytes);
                 string savedSalt = Convert.ToBase64String(salt);
 
-                var passHash = new PassHash()
+                var passHash = new PassHash
                 {
                     Salt = savedSalt, Hash = savedPasswordHash
                 };

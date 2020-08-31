@@ -44,7 +44,7 @@ namespace VnManager.ViewModels.Controls
 
         static CustomMsgBoxViewModel()
         {
-            ButtonLabels = new Dictionary<MessageBoxResult, string>()
+            ButtonLabels = new Dictionary<MessageBoxResult, string>
             {
                 { MessageBoxResult.OK, "OK" },
                 { MessageBoxResult.Cancel, "Cancel" },
@@ -52,7 +52,7 @@ namespace VnManager.ViewModels.Controls
                 { MessageBoxResult.No, "No" },
             };
 
-            ButtonToResults = new Dictionary<MessageBoxButton, MessageBoxResult[]>()
+            ButtonToResults = new Dictionary<MessageBoxButton, MessageBoxResult[]>
             {
                 { MessageBoxButton.OK, new[] { MessageBoxResult.OK } },
                 { MessageBoxButton.OKCancel, new[] { MessageBoxResult.OK, MessageBoxResult.Cancel } },
@@ -60,7 +60,7 @@ namespace VnManager.ViewModels.Controls
                 { MessageBoxButton.YesNoCancel, new[] { MessageBoxResult.Yes, MessageBoxResult.No, MessageBoxResult.Cancel } },
             };
 
-            IconMapping = new Dictionary<MessageBoxImage, Icon>()
+            IconMapping = new Dictionary<MessageBoxImage, Icon>
             {
                 // Most of the MessageBoxImage values are duplicates - we can't list them here
                 { MessageBoxImage.None, null },
@@ -70,7 +70,7 @@ namespace VnManager.ViewModels.Controls
                 { MessageBoxImage.Information, SystemIcons.Information },
             };
 
-            SoundMapping = new Dictionary<MessageBoxImage, SystemSound>()
+            SoundMapping = new Dictionary<MessageBoxImage, SystemSound>
             {
                 { MessageBoxImage.None, null },
                 { MessageBoxImage.Error, SystemSounds.Hand },

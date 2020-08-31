@@ -14,7 +14,7 @@ namespace VnManager.Extensions
     /// XAML extension class that allows for binding a SecureString to a PasswordBox
     /// These methods have the DebuggerHidden attribute. This will need to be disabled in order to step into the method
     /// </summary>
-    [DebuggerStepThrough()]
+    [DebuggerStepThrough]
     public static class PasswordHelper
     {
         public static readonly DependencyProperty PasswordProperty =
