@@ -30,6 +30,7 @@ using VnManager.Helpers;
 using VnManager.Models.Db.User;
 using VnManager.Models.Db.Vndb.TagTrait;
 using VnManager.ViewModels.Dialogs.AddGameSources;
+using VnManager.ViewModels.Dialogs.ImportExportDb;
 using VnManager.ViewModels.Windows;
 
 
@@ -161,7 +162,7 @@ namespace VnManager.ViewModels.UserControls
 
         public void ExportImport()
         {
-            var vm = _container.Get<ImportExportDataViewModel>();
+            var vm = _container.Get<ImportExportMainViewModel>();
             _windowManager.ShowDialog(vm);
         }
 
