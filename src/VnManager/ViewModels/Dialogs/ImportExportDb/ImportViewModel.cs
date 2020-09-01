@@ -21,14 +21,14 @@ namespace VnManager.ViewModels.Dialogs.ImportExportDb
 {
     public class ImportViewModel: Screen
     {
-        public BindableCollection<UserDataGames> UserDataGamesCollection { get; set; }
+        public BindableCollection<UserDataGames> UserDataGamesCollection { get; set; } = new BindableCollection<UserDataGames>();
         public bool IsDataGridEnabled { get; set; } = false;
 
 
         private readonly IDialogService _dialogService;
         private readonly IWindowManager _windowManager;
 
-        public ImportViewModel(IWindowManager windowManager, IDialogService dialogService, IModelValidator<ImportUserDataValidator> validator): base(validator)
+        public ImportViewModel(IWindowManager windowManager, IDialogService dialogService)
         {
             _windowManager = windowManager;
             _dialogService = dialogService;
@@ -226,10 +226,6 @@ namespace VnManager.ViewModels.Dialogs.ImportExportDb
                 throw;
             }
         }
-
-
-
-
 
 
     }
