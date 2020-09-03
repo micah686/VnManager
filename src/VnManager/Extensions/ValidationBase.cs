@@ -46,7 +46,7 @@ namespace VnManager.Extensions
         /// <summary>
         /// Clears all errors set in the dictionary
         /// </summary>
-        protected void ClearAllErrors()
+        public void ClearAllErrors()
         {
             var errors = _errors.Select(error => error.Key).ToList();
 

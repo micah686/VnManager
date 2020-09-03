@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -36,8 +37,11 @@ namespace VnManager.ViewModels.Dialogs.ImportExportDb
         public bool IsImportProcessing { get; set; }
 
 
+        private List<int> _vndbGameIds= new List<int>();
+
         private readonly IDialogService _dialogService;
         private readonly IWindowManager _windowManager;
+        private readonly ImportUserDataValidator _validator = new ImportUserDataValidator();
 
         public ImportViewModel(IWindowManager windowManager, IDialogService dialogService)
         {
@@ -170,11 +174,12 @@ namespace VnManager.ViewModels.Dialogs.ImportExportDb
         public async Task ValidateData()
         {
             int errorCount = 0;
-            var validator = new ImportUserDataValidator();
+            
             
             foreach (var item in UserDataGamesCollection)
             {
-                var result = await validator.ValidateAsync(item);
+                item.ClearAllErrors();
+                var result = await _validator.ValidateAsync(item);
                 foreach (var error in result.Errors)
                 {
                     errorCount += 1;
@@ -199,32 +204,27 @@ namespace VnManager.ViewModels.Dialogs.ImportExportDb
 
         private async Task ImportData()
         {
-            var dbPath = Path.Combine(App.ConfigDirPath, @"database\Data.db");
-            var now = $"{DateTime.Now:yyyy-MM-dd}__{DateTime.Now:h-mmtt}";
-            File.Copy(dbPath, Path.Combine(App.ConfigDirPath, $@"database\Data_BACKUP_{now}.db"));
-
-            var cred = CredentialManager.GetCredentials(App.CredDb);
-            if (cred == null || cred.UserName.Length < 1) return;
-            using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
+            try
             {
-
-                Stringable<int>[] vndbIds = UserDataGamesCollection.Where(x => x.SourceType == AddGameSourceType.Vndb)
-                    .Select(x => x.GameId).ToArray();
                 var entryCount = UserDataGamesCollection.Count;
 
+                var cred = CredentialManager.GetCredentials(App.CredDb);
+                if (cred == null || cred.UserName.Length < 1) return;
 
                 for (int i = 0; i < entryCount; i++)
                 {
                     int errorCount = 0;
-                    var dbUserData = db.GetCollection<UserDataGames>("UserData_Games");
-                    var maxId = dbUserData.Query().OrderByDescending(x => x.Index).Select(x => x.Index)
-                        .FirstOrDefault();
 
+                    int maxId;
 
-                    var validator = new ImportUserDataValidator();
+                    using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
+                    {
+                        maxId = db.GetCollection<UserDataGames>("UserData_Games").Query().OrderByDescending(x => x.Index).Select(x => x.Index)
+                            .FirstOrDefault();
+                    }
 
                     var entry = UserDataGamesCollection.First();
-                    var result = await validator.ValidateAsync(entry);
+                    var result = await _validator.ValidateAsync(entry);
                     foreach (var error in result.Errors)
                     {
                         errorCount += 1;
@@ -243,22 +243,40 @@ namespace VnManager.ViewModels.Dialogs.ImportExportDb
                         entry.Index = maxId;
 
                         await Task.Run(() =>
-                             {
-                                 dbUserData.Insert(entry);
-                             });
+                        {
+                            using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
+                            var dbUserData = db.GetCollection<UserDataGames>("UserData_Games");
+                            dbUserData.Insert(entry);
+                        });
 
+                        if (entry.SourceType == AddGameSourceType.Vndb)
+                        {
+                            _vndbGameIds.Add(entry.GameId);
+                        }
 
                         UserDataGamesCollection.RemoveAt(0);
                         UserDataGamesCollection.Refresh();
                     }
+
+
                 }
-                await UpdateVndbData(vndbIds);
+
+                IsDataGridEnabled = true;
+                await UpdateVndbData(_vndbGameIds);
             }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                
+                throw;
+            }
+            
 
 
         }
 
-        private async Task UpdateVndbData(Stringable<int>[] gameIds)
+
+        private async Task UpdateVndbData(List<int> gameIds)
         {
             RequestOptions ro = new RequestOptions() { Count = 25 };
             var getData = new MetadataProviders.Vndb.GetVndbData();
@@ -268,8 +286,8 @@ namespace VnManager.ViewModels.Dialogs.ImportExportDb
                 IsImportingVisible = true;
                 IsImportProcessing = true;
                 ImportMessage = $"{App.ResMan.GetString("ImportDbStarting")}";
-                TotalProgressMsg = $"{App.ResMan.GetString("TotalProgressColon")} 0/{gameIds.Length}";
-                var totalIncrement = 100 / gameIds.Length;
+                TotalProgressMsg = $"{App.ResMan.GetString("TotalProgressColon")} 0/{gameIds.Count}";
+                var totalIncrement = 100 / gameIds.Count;
                 var count = 0;
 
 
@@ -277,7 +295,7 @@ namespace VnManager.ViewModels.Dialogs.ImportExportDb
                 {
                     if (_didCancelImport) break;
                     CurrentProgressMsg = $"{App.ResMan.GetString("ImportDbProg1")}";
-                    var id = (uint)strId.Value;
+                    var id = (uint)strId;
                     var visualNovel = await getData.GetVisualNovel(client, id);
                     var releases = await getData.GetReleases(client, id, ro);
                     uint[] producerIds = releases.SelectMany(x => x.Producers.Select(y => y.Id)).Distinct().ToArray();
@@ -302,7 +320,7 @@ namespace VnManager.ViewModels.Dialogs.ImportExportDb
 
                     TotalProgress += totalIncrement;
                     count = count + 1;
-                    TotalProgressMsg = $"{App.ResMan.GetString("TotalProgressColon")} {count}/ {gameIds.Length}";
+                    TotalProgressMsg = $"{App.ResMan.GetString("TotalProgressColon")} {count}/ {gameIds.Count}";
                 }
 
                 if (_didCancelImport)
