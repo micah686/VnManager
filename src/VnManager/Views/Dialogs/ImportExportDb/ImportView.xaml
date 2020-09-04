@@ -8,14 +8,32 @@
              xmlns:s="https://github.com/canton7/Stylet"
              xmlns:converters="clr-namespace:VnManager.Converters"
              xmlns:mvd="https://github.com/fantasticfiasco/mvvm-dialogs"
+             xmlns:extensions="clr-namespace:AdonisUI.Extensions;assembly=AdonisUI"
              mvd:DialogServiceViews.IsRegistered="True"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <converters:DataGridRowIdConverter x:Key="RowIdConverter"/>
+        <s:BoolToVisibilityConverter x:Key="BoolToVisConverter"/>
+        <s:BoolToVisibilityConverter x:Key="InverseVisConverter" FalseVisibility="Visible" TrueVisibility="Collapsed"/>
     </UserControl.Resources>
     <Grid >
-        <Grid Margin="5">
+        <Grid HorizontalAlignment="Center" Margin="5" Visibility="{Binding IsImportingVisible, Converter={StaticResource BoolToVisConverter}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Label Grid.Row="0"  Content="{Binding ImportMessage}" FontSize="16" />
+            <ProgressBar Grid.Row="1"  IsIndeterminate="{Binding IsImportProcessing}"  Height="25"  Width="225" extensions:ProgressBarExtension.Content="{Binding CurrentProgressMsg}"/>
+            <ProgressBar Grid.Row="2"  Value="{Binding TotalProgress}"  Height="25" Width="225" Margin="0,15,0,0" extensions:ProgressBarExtension.Content="{Binding TotalProgressMsg}"
+                         extensions:ProgressBarExtension.IsProgressAnimationEnabled="{Binding IsImportProcessing}"/>
+            <Button Grid.Row="3"  Width="70" Height="25" HorizontalAlignment="Center" Margin="0,30,0,0" Content="{x:Static res:Resources.Cancel}" Command="{s:Action CancelImport}"/>
+        </Grid>
+
+        <Grid Margin="5" Visibility="{Binding IsImportingVisible, Converter={StaticResource InverseVisConverter}}" d:IsHidden="True">
             <Grid.RowDefinitions>
                 <RowDefinition Height="30"/>
                 <RowDefinition Height="*"/>

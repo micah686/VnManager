@@ -237,26 +237,24 @@ namespace VnManager.ViewModels.Dialogs.ImportExportDb
                         _windowManager.ShowMessageBox($"{App.ResMan.GetString("ValidationFailedRecheck")}");
                         return;
                     }
-                    else
+
+                    maxId += 1;
+                    entry.Index = maxId;
+
+                    await Task.Run(() =>
                     {
-                        maxId += 1;
-                        entry.Index = maxId;
+                        using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
+                        var dbUserData = db.GetCollection<UserDataGames>("UserData_Games");
+                        dbUserData.Insert(entry);
+                    });
 
-                        await Task.Run(() =>
-                        {
-                            using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
-                            var dbUserData = db.GetCollection<UserDataGames>("UserData_Games");
-                            dbUserData.Insert(entry);
-                        });
-
-                        if (entry.SourceType == AddGameSourceType.Vndb)
-                        {
-                            _vndbGameIds.Add(entry.GameId);
-                        }
-
-                        UserDataGamesCollection.RemoveAt(0);
-                        UserDataGamesCollection.Refresh();
+                    if (entry.SourceType == AddGameSourceType.Vndb)
+                    {
+                        _vndbGameIds.Add(entry.GameId);
                     }
+
+                    UserDataGamesCollection.RemoveAt(0);
+                    UserDataGamesCollection.Refresh();
 
 
                 }
