@@ -13,6 +13,8 @@
              xmlns:userSetting="clr-namespace:VnManager.Models.Settings"
              xmlns:vnMdl="clr-namespace:VndbSharp.Models.Common;assembly=VndbSharp"
              xmlns:ext="clr-namespace:VnManager.Extensions"
+             xmlns:mvd="https://github.com/fantasticfiasco/mvvm-dialogs"
+             mvd:DialogServiceViews.IsRegistered="True"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid  Margin="10">
@@ -78,9 +80,13 @@
             <ComboBox Grid.Column="1" Margin="5,0,0,0" ItemsSource="{Binding Source={ext:EnumBindingSource {x:Type vnMdl:SpoilerLevel}}}"  SelectedIndex="{Binding SpoilerIndex}"  Width="70"/>
         </Grid>
 
-        <Button Grid.Row="5" Content="{x:Static res:Resources.Save}" Command="{s:Action SaveUserSettings}" Margin="10" Width="70" Style="{DynamicResource {x:Static adonisUi:Styles.AccentButton}}"/>
+        <Grid Grid.Row="5" Margin="5,10,0,0" HorizontalAlignment="Left">
+            <Button Width="100"  HorizontalAlignment="Center" Content="{x:Static res:Resources.ExportData}" Command="{s:Action ExportUserData}"/>
+        </Grid>
 
-        <Button Grid.Row="6" Margin="0,20,0,0" Width="120" Background="Crimson" Foreground="White" adExt:RippleExtension.BackgroundBrush="Crimson" adExt:RippleExtension.BorderBrush="Red" adExt:RippleExtension.ForegroundBrush="White"
+        <Button Grid.Row="6" Content="{x:Static res:Resources.Save}" Command="{s:Action SaveUserSettings}" Margin="10" Width="70" Style="{DynamicResource {x:Static adonisUi:Styles.AccentButton}}"/>
+
+        <Button Grid.Row="7" Margin="0,20,0,0" Width="120" Background="Crimson" Foreground="White" adExt:RippleExtension.BackgroundBrush="Crimson" adExt:RippleExtension.BorderBrush="Red" adExt:RippleExtension.ForegroundBrush="White"
                 adExt:CursorSpotlightExtension.BorderBrush="Red" adExt:CursorSpotlightExtension.BackgroundBrush="Crimson" 
                 Content="{x:Static res:Resources.ResetApplication}" Command="{s:Action ResetApplication}"/>
 

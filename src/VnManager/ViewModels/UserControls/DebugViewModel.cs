@@ -162,7 +162,7 @@ namespace VnManager.ViewModels.UserControls
 
         public void ExportImport()
         {
-            var vm = _container.Get<ImportExportMainViewModel>();
+            var vm = _container.Get<ImportViewModel>();
             _windowManager.ShowDialog(vm);
         }
 

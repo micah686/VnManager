@@ -36,8 +36,10 @@ namespace VnManager.ViewModels.Dialogs.ImportExportDb
         public double TotalProgress { get; set; }
         public bool IsImportProcessing { get; set; }
 
+        public bool BlockClosing { get; set; } = false;
 
-        private List<int> _vndbGameIds= new List<int>();
+
+        private readonly List<int> _vndbGameIds= new List<int>();
 
         private readonly IDialogService _dialogService;
         private readonly IWindowManager _windowManager;
@@ -213,6 +215,7 @@ namespace VnManager.ViewModels.Dialogs.ImportExportDb
 
                 for (int i = 0; i < entryCount; i++)
                 {
+                    BlockClosing = true;
                     int errorCount = 0;
 
                     int maxId;
@@ -256,7 +259,7 @@ namespace VnManager.ViewModels.Dialogs.ImportExportDb
                     UserDataGamesCollection.RemoveAt(0);
                     UserDataGamesCollection.Refresh();
 
-
+                    BlockClosing = false;
                 }
 
                 IsDataGridEnabled = true;
@@ -292,6 +295,7 @@ namespace VnManager.ViewModels.Dialogs.ImportExportDb
                 foreach (var strId in gameIds)
                 {
                     if (_didCancelImport) break;
+                    BlockClosing = true;
                     CurrentProgressMsg = $"{App.ResMan.GetString("ImportDbProg1")}";
                     var id = (uint)strId;
                     var visualNovel = await getData.GetVisualNovel(client, id);
@@ -319,6 +323,7 @@ namespace VnManager.ViewModels.Dialogs.ImportExportDb
                     TotalProgress += totalIncrement;
                     count = count + 1;
                     TotalProgressMsg = $"{App.ResMan.GetString("TotalProgressColon")} {count}/ {gameIds.Count}";
+                    BlockClosing = false;
                 }
 
                 if (_didCancelImport)
