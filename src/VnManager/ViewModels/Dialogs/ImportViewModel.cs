@@ -20,7 +20,7 @@ using VnManager.Models.Db.User;
 using VnManager.ViewModels.Dialogs.AddGameSources;
 using VnManager.ViewModels.Windows;
 
-namespace VnManager.ViewModels.Dialogs.ImportExportDb
+namespace VnManager.ViewModels.Dialogs
 {
     public class ImportViewModel: Screen
     {
@@ -35,7 +35,6 @@ namespace VnManager.ViewModels.Dialogs.ImportExportDb
         public string TotalProgressMsg { get; set; }
         public double TotalProgress { get; set; }
         public bool IsImportProcessing { get; set; }
-
         public bool BlockClosing { get; set; } = false;
 
 
@@ -50,6 +49,7 @@ namespace VnManager.ViewModels.Dialogs.ImportExportDb
             _windowManager = windowManager;
             _dialogService = dialogService;
         }
+
 
         public void BrowseImportDump()
         {
@@ -213,9 +213,18 @@ namespace VnManager.ViewModels.Dialogs.ImportExportDb
                 var cred = CredentialManager.GetCredentials(App.CredDb);
                 if (cred == null || cred.UserName.Length < 1) return;
 
+                BlockClosing = true;
+                IsDataGridEnabled = true;
+                IsImportProcessing = true;
                 for (int i = 0; i < entryCount; i++)
                 {
-                    BlockClosing = true;
+                    if (_didCancelImport == true)
+                    {
+                        BlockClosing = false;
+                        IsDataGridEnabled = true;
+                        return;
+                    }
+                    
                     int errorCount = 0;
 
                     int maxId;
@@ -236,7 +245,7 @@ namespace VnManager.ViewModels.Dialogs.ImportExportDb
 
                     if (errorCount > 0)
                     {
-                        IsDataGridEnabled = true;
+                        
                         _windowManager.ShowMessageBox($"{App.ResMan.GetString("ValidationFailedRecheck")}");
                         return;
                     }
@@ -262,7 +271,9 @@ namespace VnManager.ViewModels.Dialogs.ImportExportDb
                     BlockClosing = false;
                 }
 
+                BlockClosing = false;
                 IsDataGridEnabled = true;
+                IsImportProcessing = false;
                 await UpdateVndbData(_vndbGameIds);
             }
             catch (Exception ex)
@@ -346,6 +357,9 @@ namespace VnManager.ViewModels.Dialogs.ImportExportDb
         public void CancelImport()
         {
             _didCancelImport = true;
+            IsDataGridEnabled = true;
+            BlockClosing = false;
+            IsImportProcessing = false;
             ImportMessage = $"{App.ResMan.GetString("ImportDbCancelWorking")}";
         }
 

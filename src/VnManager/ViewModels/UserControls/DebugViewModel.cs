@@ -29,8 +29,8 @@ using VndbSharp.Models.Dumps;
 using VnManager.Helpers;
 using VnManager.Models.Db.User;
 using VnManager.Models.Db.Vndb.TagTrait;
+using VnManager.ViewModels.Dialogs;
 using VnManager.ViewModels.Dialogs.AddGameSources;
-using VnManager.ViewModels.Dialogs.ImportExportDb;
 using VnManager.ViewModels.Windows;
 
 

@@ -153,6 +153,9 @@
   <data name="Arguments" xml:space="preserve">
     <value>Arguments</value>
   </data>
+  <data name="AskImportDb" xml:space="preserve">
+    <value>Would you like to import previously saved data?</value>
+  </data>
   <data name="Browse" xml:space="preserve">
     <value>Browse</value>
   </data>
@@ -173,6 +176,9 @@
   </data>
   <data name="Cancel" xml:space="preserve">
     <value>Cancel</value>
+  </data>
+  <data name="CancelImport" xml:space="preserve">
+    <value>Cancel Import</value>
   </data>
   <data name="CanCloseWindow" xml:space="preserve">
     <value>You can now close this window</value>
@@ -325,7 +331,7 @@
     <value>Import Data</value>
   </data>
   <data name="ImportDataTitle" xml:space="preserve">
-    <value>Import/Export User Data</value>
+    <value>Import User Data</value>
   </data>
   <data name="ImportDbCancel" xml:space="preserve">
     <value>Import was cancelled</value>

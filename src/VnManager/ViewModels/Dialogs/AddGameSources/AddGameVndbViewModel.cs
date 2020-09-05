@@ -355,14 +355,13 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
 
             //Exe Path Validation
             RuleFor(x => x.ExePath).Cascade(CascadeMode.StopOnFirstFailure).ExeValidation()
-                .Must(IsNotDuplicateExe).WithMessage(App.ResMan.GetString("ExeAlreadyExistsInDb"));
+                .Must(IsNotDuplicateVndbExe).WithMessage(App.ResMan.GetString("ExeAlreadyExistsInDb"));
             
             //Icon
             When(x => x.IsIconChecked == true, () =>
             {
                 RuleFor(x => x.IconPath).Cascade(CascadeMode.StopOnFirstFailure).IcoValidation();
             });
-
 
 
             //Arguments
@@ -427,7 +426,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             }
         }
 
-        private bool IsNotDuplicateExe(AddGameVndbViewModel instance, string exePath)
+        private bool IsNotDuplicateVndbExe(AddGameVndbViewModel instance, string exePath)
         {
             //if type is normal and game id in db or exe in db
             try

@@ -122,8 +122,9 @@ namespace VnManager.ViewModels
                 
                 if (isAuth == true)
                 {
-                    var maingrid = _container.Get<MainGridViewModel>();
-                    ActivateItem(maingrid);
+                    CheckForImportDb();
+                    var mainGrid = _container.Get<MainGridViewModel>();
+                    ActivateItem(mainGrid);
                     StatusBarPage = _container.Get<StatusBarViewModel>();
                     var result = Application.Current.TryFindResource(AdonisUI.Colors.ForegroundColor);
                     SettingsIconColor = result == null ? System.Windows.Media.Brushes.LightSteelBlue : new SolidColorBrush((System.Windows.Media.Color)result);
@@ -136,8 +137,8 @@ namespace VnManager.ViewModels
             else
             {
                 CheckDbError();
-                var maingrid = _container.Get<MainGridViewModel>();
-                ActivateItem(maingrid);
+                var mainGrid = _container.Get<MainGridViewModel>();
+                ActivateItem(mainGrid);
                 StatusBarPage = _container.Get<StatusBarViewModel>();
                 var result = Application.Current.TryFindResource(AdonisUI.Colors.ForegroundColor);
                 SettingsIconColor = result == null ? System.Windows.Media.Brushes.LightSteelBlue : new SolidColorBrush((System.Windows.Media.Color)result);
@@ -147,6 +148,23 @@ namespace VnManager.ViewModels
 
 
         }
+
+        /// <summary>
+        /// Checks to see if the user has been asked to import the database yet. If not, prompts for importing data into the Db
+        /// </summary>
+        private void CheckForImportDb()
+        {
+            if (App.UserSettings.DidAskImportDb != false) return;
+            var result = _windowManager.ShowMessageBox(App.ResMan.GetString("AskImportDb"),
+                App.ResMan.GetString("ImportDataTitle"), MessageBoxButton.YesNo);
+            if (result != MessageBoxResult.Yes) return;
+            var vm = _container.Get<ImportViewModel>();
+            _windowManager.ShowDialog(vm);
+
+            App.UserSettings.DidAskImportDb = true;
+            UserSettingsHelper.SaveUserSettings(App.UserSettings);
+        }
+
 
         //should exit if it can't read the database
         /// <summary>

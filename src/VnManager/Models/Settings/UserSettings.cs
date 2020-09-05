@@ -13,6 +13,7 @@ namespace VnManager.Models.Settings
         public bool IsVisibleSavedNsfwContent { get; set; }
         public UserSettingsVndb SettingsVndb { get; set; }
         public bool EncryptionEnabled { get; set; } = false;
+        public bool DidAskImportDb { get; set; } = false;
     }
 
     public class UserSettingsVndb

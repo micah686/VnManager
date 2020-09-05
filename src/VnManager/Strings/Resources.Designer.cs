@@ -169,6 +169,15 @@ namespace VnManager.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Would you like to import previously saved data?.
+        /// </summary>
+        public static string AskImportDb {
+            get {
+                return ResourceManager.GetString("AskImportDb", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Browse.
         /// </summary>
         public static string Browse {
@@ -228,6 +237,15 @@ namespace VnManager.Strings {
         public static string Cancel {
             get {
                 return ResourceManager.GetString("Cancel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cancel Import.
+        /// </summary>
+        public static string CancelImport {
+            get {
+                return ResourceManager.GetString("CancelImport", resourceCulture);
             }
         }
         
@@ -682,7 +700,7 @@ namespace VnManager.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Import/Export User Data.
+        ///   Looks up a localized string similar to Import User Data.
         /// </summary>
         public static string ImportDataTitle {
             get {
