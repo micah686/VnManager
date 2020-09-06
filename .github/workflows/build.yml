@@ -20,67 +20,63 @@ on:
 
 
 jobs:
-  sonarcloud:
-    name: SonarCloud
-    runs-on: windows-latest
+  #Build Job for prepping the environment for build (installing .net core, getting nuget packages,...
+  build:
+    name: Build Project
+    runs-on: windows-latest                             
+    env:
+      Solution_Name: src/VnManager.sln                         
+      
     steps:
-      - uses: actions/checkout@v2
-        with:
-          # Shallow clones should be disabled for a better relevancy of analysis
-          fetch-depth: 0
-          submodules: true
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+        submodules: true
 
-      # Speed-up analysis by caching the scanner workspace
-      - name: Cache SonarCloud workspace
-        uses: actions/cache@v1
-        with:
-          path: ~\.sonar\cache
-          key: ${{ runner.os }}-sonar-cache
-          restore-keys: ${{ runner.os }}-sonar-cache
+    - name: Cache NuGet Packages
+      uses: actions/cache@v1
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
 
-      # Speed-up analysis by caching the scanner installation
-      - name: Cache SonarCloud scanner
-        id: cache-sonar-scanner
-        uses: actions/cache@v1
-        with:
-          path: .\.sonar\scanner
-          key: ${{ runner.os }}-sonar-scanner
-          restore-keys: ${{ runner.os }}-sonar-scanner
-          
-      - name: Cache NuGet Packages
-        uses: actions/cache@v1
-        with:
-          path: ~/.nuget/packages
-          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-nuget-          
-            
-            
-      - name: Install SonarCloud scanner
-        if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
-        shell: powershell
-        # The --version argument is optional. If it is omitted the latest version will be installed.
-        run: |
-          New-Item -Path .\.sonar\scanner -ItemType Directory
-          dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner --version 4.8.0
-          
-      - name: Build
-        shell: powershell
-        env:
-          # Needed to get some information about the pull request, if any
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # The secret referenced in the command-line by SONAR_TOKEN should be generated
-          # from https://sonarcloud.io/account/security/
-          # The organization and project arguments (see /o and /k) are displayed
-          # on the project dashboard in SonarCloud.
-        run: |
-          mkdir ${{ github.workspace }}/build
-          .\.sonar\scanner\dotnet-sonarscanner begin /k:"micah686_VnManager" /o:"micah686" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
-          dotnet publish src/VnManager/VnManager.csproj --framework netcoreapp3.1 -c Release -o --output "${{ github.workspace }}/build"
-          .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
-          
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v1
-        with:
-            name: VnManager-YamlTest
-            path:  "${{ github.workspace }}/build/"
+    # Install the .NET Core workload
+    - name: Install .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.101 
+    - name: Build VnManager
+      run: |
+        mkdir ${{ github.workspace }}/build
+        mkdir ${{ github.workspace }}/staging
+        dotnet publish src/VnManager/VnManager.csproj --framework netcoreapp3.1 -c Release -o --output "${{ github.workspace }}/build"
+                
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v1
+      with:
+        name: VnManager-YamlTest
+        path:  "${{ github.workspace }}/build/"
+        
+  sonarcloud:
+    name: Sonar
+    runs-on: ubuntu-latest                       
+      
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+        submodules: true
+
+    - name: SonarCloud Scan
+      uses: sonarsource/sonarcloud-github-action@master
+      with:
+        projectBaseDir: src
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-    
+    
