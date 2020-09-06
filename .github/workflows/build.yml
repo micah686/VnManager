@@ -15,12 +15,12 @@ name: Build
 on:
   push:
     branches:
-    -yamlTest
-    -PrTest2
+    - yamlTest
+    - PrTest2
   pull_request:
     branches:
-    -yamlTest
-    -PrTest2
+    - yamlTest
+    - PrTest2
 
 
 jobs:
