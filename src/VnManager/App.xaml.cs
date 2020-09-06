@@ -131,7 +131,7 @@ namespace VnManager
         /// <summary>
         /// Database connection string without the password. Use CredentialManager to get the password
         /// </summary>
-        public static string GetDbStringWithoutPass => $"Filename={Path.Combine(App.ConfigDirPath, @"database\Data.db")};Password=";
+        public static string GetDbStringWithoutPass => $"Filename={Path.Combine(App.ConfigDirPath, App.DbPath)};Password=";
 
         /// <summary>
         /// Static instance of the Statusbar, so any method can write values to it
@@ -146,6 +146,10 @@ namespace VnManager
         /// Credential name for the file encryption
         /// </summary>
         internal const string CredFile = "VnManager.FileEnc";
+        /// <summary>
+        /// Relative path name for the database
+        /// </summary>
+        internal const string DbPath = @"database\Data.db";
 
     }
 }

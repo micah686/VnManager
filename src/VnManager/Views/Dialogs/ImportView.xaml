@@ -37,7 +37,7 @@
             <ProgressBar Grid.Row="1"  IsIndeterminate="{Binding IsImportProcessing}"  Height="25"  Width="225" extensions:ProgressBarExtension.Content="{Binding CurrentProgressMsg}"/>
             <ProgressBar Grid.Row="2"  Value="{Binding TotalProgress}"  Height="25" Width="225" Margin="0,15,0,0" extensions:ProgressBarExtension.Content="{Binding TotalProgressMsg}"
                          extensions:ProgressBarExtension.IsProgressAnimationEnabled="{Binding IsImportProcessing}"/>
-            <Button Grid.Row="3"  Width="70" Height="25" HorizontalAlignment="Center" Margin="0,30,0,0" Content="{x:Static res:Resources.Cancel}" Command="{s:Action CancelImport}"/>
+            <Button Grid.Row="3"  Width="70" Height="25" HorizontalAlignment="Center" Margin="0,30,0,0" Content="{x:Static res:Resources.Cancel}" Command="{s:Action CancelImport}" IsEnabled="{Binding IsImportProcessing}"/>
         </Grid>
 
         <Grid Margin="5" Visibility="{Binding IsImportingVisible, Converter={StaticResource InverseVisConverter}}" >

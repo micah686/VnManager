@@ -185,7 +185,7 @@ namespace VnManager.ViewModels
                 }
                 else
                 {
-                    using (var db = new LiteDatabase($"Filename={Path.Combine(App.ConfigDirPath, @"database\Data.db")};Password={cred.Password}"))
+                    using (var db = new LiteDatabase($"Filename={Path.Combine(App.ConfigDirPath, App.DbPath)};Password={cred.Password}"))
                     {
                         //do nothing. This is checking if the database can be opened
                     }

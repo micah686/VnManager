@@ -85,6 +85,7 @@ namespace VnManager.ViewModels.Windows
         /// <returns></returns>
         public async Task CreatePasswordClick()
         {
+            File.Delete(Path.Combine(App.ConfigDirPath, App.DbPath));
             IsClickChecked = true;
             try
             {
@@ -95,13 +96,16 @@ namespace VnManager.ViewModels.Windows
                         await ValidateAsync();
                         return;
                     }
+
+                    
                     var hashStruct = Secure.GenerateHash(ConfirmPassword, Secure.GenerateRandomSalt());
                     string username = $"{hashStruct.Hash}|{hashStruct.Salt}";
                     
                     var cred = new NetworkCredential(username, ConfirmPassword);
                     CredentialManager.SaveCredentials(App.CredDb, cred);
-
-                    using var db = new LiteDatabase($"Filename={Path.Combine(App.ConfigDirPath, @"database\Data.db")};Password={cred.Password}") { };
+                    var validPasswords = await ValidateAsync();
+                    if(validPasswords != true) return;
+                    using var db = new LiteDatabase($"Filename={Path.Combine(App.ConfigDirPath, App.DbPath)};Password={cred.Password}") { };
 
                     var settings = new UserSettings
                     {
@@ -137,7 +141,7 @@ namespace VnManager.ViewModels.Windows
                     var cred = new NetworkCredential(username, password);
                     CredentialManager.SaveCredentials(App.CredDb, cred);
 
-                    using var db = new LiteDatabase($"Filename={Path.Combine(App.ConfigDirPath, @"database\Data.db")};Password={cred.Password}") { };
+                    using var db = new LiteDatabase($"Filename={Path.Combine(App.ConfigDirPath, App.DbPath)};Password={cred.Password}") { };
 
                     bool result = await ValidateAsync();
                     if (result)
@@ -231,7 +235,7 @@ namespace VnManager.ViewModels.Windows
         private void ValidateFiles()
         {
             var configFile = Path.Combine(App.ConfigDirPath, @"config\config.json");
-            var database = Path.Combine(App.ConfigDirPath, @"database\Data.db");
+            var database = Path.Combine(App.ConfigDirPath, App.DbPath);
 
             if (!File.Exists(configFile))
             {
@@ -318,7 +322,7 @@ namespace VnManager.ViewModels.Windows
             {
                 var cred = CredentialManager.GetCredentials(App.CredDb);
                 if (cred == null || cred.UserName.Length < 1) return false;
-                using var db = new LiteDatabase($"Filename={Path.Combine(App.ConfigDirPath, @"database\Data.db")};Password={cred.Password}");
+                using var db = new LiteDatabase($"Filename={Path.Combine(App.ConfigDirPath, App.DbPath)};Password={cred.Password}");
                 return true;
             }
             catch (IOException)
@@ -347,7 +351,7 @@ namespace VnManager.ViewModels.Windows
             {
                 var cred = CredentialManager.GetCredentials(App.CredDb);
                 if (cred == null || cred.UserName.Length < 1) return App.ResMan.GetString("PasswordNoEmpty");
-                using var db = new LiteDatabase($"Filename={Path.Combine(App.ConfigDirPath, @"database\Data.db")};Password={cred.Password}");
+                using var db = new LiteDatabase($"Filename={Path.Combine(App.ConfigDirPath, App.DbPath)};Password={cred.Password}");
                 return String.Empty;
             }
             catch (IOException)
