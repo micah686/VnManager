@@ -16,7 +16,6 @@ on:
   push:
     branches:
     - yamlTest
-    - PrTest2
   pull_request:
     branches:
     - yamlTest
