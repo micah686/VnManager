@@ -14,8 +14,7 @@ name: Build
 
 on:
   push:
-    branches:
-    - yamlTest
+    branches: [ yamlTest ]
 
 
 jjobs:
