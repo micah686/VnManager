@@ -14,10 +14,15 @@ name: Build
 
 on:
   push:
-    branches: [ yamlTest ]
+    branches:
+    - yamlTest
+  pull_request:
+    branches:
+    - yamlTest
+    - PrTest2
 
 
-jjobs:
+jobs:
   sonarcloud:
     name: SonarCloud
     runs-on: windows-latest
