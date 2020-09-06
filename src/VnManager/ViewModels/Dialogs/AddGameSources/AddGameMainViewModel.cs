@@ -44,8 +44,6 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
                     var noSource = _container.Get<AddGameNoSourceViewModel>();
                     ActivateItem(noSource);
                     break;
-                default:
-                    break;
             }
         }
     }

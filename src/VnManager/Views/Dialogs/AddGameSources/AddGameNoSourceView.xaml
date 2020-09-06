@@ -91,7 +91,7 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <Button Width="100" Height="30" Content="Submit" Command="{s:Action Submit}" Style="{DynamicResource {x:Static adonisUi:Styles.AccentButton}}"/>
+            <Button Width="100" Height="30" Content="Submit" Command="{s:Action SubmitAsync}" Style="{DynamicResource {x:Static adonisUi:Styles.AccentButton}}"/>
             <Button Width="85" Height="25" Grid.Column="1" Content="Cancel" Command="{s:Action Cancel}" Margin="10,0,0,0"/>
         </Grid>
 

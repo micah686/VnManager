@@ -83,7 +83,7 @@ namespace VnManager.ViewModels.Windows
         /// Note: The password for Debug is 123456, in order to assist with debugging.
         /// </summary>
         /// <returns></returns>
-        public async Task CreatePasswordClick()
+        public async Task CreatePasswordClickAsync()
         {
             File.Delete(Path.Combine(App.ConfigDirPath, App.DbPath));
             IsClickChecked = true;
@@ -105,7 +105,10 @@ namespace VnManager.ViewModels.Windows
                     CredentialManager.SaveCredentials(App.CredDb, cred);
                     var validPasswords = await ValidateAsync();
                     if(validPasswords != true) return;
-                    using var db = new LiteDatabase($"Filename={Path.Combine(App.ConfigDirPath, App.DbPath)};Password={cred.Password}") { };
+                    using var db = new LiteDatabase($"Filename={Path.Combine(App.ConfigDirPath, App.DbPath)};Password={cred.Password}")
+                    {
+                        //intentionally blank. Creates initial database
+                    };
 
                     var settings = new UserSettings
                     {
@@ -163,7 +166,7 @@ namespace VnManager.ViewModels.Windows
         /// If the password is incorrect, it will create a validation error on the TextBox
         /// </summary>
         /// <returns></returns>
-        public async Task UnlockPasswordClick()
+        public async Task UnlockPasswordClickAsync()
         {
             IsPasswordCheckClicked = true;
             IsClickChecked = true;
@@ -173,7 +176,7 @@ namespace VnManager.ViewModels.Windows
                 RequestClose(true);
             }
             _attemptCounter += 1;
-            await PasswordAttemptChecker();
+            await PasswordAttemptCheckerAsync();
             IsPasswordCheckClicked = false;
             IsClickChecked = false;
         }
@@ -183,11 +186,11 @@ namespace VnManager.ViewModels.Windows
         /// </summary>
         /// <param name="e"></param>
         /// <returns></returns>
-        public async Task UnlockPasswordKeyPressed(KeyEventArgs e)
+        public async Task UnlockPasswordKeyPressedAsync(KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
             {
-                await UnlockPasswordClick();
+                await UnlockPasswordClickAsync();
             }
         }
 
@@ -197,7 +200,7 @@ namespace VnManager.ViewModels.Windows
         /// If there have been 50 attempts, the program exits
         /// </summary>
         /// <returns></returns>
-        private async Task PasswordAttemptChecker()
+        private async Task PasswordAttemptCheckerAsync()
         {
             if(_attemptCounter <=5)
             {

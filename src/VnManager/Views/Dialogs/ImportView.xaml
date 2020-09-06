@@ -105,7 +105,7 @@
             </Grid>
             <Grid Grid.Row="2">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <Button Width="150" Height="30" Content="{x:Static res:Resources.ImportIntoDb}" Command="{s:Action ValidateData}" IsEnabled="{Binding IsImportProcessing, Converter={StaticResource InverseVisConverter}}"/>
+                    <Button Width="150" Height="30" Content="{x:Static res:Resources.ImportIntoDb}" Command="{s:Action ValidateDataAsync}" IsEnabled="{Binding IsImportProcessing, Converter={StaticResource InverseVisConverter}}"/>
                     <Button Width="90" Height="30" Margin="15,0,0,0" Content="{x:Static res:Resources.CancelImport}" Command="{s:Action CancelImport}" IsEnabled="{Binding IsImportProcessing}"/>
                 </StackPanel>
             </Grid>

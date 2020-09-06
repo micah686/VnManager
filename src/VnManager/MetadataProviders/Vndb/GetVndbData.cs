@@ -23,7 +23,7 @@ namespace VnManager.MetadataProviders.Vndb
         private readonly Stopwatch stopwatch = new Stopwatch();
 		private readonly TimeSpan maxTime = TimeSpan.FromMinutes(3);
         private bool _didErrorOccur = false;
-		public async Task GetData(AddItemDbModel entry)
+		public async Task GetDataAsync(AddItemDbModel entry)
         {
 			uint vnid = (uint)entry.GameId;
 			try
@@ -42,29 +42,29 @@ namespace VnManager.MetadataProviders.Vndb
 					RequestOptions ro = new RequestOptions { Count = 25 };
 					stopwatch.Start();
                     App.StatusBar.InfoText = App.ResMan.GetString("DownVnInfo");
-					var visualNovel = await GetVisualNovel(client, vnid);
+					var visualNovel = await GetVisualNovelAsync(client, vnid);
                     current += increment;
                     App.StatusBar.ProgressBarValue = current;
 
                     App.StatusBar.InfoText = App.ResMan.GetString("DownReleasesInfo");
-					var releases = await GetReleases(client, vnid, ro);
+					var releases = await GetReleasesAsync(client, vnid, ro);
                     current += increment;
                     App.StatusBar.ProgressBarValue = current;
 
 					uint[] producerIds = releases.SelectMany(x => x.Producers.Select(y => y.Id)).Distinct().ToArray();
                     App.StatusBar.InfoText = App.ResMan.GetString("DownProducersInfo");
-					var producers = await GetProducers(client, producerIds, ro);
+					var producers = await GetProducersAsync(client, producerIds, ro);
 					current += increment;
                     App.StatusBar.ProgressBarValue = current;
 
 					App.StatusBar.InfoText = App.ResMan.GetString("DownCharacterInfo");
-					var characters = await GetCharacters(client, vnid, ro);
+					var characters = await GetCharactersAsync(client, vnid, ro);
 					current += increment;
                     App.StatusBar.ProgressBarValue = current;
 
 					uint[] staffIds = visualNovel.Staff.Select(x => x.StaffId).Distinct().ToArray();
                     App.StatusBar.InfoText = App.ResMan.GetString("DownStaffInfo");
-					var staff = await GetStaff(client, staffIds, ro);
+					var staff = await GetStaffAsync(client, staffIds, ro);
 					current += increment;
                     App.StatusBar.ProgressBarValue = current;
 
@@ -84,7 +84,7 @@ namespace VnManager.MetadataProviders.Vndb
 						//run code to add info to database
                         
 						SaveVnDataToDb save = new SaveVnDataToDb();
-						await save.SortVnInfo(entry, visualNovel, releases, producers, characters, staff, current);
+						await save.SortVnInfoAsync(entry, visualNovel, releases, producers, characters, staff, current);
                     }
 
 					
@@ -99,7 +99,7 @@ namespace VnManager.MetadataProviders.Vndb
 			}
         }
 
-		internal async Task<VisualNovel> GetVisualNovel(VndbSharp.Vndb client, uint vnid)
+		internal async Task<VisualNovel> GetVisualNovelAsync(VndbSharp.Vndb client, uint vnid)
 		{
 			stopwatch.Restart();
 			while (true)
@@ -111,7 +111,7 @@ namespace VnManager.MetadataProviders.Vndb
 				switch (visualNovels)
                 {
                     case null when client.GetLastError().Type == ErrorType.Throttled:
-                        await HandleVndbErrors.ThrottledWait((ThrottledError)client.GetLastError(), 0);
+                        await HandleVndbErrors.ThrottledWaitAsync((ThrottledError)client.GetLastError(), 0);
                         break;
                     case null:
                         HandleVndbErrors.HandleErrors(client.GetLastError());
@@ -124,7 +124,7 @@ namespace VnManager.MetadataProviders.Vndb
 			}
 		}
 
-		internal async Task<List<Release>> GetReleases(VndbSharp.Vndb client, uint vnid, RequestOptions ro)
+		internal async Task<List<Release>> GetReleasesAsync(VndbSharp.Vndb client, uint vnid, RequestOptions ro)
 		{
 			stopwatch.Restart();
 			bool hasMore = true;
@@ -141,7 +141,7 @@ namespace VnManager.MetadataProviders.Vndb
 				switch (releases)
                 {
                     case null when client.GetLastError().Type == ErrorType.Throttled:
-                        await HandleVndbErrors.ThrottledWait((ThrottledError)client.GetLastError(), 0);
+                        await HandleVndbErrors.ThrottledWaitAsync((ThrottledError)client.GetLastError(), 0);
                         break;
                     case null:
                         HandleVndbErrors.HandleErrors(client.GetLastError());
@@ -164,7 +164,7 @@ namespace VnManager.MetadataProviders.Vndb
 
 		}
 
-		internal async Task<List<Character>> GetCharacters(VndbSharp.Vndb client, uint vnid, RequestOptions ro)
+		internal async Task<List<Character>> GetCharactersAsync(VndbSharp.Vndb client, uint vnid, RequestOptions ro)
 		{
 			stopwatch.Restart();
 			bool hasMore = true;
@@ -181,7 +181,7 @@ namespace VnManager.MetadataProviders.Vndb
 				switch (characters)
                 {
                     case null when client.GetLastError().Type == ErrorType.Throttled:
-                        await HandleVndbErrors.ThrottledWait((ThrottledError)client.GetLastError(), 0);
+                        await HandleVndbErrors.ThrottledWaitAsync((ThrottledError)client.GetLastError(), 0);
                         break;
                     case null:
                         HandleVndbErrors.HandleErrors(client.GetLastError());
@@ -203,7 +203,7 @@ namespace VnManager.MetadataProviders.Vndb
 			return characterList;
 		}
 
-		internal async Task<List<Producer>> GetProducers(VndbSharp.Vndb client, uint[] producerIdList, RequestOptions ro)
+		internal async Task<List<Producer>> GetProducersAsync(VndbSharp.Vndb client, uint[] producerIdList, RequestOptions ro)
 		{
 			stopwatch.Restart();
 			bool hasMore = true;
@@ -219,7 +219,7 @@ namespace VnManager.MetadataProviders.Vndb
 
 				if (producers == null && client.GetLastError().Type == ErrorType.Throttled)
 				{
-					await HandleVndbErrors.ThrottledWait((ThrottledError)client.GetLastError(), 0);
+					await HandleVndbErrors.ThrottledWaitAsync((ThrottledError)client.GetLastError(), 0);
 				}
 				else if (producers == null)
 				{
@@ -241,7 +241,7 @@ namespace VnManager.MetadataProviders.Vndb
 			return producerList;
 		}
 
-		internal async Task<List<Staff>> GetStaff(VndbSharp.Vndb client, uint[] staffId, RequestOptions ro)
+		internal async Task<List<Staff>> GetStaffAsync(VndbSharp.Vndb client, uint[] staffId, RequestOptions ro)
 		{
 			stopwatch.Restart();
 			bool hasMore = true;
@@ -258,7 +258,7 @@ namespace VnManager.MetadataProviders.Vndb
 				switch (staff)
                 {
                     case null when client.GetLastError().Type == ErrorType.Throttled:
-                        await HandleVndbErrors.ThrottledWait((ThrottledError)client.GetLastError(), 0);
+                        await HandleVndbErrors.ThrottledWaitAsync((ThrottledError)client.GetLastError(), 0);
                         break;
                     case null:
                         HandleVndbErrors.HandleErrors(client.GetLastError());

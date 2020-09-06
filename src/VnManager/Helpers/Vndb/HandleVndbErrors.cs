@@ -48,7 +48,7 @@ namespace VnManager.Helpers.Vndb
             }
             App.StatusBar.ResetValues();
         }
-        public static async Task ThrottledWait(ThrottledError throttled, int counter)
+        public static async Task ThrottledWaitAsync(ThrottledError throttled, int counter)
         {
             
             var minWait = TimeSpan.FromSeconds((throttled.MinimumWait - DateTime.Now).TotalSeconds);

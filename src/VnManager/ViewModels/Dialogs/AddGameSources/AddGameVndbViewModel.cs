@@ -152,9 +152,9 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
 
 
 
-        public async Task Search()
+        public async Task SearchAsync()
         {
-            if(await PreSearchCheck() == false) return;
+            if(await PreSearchCheckAsync() == false) return;
 
             try
             {
@@ -175,7 +175,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
                         //do I need to check for null?
                         if (VnNameList.Count < 1 && client.GetLastError().Type == ErrorType.Throttled)
                         {
-                            await HandleVndbErrors.ThrottledWait((ThrottledError)client.GetLastError(), 0);
+                            await HandleVndbErrors.ThrottledWaitAsync((ThrottledError)client.GetLastError(), 0);
                             shouldContinue = true;
                         }
                         else if (VnNameList.Count < 1)
@@ -203,7 +203,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
 
         }
 
-        private async Task<bool> PreSearchCheck()
+        private async Task<bool> PreSearchCheckAsync()
         {
             if (string.IsNullOrEmpty(VnName) || string.IsNullOrWhiteSpace(VnName)) return false;
             if (VnName.Length < 2) return false;
@@ -291,7 +291,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             }
         }
 
-        public async Task Submit()
+        public async Task SubmitAsync()
         {
             IsLockDown = true;
             var parent = (AddGameMainViewModel)Parent;
@@ -336,9 +336,9 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             //VnId
             RuleFor(x => x.VnId).Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().When(x => x.IsNameChecked == false)
-                    .WithMessage(App.ResMan.GetString("ValidationVnIdNotAboveZero")).MustAsync(IsNotAboveMaxId)
+                    .WithMessage(App.ResMan.GetString("ValidationVnIdNotAboveZero")).MustAsync(IsNotAboveMaxIdAsync)
                     .When(x => x.IsNameChecked == false).WithMessage(App.ResMan.GetString("ValidationVnIdAboveMax"))
-                .MustAsync(IsNotDeletedVn).When(x => x.IsNameChecked == false).WithMessage(App.ResMan.GetString("ValidationVnIdDoesNotExist"))
+                .MustAsync(IsNotDeletedVnAsync).When(x => x.IsNameChecked == false).WithMessage(App.ResMan.GetString("ValidationVnIdDoesNotExist"))
                 .Must(IsNotDuplicateId).WithMessage(App.ResMan.GetString("VnIdAlreadyExistsInDb"));
 
             //Vn name validation
@@ -373,7 +373,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
         }
 
 
-        private async Task<bool> IsNotDeletedVn(int inputid, CancellationToken cancellation)
+        private async Task<bool> IsNotDeletedVnAsync(int inputid, CancellationToken cancellation)
         {
             try
             {
@@ -399,7 +399,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             }
         }
 
-        private async Task<bool> IsNotAboveMaxId(int id, CancellationToken cancellation)
+        private async Task<bool> IsNotAboveMaxIdAsync(int id, CancellationToken cancellation)
         {
             try
             {

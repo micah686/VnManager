@@ -25,7 +25,7 @@ namespace VnManager.ViewModels.UserControls
             _windowManager = windowManager;
         }
 
-        public async Task Click()
+        public async Task ClickAsync()
         {
             var parent = _container.Get<AddGameMainViewModel>();
             var resultParent = _windowManager.ShowDialog(parent);
@@ -39,7 +39,7 @@ namespace VnManager.ViewModels.UserControls
                     AddNoSourceGame();
                     break;
                 case AddGameSourceType.Vndb:
-                    await AddVndbGame();
+                    await AddVndbGameAsync();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException($"Unknown Enum Source");
@@ -67,7 +67,7 @@ namespace VnManager.ViewModels.UserControls
         }
 
 
-        private async Task AddVndbGame()
+        private async Task AddVndbGameAsync()
         {
             var vmAddGame = _container.Get<AddGameVndbViewModel>();
             if (vmAddGame == null) return;
@@ -84,7 +84,7 @@ namespace VnManager.ViewModels.UserControls
             gameEntry.IsArgumentsEnabled = vmAddGame.IsArgsChecked;
             gameEntry.ExeArguments = vmAddGame.ExeArguments;
             GetVndbData getData = new GetVndbData();
-            await getData.GetData(gameEntry);
+            await getData.GetDataAsync(gameEntry);
         }
 
 

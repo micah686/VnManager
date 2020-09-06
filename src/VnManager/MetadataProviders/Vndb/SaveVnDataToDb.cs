@@ -37,7 +37,7 @@ namespace VnManager.MetadataProviders.Vndb
     public class SaveVnDataToDb
     {
 
-        public async Task SortVnInfo(AddItemDbModel entry, VisualNovel vn, List<Release>rel,List<Producer> prod, List<Character> character, List<Staff> staff, double currentProgress)
+        public async Task SortVnInfoAsync(AddItemDbModel entry, VisualNovel vn, List<Release>rel,List<Producer> prod, List<Character> character, List<Staff> staff, double currentProgress)
         {
 
             //await DownloadCharacterImages(character, vn.Id);
@@ -51,15 +51,15 @@ namespace VnManager.MetadataProviders.Vndb
             SaveStaff(staff, (int)vn.Id);
             MetadataCommon.SaveUserData(entry);
 
-            await DownloadVndbContent.DownloadCoverImage(vn.Id);
-            await DownloadVndbContent.DownloadCharacterImages(vn.Id);
-            await DownloadVndbContent.DownloadScreenshots(vn.Id);
+            await DownloadVndbContent.DownloadCoverImageAsync(vn.Id);
+            await DownloadVndbContent.DownloadCharacterImagesAsync(vn.Id);
+            await DownloadVndbContent.DownloadScreenshotsAsync(vn.Id);
             App.StatusBar.IsFileDownloading = false;
 
 
             App.StatusBar.IsDatabaseProcessing = true;
-            await DownloadVndbContent.GetAndSaveTagDump();
-            await DownloadVndbContent.GetAndSaveTraitDump();
+            await DownloadVndbContent.GetAndSaveTagDumpAsync();
+            await DownloadVndbContent.GetAndSaveTraitDumpAsync();
             App.StatusBar.ResetValues();
         }
 

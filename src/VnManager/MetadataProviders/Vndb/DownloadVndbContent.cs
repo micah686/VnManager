@@ -19,7 +19,7 @@ namespace VnManager.MetadataProviders.Vndb
 {
     internal static class DownloadVndbContent
     {
-        internal static async Task DownloadCoverImage(uint vnId)
+        internal static async Task DownloadCoverImageAsync(uint vnId)
         {
             try
             {
@@ -29,12 +29,11 @@ namespace VnManager.MetadataProviders.Vndb
                 using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
                 VnInfo entry = db.GetCollection<VnInfo>("VnInfo").Query().Where(x => x.VnId == vnId).FirstOrDefault();
                 if (entry == null) return;
-                using var client = new WebClient();
                 if (entry.ImageLink != null)
                 {
                     App.StatusBar.IsFileDownloading = true;
                     string path = $@"{App.AssetDirPath}\sources\vndb\images\cover\{Path.GetFileName(entry.ImageLink.AbsoluteUri)}";
-                    await ImageHelper.DownloadImage(entry.ImageLink, NsfwHelper.IsNsfw(entry.ImageRating), path);
+                    await ImageHelper.DownloadImageAsync(entry.ImageLink, NsfwHelper.IsNsfw(entry.ImageRating), path);
                 }
             }
             catch (Exception ex)
@@ -47,7 +46,7 @@ namespace VnManager.MetadataProviders.Vndb
             }
         }
 
-        internal static async Task DownloadCharacterImages(uint vnId)
+        internal static async Task DownloadCharacterImagesAsync(uint vnId)
         {
             try
             {
@@ -84,7 +83,7 @@ namespace VnManager.MetadataProviders.Vndb
             }
         }
 
-        internal static async Task DownloadScreenshots(uint vnId)
+        internal static async Task DownloadScreenshotsAsync(uint vnId)
         {
             try
             {
@@ -93,7 +92,6 @@ namespace VnManager.MetadataProviders.Vndb
                 if (cred == null || cred.UserName.Length < 1) return;
                 using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
                 {
-                    using var client = new WebClient();
                     var entries = db.GetCollection<VnInfoScreens>("VnInfo_Screens").Query().Where(x => x.VnId == vnId)
                         .ToList();
                     if (entries.Count > 0)
@@ -103,7 +101,7 @@ namespace VnManager.MetadataProviders.Vndb
                         {
                             Directory.CreateDirectory($@"{directory}\thumbs");
                         }
-                        List<ScreenShot> scrList = entries.Select(screen => new ScreenShot() { IsNsfw = NsfwHelper.IsNsfw(screen.ImageRating), Uri = screen.ImageUri }).ToList();
+                        List<ScreenShot> scrList = entries.Select(screen => new ScreenShot { IsNsfw = NsfwHelper.IsNsfw(screen.ImageRating), Uri = screen.ImageUri }).ToList();
 
                         App.StatusBar.IsFileDownloading = true;
                         await ImageHelper.DownloadImagesWithThumbnailsAsync(scrList, directory);
@@ -123,7 +121,7 @@ namespace VnManager.MetadataProviders.Vndb
         }
 
         //Tag and Trait Dumps
-        public static async Task GetAndSaveTagDump()
+        public static async Task GetAndSaveTagDumpAsync()
         {
             try
             {
@@ -173,7 +171,7 @@ namespace VnManager.MetadataProviders.Vndb
             }
         }
 
-        public static async Task GetAndSaveTraitDump()
+        public static async Task GetAndSaveTraitDumpAsync()
         {
             try
             {

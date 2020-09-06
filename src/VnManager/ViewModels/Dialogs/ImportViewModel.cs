@@ -173,7 +173,7 @@ namespace VnManager.ViewModels.Dialogs
 
         }
 
-        public async Task ValidateData()
+        public async Task ValidateDataAsync()
         {
             int errorCount = 0;
             
@@ -196,7 +196,7 @@ namespace VnManager.ViewModels.Dialogs
             }
             else
             {
-                await ImportData();
+                await ImportDataAsync();
 
             }
 
@@ -204,7 +204,7 @@ namespace VnManager.ViewModels.Dialogs
 
 
 
-        private async Task ImportData()
+        private async Task ImportDataAsync()
         {
             try
             {
@@ -274,7 +274,7 @@ namespace VnManager.ViewModels.Dialogs
                 BlockClosing = false;
                 IsDataGridEnabled = true;
                 IsImportProcessing = false;
-                await UpdateVndbData(_vndbGameIds);
+                await UpdateVndbDataAsync(_vndbGameIds);
             }
             catch (Exception ex)
             {
@@ -288,7 +288,7 @@ namespace VnManager.ViewModels.Dialogs
         }
 
 
-        private async Task UpdateVndbData(List<int> gameIds)
+        private async Task UpdateVndbDataAsync(List<int> gameIds)
         {
             RequestOptions ro = new RequestOptions() { Count = 25 };
             var getData = new MetadataProviders.Vndb.GetVndbData();
@@ -309,13 +309,13 @@ namespace VnManager.ViewModels.Dialogs
                     BlockClosing = true;
                     CurrentProgressMsg = $"{App.ResMan.GetString("ImportDbProg1")}";
                     var id = (uint)strId;
-                    var visualNovel = await getData.GetVisualNovel(client, id);
-                    var releases = await getData.GetReleases(client, id, ro);
+                    var visualNovel = await getData.GetVisualNovelAsync(client, id);
+                    var releases = await getData.GetReleasesAsync(client, id, ro);
                     uint[] producerIds = releases.SelectMany(x => x.Producers.Select(y => y.Id)).Distinct().ToArray();
-                    var producers = await getData.GetProducers(client, producerIds, ro);
-                    var characters = await getData.GetCharacters(client, id, ro);
+                    var producers = await getData.GetProducersAsync(client, producerIds, ro);
+                    var characters = await getData.GetCharactersAsync(client, id, ro);
                     uint[] staffIds = visualNovel.Staff.Select(x => x.StaffId).Distinct().ToArray();
-                    var staff = await getData.GetStaff(client, staffIds, ro);
+                    var staff = await getData.GetStaffAsync(client, staffIds, ro);
 
                     CurrentProgressMsg = $"{App.ResMan.GetString("ImportDbProg2")}";
                     saveData.SaveVnInfo(visualNovel);
@@ -325,10 +325,10 @@ namespace VnManager.ViewModels.Dialogs
                     saveData.SaveStaff(staff, (int)id);
 
                     CurrentProgressMsg = $"{App.ResMan.GetString("ImportDbProg3")}";
-                    await DownloadVndbContent.DownloadCoverImage(id);
-                    await DownloadVndbContent.DownloadCharacterImages(id);
+                    await DownloadVndbContent.DownloadCoverImageAsync(id);
+                    await DownloadVndbContent.DownloadCharacterImagesAsync(id);
                     CurrentProgressMsg = $"{App.ResMan.GetString("ImportDbProg4")}";
-                    await DownloadVndbContent.DownloadScreenshots(id);
+                    await DownloadVndbContent.DownloadScreenshotsAsync(id);
 
 
                     TotalProgress += totalIncrement;

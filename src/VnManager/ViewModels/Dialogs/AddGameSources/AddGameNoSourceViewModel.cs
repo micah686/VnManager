@@ -103,7 +103,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             }
         }
 
-        public async Task Submit()
+        public async Task SubmitAsync()
         {
             bool result = await ValidateAsync();
             if (result == true)

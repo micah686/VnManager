@@ -155,7 +155,7 @@ namespace VnManager.Helpers
         /// <param name="isNsfw">Is the image Nsfw</param>
         /// <param name="path">Directory and filename of where the image will be saved</param>
         /// <returns></returns>
-        public static async Task DownloadImage(Uri uri, bool isNsfw, string path)
+        public static async Task DownloadImageAsync(Uri uri, bool isNsfw, string path)
         {
             try
             {

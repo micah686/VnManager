@@ -9,6 +9,6 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <Button Width="100"  Content="{x:Static res:Resources.AddGame}"   Height="25" Command="{s:Action Click}"/>
+        <Button Width="100"  Content="{x:Static res:Resources.AddGame}"   Height="25" Command="{s:Action ClickAsync}"/>
     </Grid>
 </UserControl>
