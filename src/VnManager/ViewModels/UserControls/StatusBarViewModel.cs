@@ -49,7 +49,7 @@ namespace VnManager.ViewModels.UserControls
 
         }
 
-        public static void ResetValues()
+        public void ResetValues()
         {
             App.StatusBar.StatusString = App.ResMan.GetString("Ready");
             App.StatusBar.IsWorking = false;
