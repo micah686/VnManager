@@ -688,7 +688,7 @@ namespace VnManager.MetadataProviders.Vndb
             {
                 staffVns.VnId = vnid;
                 staffVns.StaffId = (int?)vnStaff.Id;
-                staffVns.AliasId = staffVns.AliasId;
+                staffVns.AliasId = (int)vn.AliasId;
                 staffVns.Role = vn.Role;
                 staffVns.Note = vn.Note;
                 vnStaffVnList.Add(staffVns);
