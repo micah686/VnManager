@@ -221,7 +221,7 @@ namespace VnManager.ViewModels
         }
 
 
-        private bool IsNormalStart()
+        private static bool IsNormalStart()
         {
             var configFile = Path.Combine(App.ConfigDirPath, @"config\config.json");
             if (!File.Exists(configFile)) return false;

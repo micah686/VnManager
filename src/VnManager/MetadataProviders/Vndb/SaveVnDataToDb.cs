@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -149,7 +150,7 @@ namespace VnManager.MetadataProviders.Vndb
             }
         }
 
-        private List<VnInfoAnime> FormatVnInfoAnime(VisualNovel visualNovel, ILiteCollection<VnInfoAnime> dbVnInfoAnime)
+        private static List<VnInfoAnime> FormatVnInfoAnime(VisualNovel visualNovel, ILiteCollection<VnInfoAnime> dbVnInfoAnime)
         {
             List<VnInfoAnime> vnAnime = new List<VnInfoAnime>();
             if (visualNovel.Anime.Count > 0)
@@ -173,7 +174,7 @@ namespace VnManager.MetadataProviders.Vndb
             return vnAnime;
         }
 
-        private List<VnInfoScreens> FormatVnInfoScreens(VisualNovel visualNovel, ILiteCollection<VnInfoScreens> dbVnInfoScreens)
+        private static List<VnInfoScreens> FormatVnInfoScreens(VisualNovel visualNovel, ILiteCollection<VnInfoScreens> dbVnInfoScreens)
         {
             List<VnInfoScreens> vnScreenshot = new List<VnInfoScreens>();
             if (visualNovel.Screenshots.Count > 0)
@@ -196,7 +197,7 @@ namespace VnManager.MetadataProviders.Vndb
             return vnScreenshot;
         }
 
-        private List<VnInfoRelations> FormatVnInfoRelations(VisualNovel visualNovel, ILiteCollection<VnInfoRelations> dbVnInfoRelations)
+        private static List<VnInfoRelations> FormatVnInfoRelations(VisualNovel visualNovel, ILiteCollection<VnInfoRelations> dbVnInfoRelations)
         {
             List<VnInfoRelations> vnRelations = new List<VnInfoRelations>();
             if (visualNovel.Relations.Count > 0)
@@ -219,7 +220,7 @@ namespace VnManager.MetadataProviders.Vndb
             return vnRelations;
         }
 
-        private List<VnInfoStaff> FormatVnInfoStaff(VisualNovel visualNovel, ILiteCollection<VnInfoStaff> dbVnInfoStaff)
+        private static List<VnInfoStaff> FormatVnInfoStaff(VisualNovel visualNovel, ILiteCollection<VnInfoStaff> dbVnInfoStaff)
         {
             List<VnInfoStaff> vnStaff = new List<VnInfoStaff>();
             if (visualNovel.Staff.Count > 0)
@@ -242,7 +243,7 @@ namespace VnManager.MetadataProviders.Vndb
             return vnStaff;
         }
 
-        private List<VnInfoTags> FormatVnInfoTags(VisualNovel visualNovel, ILiteCollection<VnInfoTags> dbVnInfoTags)
+        private static List<VnInfoTags> FormatVnInfoTags(VisualNovel visualNovel, ILiteCollection<VnInfoTags> dbVnInfoTags)
         {
             List<VnInfoTags> vnTags = new List<VnInfoTags>();
             if (visualNovel.Tags.Count > 0)
@@ -300,11 +301,11 @@ namespace VnManager.MetadataProviders.Vndb
                         character.Description = vnCharacter.Description;
                         character.ImageLink = new Uri(vnCharacter.Image);
                         character.ImageRating = vnCharacter.ImageRating;
-                        character.Bust = Convert.ToInt32(vnCharacter.Bust);
-                        character.Waist = Convert.ToInt32(vnCharacter.Waist);
-                        character.Hip = Convert.ToInt32(vnCharacter.Hip);
-                        character.Height = Convert.ToInt32(vnCharacter.Height);
-                        character.Weight = Convert.ToInt32(vnCharacter.Weight);
+                        character.Bust = Convert.ToInt32(vnCharacter.Bust, CultureInfo.InvariantCulture);
+                        character.Waist = Convert.ToInt32(vnCharacter.Waist, CultureInfo.InvariantCulture);
+                        character.Hip = Convert.ToInt32(vnCharacter.Hip, CultureInfo.InvariantCulture);
+                        character.Height = Convert.ToInt32(vnCharacter.Height, CultureInfo.InvariantCulture);
+                        character.Weight = Convert.ToInt32(vnCharacter.Weight, CultureInfo.InvariantCulture);
                         vnCharactersList.Add(character);
 
                         vnCharacterTraitsList.AddRange(FormatVnCharacterTraits(vnCharacter, dbCharTraits));
@@ -326,7 +327,7 @@ namespace VnManager.MetadataProviders.Vndb
 
         }
 
-        private List<VnCharacterTraits> FormatVnCharacterTraits(Character vnCharacter, ILiteCollection<VnCharacterTraits> dbCharTraits)
+        private static List<VnCharacterTraits> FormatVnCharacterTraits(Character vnCharacter, ILiteCollection<VnCharacterTraits> dbCharTraits)
         {
             List<VnCharacterTraits> vnCharacterTraitsList = new List<VnCharacterTraits>();
 
@@ -344,7 +345,7 @@ namespace VnManager.MetadataProviders.Vndb
             return vnCharacterTraitsList;
         }
 
-        private List<VnCharacterVns> FormatVnCharacterVns(Character vnCharacter, ILiteCollection<VnCharacterVns> dbCharVns)
+        private static List<VnCharacterVns> FormatVnCharacterVns(Character vnCharacter, ILiteCollection<VnCharacterVns> dbCharVns)
         {
             List<VnCharacterVns> vnCharacterVnsList = new List<VnCharacterVns>();
 
@@ -365,7 +366,7 @@ namespace VnManager.MetadataProviders.Vndb
             return vnCharacterVnsList;
         }
 
-        private List<VnCharacterVoiced> FormatVnCharacterVoiced(Character vnCharacter, ILiteCollection<VnCharacterVoiced> dbCharVoices)
+        private static List<VnCharacterVoiced> FormatVnCharacterVoiced(Character vnCharacter, ILiteCollection<VnCharacterVoiced> dbCharVoices)
         {
             List<VnCharacterVoiced> vnCharacterVoicesList = new List<VnCharacterVoiced>();
 
@@ -387,7 +388,7 @@ namespace VnManager.MetadataProviders.Vndb
 
             return vnCharacterVoicesList;
         }
-        private List<VnCharacterInstances> FormatVnCharacterInstances(Character vnCharacter, ILiteCollection<VnCharacterInstances> dbCharInstances)
+        private static List<VnCharacterInstances> FormatVnCharacterInstances(Character vnCharacter, ILiteCollection<VnCharacterInstances> dbCharInstances)
         {
             List<VnCharacterInstances> vnCharacterInstancesList = new List<VnCharacterInstances>();
 
@@ -482,7 +483,7 @@ namespace VnManager.MetadataProviders.Vndb
 
         }
 
-        private List<VnReleaseMedia> FormatVnProducersMedia(Release vnRelease, ILiteQueryable<VnReleaseMedia> prevVnReleaseMedia)
+        private static List<VnReleaseMedia> FormatVnProducersMedia(Release vnRelease, ILiteQueryableResult<VnReleaseMedia> prevVnReleaseMedia)
         {
             List<VnReleaseMedia> vnReleaseMediaList = new List<VnReleaseMedia>();
             foreach (var media in vnRelease.Media)
@@ -496,7 +497,7 @@ namespace VnManager.MetadataProviders.Vndb
             return vnReleaseMediaList;
         }
 
-        private List<VnReleaseProducers> FormatVnProducers(Release vnRelease, ILiteQueryable<VnReleaseProducers> prevVnReleaseProducers)
+        private static List<VnReleaseProducers> FormatVnProducers(Release vnRelease, ILiteQueryableResult<VnReleaseProducers> prevVnReleaseProducers)
         {
             List<VnReleaseProducers> vnReleaseProducersList = new List<VnReleaseProducers>();
             foreach (var producer in vnRelease.Producers)
@@ -514,7 +515,7 @@ namespace VnManager.MetadataProviders.Vndb
             return vnReleaseProducersList;
         }
 
-        private List<VnReleaseVn> FormatVnReleaseVns(Release vnRelease, ILiteQueryable<VnReleaseVn> prevVnReleaseVns)
+        private static List<VnReleaseVn> FormatVnReleaseVns(Release vnRelease, ILiteQueryableResult<VnReleaseVn> prevVnReleaseVns)
         {
             List<VnReleaseVn> vnReleaseVnsList = new List<VnReleaseVn>();
             foreach (var vn in vnRelease.VisualNovels)
@@ -579,7 +580,7 @@ namespace VnManager.MetadataProviders.Vndb
             }
         }
 
-        private List<VnProducerRelations> FormatVnProducerRelations(Producer vnProducer, ILiteQueryable<VnProducerRelations> prevVnProducerRelations)
+        private static List<VnProducerRelations> FormatVnProducerRelations(Producer vnProducer, ILiteQueryableResult<VnProducerRelations> prevVnProducerRelations)
         {
             List<VnProducerRelations> vnProducerRelationsList = new List<VnProducerRelations>();
             foreach (var relation in vnProducer.Relations)
@@ -624,7 +625,7 @@ namespace VnManager.MetadataProviders.Vndb
                     staff.Original = vnStaff.OriginalName;
                     staff.Language = vnStaff.Language;
                     staff.Gender = vnStaff.Gender;
-                    staff.VnStaffLinks = new VnStaffLinks()
+                    staff.VnStaffLinks = new VnStaffLinks
                     {
                         Homepage = vnStaff.StaffLinks.Homepage,
                         Twitter = vnStaff.StaffLinks.Twitter,
@@ -665,7 +666,7 @@ namespace VnManager.MetadataProviders.Vndb
             }
         }
 
-        private List<VnStaffAliases> FormatVnStaffAliases(Staff vnStaff, ILiteQueryable<VnStaffAliases> prevVnStaffAliases)
+        private static List<VnStaffAliases> FormatVnStaffAliases(Staff vnStaff, ILiteQueryableResult<VnStaffAliases> prevVnStaffAliases)
         {
             List<VnStaffAliases> vnStaffAliasesList = new List<VnStaffAliases>();
             var vnAliases = prevVnStaffAliases.FirstOrDefault() ?? new VnStaffAliases();
@@ -679,7 +680,7 @@ namespace VnManager.MetadataProviders.Vndb
             }
             return vnStaffAliasesList;
         }
-        private List<VnStaffVns> FormatStaffVns(Staff vnStaff, int vnid, ILiteQueryable<VnStaffVns> prevVnStaffVns)
+        private static List<VnStaffVns> FormatStaffVns(Staff vnStaff, int vnid, ILiteQueryableResult<VnStaffVns> prevVnStaffVns)
         {
             List<VnStaffVns> vnStaffVnList = new List<VnStaffVns>();
             var staffVns = prevVnStaffVns.FirstOrDefault() ?? new VnStaffVns();
@@ -687,14 +688,14 @@ namespace VnManager.MetadataProviders.Vndb
             {
                 staffVns.VnId = vnid;
                 staffVns.StaffId = (int?)vnStaff.Id;
-                staffVns.AliasId = (int)staffVns.AliasId;
+                staffVns.AliasId = staffVns.AliasId;
                 staffVns.Role = vn.Role;
                 staffVns.Note = vn.Note;
                 vnStaffVnList.Add(staffVns);
             }
             return vnStaffVnList;
         }
-        private List<VnStaffVoiced> FormatVnStaffVoiced(Staff vnStaff, int vnid, ILiteQueryable<VnStaffVoiced> prevVnStaffVoiced)
+        private static List<VnStaffVoiced> FormatVnStaffVoiced(Staff vnStaff, int vnid, ILiteQueryableResult<VnStaffVoiced> prevVnStaffVoiced)
         {
             List<VnStaffVoiced> vnStaffVoicedList = new List<VnStaffVoiced>();
             foreach (var voiced in vnStaff.Voiced)

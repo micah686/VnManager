@@ -24,22 +24,22 @@ namespace VnManager.Extensions
             typeof(MouseObserver));
 
 
-        public static bool GetObserve(FrameworkElement frameworkElement)
+        public static bool GetObserve(DependencyObject frameworkElement)
         {
             return (bool)frameworkElement.GetValue(ObserveProperty);
         }
 
-        public static void SetObserve(FrameworkElement frameworkElement, bool observe)
+        public static void SetObserve(DependencyObject frameworkElement, bool observe)
         {
             frameworkElement.SetValue(ObserveProperty, observe);
         }
 
-        public static bool GetObservedMouseOver(FrameworkElement frameworkElement)
+        public static bool GetObservedMouseOver(DependencyObject frameworkElement)
         {
             return (bool)frameworkElement.GetValue(ObservedMouseOverProperty);
         }
 
-        public static void SetObservedMouseOver(FrameworkElement frameworkElement, bool observedMouseOver)
+        public static void SetObservedMouseOver(DependencyObject frameworkElement, bool observedMouseOver)
         {
             frameworkElement.SetValue(ObservedMouseOverProperty, observedMouseOver);
         }
@@ -65,8 +65,9 @@ namespace VnManager.Extensions
             UpdateObservedMouseOverForFrameworkElement((FrameworkElement)sender);
         }
 
-        private static void UpdateObservedMouseOverForFrameworkElement(FrameworkElement frameworkElement)
+        private static void UpdateObservedMouseOverForFrameworkElement(DependencyObject dependencyObject)
         {
+            var frameworkElement = (FrameworkElement)dependencyObject;
             frameworkElement.SetCurrentValue(ObservedMouseOverProperty, frameworkElement.IsMouseOver);
         }
     }

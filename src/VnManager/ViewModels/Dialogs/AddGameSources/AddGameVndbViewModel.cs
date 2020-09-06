@@ -318,7 +318,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
 
 
 
-        private bool IsJapaneseText(string text)
+        private static bool IsJapaneseText(string text)
         {
             Regex regex = new Regex(@"/[\u3000-\u303F]|[\u3040-\u309F]|[\u30A0-\u30FF]|[\uFF00-\uFFEF]|[\u4E00-\u9FAF]|[\u2605-\u2606]|[\u2190-\u2195]|\u203B/g");
             return regex.IsMatch(text);
@@ -373,7 +373,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
         }
 
 
-        private async Task<bool> IsNotDeletedVnAsync(int inputid, CancellationToken cancellation)
+        private static async Task<bool> IsNotDeletedVnAsync(int inputid, CancellationToken cancellation)
         {
             try
             {
@@ -399,7 +399,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             }
         }
 
-        private async Task<bool> IsNotAboveMaxIdAsync(int id, CancellationToken cancellation)
+        private static async Task<bool> IsNotAboveMaxIdAsync(int id, CancellationToken cancellation)
         {
             try
             {
@@ -426,7 +426,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             }
         }
 
-        private bool IsNotDuplicateVndbExe(AddGameVndbViewModel instance, string exePath)
+        private static bool IsNotDuplicateVndbExe(AddGameVndbViewModel instance, string exePath)
         {
             //if type is normal and game id in db or exe in db
             try
@@ -436,7 +436,6 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
                 using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
                 {
                     if (instance == null) return false;
-                    var id = instance.VnId;
                     var exeType = instance.ExeType;
                     var dbUserData = db.GetCollection<UserDataGames>("UserData_Games").Query().ToEnumerable();
                     switch (exeType)
@@ -465,7 +464,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             }
         }
 
-        private bool IsNotDuplicateId(AddGameVndbViewModel instance, int id)
+        private static bool IsNotDuplicateId(AddGameVndbViewModel instance, int id)
         {
             try
             {
@@ -474,7 +473,6 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
                 using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
                 {
                     if (instance == null) return false;
-                    var exePath = instance.ExePath;
                     var exeType = instance.ExeType;
                     var dbUserData = db.GetCollection<UserDataGames>("UserData_Games").Query()
                         .Where(x => x.SourceType == AddGameSourceType.Vndb).ToEnumerable();
@@ -504,7 +502,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             }
         }
 
-        private bool TrySetNameId(AddGameVndbViewModel instance, string name)
+        private static bool TrySetNameId(AddGameVndbViewModel instance, string name)
         {
             try
             {

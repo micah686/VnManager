@@ -184,7 +184,7 @@ namespace VnManager.ViewModels.UserControls
             }
         }
 
-        public void LoadUserSettings()
+        public static void LoadUserSettings()
         {
             try
             {
@@ -200,7 +200,7 @@ namespace VnManager.ViewModels.UserControls
         }
 
 
-        public void DeleteNsfwImages()
+        public static void DeleteNsfwImages()
         {
             //Use CheckWriteAccess to see if you can delete from the images
             var cred = CredentialManager.GetCredentials(App.CredDb);
@@ -216,7 +216,7 @@ namespace VnManager.ViewModels.UserControls
 
         }
 
-        private void ResetNsfwScreenshots(List<VnInfoScreens> vnScreens)
+        private static void ResetNsfwScreenshots(List<VnInfoScreens> vnScreens)
         {
             foreach (var screen in vnScreens)
             {
@@ -246,7 +246,7 @@ namespace VnManager.ViewModels.UserControls
             }
         }
 
-        private void ResetNsfwCoverImages(List<VnInfo> vnCovers)
+        private static void ResetNsfwCoverImages(List<VnInfo> vnCovers)
         {
             foreach (var cover in vnCovers)
             {

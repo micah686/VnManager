@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Windows.Media.Imaging;
@@ -69,7 +70,7 @@ namespace VnManager.ViewModels.UserControls.MainPage
         }
 
 
-        public void CloseClick()
+        public static void CloseClick()
         {
             RootViewModel.Instance.ActivateMainClick();
         }
@@ -77,10 +78,19 @@ namespace VnManager.ViewModels.UserControls.MainPage
 
         private void LoadImage()
         {
-            var filePath = $@"{App.AssetDirPath}\sources\vndb\images\screenshots\2002\41869.jpg";
-            var uri = new Uri(filePath);
-            BitmapSource bs = new BitmapImage(uri);
-            BackgroundImage = bs;
+            try
+            {
+                var filePath = $@"{App.AssetDirPath}\sources\vndb\images\screenshots\2002\41869.jpg";
+                var uri = new Uri(filePath);
+                BitmapSource bs = new BitmapImage(uri);
+                BackgroundImage = bs;
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e);
+                throw;
+            }
+            
         }
 
         private void LoadMainData()

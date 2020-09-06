@@ -7,6 +7,5 @@ namespace VnManager.ViewModels.UserControls
 {
     public class LastPlayedViewModel:Screen
     {
-        public LastPlayedViewModel() { }
     }
 }

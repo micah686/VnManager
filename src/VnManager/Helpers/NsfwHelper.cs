@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using VndbSharp.Models.Common;
 
@@ -18,12 +19,12 @@ namespace VnManager.Helpers
             if (rating == null) return false;
             var isSexualValid = false;
             var isViolenceValid = false;
-            if (rating.SexualAvg != null && rating.SexualAvg > Convert.ToDouble(App.UserSettings.MaxSexualRating))
+            if (rating.SexualAvg != null && rating.SexualAvg > Convert.ToDouble(App.UserSettings.MaxSexualRating, CultureInfo.InvariantCulture))
             {
                 isSexualValid = true;
             }
 
-            if (rating.ViolenceAvg != null && rating.ViolenceAvg > Convert.ToDouble(App.UserSettings.MaxViolenceRating))
+            if (rating.ViolenceAvg != null && rating.ViolenceAvg > Convert.ToDouble(App.UserSettings.MaxViolenceRating, CultureInfo.InvariantCulture))
             {
                 isViolenceValid = true;
             }

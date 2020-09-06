@@ -40,15 +40,9 @@ namespace VnManager.Helpers
             //get thumbnail size
             double originalWidth = originalImg.Width;
             double originalHeight = originalImg.Height;
-            double factor;
-            if (originalWidth > originalHeight)
-            {
-                factor = (double)maxPixels / originalWidth;
-            }
-            else
-            {
-                factor = (double)maxPixels / originalHeight;
-            }
+            var factor = originalWidth > originalHeight
+                ? (double) maxPixels / originalWidth
+                : (double) maxPixels / originalHeight;
             Size thumbnailSize = new Size((int)(originalWidth * factor), (int)(originalHeight * factor));
 
 
@@ -101,7 +95,7 @@ namespace VnManager.Helpers
         /// <param name="imageList">List of Images (Uri and IsNsfw)</param>
         /// <param name="imageDirectory">Directory to save the images in</param>
         /// <returns></returns>
-        public static async Task DownloadImagesWithThumbnailsAsync(List<ScreenShot> imageList, string imageDirectory)
+        public static async Task DownloadImagesWithThumbnailsAsync(IEnumerable<ScreenShot> imageList, string imageDirectory)
         {
             try
             {

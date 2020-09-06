@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using VndbSharp.Models.Common;
 using VnManager.Helpers;
@@ -25,7 +26,8 @@ namespace VnManager.Converters
             }
             else
             {
-                month = System.Globalization.DateTimeFormatInfo.InvariantInfo.GetMonthName(Convert.ToInt32(birthday.Month));
+                month = DateTimeFormatInfo.InvariantInfo.GetMonthName(Convert.ToInt32(birthday.Month, CultureInfo.InvariantCulture));
+                
             }
 
             var year = birthday.Year == null ? string.Empty : birthday.Year.ToString();

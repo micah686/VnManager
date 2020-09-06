@@ -290,7 +290,7 @@ namespace VnManager.ViewModels.Dialogs
 
         private async Task UpdateVndbDataAsync(List<int> gameIds)
         {
-            RequestOptions ro = new RequestOptions() { Count = 25 };
+            RequestOptions ro = new RequestOptions { Count = 25 };
             var getData = new MetadataProviders.Vndb.GetVndbData();
             var saveData = new MetadataProviders.Vndb.SaveVnDataToDb();
             using (var client = new VndbSharp.Vndb(true))
@@ -401,7 +401,7 @@ namespace VnManager.ViewModels.Dialogs
         }
 
         #region Helpers
-        public bool IsValidGuid(Guid guid)
+        public static bool IsValidGuid(Guid guid)
         {
             bool isValid = Guid.TryParse(guid.ToString(), out _);
             if (isValid && guid.Equals(Guid.Empty))
@@ -411,7 +411,7 @@ namespace VnManager.ViewModels.Dialogs
             return isValid;
         }
 
-        private bool IsNotDuplicateGuid(Guid id)
+        private static bool IsNotDuplicateGuid(Guid id)
         {
             var cred = CredentialManager.GetCredentials(App.CredDb);
             if (cred == null || cred.UserName.Length < 1) return false;
@@ -422,14 +422,14 @@ namespace VnManager.ViewModels.Dialogs
             }
         }
 
-        private bool ValidateInteger(Stringable<int> id)
+        private static bool ValidateInteger(Stringable<int> id)
         {
             var result = int.TryParse(id.StringValue, out _);
             return result;
         }
 
 
-        private bool IsDefinedInEnum(Enum value, Type enumType)
+        private static bool IsDefinedInEnum(Enum value, Type enumType)
         {
             if (value.GetType() != enumType)
                 return false;
@@ -437,13 +437,13 @@ namespace VnManager.ViewModels.Dialogs
             return Enum.IsDefined(enumType, value);
         }
 
-        private bool ValidateDateTime(DateTime dateTime)
+        private static bool ValidateDateTime(DateTime dateTime)
         {
             var result = DateTime.TryParse(dateTime.ToString(CultureInfo.InvariantCulture), out _);
             return result;
         }
 
-        private bool ValidateTimeSpan(TimeSpan ts)
+        private static bool ValidateTimeSpan(TimeSpan ts)
         {
             var result = TimeSpan.TryParse(ts.ToString(), out _);
             return result;

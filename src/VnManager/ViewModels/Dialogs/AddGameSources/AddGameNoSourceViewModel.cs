@@ -143,7 +143,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
         }
 
 
-        private bool IsNotDuplicateExe(string exePath)
+        private static bool IsNotDuplicateExe(string exePath)
         {
             var cred = CredentialManager.GetCredentials(App.CredDb);
             if (cred == null || cred.UserName.Length < 1) return false;

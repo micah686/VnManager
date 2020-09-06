@@ -7,6 +7,5 @@ namespace VnManager.ViewModels.UserControls
 {
     public class TopInfoBarViewModel: Screen
     {
-        public TopInfoBarViewModel() { }
     }
 }

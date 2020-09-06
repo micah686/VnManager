@@ -44,6 +44,9 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
                     var noSource = _container.Get<AddGameNoSourceViewModel>();
                     ActivateItem(noSource);
                     break;
+                default:
+                    App.Logger.Warning("No valid source type is selected,AddGameMainViewModel");
+                    break;
             }
         }
     }
