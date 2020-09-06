@@ -14,51 +14,17 @@ name: Build
 
 on:
   push:
-    branches: [ yamlTest ]
+    branches:
+    -yamlTest
+    -PrTest2
   pull_request:
-    branches: [ yamlTest ]
+    branches:
+    -yamlTest
+    -PrTest2
 
 
 jobs:
-  #Build Job for prepping the environment for build (installing .net core, getting nuget packages,...
-  build:
-    name: Build Project
-    runs-on: windows-latest                             
-    env:
-      Solution_Name: src/VnManager.sln                         
-      
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
-        submodules: true
-
-    - name: Cache NuGet Packages
-      uses: actions/cache@v1
-      with:
-        path: ~/.nuget/packages
-        key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-nuget-
-
-    # Install the .NET Core workload
-    - name: Install .NET Core
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 3.1.101 
-    - name: Build VnManager
-      run: |
-        mkdir ${{ github.workspace }}/build
-        mkdir ${{ github.workspace }}/staging
-        dotnet publish src/VnManager/VnManager.csproj --framework netcoreapp3.1 -c Release -o --output "${{ github.workspace }}/build"
-                
-    - name: Upload Artifact
-      uses: actions/upload-artifact@v1
-      with:
-        name: VnManager-YamlTest
-        path:  "${{ github.workspace }}/build/"
-        
+  
   sonarcloud:
     name: Sonar
     runs-on: ubuntu-latest                       
