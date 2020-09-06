@@ -16,10 +16,6 @@ on:
   push:
     branches:
     - yamlTest
-  pull_request:
-    branches:
-    - yamlTest
-    - PrTest2
 
 
 jjobs:
