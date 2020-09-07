@@ -26,21 +26,19 @@ namespace VnManager.ViewModels.Windows
     {
         public string Title { get; set; }
         /// <summary>
-        /// Yes has been checked for creating a new password
+        /// Manual password creation is required, shows the 2 password fields
         /// </summary>
         public bool RequirePasswordChecked { get; set; } //yes checked for creating a new password
         public SecureString Password { get; set; }
         public SecureString ConfirmPassword { get; set; }
         /// <summary>
-        /// If true, shows the dialog to unlock the database
-        /// If false, shows the create password dialog
+        /// If true, shows the dialog for unlocking the database (password entry)
         /// </summary>
         public bool IsUnlockPasswordVisible { get; set; }
 
         private bool _isCreatePasswordVisible = true;
         /// <summary>
-        /// If true, shows the dialog to create a password
-        /// If false, shows the unlock database dialog
+        /// If true, shows the dialog for creating a new password
         /// </summary>
         public bool IsCreatePasswordVisible
         {
@@ -53,10 +51,17 @@ namespace VnManager.ViewModels.Windows
             }
         }
 
-
-        public bool IsPasswordCheckClicked { get; set; } = false;
+        /// <summary>
+        /// Is the button for unlocking the Db enabled, or is it locked out by the wait timer
+        /// </summary>
         public bool IsUnlockPasswordButtonEnabled { get; set; } = true;
-        internal bool IsClickChecked = false;
+        /// <summary>
+        /// Indicates if you have clicked submit/unlock to create a new password, or to unlock the database
+        /// </summary>
+        internal bool ShouldCheckPassword = false;
+        /// <summary>
+        /// Attempts to unlock the database.
+        /// </summary>
         private int _attemptCounter = 0;
 
 
@@ -64,17 +69,32 @@ namespace VnManager.ViewModels.Windows
         {
             ValidateFiles();
             Title = App.ResMan.GetString("CreatePassTitle");
-            if (App.UserSettings.EncryptionEnabled)
+            if (App.UserSettings.RequirePasswordEntry)
             {
                 IsCreatePasswordVisible = false; //sets form to unlock mode
                 Title = App.ResMan.GetString("UnlockDbTitle");
-                if (CredentialManager.GetCredentials(App.CredDb) == null)
+                if (CredentialManager.GetCredentials(App.CredDb) == null && File.Exists(Path.Combine(App.ConfigDirPath, @"config\config.json")))
                 {
+                    ClearPreviousCredentials();
                     File.Delete(Path.Combine(App.ConfigDirPath, @"config\config.json"));
                     Environment.Exit(0);
                 }
             }
             
+        }
+
+        private void ClearPreviousCredentials()
+        {
+            //remove any previous credentials
+            string[] credStrings = new[] { App.CredDb, App.CredFile };
+            foreach (var cred in credStrings)
+            {
+                var value = CredentialManager.GetCredentials(cred);
+                if (value != null)
+                {
+                    CredentialManager.RemoveCredentials(cred);
+                }
+            }
         }
 
         /// <summary>
@@ -86,9 +106,9 @@ namespace VnManager.ViewModels.Windows
         public async Task CreatePasswordClickAsync()
         {
             File.Delete(Path.Combine(App.ConfigDirPath, App.DbPath));
-            IsClickChecked = true;
             try
             {
+                ShouldCheckPassword = true;
                 if (RequirePasswordChecked)
                 {
                     if (Password == null || Password.Length < 1 || ConfirmPassword == null || ConfirmPassword.Length <1)
@@ -98,19 +118,18 @@ namespace VnManager.ViewModels.Windows
                     }
 
                     
-                    var hashStruct = Secure.GenerateHash(ConfirmPassword, Secure.GenerateRandomSalt());
+                    var hashStruct = Secure.GenerateHash(Password, Secure.GenerateRandomSalt());
                     string username = $"{hashStruct.Hash}|{hashStruct.Salt}";
                     
-                    var cred = new NetworkCredential(username, ConfirmPassword);
+                    var cred = new NetworkCredential(username, Password);
                     CredentialManager.SaveCredentials(App.CredDb, cred);
                     var validPasswords = await ValidateAsync();
                     if(validPasswords != true) return;
-                    _ = new LiteDatabase($"Filename={Path.Combine(App.ConfigDirPath, App.DbPath)};Password={cred.Password}");
+                    using (_ = new LiteDatabase($"Filename={Path.Combine(App.ConfigDirPath, App.DbPath)};Password={cred.Password}")) { }
 
                     var settings = new UserSettings
                     {
-                        EncryptionEnabled = true,
-                        IsVisibleSavedNsfwContent = false
+                        RequirePasswordEntry = true
                     };
                     UserSettingsHelper.SaveUserSettings(settings);
                     bool result = await ValidateAsync();
@@ -141,7 +160,7 @@ namespace VnManager.ViewModels.Windows
                     var cred = new NetworkCredential(username, password);
                     CredentialManager.SaveCredentials(App.CredDb, cred);
 
-                    _ = new LiteDatabase($"Filename={Path.Combine(App.ConfigDirPath, App.DbPath)};Password={cred.Password}");
+                    using (_ = new LiteDatabase($"Filename={Path.Combine(App.ConfigDirPath, App.DbPath)};Password={cred.Password}")) { }
 
                     bool result = await ValidateAsync();
                     if (result)
@@ -149,11 +168,12 @@ namespace VnManager.ViewModels.Windows
                         RequestClose(true);
                     }
                 }
+                ShouldCheckPassword = false;
             }
             catch (Exception ex)
             {
                 App.Logger.Error(ex, "Couldn't Create Password");
-                IsClickChecked = false;
+                ShouldCheckPassword = false;
                 RequestClose(false);
             }
         }
@@ -165,8 +185,7 @@ namespace VnManager.ViewModels.Windows
         /// <returns></returns>
         public async Task UnlockPasswordClickAsync()
         {
-            IsPasswordCheckClicked = true;
-            IsClickChecked = true;
+            ShouldCheckPassword = true;
             bool result = await ValidateAsync();
             if (result)
             {
@@ -174,8 +193,7 @@ namespace VnManager.ViewModels.Windows
             }
             _attemptCounter += 1;
             await PasswordAttemptCheckerAsync();
-            IsPasswordCheckClicked = false;
-            IsClickChecked = false;
+            ShouldCheckPassword = false;
         }
 
         /// <summary>
@@ -194,39 +212,35 @@ namespace VnManager.ViewModels.Windows
         /// <summary>
         /// Checks how many password attempts were made
         /// If too many attempts are made, the time between attempts is increased
+        /// Less than 5 tries is 650 ms, 5-20 is somewhere between 3-10 sec, 20-50 is 30 sec
         /// If there have been 50 attempts, the program exits
         /// </summary>
         /// <returns></returns>
         private async Task PasswordAttemptCheckerAsync()
         {
-            if(_attemptCounter <=5)
+            switch (_attemptCounter)
             {
-                IsUnlockPasswordButtonEnabled = false;
-                await Task.Delay(TimeSpan.FromMilliseconds(650));
-                IsUnlockPasswordButtonEnabled = true;
+                case { } n when (n <= 5):
+                    IsUnlockPasswordButtonEnabled = false;
+                    await Task.Delay(TimeSpan.FromMilliseconds(650));
+                    IsUnlockPasswordButtonEnabled = true;
+                    break;
+                case { } n when (n >= 5 && n <= 20):
+                    IsUnlockPasswordButtonEnabled = false;
+                    var wait = new Random().NextDouble() * new Random().Next(2,8) + 2;
+                    await Task.Delay(TimeSpan.FromSeconds(wait));
+                    IsUnlockPasswordButtonEnabled = true;
+                    break;
+                case { } n when (n > 20 && n <= 50):
+                    IsUnlockPasswordButtonEnabled = false;
+                    await Task.Delay(TimeSpan.FromSeconds(30));
+                    IsUnlockPasswordButtonEnabled = true;
+                    break;
+                default:
+                    Environment.Exit(0);
+                    break;
             }
-            if (_attemptCounter >= 5 && _attemptCounter <= 20)
-            {
-                IsUnlockPasswordButtonEnabled = false;
-                var wait = new Random().NextDouble() * (8 - 2) + 2;
-                await Task.Delay(TimeSpan.FromSeconds(wait));
-                
-                IsUnlockPasswordButtonEnabled = true;
-            }
-            if (_attemptCounter > 20 && _attemptCounter < 50)
-            {
-                IsUnlockPasswordButtonEnabled = false;
-                await Task.Delay(TimeSpan.FromSeconds(30));
-                IsUnlockPasswordButtonEnabled = true;
-            }
-            else if (_attemptCounter >= 50)
-            {
-                Environment.Exit(0);
-            }
-            else 
-            {
-                return;
-            }
+
         }
 
         /// <summary>
@@ -248,7 +262,7 @@ namespace VnManager.ViewModels.Windows
                 UserSettingsHelper.CreateDefaultConfig();
             }
 
-            if (App.UserSettings.EncryptionEnabled == true && !File.Exists(database))
+            if (App.UserSettings.RequirePasswordEntry == true && !File.Exists(database))
             {
                 File.Delete(configFile);
                 App.UserSettings = UserSettingsHelper.ReadUserSettings();
@@ -260,8 +274,6 @@ namespace VnManager.ViewModels.Windows
                 CredentialManager.SaveCredentials(App.CredFile, cred);
             }
 
-
-
         }
 
     }
@@ -270,8 +282,9 @@ namespace VnManager.ViewModels.Windows
     {
         public SetEnterPasswordViewModelValidator()
         {
-            When(x => x.IsCreatePasswordVisible && x.RequirePasswordChecked && x.IsClickChecked, () =>
+            When(x => x.IsCreatePasswordVisible && x.RequirePasswordChecked && x.ShouldCheckPassword, () =>
             {
+
                 RuleFor(x => x.Password).NotNull().WithMessage(App.ResMan.GetString("PasswordNoEmpty"));
 
                 RuleFor(x => x.ConfirmPassword).Cascade(CascadeMode.StopOnFirstFailure)
@@ -280,11 +293,11 @@ namespace VnManager.ViewModels.Windows
 
             });
 
-            When(x => x.IsUnlockPasswordVisible && x.IsPasswordCheckClicked && x.IsClickChecked, () =>
+            When(x => x.IsUnlockPasswordVisible && x.ShouldCheckPassword, () =>
             {
                 RuleFor(x => x.Password).Cascade(CascadeMode.StopOnFirstFailure)
                     .Must(IsNoDbError).WithMessage(CreateDbErrorMessage)
-                    .Must(DoPasswordsMatch).WithMessage(App.ResMan.GetString("PasswordsNoMatch"));
+                    .Must(DoPasswordsMatch).WithMessage(App.ResMan.GetString("PassIncorrect"));
 
             });
         }
@@ -293,11 +306,10 @@ namespace VnManager.ViewModels.Windows
         /// <summary>
         /// Checks if first password and the confirmation password match
         /// </summary>
-        /// <param name="instance"></param>
-        /// <param name="confirmPass"></param>
+        /// <param name="securePass"></param>
         /// <returns></returns>
         //TODO:try to get rid of instance, if I can
-        private bool DoPasswordsMatch(SetEnterPasswordViewModel instance, SecureString confirmPass)
+        private bool DoPasswordsMatch(SecureString securePass)
         {
             var cred = CredentialManager.GetCredentials(App.CredDb);
             if (cred == null|| cred.UserName.Length <1) return false;
@@ -306,7 +318,7 @@ namespace VnManager.ViewModels.Windows
             {
                 Hash = split[0], Salt = split[1]
             };
-            bool result = Secure.ValidatePassword(instance.Password, hashSalt.Salt, hashSalt.Hash);
+            bool result = Secure.ValidatePassword(securePass, hashSalt.Salt, hashSalt.Hash);
             return result;
         }
 
@@ -322,7 +334,10 @@ namespace VnManager.ViewModels.Windows
             {
                 var cred = CredentialManager.GetCredentials(App.CredDb);
                 if (cred == null || cred.UserName.Length < 1) return false;
-                _ = new LiteDatabase($"Filename={Path.Combine(App.ConfigDirPath, App.DbPath)};Password={cred.Password}");
+                using (_ = new LiteDatabase($"Filename={Path.Combine(App.ConfigDirPath, App.DbPath)};Password={cred.Password}")){ }
+
+                
+                
                 return true;
             }
             catch (IOException)
@@ -351,7 +366,7 @@ namespace VnManager.ViewModels.Windows
             {
                 var cred = CredentialManager.GetCredentials(App.CredDb);
                 if (cred == null || cred.UserName.Length < 1) return App.ResMan.GetString("PasswordNoEmpty");
-                _ = new LiteDatabase($"Filename={Path.Combine(App.ConfigDirPath, App.DbPath)};Password={cred.Password}");
+                using (_ = new LiteDatabase($"Filename={Path.Combine(App.ConfigDirPath, App.DbPath)};Password={cred.Password}")) { }
                 return String.Empty;
             }
             catch (IOException)

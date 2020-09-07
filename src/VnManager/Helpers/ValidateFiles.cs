@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Text;
 using VnManager.Utilities;
@@ -53,7 +54,7 @@ namespace VnManager.Helpers
             try
             {
                 if (!File.Exists(path)) return false;
-                string ext = Path.GetExtension(path).ToLower() ?? string.Empty;
+                string ext = Path.GetExtension(path).ToLower(CultureInfo.InvariantCulture) ?? string.Empty;
                 return ext.EndsWith(".exe");
             }
             catch (Exception ex)
@@ -73,7 +74,7 @@ namespace VnManager.Helpers
             try
             {
                 if (!File.Exists(path)) return false;
-                string ext = Path.GetExtension(path).ToLower() ?? string.Empty;
+                string ext = Path.GetExtension(path).ToLower(CultureInfo.InvariantCulture) ?? string.Empty;
                 return ext.EndsWith(".ico") || ext.EndsWith(".exe");
             }
             catch (Exception ex)

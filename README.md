@@ -12,7 +12,7 @@ A program to keep track of your visual novels
 **Technical Debt** | [![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=c0eb5fc2abd174c0ea9db268ae3de46dd621775d&metric=sqale_index)](https://sonarcloud.io/dashboard?id=c0eb5fc2abd174c0ea9db268ae3de46dd621775d)
 **Duplicated Lines** | [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=c0eb5fc2abd174c0ea9db268ae3de46dd621775d&metric=duplicated_lines_density)](https://sonarcloud.io/dashboard?id=c0eb5fc2abd174c0ea9db268ae3de46dd621775d)
 **Lines of Code** | [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=c0eb5fc2abd174c0ea9db268ae3de46dd621775d&metric=ncloc)](https://sonarcloud.io/dashboard?id=c0eb5fc2abd174c0ea9db268ae3de46dd621775d)
-**History** | [![Build history](https://buildstats.info/github/chart/micah686/VnManager)](https://buildstats.info/github/chart/micah686/VnManager)
+**History** | [![Build history](https://buildstats.info/github/chart/micah686/VnManager?branch={master})](https://buildstats.info/github/chart/micah686/VnManager?branch={master})
 
 
 | | Repository Info |

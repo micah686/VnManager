@@ -14,12 +14,14 @@ name: Main CI
 
 on:
   push:
-    branches: [ master ]
+    branches:
+    - master
+    - dev
   pull_request:
-    branches: [ master ]
+    branches:
+    - master
 
 jobs:
-
   #Build Job for prepping the environment for build (installing .net core, getting nuget packages,...
   build:
     name: Build Project
@@ -58,3 +60,26 @@ jobs:
       with:
         name: VnManager
         path:  "${{ github.workspace }}/build/"
+        
+        
+  sonarcloud:
+    name: SonarCloud Scan
+    runs-on: ubuntu-latest                       
+      
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+        submodules: true
+
+    - name: SonarCloud Scan
+      uses: sonarsource/sonarcloud-github-action@master
+      with:
+        projectBaseDir: src
+        args: >
+            -Dsonar.organization=micah686
+            -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }} 

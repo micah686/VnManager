@@ -331,6 +331,15 @@ namespace VnManager.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Database Error.
+        /// </summary>
+        public static string DbError {
+            get {
+                return ResourceManager.GetString("DbError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Database is locked by another process.
         /// </summary>
         public static string DbIsLockedProc {

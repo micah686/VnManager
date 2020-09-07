@@ -165,7 +165,7 @@ namespace VnManager.ViewModels.UserControls
             {
                 IsVisibleSavedNsfwContent = NsfwContentSavedVisible,
                 SettingsVndb = vndb,
-                EncryptionEnabled = useEncryption,
+                RequirePasswordEntry = useEncryption,
                 MaxSexualRating = (SexualRating)MaxSexualIndex,
                 MaxViolenceRating = (ViolenceRating)MaxViolenceIndex
             };

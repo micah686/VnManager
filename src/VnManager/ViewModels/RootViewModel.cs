@@ -3,6 +3,7 @@ using Stylet;
 using StyletIoC;
 using System;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Resources;
@@ -27,7 +28,7 @@ namespace VnManager.ViewModels
         private int _windowButtonPressedCounter = 0;
 
         public static RootViewModel Instance { get; private set; }
-        public string WindowTitle { get; } = string.Format($"{App.ResMan.GetString("ApplicationTitle")} {App.VersionString}");
+        public string WindowTitle { get; } = string.Format($"{App.ResMan.GetString("ApplicationTitle")} {App.VersionString}",CultureInfo.InvariantCulture);
 
         #region SettingsPressed
         private bool _isSettingsPressed;
@@ -106,22 +107,23 @@ namespace VnManager.ViewModels
 
             if (!IsNormalStart())
             {
-                //remove any previous credentials
-                string[] credStrings = new[] { App.CredDb, App.CredFile };
-                foreach (var cred in credStrings)
-                {
-                    var value = CredentialManager.GetCredentials(cred);
-                    if (value != null)
-                    {
-                        CredentialManager.RemoveCredentials(cred);
-                    }
-                }
+                ////remove any previous credentials
+                //string[] credStrings = new[] { App.CredDb, App.CredFile };
+                //foreach (var cred in credStrings)
+                //{
+                //    var value = CredentialManager.GetCredentials(cred);
+                //    if (value != null)
+                //    {
+                //        CredentialManager.RemoveCredentials(cred);
+                //    }
+                //}
                 App.UserSettings = UserSettingsHelper.ReadUserSettings();
                 var auth = _container.Get<SetEnterPasswordViewModel>();
                 var isAuth = _windowManager.ShowDialog(auth);
                 
                 if (isAuth == true)
                 {
+                    App.UserSettings = UserSettingsHelper.ReadUserSettings();//read for any changed user settings
                     CheckForImportDb();
                     var mainGrid = _container.Get<MainGridViewModel>();
                     ActivateItem(mainGrid);
@@ -157,9 +159,12 @@ namespace VnManager.ViewModels
             if (App.UserSettings.DidAskImportDb != false) return;
             var result = _windowManager.ShowMessageBox(App.ResMan.GetString("AskImportDb"),
                 App.ResMan.GetString("ImportDataTitle"), MessageBoxButton.YesNo);
-            if (result != MessageBoxResult.Yes) return;
-            var vm = _container.Get<ImportViewModel>();
-            _windowManager.ShowDialog(vm);
+            if (result == MessageBoxResult.Yes)
+            {
+                var vm = _container.Get<ImportViewModel>();
+                _windowManager.ShowDialog(vm);
+            }
+            
 
             App.UserSettings.DidAskImportDb = true;
             UserSettingsHelper.SaveUserSettings(App.UserSettings);
@@ -173,14 +178,17 @@ namespace VnManager.ViewModels
         /// </summary>
         private void CheckDbError()
         {
+            string appExit = App.ResMan.GetString("AppExit");
+            string dbError = App.ResMan.GetString("DbError");
+
             string errorStr;
             try
             {
                 var cred = CredentialManager.GetCredentials(App.CredDb);
                 if (cred == null || cred.UserName.Length < 1)
                 {
-                    errorStr = $"{App.ResMan.GetString("PasswordNoEmpty")}\n{App.ResMan.GetString("AppExit")}";
-                    _windowManager.ShowMessageBox(errorStr, "Database Error");
+                    errorStr = $"{App.ResMan.GetString("PasswordNoEmpty")}\n{appExit}";
+                    _windowManager.ShowMessageBox(errorStr, dbError);
                     Environment.Exit(1);
                 }
                 else
@@ -193,29 +201,29 @@ namespace VnManager.ViewModels
             }
             catch (IOException)
             {
-                errorStr = $"{App.ResMan.GetString("DbIsLockedProc")}\n{App.ResMan.GetString("AppExit")}";
-                _windowManager.ShowMessageBox(errorStr, "Database Error");
+                errorStr = $"{App.ResMan.GetString("DbIsLockedProc")}\n{appExit}";
+                _windowManager.ShowMessageBox(errorStr, dbError);
                 Environment.Exit(1);
             }
             catch (LiteException ex)
             {
                 if (ex.Message == "Invalid password")
                 {
-                    errorStr = $"{App.ResMan.GetString("PassIncorrect")}\n{App.ResMan.GetString("AppExit")}";
-                    _windowManager.ShowMessageBox(errorStr, "Database Error");
+                    errorStr = $"{App.ResMan.GetString("PassIncorrect")}\n{appExit}";
+                    _windowManager.ShowMessageBox(errorStr, dbError);
                     Environment.Exit(1);
                 }
                 else
                 {
-                    errorStr = $"{ex.Message}\n{App.ResMan.GetString("AppExit")}";
-                    _windowManager.ShowMessageBox(errorStr, "Database Error");
+                    errorStr = $"{ex.Message}\n{appExit}";
+                    _windowManager.ShowMessageBox(errorStr, dbError);
                     Environment.Exit(1);
                 }
             }
             catch (Exception)
             {
-                errorStr = $"{App.ResMan.GetString("UnknownException")}\n{App.ResMan.GetString("AppExit")}";
-                _windowManager.ShowMessageBox(errorStr, "Database Error");
+                errorStr = $"{App.ResMan.GetString("UnknownException")}\n{appExit}";
+                _windowManager.ShowMessageBox(errorStr, dbError);
                 Environment.Exit(1);
             }
         }
@@ -228,7 +236,7 @@ namespace VnManager.ViewModels
             if (!UserSettingsHelper.ValidateConfigFile()) return false;
             if (CredentialManager.GetCredentials(App.CredDb) == null) return false;
             App.UserSettings = UserSettingsHelper.ReadUserSettings();
-            var useEncryption = App.UserSettings.EncryptionEnabled;
+            var useEncryption = App.UserSettings.RequirePasswordEntry;
             return !useEncryption;
         }
 

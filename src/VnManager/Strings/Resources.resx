@@ -207,6 +207,9 @@
   <data name="DbDump" xml:space="preserve">
     <value>Database Dump</value>
   </data>
+  <data name="DbError" xml:space="preserve">
+    <value>Database Error</value>
+  </data>
   <data name="DbIsLockedProc" xml:space="preserve">
     <value>Database is locked by another process</value>
   </data>
