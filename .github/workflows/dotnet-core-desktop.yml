@@ -76,10 +76,11 @@ jobs:
     - name: SonarCloud Scan
       uses: sonarsource/sonarcloud-github-action@master
       with:
-        projectBaseDir: src
         args: >
             -Dsonar.organization=micah686
             -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
+            -Dsonar.sources=src/VnManager/
+            -Dsonar.verbose=true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }} 
