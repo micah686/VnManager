@@ -49,13 +49,10 @@ jobs:
     name: Sonar
     runs-on: windows-latest                                 
     steps:      
-      - name: Wait for build
+      - name: Wait for build to succeed
         uses: fountainhead/action-wait-for-check@v1.0.0
         id: wait-for-build
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           checkName: vntest
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
-      - name: List directory
-        run: echo %PATH%
-        shell: cmd          
