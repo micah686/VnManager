@@ -79,7 +79,7 @@ jobs:
         args: >
             -Dsonar.organization=micah686
             -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
-            -Dsonar.sources=${{ github.workspace }}
+            -Dsonar.sources=.
             -Dsonar.verbose=true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
