@@ -125,7 +125,11 @@ namespace VnManager.ViewModels.Windows
                     CredentialManager.SaveCredentials(App.CredDb, cred);
                     var validPasswords = await ValidateAsync();
                     if(validPasswords != true) return;
-                    using (_ = new LiteDatabase($"Filename={Path.Combine(App.ConfigDirPath, App.DbPath)};Password={cred.Password}")) { }
+                    using (_ = new LiteDatabase(
+                        $"Filename={Path.Combine(App.ConfigDirPath, App.DbPath)};Password={cred.Password}"))
+                    {
+                        //create initial empty database
+                    }
 
                     var settings = new UserSettings
                     {
@@ -160,7 +164,11 @@ namespace VnManager.ViewModels.Windows
                     var cred = new NetworkCredential(username, password);
                     CredentialManager.SaveCredentials(App.CredDb, cred);
 
-                    using (_ = new LiteDatabase($"Filename={Path.Combine(App.ConfigDirPath, App.DbPath)};Password={cred.Password}")) { }
+                    using (_ = new LiteDatabase(
+                        $"Filename={Path.Combine(App.ConfigDirPath, App.DbPath)};Password={cred.Password}"))
+                    {
+                        //create initial empty database
+                    }
 
                     bool result = await ValidateAsync();
                     if (result)
@@ -334,10 +342,11 @@ namespace VnManager.ViewModels.Windows
             {
                 var cred = CredentialManager.GetCredentials(App.CredDb);
                 if (cred == null || cred.UserName.Length < 1) return false;
-                using (_ = new LiteDatabase($"Filename={Path.Combine(App.ConfigDirPath, App.DbPath)};Password={cred.Password}")){ }
+                using (_ = new LiteDatabase($"Filename={Path.Combine(App.ConfigDirPath, App.DbPath)};Password={cred.Password}"))
+                {
+                    //test if the database can be opened
+                }
 
-                
-                
                 return true;
             }
             catch (IOException)
@@ -366,7 +375,10 @@ namespace VnManager.ViewModels.Windows
             {
                 var cred = CredentialManager.GetCredentials(App.CredDb);
                 if (cred == null || cred.UserName.Length < 1) return App.ResMan.GetString("PasswordNoEmpty");
-                using (_ = new LiteDatabase($"Filename={Path.Combine(App.ConfigDirPath, App.DbPath)};Password={cred.Password}")) { }
+                using (_ = new LiteDatabase($"Filename={Path.Combine(App.ConfigDirPath, App.DbPath)};Password={cred.Password}"))
+                {
+                    //test if the database can be opened
+                }
                 return String.Empty;
             }
             catch (IOException)
