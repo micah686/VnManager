@@ -5,14 +5,43 @@ on:
       - master
   pull_request:
     types: [opened, synchronize, reopened]
+
 jobs:
+
+  #Build Job for prepping the environment for build (installing .net core, getting nuget packages,...
   build:
-    name: vntest
-    runs-on: windows-latest
+    name: Build Project
+    runs-on: windows-latest                       
+      
     steps:
-      - name: Checkout Source Code
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-          submodules: true
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+        submodules: true
+
+    - name: Cache NuGet Packages
+      uses: actions/cache@v1
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
+
+    # Install the .NET Core workload
+    - name: Install .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.101 
+    - name: Build VnManager
+      run: |
+        mkdir ${{ github.workspace }}/build
+        mkdir ${{ github.workspace }}/staging
+        dotnet publish src/VnManager/VnManager.csproj --framework netcoreapp3.1 -c Release -o --output "${{ github.workspace }}/build"
+                
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v1
+      with:
+        name: VnManager-YamlTest
+        path:  "${{ github.workspace }}/build/"
                 
