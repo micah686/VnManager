@@ -1,16 +1,21 @@
 # Visual-Novel-Manager-v2 [![Build status](https://ci.appveyor.com/api/projects/status/github/micah686/visual-novel-manager-v2?svg=true)](https://ci.appveyor.com/api/projects/status/github/micah686/)
 
-##V2 Of my Visual Novel Manager
+## V2 Of my Visual Novel Manager
 
-Information and the latest downloads can be found here:
-[https://micah686.github.io/Visual-Novel-Manager-v2/](https://micah686.github.io/Visual-Novel-Manager-v2/)
+This branch is the archived version of my Visual-Novel-Manager-v2. No code changes will be made anymore. However, the newest version is located here:
+[https://github.com/micah686/VnManager](https://github.com/micah686/VnManager)
 
-If you have bugs to report, please include the .log files from ```Data\logs\```
+This project includes the VndbSharp submodule. If you are having trouble compiling the project from source, try adding the VndbSharp.dll from the compiled releases
 
-If there are features you want added, PLEASE add an issue, as I can't add a feature if I don't know if people want it.
+Here are the screenshots of the application:
 
-if you have feature suggestions, please put create an Issue or comment on this document:
-[Visual-Novel-Manager-v2/Docs/Feature-Suggestions.md](https://github.com/micah686/Visual-Novel-Manager-v2/blob/master/Docs/Feature-Suggestions.md)
+![Main](https://raw.githubusercontent.com/micah686/VnManager/gh-pages-v2/images/main01.png)
 
-This project relies on the VndbSharp submodule, so be sure to clone the submodules in order to build the project.
-I haven't updated the library to work with the latest API, so it may fail to build.
+![Screenshots](https://github.com/micah686/VnManager/blob/gh-pages-v2/images/screenshot01.png)
+
+![VnList](https://github.com/micah686/VnManager/blob/gh-pages-v2/images/vnlist.png)
+
+![Character](https://github.com/micah686/VnManager/blob/gh-pages-v2/images/character01.png)
+
+![AddVn](https://github.com/micah686/VnManager/blob/gh-pages-v2/images/addvn01.png)
+
