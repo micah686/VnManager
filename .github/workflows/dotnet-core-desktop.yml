@@ -72,16 +72,18 @@ jobs:
           New-Item -Path .\.sonar\scanner -ItemType Directory
           dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner        
 
-    # Install the .NET Core workload
-    - name: Install .NET Core
-      uses: actions/setup-dotnet@v1
+    # Replace the dotnet publish src... line with the build script 
+    - name: Build and analyze
       with:
-        dotnet-version: 3.1.101 
-    - name: Build VnManager
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}     
+      shell: powershell
       run: |
-        mkdir ${{ github.workspace }}/build
-        mkdir ${{ github.workspace }}/staging
-        dotnet publish src/VnManager/VnManager.csproj --framework netcoreapp3.1 -c Release -o --output "${{ github.workspace }}/build"
+          mkdir ${{ github.workspace }}/build          
+          dir ${{ github.workspace }}          
+          .\.sonar\scanner\dotnet-sonarscanner begin /k:"micah686_VnManager" /o:"micah686" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
+          dotnet publish src/VnManager/VnManager.csproj --framework netcoreapp3.1 -c Release -o --output "${{ github.workspace }}/build"
+          .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"    
                 
     - name: Upload Artifact
       uses: actions/upload-artifact@v1
