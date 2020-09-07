@@ -1,86 +1,46 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-
-# This workflow will build, test, sign and package a WPF or Windows Forms desktop application
-# built on .NET Core.
-# To learn how to migrate your existing application to .NET Core,
-# refer to https://docs.microsoft.com/en-us/dotnet/desktop-wpf/migration/convert-project-from-net-framework
-#
-
-
-name: Main CI
-
+name: Build
 on:
   push:
     branches:
-    - master
-    - dev
+      - master
   pull_request:
-    branches:
-    - master
-
+    types: [opened, synchronize, reopened]
 jobs:
-  #Build Job for prepping the environment for build (installing .net core, getting nuget packages,...
   build:
-    name: Build Project
-    runs-on: windows-latest                             
-    env:
-      Solution_Name: src/VnManager.sln                         
-      
+    name: Build
+    runs-on: windows-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
-        submodules: true
-
-    - name: Cache NuGet Packages
-      uses: actions/cache@v1
-      with:
-        path: ~/.nuget/packages
-        key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-nuget-
-
-    # Install the .NET Core workload
-    - name: Install .NET Core
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 3.1.101 
-    - name: Build VnManager
-      run: |
-        mkdir ${{ github.workspace }}/build
-        mkdir ${{ github.workspace }}/staging
-        dotnet publish src/VnManager/VnManager.csproj --framework netcoreapp3.1 -c Release -o --output "${{ github.workspace }}/build"
-                
-    - name: Upload Artifact
-      uses: actions/upload-artifact@v1
-      with:
-        name: VnManager
-        path:  "${{ github.workspace }}/build/"
-        
-        
-  sonarcloud:
-    name: SonarCloud Scan
-    runs-on: ubuntu-latest                       
-      
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
-        submodules: true
-
-    - name: SonarCloud Scan
-      uses: sonarsource/sonarcloud-github-action@master
-      with:
-        args: >
-            -Dsonar.organization=micah686
-            -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
-            -Dsonar.sources=.
-            -Dsonar.verbose=true
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }} 
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+          submodules: true
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v1
+        with:
+          path: ~\sonar\cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+      - name: Cache SonarCloud scanner
+        id: cache-sonar-scanner
+        uses: actions/cache@v1
+        with:
+          path: .\.sonar\scanner
+          key: ${{ runner.os }}-sonar-scanner
+          restore-keys: ${{ runner.os }}-sonar-scanner
+      - name: Install SonarCloud scanner
+        if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
+        shell: powershell
+        run: |
+          New-Item -Path .\.sonar\scanner -ItemType Directory
+          dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
+      - name: Build and analyze
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_2 }}
+        shell: powershell
+        run: |
+          mkdir ${{ github.workspace }}/build
+          dir ${{ github.workspace }}
+          .\.sonar\scanner\dotnet-sonarscanner begin /k:"micah686_VnManager" /o:"micah686" /d:sonar.login="${{ secrets.SONAR_TOKEN_2 }}" /d:sonar.host.url="https://sonarcloud.io"
+          dotnet publish src/VnManager/VnManager.csproj --framework netcoreapp3.1 -c Release -o --output "${{ github.workspace }}/build"
+          .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN_2 }}"
