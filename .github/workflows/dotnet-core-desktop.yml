@@ -7,7 +7,7 @@ on:
     types: [opened, synchronize, reopened]
 jobs:
   build:
-    name: Build-Test
+    name: vntest
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
@@ -48,16 +48,14 @@ jobs:
   sonarcloud:
     name: Sonar
     runs-on: windows-latest                                 
-    steps:
-    - name: Wait for build to succeed
+    steps:      
+      - name: Wait for build
         uses: fountainhead/action-wait-for-check@v1.0.0
         id: wait-for-build
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          checkName: Build-Test
+          checkName: vntest
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
-    
-    - name: Directory
-      run: dir ${{ github.workspace }}
-      shell: cmd
-        
+      - name: List directory
+        run: echo %PATH%
+        shell: cmd          
