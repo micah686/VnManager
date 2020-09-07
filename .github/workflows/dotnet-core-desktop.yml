@@ -80,6 +80,9 @@ jobs:
       run: |
         mkdir ${{ github.workspace }}/build
         dir ${{ github.workspace }}
+        .\.sonar\scanner\dotnet-sonarscanner begin /k:"micah686_VnManager" /o:"micah686" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
+        dotnet publish src/VnManager/VnManager.csproj --framework netcoreapp3.1 -c Release -o --output "${{ github.workspace }}/build"
+        .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
                 
     - name: Upload Artifact
       uses: actions/upload-artifact@v1
