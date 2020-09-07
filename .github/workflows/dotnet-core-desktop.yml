@@ -1,17 +1,31 @@
-name: Build
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+# This workflow will build, test, sign and package a WPF or Windows Forms desktop application
+# built on .NET Core.
+# To learn how to migrate your existing application to .NET Core,
+# refer to https://docs.microsoft.com/en-us/dotnet/desktop-wpf/migration/convert-project-from-net-framework
+#
+
+
+name: Main CI
+
 on:
   push:
-    branches:
-      - master
+    branches: [ master ]
   pull_request:
-    types: [opened, synchronize, reopened]
+    branches: [ master ]
 
 jobs:
 
   #Build Job for prepping the environment for build (installing .net core, getting nuget packages,...
   build:
     name: Build Project
-    runs-on: windows-latest                       
+    runs-on: windows-latest                             
+    env:
+      Solution_Name: src/VnManager.sln                         
       
     steps:
     - name: Checkout
@@ -44,4 +58,3 @@ jobs:
       with:
         name: VnManager-YamlTest
         path:  "${{ github.workspace }}/build/"
-                
