@@ -12,9 +12,10 @@
              xmlns:ex="clr-namespace:VnManager.Extensions"
              xmlns:conv="clr-namespace:VnManager.Converters"
              xmlns:mvd="https://github.com/fantasticfiasco/mvvm-dialogs"
-             xmlns:source ="clr-namespace:VnManager.ViewModels.Dialogs.AddGameSources"
+             xmlns:vm ="clr-namespace:VnManager.ViewModels.Dialogs.AddGameSources"
              mvd:DialogServiceViews.IsRegistered="True"
              mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance vm:AddGameVndbViewModel}"
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <conv:InverseBoolConverter x:Key="InverseBoolConverter"/>

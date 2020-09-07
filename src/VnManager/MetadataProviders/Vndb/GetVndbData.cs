@@ -93,7 +93,7 @@ namespace VnManager.MetadataProviders.Vndb
 			}
 			catch (Exception ex)
 			{
-				App.Logger.Error(ex, "An error occured when trying to get the vndb data from the API");
+				App.Logger.Error(ex, "An error occurred when trying to get the vndb data from the API");
                 App.StatusBar.ResetValues();
 				throw;
 			}

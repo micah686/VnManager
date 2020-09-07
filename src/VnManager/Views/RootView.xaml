@@ -9,7 +9,9 @@
         xmlns:adonisUi="clr-namespace:AdonisUI;assembly=AdonisUI"
         xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
         xmlns:diag="clr-namespace:System.Diagnostics;assembly=mscorlib"
+        xmlns:vm="clr-namespace:VnManager.ViewModels"
         mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance vm:RootViewModel}"
         Title="{Binding WindowTitle}" MinWidth="1075" MinHeight="768" Width="1075" Height="768">
     <controls:AdonisWindow.Resources>
         <s:BoolToVisibilityConverter x:Key="boolToVisConverter" TrueVisibility="Visible" FalseVisibility="Hidden"/>

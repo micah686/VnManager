@@ -95,7 +95,7 @@ namespace VnManager.Helpers
         /// <param name="imageList">List of Images (Uri and IsNsfw)</param>
         /// <param name="imageDirectory">Directory to save the images in</param>
         /// <returns></returns>
-        public static async Task DownloadImagesWithThumbnailsAsync(IEnumerable<ScreenShot> imageList, string imageDirectory)
+        public static async Task DownloadImagesWithThumbnailsAsync(ICollection<ScreenShot> imageList, string imageDirectory)
         {
             try
             {

@@ -42,12 +42,9 @@ namespace VnManager.ViewModels.UserControls
             }
         }
 
-        #region SpoilerList
-        
         public int SpoilerIndex { get; set; } = 0;
         public int MaxSexualIndex { get; set; }
         public int MaxViolenceIndex { get; set; }
-        #endregion
 
 
         private readonly IContainer _container;

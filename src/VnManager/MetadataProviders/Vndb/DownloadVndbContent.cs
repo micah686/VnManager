@@ -56,20 +56,23 @@ namespace VnManager.MetadataProviders.Vndb
                 using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
                 var entries = db.GetCollection<VnCharacterInfo>("VnCharacter").Query().Where(x => x.VnId == vnId)
                     .ToList();
-                if (entries.Count > 0)
+                if (entries == null || entries.Count == 0)
                 {
-                    var directory = Path.Combine(App.AssetDirPath, @$"sources\vndb\images\characters\{vnId}");
-                    if (!Directory.Exists(directory)) Directory.CreateDirectory(directory);
-                    List<string> characterList = entries.Select(x => x.ImageLink.AbsoluteUri).ToList();
-                    using var client = new WebClient();
-                    foreach (var character in characterList)
+                    App.Logger.Warning("Failed to download character image. Entries is null or empty");
+                    return;
+                }
+
+                var directory = Path.Combine(App.AssetDirPath, @$"sources\vndb\images\characters\{vnId}");
+                if (!Directory.Exists(directory)) Directory.CreateDirectory(directory);
+                List<string> characterList = entries.Select(x => x.ImageLink.AbsoluteUri).ToList();
+                using var client = new WebClient();
+                foreach (var character in characterList)
+                {
+                    string file = $@"{directory}\{Path.GetFileName(character)}";
+                    if (!File.Exists(file) && !string.IsNullOrEmpty(character))
                     {
-                        string file = $@"{directory}\{Path.GetFileName(character)}";
-                        if (!File.Exists(file) && !string.IsNullOrEmpty(character))
-                        {
-                            App.StatusBar.IsFileDownloading = true;
-                            await client.DownloadFileTaskAsync(new Uri(character), file);
-                        }
+                        App.StatusBar.IsFileDownloading = true;
+                        await client.DownloadFileTaskAsync(new Uri(character), file);
                     }
                 }
             }
@@ -94,19 +97,21 @@ namespace VnManager.MetadataProviders.Vndb
                 {
                     var entries = db.GetCollection<VnInfoScreens>("VnInfo_Screens").Query().Where(x => x.VnId == vnId)
                         .ToList();
-                    if (entries.Count > 0)
+                    if (entries == null || entries.Count == 0)
                     {
-                        var directory = Path.Combine(App.AssetDirPath, @$"sources\vndb\images\screenshots\{vnId}");
-                        if (!Directory.Exists($@"{directory}\thumbs"))
-                        {
-                            Directory.CreateDirectory($@"{directory}\thumbs");
-                        }
-                        List<ScreenShot> scrList = entries.Select(screen => new ScreenShot { IsNsfw = NsfwHelper.IsNsfw(screen.ImageRating), Uri = screen.ImageUri }).ToList();
-
-                        App.StatusBar.IsFileDownloading = true;
-                        await ImageHelper.DownloadImagesWithThumbnailsAsync(scrList, directory);
-
+                        App.Logger.Warning("Failed to download screenshots. Entries is null or empty");
+                        return;
                     }
+
+                    var directory = Path.Combine(App.AssetDirPath, @$"sources\vndb\images\screenshots\{vnId}");
+                    if (!Directory.Exists($@"{directory}\thumbs"))
+                    {
+                        Directory.CreateDirectory($@"{directory}\thumbs");
+                    }
+                    List<ScreenShot> scrList = entries.Select(screen => new ScreenShot { IsNsfw = NsfwHelper.IsNsfw(screen.ImageRating), Uri = screen.ImageUri }).ToList();
+
+                    App.StatusBar.IsFileDownloading = true;
+                    await ImageHelper.DownloadImagesWithThumbnailsAsync(scrList, directory);
                 }
             }
             catch (Exception ex)

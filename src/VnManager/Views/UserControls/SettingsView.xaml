@@ -14,8 +14,10 @@
              xmlns:vnMdl="clr-namespace:VndbSharp.Models.Common;assembly=VndbSharp"
              xmlns:ext="clr-namespace:VnManager.Extensions"
              xmlns:mvd="https://github.com/fantasticfiasco/mvvm-dialogs"
+             xmlns:vm="clr-namespace:VnManager.ViewModels.UserControls"
              mvd:DialogServiceViews.IsRegistered="True"
              mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance vm:SettingsViewModel}"
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid  Margin="10">
         <Grid.RowDefinitions>

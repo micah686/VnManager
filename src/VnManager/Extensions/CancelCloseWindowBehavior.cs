@@ -6,6 +6,9 @@ using Microsoft.Xaml.Behaviors;
 
 namespace VnManager.Extensions
 {
+    /// <summary>
+    /// Class for modifying the behavior of the X close button
+    /// </summary>
     public  class CancelCloseWindowBehavior : Behavior<Window>
     {
         public static readonly DependencyProperty CancelCloseProperty =

@@ -10,7 +10,9 @@
         xmlns:adonisUi="clr-namespace:AdonisUI;assembly=AdonisUI"
         xmlns:adExt="clr-namespace:AdonisUI.Extensions;assembly=AdonisUI"
         xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+        xmlns:vm="clr-namespace:VnManager.ViewModels.Dialogs"
         mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance vm:DeleteEverythingViewModel}"
         Title="{x:Static res:Resources.DeleteEverythingTitle}" Height="120" Width="650" ShowInTaskbar="False" ResizeMode="NoResize">
     <Grid Margin="10">
         <Grid.RowDefinitions>

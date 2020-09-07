@@ -11,10 +11,12 @@
              xmlns:controls="clr-namespace:AdonisUI.Controls;assembly=AdonisUI"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:ext="clr-namespace:VnManager.Extensions"
+             xmlns:vm="clr-namespace:VnManager.ViewModels.Dialogs"
              mvd:DialogServiceViews.IsRegistered="True"
              mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance vm:ImportViewModel}"
              MinHeight="300" MinWidth="300" Height="300" Width="450"
-             Title="{x:Static res:Resources.ExportData}">
+             Title="{x:Static res:Resources.ImportDataTitle}">
     <i:Interaction.Behaviors>
         <ext:CancelCloseWindowBehavior CancelClose="{Binding BlockClosing}"/>
     </i:Interaction.Behaviors>

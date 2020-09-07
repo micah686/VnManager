@@ -6,7 +6,9 @@
              xmlns:res="clr-namespace:VnManager.Strings"
              xmlns:local="clr-namespace:VnManager.Views.UserControls"
              xmlns:s="https://github.com/canton7/Stylet"
+             xmlns:vm="clr-namespace:VnManager.ViewModels.UserControls"
              mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance vm:DebugViewModel}"
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
         <Grid.RowDefinitions>

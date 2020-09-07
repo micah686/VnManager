@@ -12,8 +12,10 @@
              xmlns:ex="clr-namespace:VnManager.Extensions"
              xmlns:conv="clr-namespace:VnManager.Converters"
              xmlns:mvd="https://github.com/fantasticfiasco/mvvm-dialogs"
+             xmlns:vm="clr-namespace:VnManager.ViewModels.Dialogs.AddGameSources"
              mvd:DialogServiceViews.IsRegistered="True"
              mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance vm:AddGameNoSourceViewModel}"
              Height="380" Width="500">
     <Grid >
         <Grid.Resources>

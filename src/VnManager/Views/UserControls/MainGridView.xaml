@@ -27,20 +27,20 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <Grid Grid.Column="0" x:Name="grdSideBar">
+                <Grid Grid.Column="0" x:Name="GrdSideBar">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="160"/>
                         <RowDefinition Height="90*"/>
                         <RowDefinition Height="40"/>
                     </Grid.RowDefinitions>
-                    <ContentControl Grid.Row="0"   s:View.Model="{Binding LastPlayedPage}"/>
-                    <ContentControl Grid.Row="1"   s:View.Model="{Binding CategoryListPage}"/>
-                    <ContentControl Grid.Row="2"   s:View.Model="{Binding AddGamePage}"/>
+                    <ContentControl Grid.Row="0" s:View.Model="{Binding LastPlayedPage}"/>
+                    <ContentControl Grid.Row="1" s:View.Model="{Binding CategoryListPage}"/>
+                    <ContentControl Grid.Row="2" s:View.Model="{Binding AddGamePage}"/>
                 </Grid>
 
 
 
-                <Grid Grid.Column="1" x:Name="grdMain">
+                <Grid Grid.Column="1" x:Name="GrdMain">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="40"/>
                         <RowDefinition Height="*"/>
@@ -48,32 +48,12 @@
                     <Grid Grid.Row="0" Background="OrangeRed">
                         <Label Content="SearchByTags"/>
                     </Grid>
-                    <ContentControl Grid.Row="1" Grid.Column="1" Grid.RowSpan="4" Margin="5" s:View.Model="{Binding ActiveItem}"/>
+                    <ContentControl Grid.Row="1"  Margin="5" s:View.Model="{Binding ActiveItem}"/>
                 </Grid>
 
                 <!--End -->
             </Grid>
 
-
-            <!--<Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" MinWidth="147"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="70"/>
-                    <RowDefinition Height="90*"/>
-                    <RowDefinition Height="40"/>
-                </Grid.RowDefinitions>
-                <ContentControl Grid.Row="0" Grid.Column="0" Margin="5,0,0,0" s:View.Model="{Binding LastPlayedPage}"/>
-
-                <ContentControl Grid.Row="1" Grid.Column="0" Margin="5,0,0,0" s:View.Model="{Binding CategoryListPage}" MinHeight="300"/>
-                <ContentControl Grid.Row="2" Grid.Column="0" Margin="5,0,0,0" s:View.Model="{Binding AddGamePage}"/>
-
-                <Grid Background="Chartreuse" Grid.Row="0" Grid.Column="1" />
-                <ContentControl Grid.Row="1" Grid.Column="1" Grid.RowSpan="4" Margin="5" s:View.Model="{Binding GameGridPage}"/>
-
-            </Grid>-->
 
         </DockPanel>
     </Grid>

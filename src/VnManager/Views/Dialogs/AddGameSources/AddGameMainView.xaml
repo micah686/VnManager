@@ -8,7 +8,9 @@
              xmlns:controls="clr-namespace:AdonisUI.Controls;assembly=AdonisUI"
              xmlns:res="clr-namespace:VnManager.Strings"
              xmlns:conv="clr-namespace:VnManager.Converters"
-             mc:Ignorable="d" 
+             xmlns:vm="clr-namespace:VnManager.ViewModels.Dialogs.AddGameSources"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance vm:AddGameMainViewModel}"
              Title="{x:Static res:Resources.AddGame}" Height="410" Width="500" ResizeMode="NoResize" ShowInTaskbar="False">
     <Grid Margin="10">
         <Grid.Resources>

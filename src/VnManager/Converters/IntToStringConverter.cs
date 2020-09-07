@@ -13,11 +13,7 @@ namespace VnManager.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if(value == null)
-            {
-                return string.Empty;
-            }
-            return value.ToString();
+            return value == null ? string.Empty : value.ToString();
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

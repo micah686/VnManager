@@ -10,8 +10,10 @@
         xmlns:adonisUi="clr-namespace:AdonisUI;assembly=AdonisUI"
         xmlns:adonisExtensions="clr-namespace:AdonisUI.Extensions;assembly=AdonisUI"
         xmlns:mvd="https://github.com/fantasticfiasco/mvvm-dialogs"
+        xmlns:vm="clr-namespace:VnManager.ViewModels.Dialogs"
         mvd:DialogServiceViews.IsRegistered="True"
         mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance vm:AddGameMultiViewModel}"
         Title="{x:Static res:Resources.AddGameCollectionTitle}" Height="450" Width="500" ResizeMode="NoResize" ShowInTaskbar="False">
     <Grid>
         <Grid Margin="10">
