@@ -88,7 +88,7 @@ namespace VnManager.ViewModels.UserControls.MainPage
             catch (Exception e)
             {
                 Debug.WriteLine(e);
-                throw;
+                //throw;
             }
             
         }

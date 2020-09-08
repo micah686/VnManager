@@ -44,7 +44,7 @@ namespace VnManager.MetadataProviders
                 {
                     entry.SourceType = data.SourceType;
                     entry.Id = Guid.NewGuid();
-                    entry.GameId = 0;
+                    entry.GameId = data.GameId;
                     entry.LastPlayed = DateTime.UtcNow;
                     entry.PlayTime = TimeSpan.Zero;
                     entry.ExePath = data.ExePath;
