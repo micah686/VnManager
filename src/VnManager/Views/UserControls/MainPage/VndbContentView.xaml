@@ -13,8 +13,27 @@
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance vm:VndbContentViewModel}"
              d:DesignHeight="950" d:DesignWidth="800">
+    <UserControl.Resources>
+        <Image x:Key="BgImage" Source="{Binding BackgroundImage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Stretch="UniformToFill">
+            <Image.OpacityMask>
+
+                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                    <GradientStop Color="#FFFFFFFF" Offset="0"/>
+                    <GradientStop Color="#85FFFFFF" Offset="0.15"/>
+                    <GradientStop Color="#55FFFFFF" Offset="0.25"/>
+                    <GradientStop Color="#35FFFFFF" Offset="0.45"/>
+                    <GradientStop Color="#25FFFFFF" Offset="0.65"/>
+                    <GradientStop Color="Transparent" Offset="1"/>
+
+                </LinearGradientBrush>
+            </Image.OpacityMask>
+        </Image>
+        <VisualBrush x:Key="BackgroundImgBrush" Visual="{StaticResource BgImage}"/>
+    </UserControl.Resources>
     <ScrollViewer VerticalScrollBarVisibility="Auto" adonisExtensions:ScrollViewerExtension.VerticalScrollBarExpansionMode="NeverExpand">
-        <Grid>
+        <Grid Background="{StaticResource BackgroundImgBrush}">
+            
+            
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -22,7 +41,7 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <Grid Grid.Row="0" ZIndex="1">
+            <Grid Grid.Row="0">
                 <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Width="32" Height="32"  Margin="0,5,20,0" Background="#01FFFFFF" MouseLeftButtonDown="{s:Action CloseClick}">
                     <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.WindowClose}" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Black" BorderThickness="0">
                         <iconPacks:PackIconMaterial.Effect>
@@ -31,25 +50,8 @@
                     </iconPacks:PackIconMaterial>
                 </Grid>
             </Grid>
-            <Grid Grid.Row="0" ZIndex="0">
-                <Image Source="{Binding BackgroundImage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Stretch="UniformToFill">
-                    <Image.OpacityMask>
 
-                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                            <GradientStop Color="#FFFFFFFF" Offset="0"/>
-                            <GradientStop Color="#85FFFFFF" Offset="0.15"/>
-                            <GradientStop Color="#55FFFFFF" Offset="0.25"/>
-                            <GradientStop Color="#35FFFFFF" Offset="0.45"/>
-                            <GradientStop Color="#25FFFFFF" Offset="0.65"/>
-                            <GradientStop Color="Transparent" Offset="1"/>
-
-                        </LinearGradientBrush>
-                    </Image.OpacityMask>
-                </Image>
-
-            </Grid>
-
-            <Grid Grid.Row="1" ZIndex="5">
+            <Grid Grid.Row="1">
                 <Image  MaxWidth="256" MaxHeight="400" HorizontalAlignment="Left" RenderOptions.BitmapScalingMode="Fant" Source="{Binding CoverImage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 
                 <Label Content="{Binding MainTitle}" Margin="0,5,0,0"></Label>

@@ -80,7 +80,7 @@ namespace VnManager.ViewModels.UserControls.MainPage
         {
             try
             {
-                var filePath = $@"{App.AssetDirPath}\sources\vndb\images\screenshots\2002\41869.jpg";
+                var filePath = $@"{App.AssetDirPath}\sources\vndb\images\screenshots\4\8369.jpg";
                 var uri = new Uri(filePath);
                 BitmapSource bs = new BitmapImage(uri);
                 BackgroundImage = bs;
