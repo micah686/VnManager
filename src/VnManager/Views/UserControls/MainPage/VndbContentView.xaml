@@ -24,7 +24,6 @@
                     <GradientStop Color="#35FFFFFF" Offset="0.45"/>
                     <GradientStop Color="#25FFFFFF" Offset="0.65"/>
                     <GradientStop Color="Transparent" Offset="1"/>
-
                 </LinearGradientBrush>
             </Image.OpacityMask>
         </Image>
@@ -32,16 +31,20 @@
     </UserControl.Resources>
     <ScrollViewer VerticalScrollBarVisibility="Auto" adonisExtensions:ScrollViewerExtension.VerticalScrollBarExpansionMode="NeverExpand">
         <Grid Background="{StaticResource BackgroundImgBrush}">
-            
-            
+
+
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="8*"/>
+                <ColumnDefinition Width="2*"/>
+            </Grid.ColumnDefinitions>
 
-            <Grid Grid.Row="0">
+            <Grid Grid.Row="0" Grid.Column="1">
                 <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Width="32" Height="32"  Margin="0,5,20,0" Background="#01FFFFFF" MouseLeftButtonDown="{s:Action CloseClick}">
                     <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.WindowClose}" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Black" BorderThickness="0">
                         <iconPacks:PackIconMaterial.Effect>
@@ -51,15 +54,62 @@
                 </Grid>
             </Grid>
 
-            <Grid Grid.Row="1">
+
+            <Grid Grid.Row="1" Grid.Column="0" Margin="10,100,10,0" >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Label Grid.Row="0" Content="{Binding MainTitle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="24" FontWeight="DemiBold"
+                       Margin="30,0,0,0"/>
+
+                <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" Margin="5">
+                    <Button Width="150" Height="50" Content="Play" Background="LimeGreen"/>
+
+                    <StackPanel Margin="25,0,0,0">
+                        <Label Content="Last Played" FontSize="16" FontWeight="Bold"/>
+                        <Label Content="1/1/1111"/>
+                    </StackPanel>
+
+                    <Grid Margin="25,0,0,0" VerticalAlignment="Center">
+                        <iconPacks:Material Kind="ProgressClock" Height="28" Width="28"/>
+                    </Grid>
+                    <StackPanel Margin="5,0,0,0">
+                        <Label Content="PlayTime" FontSize="16" FontWeight="Bold"/>
+                        <Label Content="1 hr, 30 min"/>
+                    </StackPanel>
+
+                </StackPanel>
+
+                <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal" Margin="15">
+                    <Label Content="Vndb"/>
+                    <Label Content="Store Page" Margin="15,0,0,0"/>
+                    <Label Content="Wikipedia" Margin="15,0,0,0"/>
+                    <Label Content="Encubed" Margin="15,0,0,0"/>
+                    <Label Content="Renai" Margin="15,0,0,0"/>
+                </StackPanel>
+
+            </Grid>
+
+            <Grid Grid.Column="1" Grid.Row="1" Grid.RowSpan="3" Margin="15,65,15,-32">
+                <Border BorderThickness="3" BorderBrush="Black">
+                    <Image  MaxWidth="256" MaxHeight="400"  RenderOptions.BitmapScalingMode="Fant" Source="{Binding CoverImage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                </Border>
+            </Grid>
+
+
+
+
+            <!--<Grid Grid.Row="1">
                 <Image  MaxWidth="256" MaxHeight="400" HorizontalAlignment="Left" RenderOptions.BitmapScalingMode="Fant" Source="{Binding CoverImage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 
                 <Label Content="{Binding MainTitle}" Margin="0,5,0,0"></Label>
                 <Label Content="{Binding JpnTitle}" Margin="0,5,0,0"></Label>
-            </Grid>
+            </Grid>-->
 
             <!--End Content -->
         </Grid>
     </ScrollViewer>
-    
+
 </UserControl>
