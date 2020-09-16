@@ -9,7 +9,7 @@
 		
 		
 -Importing
-	- Bring back SecureStore for backing up db encryption for standalone mode
+	- ~~Bring back SecureStore for backing up db encryption for standalone mode~~
 	-make a seperate utility that takes the VnManager-v2 sqlite db, gets the user data table, exports to json
 		then imports that json back into the LiteDb database
 		
