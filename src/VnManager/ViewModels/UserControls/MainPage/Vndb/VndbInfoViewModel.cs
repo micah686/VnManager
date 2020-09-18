@@ -49,6 +49,11 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             LoadMainData();
         }
 
+        public static void CloseClick()
+        {
+            RootViewModel.Instance.ActivateMainClick();
+        }
+
         private void GetGameId()
         {
             var cred = CredentialManager.GetCredentials(App.CredDb);
@@ -94,6 +99,14 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
                 CoverImage = ImageHelper.CreateBitmapFromPath(coverPath);
             }
         }
+
+        public void ShowScreenshots()
+        {
+            var vm = VndbContentViewModel.Instance;
+            vm.ActivateScreenshots();
+        }
+
+
 
     }
 }

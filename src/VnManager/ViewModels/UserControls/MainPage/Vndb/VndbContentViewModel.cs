@@ -26,7 +26,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             UserDataId = guid;
         }
         #endregion
-
+        public static VndbContentViewModel Instance { get; private set; }
         private readonly IContainer _container;
 
         public VndbContentViewModel(IContainer container)
@@ -38,6 +38,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
         protected override void OnViewLoaded()
         {
             LoadContent();
+            Instance ??= this;
         }
 
         private void LoadContent()
@@ -47,9 +48,10 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             vm.SetUserDataId(UserDataId);
         }
 
-        public static void CloseClick()
+        internal void ActivateScreenshots()
         {
-            RootViewModel.Instance.ActivateMainClick();
+            var vm = _container.Get<VndbScreensViewModel>();
+            ActivateItem(vm);
         }
     }
 
