@@ -4,7 +4,9 @@ using System.Text;
 using System.Windows.Media.Imaging;
 using Stylet;
 using StyletIoC;
-using VnManager.ViewModels.UserControls.MainPage;
+using VnManager.ViewModels.UserControls.MainPage.Vndb;
+
+//using VnManager.ViewModels.UserControls.MainPage;
 
 namespace VnManager.ViewModels.Controls
 {
