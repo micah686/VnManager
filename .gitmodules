@@ -1,3 +1,6 @@
 [submodule "src/VndbSharp"]
 	path = src/VndbSharp
 	url = https://github.com/micah686/VndbSharp.git
+[submodule "src/BlurryControls"]
+	path = src/BlurryControls
+	url = https://github.com/micah686/BlurryControls.git
