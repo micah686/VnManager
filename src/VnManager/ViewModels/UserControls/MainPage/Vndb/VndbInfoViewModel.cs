@@ -35,7 +35,6 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
 
 
 
-
         private readonly IContainer _container;
         public VndbInfoViewModel(IContainer container)
         {
@@ -100,10 +99,22 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             }
         }
 
+        public void ShowInfo()
+        {
+            var vm = VndbContentViewModel.Instance;
+            vm.ActivateVnInfo();
+        }
+
+        public void ShowCharacters()
+        {
+            var vm = VndbContentViewModel.Instance;
+            vm.ActivateVnCharacters();
+        }
+
         public void ShowScreenshots()
         {
             var vm = VndbContentViewModel.Instance;
-            vm.ActivateScreenshots();
+            vm.ActivateVnScreenshots();
         }
 
 

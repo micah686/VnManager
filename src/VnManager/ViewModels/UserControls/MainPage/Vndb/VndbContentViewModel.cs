@@ -48,9 +48,21 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             vm.SetUserDataId(UserDataId);
         }
 
-        internal void ActivateScreenshots()
+        internal void ActivateVnScreenshots()
         {
             var vm = _container.Get<VndbScreensViewModel>();
+            ActivateItem(vm);
+        }
+
+        internal void ActivateVnCharacters()
+        {
+            var vm = _container.Get<VndbCharactersViewModel>();
+            ActivateItem(vm);
+        }
+
+        internal void ActivateVnInfo()
+        {
+            var vm = _container.Get<VndbInfoViewModel>();
             ActivateItem(vm);
         }
     }

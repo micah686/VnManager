@@ -28,9 +28,18 @@ namespace VnManager.ViewModels.Controls
 
         public void MouseClick()
         {
-            var vm = _container.Get<VndbContentViewModel>();
-            RootViewModel.Instance.ActivateItem(vm);
-            vm.SetUserDataId(UserDataId);
+            if (VndbContentViewModel.Instance != null)
+            {
+                RootViewModel.Instance.ActivateItem(VndbContentViewModel.Instance);
+                //TODO:clear out instance of content view model when pressing X
+            }
+            else
+            {
+                var vm = _container.Get<VndbContentViewModel>();
+                RootViewModel.Instance.ActivateItem(vm);
+                vm.SetUserDataId(UserDataId);
+            }
+            
 
         }
     }

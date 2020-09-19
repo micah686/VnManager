@@ -4,9 +4,34 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:VnManager.Views.UserControls.MainPage.Vndb"
+             xmlns:s="https://github.com/canton7/Stylet"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid Background="Aqua">
-            
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="8*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+
+        <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" Margin="10,10,0,0">
+            <Button Content="Info" Command="{s:Action ShowInfo}"/>
+            <Button Content="Characters" Margin="15,0,0,0" Command="{s:Action ShowCharacters}"/>
+            <Button Content="Screens" Margin="15,0,0,0" IsEnabled="False"/>
+        </StackPanel>
+
+        <Grid Grid.Row="0" Grid.Column="1">
+            <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Width="32" Height="32"  Margin="0,5,20,0" Background="#01FFFFFF" MouseLeftButtonDown="{s:Action CloseClick}">
+                <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.WindowClose}" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Black" BorderThickness="0">
+                    <iconPacks:PackIconMaterial.Effect>
+                        <DropShadowEffect Color="Crimson" ShadowDepth="0" BlurRadius="7"/>
+                    </iconPacks:PackIconMaterial.Effect>
+                </iconPacks:PackIconMaterial>
+            </Grid>
+        </Grid>
     </Grid>
 </UserControl>
