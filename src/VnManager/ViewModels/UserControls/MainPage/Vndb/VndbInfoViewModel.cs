@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Windows.Media.Imaging;
 using AdysTech.CredentialManager;
@@ -23,13 +25,21 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
         }
 
         private int _vnId;
-        public BitmapSource BackgroundImage { get; set; }
+
 
 
         #region Binding Properties
+        public BitmapSource BackgroundImage { get; set; }
+        public BitmapSource CoverImage { get; set; }
+        public string Title { get; set; }
         public string MainTitle { get; set; }
         public string JpnTitle { get; set; }
-        public BitmapSource CoverImage { get; set; }
+        public string Aliases { get; set; }
+        public string ReleasedDate { get; set; }
+        public string VnLength { get; set; }
+        public string Popularity { get; set; }
+        public string Rating { get; set; }
+        public BindableCollection<BitmapSource> LanguageCollection { get; set; } = new BindableCollection<BitmapSource>();
 
         #endregion
 
@@ -91,13 +101,37 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
             {
                 var vnInfoEntry = db.GetCollection<VnInfo>("VnInfo").Query().Where(x => x.VnId == _vnId).FirstOrDefault();
-                MainTitle = vnInfoEntry.Title;
-                JpnTitle = vnInfoEntry.Original;
-
+                Title = vnInfoEntry.Title;
+                MainTitle = $"Title: {vnInfoEntry.Title}";
+                JpnTitle = $"Original Title: {vnInfoEntry.Original}";
+                Aliases = $"Aliases: {vnInfoEntry.Aliases}";
+                ReleasedDate = $"Released: {TimeDateChanger.GetHumanDate(DateTime.Parse(vnInfoEntry.Released))}";
+                VnLength = $"Length: {vnInfoEntry.Length}";
+                Popularity = vnInfoEntry.Popularity.ToString();//make a UI use this double?
+                Rating = vnInfoEntry.Rating.ToString(CultureInfo.InvariantCulture);
+                LoadLanguages(ref vnInfoEntry);
                 var coverPath = $@"{App.AssetDirPath}\sources\vndb\images\cover\{Path.GetFileName(vnInfoEntry.ImageLink.AbsoluteUri)}";
                 CoverImage = ImageHelper.CreateBitmapFromPath(coverPath);
             }
         }
+
+        private void LoadLanguages(ref VnInfo vnInfoEntry)
+        {
+            foreach (var language in GetLanguages(vnInfoEntry.Languages))
+            {
+                LanguageCollection.Add(new BitmapImage(new Uri(language)));
+            }
+        }
+
+        private IEnumerable<string> GetLanguages(string csv)
+        {
+            string[] list = csv.Split(',');
+            return list.Select(lang => File.Exists($@"{App.ExecutableDirPath}\Resources\flags\{lang}.png")
+                    ? $@"{App.ExecutableDirPath}\Resources\flags\{lang}.png"
+                    : $@"{App.ExecutableDirPath}\Resources\flags\_unknown.png")
+                .ToList();
+        }
+
 
         public void ShowInfo()
         {

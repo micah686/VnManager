@@ -41,7 +41,8 @@ namespace VnManager.Helpers
                 }
                 else
                 {
-                    output = dateTime.Date.ToShortDateString();
+                    
+                    output = dateTime.Date.ToString("MMM d, yyyy");
                 }
             }
 

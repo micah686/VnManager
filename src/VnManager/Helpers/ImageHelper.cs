@@ -186,7 +186,7 @@ namespace VnManager.Helpers
         {
             try
             {
-                var bitmapPath = $@"{App.ExecutableDirPath}\Resources\Placeholders\empty_bitmap.png";
+                var bitmapPath = $@"{App.ExecutableDirPath}\Resources\placeholders\empty_bitmap.png";
                 BitmapSource bs = new BitmapImage(new Uri(bitmapPath));
                 return bs;
             }
