@@ -41,6 +41,10 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
         public string Rating { get; set; }
         public BindableCollection<BitmapSource> LanguageCollection { get; set; } = new BindableCollection<BitmapSource>();
 
+
+        public string LastPlayed { get; set; }
+        public string PlayTime { get; set; }
+
         #endregion
 
 
@@ -56,6 +60,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             GetGameId();
             LoadImage();
             LoadMainData();
+            LoadUserData();
         }
 
         public static void CloseClick()
@@ -112,6 +117,21 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
                 LoadLanguages(ref vnInfoEntry);
                 var coverPath = $@"{App.AssetDirPath}\sources\vndb\images\cover\{Path.GetFileName(vnInfoEntry.ImageLink.AbsoluteUri)}";
                 CoverImage = ImageHelper.CreateBitmapFromPath(coverPath);
+            }
+        }
+
+        private void LoadUserData()
+        {
+            var cred = CredentialManager.GetCredentials(App.CredDb);
+            if (cred == null || cred.UserName.Length < 1) return;
+            using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
+            var dbUserData = db.GetCollection<UserDataGames>("UserData_Games").Query()
+                .Where(x => x.Id == UserDataId).FirstOrDefault();
+            if (dbUserData != null)
+            {
+                LastPlayed = TimeDateChanger.GetHumanDate(dbUserData.LastPlayed);
+                PlayTime = TimeDateChanger.GetHumanTime(dbUserData.PlayTime);
+                _vnId = dbUserData.GameId;
             }
         }
 
