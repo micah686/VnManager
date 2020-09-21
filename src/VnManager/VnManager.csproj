@@ -25,6 +25,7 @@
     <PackageReference Include="MahApps.Metro.IconPacks.Material" Version="4.5.0" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.19" />
     <PackageReference Include="MvvmDialogs" Version="7.1.1" />
+    <PackageReference Include="PoLaKoSz.CodeKicker.BBCode" Version="5.2.0" />
     <PackageReference Include="PropertyChanged.Fody" Version="3.2.9" />
     <PackageReference Include="Q101.BbCodeNetCore" Version="1.0.1" />
     <PackageReference Include="Serilog" Version="2.10.0" />

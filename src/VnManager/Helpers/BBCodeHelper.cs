@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Documents;
+using System.Windows.Navigation;
+using CodeKicker.BBCode;
 using VndbSharp.Models.Common;
 using VnManager.Models.Settings;
 
@@ -12,17 +15,20 @@ namespace VnManager.Helpers
     // ReSharper disable once InconsistentNaming
     public static class BBCodeHelper
     {
-        public static string Helper(string text)
+
+        public static List<Inline> Helper(string text)
         {
             string modifiedText = text;
-            if (string.IsNullOrEmpty(modifiedText)) return string.Empty;
+            if (string.IsNullOrEmpty(modifiedText)) return new List<Inline>();
             modifiedText = ReplaceSpoilers(text);
             modifiedText = ReplaceVndbLocalUrls(modifiedText);
 
+            var inlineList = ReplaceUrls(modifiedText);
 
 
-            return modifiedText;
+            return inlineList;
         }
+
 
 
         private static string ReplaceSpoilers(string text)
@@ -83,27 +89,89 @@ namespace VnManager.Helpers
             }
         }
 
-        private static string ReplaceUrls(string text)
+        private static List<Inline> ReplaceUrls(string text)
         {
-            string rawText= String.Empty;
-            var replacementList = SplitUrl(text);
+            string rawText= text;
+            List<BBReplacement> replacementList = SplitUrl(text);
+            List<Inline> inlineList = new List<Inline>();
+            var rgx = new Regex(@"(\[url=)(.+?(?=\]))(\])(.+?(?=\[))(\[\/url])", RegexOptions.IgnoreCase);
+            var bbTags = new List<BBTag>()
+            {
+                new BBTag("b", "<strong>", "</strong>"),
+                new BBTag("i", "<em>", "</em>"),
+                new BBTag("u", "<span style=\"text-decoration: line-through\">", "</span>"),
 
-            return rawText;
+                new BBTag("list", "<ul>", "</ul>") { SuppressFirstNewlineAfter = true },
+                new BBTag("li", "<li>", "</li>", true, false),
+
+                new BBTag("url", "<a href=\"${url}\">", "</a>",
+                    new BBAttribute("url", "")),
+
+                new BBTag("code", "<pre class=\"prettyprint\">", "</pre>")
+                {
+                    StopProcessing = true,
+                    SuppressFirstNewlineAfter = true
+                },
+            };
+            var parser = new BBCodeParser(bbTags);
+            var split = parser.ParseSyntaxTree(rawText);
+
+            foreach (var node in split.SubNodes)
+            {
+                
+                if (rgx.IsMatch(node.ToString()))
+                {
+                    Match match = rgx.Matches(node.ToString()).FirstOrDefault();
+                    int idx = replacementList.FindIndex(x =>  match != null && x.ToRemove == match.Groups[0].ToString());
+                    var run = new Run(replacementList[idx].StringName);
+                    var validUri = Uri.IsWellFormedUriString(replacementList[idx].Url, UriKind.Absolute);
+                    if (validUri)
+                    {
+                        var hyperlink = new Hyperlink(run)
+                        {
+                            NavigateUri = new Uri(replacementList[idx].Url)
+                        };
+                        hyperlink.RequestNavigate += Hyperlink_RequestNavigate;
+                        inlineList.Add(hyperlink);
+                    }
+                    else
+                    {
+                        inlineList.Add(run);
+                    }
+
+                }
+                else
+                {
+                    var run = new Run(node.ToString());
+                    inlineList.Add(run);
+                }
+            }
+
+            return inlineList;
         }
 
 
+        internal static void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
+        {
+            var targetUrl = e.Uri.ToString();
+            var psi = new ProcessStartInfo
+            {
+                FileName = targetUrl,
+                UseShellExecute = true
+            };
+            Process.Start(psi);
+        }
 
         private static List<BBReplacement> SplitUrl(string text)
         {
 
             List<BBReplacement> replacementList = new List<BBReplacement>();
             //First block: (\[url=) captures: [url=
-            //Second block (https?:\/\/) captures http:// or https://
-            //Third block (.+?(?=\])) captures everything forward UNTIL the first ']', but doesn't include the ']'
-            //Fourth block (\]) captures JUST the ']'
-            //Fifth block (.+?(?=\[) captures everything forward UNTIL the first ']', but doesn't include the '['
-            //Sixth block (\[\/url]) captures the [/url]
-            var rgx = new Regex(@"(\[url=)(https?:\/\/)(.+?(?=\]))(\])(.+?(?=\[))(\[\/url])", RegexOptions.IgnoreCase);
+            //Second block (.+?(?=\])) captures everything forward UNTIL the first ']', but doesn't include the ']'
+            //Third block (\]) captures JUST the ']'
+            //Fourth block (.+?(?=\[) captures everything forward UNTIL the first ']', but doesn't include the '['
+            //Fifth block (\[\/url]) captures the [/url]
+            var rgx = new Regex(@"(\[url=)(.+?(?=\]))(\])(.+?(?=\[))(\[\/url])", RegexOptions.IgnoreCase);
             var matches = rgx.Matches(text);
             if (matches.Count > 0)
             {
@@ -111,8 +179,8 @@ namespace VnManager.Helpers
                 {
                     var groups = match.Groups;
                     var toDelete = groups[0].Value;
-                    var url = string.Concat(groups[2].Value, groups[3].Value); //combines the https:// with the actual url
-                    var stringVal = groups[5].Value; //the name of the element between the two [url][/url] blocks
+                    var url = groups[2].Value; 
+                    var stringVal = groups[4].Value; //the name of the element between the two [url][/url] blocks
 
                     var replacement = new BBReplacement(){ToRemove = toDelete, Url = url, StringName = stringVal};
                     replacementList.Add(replacement);
@@ -120,15 +188,6 @@ namespace VnManager.Helpers
             }
 
             return replacementList;
-        }
-
-        private static void StripUrls(string original, List<BBReplacement> replacements)
-        {
-            //matches the bbcode brackets, but not anything between
-            //for example, [color=orange-red]TEST[/color]
-            //will match [color=orange-red] and [/color], but NOT TEST
-            var rgx = new Regex(@"\[\/?(?:.+)*?.*?\]", RegexOptions.IgnoreCase);
-            var output = rgx.Replace(original, "");
         }
 
         private struct BBReplacement

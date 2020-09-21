@@ -12,7 +12,7 @@
              xmlns:adonisUi="clr-namespace:AdonisUI;assembly=AdonisUI"
              xmlns:vm="clr-namespace:VnManager.ViewModels.UserControls.MainPage.Vndb"
              xmlns:controls="clr-namespace:BlurryControls.Controls;assembly=BlurryControls"
-             
+             xmlns:ext="clr-namespace:VnManager.Extensions"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance vm:VndbInfoViewModel}"
              d:DesignHeight="950" d:DesignWidth="800">
@@ -109,7 +109,7 @@
                     </Grid>
 
                     <Grid Grid.Row="2" Grid.Column="0" >
-                        <TextBlock Text="Replace this with a BBCode block from MUI, so it supports hyperlinks"/>
+                        <TextBlock ext:TextBlockInLineBinding.Inlines="{Binding DescriptionInLine}" Foreground="DimGray" FontWeight="DemiBold"/>
 
                     </Grid>
 

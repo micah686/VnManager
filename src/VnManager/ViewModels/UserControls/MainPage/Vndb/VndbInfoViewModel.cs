@@ -5,6 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Windows.Documents;
 using System.Windows.Media.Imaging;
 using AdysTech.CredentialManager;
 using LiteDB;
@@ -41,6 +42,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
         public string Rating { get; set; }
         public BindableCollection<BitmapSource> LanguageCollection { get; set; } = new BindableCollection<BitmapSource>();
 
+        public List<Inline> DescriptionInLine { get; set; }
 
         public string LastPlayed { get; set; }
         public string PlayTime { get; set; }
@@ -117,6 +119,8 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
                 LoadLanguages(ref vnInfoEntry);
                 var coverPath = $@"{App.AssetDirPath}\sources\vndb\images\cover\{Path.GetFileName(vnInfoEntry.ImageLink.AbsoluteUri)}";
                 CoverImage = ImageHelper.CreateBitmapFromPath(coverPath);
+
+                DescriptionInLine = BBCodeHelper.Helper(vnInfoEntry.Description);
             }
         }
 
