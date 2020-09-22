@@ -27,6 +27,7 @@ using StyletIoC;
 using VndbSharp;
 using VndbSharp.Models.Dumps;
 using VnManager.Helpers;
+using VnManager.Models.Db;
 using VnManager.Models.Db.User;
 using VnManager.Models.Db.Vndb.TagTrait;
 using VnManager.ViewModels.Dialogs;
@@ -94,7 +95,7 @@ namespace VnManager.ViewModels.UserControls
             if (cred == null || cred.UserName.Length < 1) return;
             using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
             {
-                var dbUserData = db.GetCollection<UserDataGames>("UserData_Games");
+                var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString());
                 var entry = new UserDataGames();
                 entry.SourceType = AddGameSourceType.Vndb;
                 entry.ExeType = ExeTypeEnum.Launcher;

@@ -24,6 +24,7 @@ using VndbSharp.Models.VisualNovel;
 using VnManager.Converters;
 using VnManager.Helpers;
 using VnManager.Models;
+using VnManager.Models.Db;
 using VnManager.Models.Db.User;
 using VnManager.Models.Db.Vndb.Character;
 using VnManager.Models.Db.Vndb.Main;
@@ -75,13 +76,13 @@ namespace VnManager.MetadataProviders.Vndb
                 if (cred == null || cred.UserName.Length < 1) return;
                 using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
                 {
-                    var dbVnInfo = db.GetCollection<VnInfo>("VnInfo");
-                    ILiteCollection<VnInfoAnime> dbVnInfoAnime = db.GetCollection<VnInfoAnime>("VnInfo_Anime");
-                    var dbVnInfoLinks = db.GetCollection<VnInfoLinks>("VnInfo_Links");
-                    ILiteCollection<VnInfoScreens> dbVnInfoScreens = db.GetCollection<VnInfoScreens>("VnInfo_Screens");
-                    ILiteCollection<VnInfoRelations> dbVnInfoRelations = db.GetCollection<VnInfoRelations>("VnInfo_Relations");
-                    ILiteCollection<VnInfoStaff> dbVnInfoStaff = db.GetCollection<VnInfoStaff>("VnInfo_Staff");
-                    ILiteCollection<VnInfoTags> dbVnInfoTags = db.GetCollection<VnInfoTags>("VnInfo_Tags");
+                    var dbVnInfo = db.GetCollection<VnInfo>(DbVnInfo.VnInfo.ToString());
+                    ILiteCollection<VnInfoAnime> dbVnInfoAnime = db.GetCollection<VnInfoAnime>(DbVnInfo.VnInfo_Anime.ToString());
+                    var dbVnInfoLinks = db.GetCollection<VnInfoLinks>(DbVnInfo.VnInfo_Links.ToString());
+                    ILiteCollection<VnInfoScreens> dbVnInfoScreens = db.GetCollection<VnInfoScreens>(DbVnInfo.VnInfo_Screens.ToString());
+                    ILiteCollection<VnInfoRelations> dbVnInfoRelations = db.GetCollection<VnInfoRelations>(DbVnInfo.VnInfo_Relations.ToString());
+                    ILiteCollection<VnInfoStaff> dbVnInfoStaff = db.GetCollection<VnInfoStaff>(DbVnInfo.VnInfo_Staff.ToString());
+                    ILiteCollection<VnInfoTags> dbVnInfoTags = db.GetCollection<VnInfoTags>(DbVnInfo.VnInfo_Tags.ToString());
 
                     var prevVnInfo = dbVnInfo.Query().Where(x => x.VnId == visualNovel.Id).FirstOrDefault();
                     var prevVnInfoLinks = dbVnInfoLinks.Query().Where(x => x.VnId == visualNovel.Id).FirstOrDefault();
@@ -272,11 +273,11 @@ namespace VnManager.MetadataProviders.Vndb
             if (cred == null || cred.UserName.Length < 1) return;
             using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
             {
-                var dbCharInfo = db.GetCollection<VnCharacterInfo>("VnCharacter");
-                ILiteCollection<VnCharacterTraits> dbCharTraits = db.GetCollection<VnCharacterTraits>("VnCharacter_Traits");
-                ILiteCollection<VnCharacterVns> dbCharVns = db.GetCollection<VnCharacterVns>("VnCharacter_Vns");
-                ILiteCollection<VnCharacterVoiced> dbCharVoices = db.GetCollection<VnCharacterVoiced>("VnCharacter_Voiced");
-                ILiteCollection<VnCharacterInstances> dbCharInstances = db.GetCollection<VnCharacterInstances>("VnCharacter_Instances");
+                var dbCharInfo = db.GetCollection<VnCharacterInfo>(DbVnCharacter.VnCharacter.ToString());
+                ILiteCollection<VnCharacterTraits> dbCharTraits = db.GetCollection<VnCharacterTraits>(DbVnCharacter.VnCharacter_Traits.ToString());
+                ILiteCollection<VnCharacterVns> dbCharVns = db.GetCollection<VnCharacterVns>(DbVnCharacter.VnCharacter_Vns.ToString());
+                ILiteCollection<VnCharacterVoiced> dbCharVoices = db.GetCollection<VnCharacterVoiced>(DbVnCharacter.VnCharacter_Voiced.ToString());
+                ILiteCollection<VnCharacterInstances> dbCharInstances = db.GetCollection<VnCharacterInstances>(DbVnCharacter.VnCharacter_Instances.ToString());
 
                 if (characters.Count > 0)
                 {
@@ -418,10 +419,10 @@ namespace VnManager.MetadataProviders.Vndb
             if (cred == null || cred.UserName.Length < 1) return;
             using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
             {
-                var dbVnRelease = db.GetCollection<VnRelease>("VnReleases");
-                var dbVnReleaseMedia = db.GetCollection<VnReleaseMedia>("VnReleases_Media");
-                var dbVnReleaseProducers = db.GetCollection<VnReleaseProducers>("VnReleases_Producers");
-                var dbReleaseVns = db.GetCollection<VnReleaseVn>("VnReleases_Vns");
+                var dbVnRelease = db.GetCollection<VnRelease>(DbVnRelease.VnReleases.ToString());
+                var dbVnReleaseMedia = db.GetCollection<VnReleaseMedia>(DbVnRelease.VnRelease_Media.ToString());
+                var dbVnReleaseProducers = db.GetCollection<VnReleaseProducers>(DbVnRelease.VnRelease_Producers.ToString());
+                var dbReleaseVns = db.GetCollection<VnReleaseVn>(DbVnRelease.VnRelease_Vns.ToString());
                 if (vnReleases.Count <= 0) return;
                 List<VnRelease> vnReleaseList = new List<VnRelease>();
                 List<VnReleaseMedia> vnReleaseMediaList = new List<VnReleaseMedia>();
@@ -539,9 +540,9 @@ namespace VnManager.MetadataProviders.Vndb
             if (cred == null || cred.UserName.Length < 1) return;
             using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
             {
-                var dbVnProducer = db.GetCollection<VnProducer>("VnProducers");
-                var dbVnProducerLinks = db.GetCollection<VnProducerLinks>("VnProducers_Links");
-                var dbVnProducerRelations = db.GetCollection<VnProducerRelations>("VnProducers_Relations");
+                var dbVnProducer = db.GetCollection<VnProducer>(DbVnProducer.VnProducer.ToString());
+                var dbVnProducerLinks = db.GetCollection<VnProducerLinks>(DbVnProducer.VnProducer_Links.ToString());
+                var dbVnProducerRelations = db.GetCollection<VnProducerRelations>(DbVnProducer.VnProducer_Relations.ToString());
 
                 List<VnProducer> vnProducersList = new List<VnProducer>();
                 List<VnProducerLinks> vnProducerLinksList = new List<VnProducerLinks>();
@@ -604,10 +605,10 @@ namespace VnManager.MetadataProviders.Vndb
             if (cred == null || cred.UserName.Length < 1) return;
             using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
             {
-                var dbVnStaff = db.GetCollection<VnStaff>("VnStaff");
-                var dbVnStaffAliases = db.GetCollection<VnStaffAliases>("VnStaff_Aliases");
-                var dbVnStaffVns = db.GetCollection<VnStaffVns>("VnStaff_Vns");
-                var dbVnStaffVoiced = db.GetCollection<VnStaffVoiced>("VnStaff_Voiced");
+                var dbVnStaff = db.GetCollection<VnStaff>(DbVnStaff.VnStaff.ToString());
+                var dbVnStaffAliases = db.GetCollection<VnStaffAliases>(DbVnStaff.VnStaff_Aliases.ToString());
+                var dbVnStaffVns = db.GetCollection<VnStaffVns>(DbVnStaff.VnStaff_Vns.ToString());
+                var dbVnStaffVoiced = db.GetCollection<VnStaffVoiced>(DbVnStaff.VnStaff_Voiced.ToString());
 
                 List<VnStaff> staffList = new List<VnStaff>();
                 List<VnStaffAliases> vnStaffAliasesList = new List<VnStaffAliases>();

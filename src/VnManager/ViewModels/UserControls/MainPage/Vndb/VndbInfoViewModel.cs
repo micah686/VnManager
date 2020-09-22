@@ -9,11 +9,13 @@ using System.Windows.Documents;
 using System.Windows.Media.Imaging;
 using AdysTech.CredentialManager;
 using LiteDB;
+using MahApps.Metro.IconPacks;
 using Stylet;
 using StyletIoC;
 using VnManager.Helpers;
 using VnManager.Models.Db.User;
 using VnManager.Models.Db.Vndb.Main;
+using VnManager.Models.Db;
 
 namespace VnManager.ViewModels.UserControls.MainPage.Vndb
 {
@@ -49,6 +51,13 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
 
         #endregion
 
+        #region Relation Binding
+
+        public string RelTitle { get; set; }
+        public string RelRelation { get; set; }
+        public PackIconMaterialKind RelOfficial { get; set; }
+
+        #endregion
 
 
         private readonly IContainer _container;
@@ -67,6 +76,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
 
         public static void CloseClick()
         {
+            VndbContentViewModel.Instance = null;
             RootViewModel.Instance.ActivateMainClick();
         }
 
@@ -75,7 +85,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             var cred = CredentialManager.GetCredentials(App.CredDb);
             if (cred == null || cred.UserName.Length < 1) return;
             using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
-            var dbUserData = db.GetCollection<UserDataGames>("UserData_Games").Query()
+            var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString()).Query()
                 .Where(x => x.Id == UserDataId).FirstOrDefault();
             if (dbUserData != null)
             {
@@ -107,7 +117,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             if (cred == null || cred.UserName.Length < 1) return;
             using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
             {
-                var vnInfoEntry = db.GetCollection<VnInfo>("VnInfo").Query().Where(x => x.VnId == _vnId).FirstOrDefault();
+                var vnInfoEntry = db.GetCollection<VnInfo>(DbVnInfo.VnInfo.ToString()).Query().Where(x => x.VnId == _vnId).FirstOrDefault();
                 Title = vnInfoEntry.Title;
                 MainTitle = $"Title: {vnInfoEntry.Title}";
                 JpnTitle = $"Original Title: {vnInfoEntry.Original}";
@@ -121,15 +131,28 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
                 CoverImage = ImageHelper.CreateBitmapFromPath(coverPath);
 
                 DescriptionInLine = BBCodeHelper.Helper(vnInfoEntry.Description);
+
             }
         }
+
+        private void LoadRelations()
+        {
+            if (_vnId == 0) return;
+            var cred = CredentialManager.GetCredentials(App.CredDb);
+            if (cred == null || cred.UserName.Length < 1) return;
+            using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
+            {
+                var vnInfoEntry = db.GetCollection<VnInfo>().Query().Where(x => x.VnId == _vnId).FirstOrDefault();
+            }
+        }
+
 
         private void LoadUserData()
         {
             var cred = CredentialManager.GetCredentials(App.CredDb);
             if (cred == null || cred.UserName.Length < 1) return;
             using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
-            var dbUserData = db.GetCollection<UserDataGames>("UserData_Games").Query()
+            var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString()).Query()
                 .Where(x => x.Id == UserDataId).FirstOrDefault();
             if (dbUserData != null)
             {

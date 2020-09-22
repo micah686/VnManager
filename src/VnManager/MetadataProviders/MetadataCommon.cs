@@ -6,6 +6,7 @@ using LiteDB;
 using Stylet;
 using StyletIoC;
 using VnManager.Models;
+using VnManager.Models.Db;
 using VnManager.Models.Db.User;
 using VnManager.ViewModels.UserControls;
 
@@ -22,7 +23,7 @@ namespace VnManager.MetadataProviders
             if (cred == null || cred.UserName.Length < 1) return;
             using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
             {
-                var dbUserData = db.GetCollection<UserDataGames>("UserData_Games");
+                var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString());
                 List<UserDataGames> gamesList = new List<UserDataGames>();
                 var entry = new UserDataGames();
                 if (data.IsCollectionEnabled)

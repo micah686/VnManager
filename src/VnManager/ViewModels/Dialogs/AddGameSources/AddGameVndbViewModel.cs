@@ -24,6 +24,7 @@ using VndbSharp.Models.Errors;
 using VndbSharp.Models.VisualNovel;
 using VnManager.Helpers;
 using VnManager.Helpers.Vndb;
+using VnManager.Models.Db;
 using VnManager.Models.Db.User;
 using VnManager.ViewModels.Windows;
 using static VnManager.ViewModels.Dialogs.AddGameSources.AddGameMainViewModel;
@@ -437,7 +438,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
                 {
                     if (instance == null) return false;
                     var exeType = instance.ExeType;
-                    var dbUserData = db.GetCollection<UserDataGames>("UserData_Games").Query().ToEnumerable();
+                    var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString()).Query().ToEnumerable();
                     switch (exeType)
                     {
                         case ExeTypeEnum.Normal:
@@ -474,7 +475,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
                 {
                     if (instance == null) return false;
                     var exeType = instance.ExeType;
-                    var dbUserData = db.GetCollection<UserDataGames>("UserData_Games").Query()
+                    var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString()).Query()
                         .Where(x => x.SourceType == AddGameSourceType.Vndb).ToEnumerable();
                     switch (exeType)
                     {

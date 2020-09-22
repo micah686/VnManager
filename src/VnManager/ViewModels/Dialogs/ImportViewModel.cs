@@ -16,6 +16,7 @@ using Stylet;
 using VndbSharp.Models;
 using VnManager.Helpers;
 using VnManager.MetadataProviders.Vndb;
+using VnManager.Models.Db;
 using VnManager.Models.Db.User;
 using VnManager.ViewModels.Dialogs.AddGameSources;
 using VnManager.ViewModels.Windows;
@@ -80,7 +81,7 @@ namespace VnManager.ViewModels.Dialogs
                 using (var db = new LiteDatabase($"{filePath}"))
                 {
                     IEnumerable<UserDataGames> dbUserData =
-                        db.GetCollection<UserDataGames>("UserData_Games").FindAll().ToArray();
+                        db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString()).FindAll().ToArray();
                     var addList = new List<UserDataGames>();
                     var validator = new ImportUserDataValidator();
                     foreach (var item in dbUserData)
@@ -231,7 +232,7 @@ namespace VnManager.ViewModels.Dialogs
 
                     using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
                     {
-                        maxId = db.GetCollection<UserDataGames>("UserData_Games").Query().OrderByDescending(x => x.Index).Select(x => x.Index)
+                        maxId = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString()).Query().OrderByDescending(x => x.Index).Select(x => x.Index)
                             .FirstOrDefault();
                     }
 
@@ -256,7 +257,7 @@ namespace VnManager.ViewModels.Dialogs
                     await Task.Run(() =>
                     {
                         using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
-                        var dbUserData = db.GetCollection<UserDataGames>("UserData_Games");
+                        var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString());
                         dbUserData.Insert(entry);
                     });
 
@@ -417,7 +418,7 @@ namespace VnManager.ViewModels.Dialogs
             if (cred == null || cred.UserName.Length < 1) return false;
             using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
             {
-                var dbUserData = db.GetCollection<UserDataGames>("UserData_Games").Query().Select(x => x.Id).ToList();
+                var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString()).Query().Select(x => x.Id).ToList();
                 return !dbUserData.Contains(id);
             }
         }

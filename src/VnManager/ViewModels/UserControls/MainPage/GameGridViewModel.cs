@@ -11,6 +11,7 @@ using LiteDB;
 using Stylet;
 using StyletIoC;
 using VnManager.Helpers;
+using VnManager.Models.Db;
 using VnManager.Models.Db.User;
 using VnManager.Models.Db.Vndb.Main;
 using VnManager.ViewModels.Controls;
@@ -54,8 +55,8 @@ namespace VnManager.ViewModels.UserControls.MainPage
             if (cred == null || cred.UserName.Length < 1) return;
             using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
             {
-                var dbUserData = db.GetCollection<UserDataGames>("UserData_Games").Query().ToEnumerable();
-                var dbVnInfo = db.GetCollection<VnInfo>("VnInfo").Query().ToArray();
+                var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString()).Query().ToEnumerable();
+                var dbVnInfo = db.GetCollection<VnInfo>(DbVnInfo.VnInfo.ToString()).Query().ToArray();
 
                 foreach (var entry in dbUserData)
                 {

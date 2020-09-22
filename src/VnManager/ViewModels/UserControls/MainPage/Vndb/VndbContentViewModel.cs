@@ -26,7 +26,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             UserDataId = guid;
         }
         #endregion
-        public static VndbContentViewModel Instance { get; private set; }
+        public static VndbContentViewModel Instance { get; internal set; }
         private readonly IContainer _container;
 
         public VndbContentViewModel(IContainer container)

@@ -19,6 +19,7 @@ using AdysTech.CredentialManager;
 using LiteDB;
 using MvvmDialogs;
 using MvvmDialogs.FrameworkDialogs.FolderBrowser;
+using VnManager.Models.Db;
 using VnManager.Models.Db.User;
 using VnManager.Models.Db.Vndb.Main;
 using VnManager.ViewModels.Dialogs;
@@ -204,8 +205,8 @@ namespace VnManager.ViewModels.UserControls
             if (cred == null || cred.UserName.Length < 1) return;
             using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
             {
-                List<VnInfoScreens> vnScreens = db.GetCollection<VnInfoScreens>("VnInfo_Screens").Query().Where(x => NsfwHelper.IsNsfw(x.ImageRating) == true).ToList();
-                List<VnInfo> vnCovers = db.GetCollection<VnInfo>("VnInfo").Query().Where(x => NsfwHelper.IsNsfw(x.ImageRating) == true).ToList();
+                List<VnInfoScreens> vnScreens = db.GetCollection<VnInfoScreens>(DbVnInfo.VnInfo_Screens.ToString()).Query().Where(x => NsfwHelper.IsNsfw(x.ImageRating) == true).ToList();
+                List<VnInfo> vnCovers = db.GetCollection<VnInfo>(DbVnInfo.VnInfo.ToString()).Query().Where(x => NsfwHelper.IsNsfw(x.ImageRating) == true).ToList();
 
                 ResetNsfwScreenshots(vnScreens);
                 ResetNsfwCoverImages(vnCovers);
@@ -286,11 +287,11 @@ namespace VnManager.ViewModels.UserControls
             if (cred == null || cred.UserName.Length < 1) return;
             using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
             {
-                var dbUserData = db.GetCollection<UserDataGames>("UserData_Games").FindAll();
+                var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString()).FindAll();
 
                 using (var exportDatabase = new LiteDatabase(fileName))
                 {
-                    var exportUserData = exportDatabase.GetCollection<UserDataGames>("UserData_Games");
+                    var exportUserData = exportDatabase.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString());
 
                     List<UserDataGames> userDataList = dbUserData.Select(item => new UserDataGames
                         {

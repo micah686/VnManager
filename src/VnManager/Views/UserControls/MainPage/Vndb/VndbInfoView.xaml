@@ -40,6 +40,8 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="8*"/>
@@ -109,8 +111,17 @@
                     </Grid>
 
                     <Grid Grid.Row="2" Grid.Column="0" >
-                        <TextBlock ext:TextBlockInLineBinding.Inlines="{Binding DescriptionInLine}" Foreground="DimGray" FontWeight="DemiBold"/>
+                        <TextBlock ext:TextBlockInLineBinding.Inlines="{Binding DescriptionInLine}" Foreground="DimGray" FontWeight="DemiBold" TextWrapping="Wrap"/>
+                    </Grid>
 
+                    <Grid Grid.Row="3" Grid.Column="0">
+                        <DataGrid AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False" CanUserResizeColumns="False" CanUserResizeRows="False" IsReadOnly="True">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Title"  Binding="{Binding RelTitle}"/>
+                                <DataGridTextColumn Header="Relation" Binding="{Binding RelRelation}"/>
+                                <DataGridTextColumn Header="Official" Binding="{Binding RelOfficial}"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
                     </Grid>
 
                     <StackPanel Grid.Row="3" Grid.Column="1"  Margin="15,10,0,0">

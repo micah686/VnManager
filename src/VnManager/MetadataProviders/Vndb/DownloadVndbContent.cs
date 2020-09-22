@@ -11,6 +11,7 @@ using VndbSharp;
 using VndbSharp.Models.Dumps;
 using VnManager.Converters;
 using VnManager.Helpers;
+using VnManager.Models.Db;
 using VnManager.Models.Db.Vndb.Character;
 using VnManager.Models.Db.Vndb.Main;
 using VnManager.Models.Db.Vndb.TagTrait;
@@ -27,7 +28,7 @@ namespace VnManager.MetadataProviders.Vndb
                 var cred = CredentialManager.GetCredentials(App.CredDb);
                 if (cred == null || cred.UserName.Length < 1) return;
                 using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
-                VnInfo entry = db.GetCollection<VnInfo>("VnInfo").Query().Where(x => x.VnId == vnId).FirstOrDefault();
+                VnInfo entry = db.GetCollection<VnInfo>(DbVnInfo.VnInfo.ToString()).Query().Where(x => x.VnId == vnId).FirstOrDefault();
                 if (entry == null) return;
                 if (entry.ImageLink != null)
                 {
@@ -54,7 +55,7 @@ namespace VnManager.MetadataProviders.Vndb
                 var cred = CredentialManager.GetCredentials(App.CredDb);
                 if (cred == null || cred.UserName.Length < 1) return;
                 using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
-                var entries = db.GetCollection<VnCharacterInfo>("VnCharacter").Query().Where(x => x.VnId == vnId)
+                var entries = db.GetCollection<VnCharacterInfo>(DbVnCharacter.VnCharacter.ToString()).Query().Where(x => x.VnId == vnId)
                     .ToList();
                 if (entries == null || entries.Count == 0)
                 {
@@ -95,7 +96,7 @@ namespace VnManager.MetadataProviders.Vndb
                 if (cred == null || cred.UserName.Length < 1) return;
                 using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
                 {
-                    var entries = db.GetCollection<VnInfoScreens>("VnInfo_Screens").Query().Where(x => x.VnId == vnId)
+                    var entries = db.GetCollection<VnInfoScreens>(DbVnInfo.VnInfo_Screens.ToString()).Query().Where(x => x.VnId == vnId)
                         .ToList();
                     if (entries == null || entries.Count == 0)
                     {
@@ -135,7 +136,7 @@ namespace VnManager.MetadataProviders.Vndb
                 using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
                 {
                     App.StatusBar.IsWorking = true;
-                    var dbTags = db.GetCollection<VnTagData>("VnDump_TagData");
+                    var dbTags = db.GetCollection<VnTagData>(DbVnDump.VnDump_TagData.ToString());
                     App.StatusBar.InfoText = App.ResMan.GetString("DownTagDump");
                     List<Tag> tagDump = (await VndbUtils.GetTagsDumpAsync()).ToList();
                     App.StatusBar.IsDatabaseProcessing = true;
@@ -185,7 +186,7 @@ namespace VnManager.MetadataProviders.Vndb
                 using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
                 {
                     App.StatusBar.IsWorking = true;
-                    var dbTraits = db.GetCollection<VnTraitData>("VnDump_TraitData");
+                    var dbTraits = db.GetCollection<VnTraitData>(DbVnDump.VnDump_TraitData.ToString());
                     App.StatusBar.InfoText = App.ResMan.GetString("DownTraitDump");
                     List<Trait> traitDump = (await VndbUtils.GetTraitsDumpAsync()).ToList();
                     App.StatusBar.IsDatabaseProcessing = true;

@@ -190,12 +190,11 @@ namespace VnManager.Helpers
             return replacementList;
         }
 
-        private struct BBReplacement
+        private class BBReplacement
         {
-            internal string ToRemove;
-            internal string Url;
-            internal string StringName;
-
+            internal string ToRemove { get; set; }
+            internal string Url { get; set; }
+            internal string StringName { get; set; }
         }
     }
 }

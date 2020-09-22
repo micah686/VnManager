@@ -13,6 +13,7 @@ using MvvmDialogs.FrameworkDialogs.OpenFile;
 using Stylet;
 using StyletIoC;
 using VnManager.Helpers;
+using VnManager.Models.Db;
 using VnManager.Models.Db.User;
 using VnManager.ViewModels.Windows;
 
@@ -149,7 +150,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             if (cred == null || cred.UserName.Length < 1) return false;
             using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
             {
-                var dbUserData = db.GetCollection<UserDataGames>("UserData_Games").Query()
+                var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString()).Query()
                     .Where(x => x.SourceType == AddGameSourceType.NoSource).ToEnumerable();
                 var count = dbUserData.Count(x => x.ExePath == exePath);
                 return count <= 0;
