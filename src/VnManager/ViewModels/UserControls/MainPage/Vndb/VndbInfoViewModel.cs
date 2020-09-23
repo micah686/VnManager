@@ -53,9 +53,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
 
         #region Relation Binding
 
-        public string RelTitle { get; set; }
-        public string RelRelation { get; set; }
-        public PackIconMaterialKind RelOfficial { get; set; }
+        public BindableCollection<VnRelationsBinding> VnRelations { get; set; } = new BindableCollection<VnRelationsBinding>();
 
         #endregion
 
@@ -72,6 +70,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             LoadImage();
             LoadMainData();
             LoadUserData();
+            LoadRelations();
         }
 
         public static void CloseClick()
@@ -142,7 +141,13 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             if (cred == null || cred.UserName.Length < 1) return;
             using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
             {
-                var vnInfoEntry = db.GetCollection<VnInfo>().Query().Where(x => x.VnId == _vnId).FirstOrDefault();
+                var vnRelations = db.GetCollection<VnInfoRelations>(DbVnInfo.VnInfo_Relations.ToString()).Query()
+                    .Where(x => x.VnId == _vnId && x.Official.ToLower() == "yes").ToList();
+                foreach (var relation in vnRelations)
+                {
+                    var entry = new VnRelationsBinding(){RelTitle = relation.Title, RelRelation = relation.Relation};
+                    VnRelations.Add(entry);
+                }
             }
         }
 
@@ -198,7 +203,11 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             vm.ActivateVnScreenshots();
         }
 
-
+        public class VnRelationsBinding
+        {
+            public string RelTitle { get; set; }
+            public string RelRelation { get; set; }
+        }
 
     }
 }

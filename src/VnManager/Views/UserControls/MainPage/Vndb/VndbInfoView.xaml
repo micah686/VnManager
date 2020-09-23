@@ -115,11 +115,11 @@
                     </Grid>
 
                     <Grid Grid.Row="3" Grid.Column="0">
-                        <DataGrid AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False" CanUserResizeColumns="False" CanUserResizeRows="False" IsReadOnly="True">
+                        <DataGrid AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False" CanUserResizeColumns="False" CanUserResizeRows="False" IsReadOnly="True"
+                                  ItemsSource="{Binding VnRelations}">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="Title"  Binding="{Binding RelTitle}"/>
                                 <DataGridTextColumn Header="Relation" Binding="{Binding RelRelation}"/>
-                                <DataGridTextColumn Header="Official" Binding="{Binding RelOfficial}"/>
                             </DataGrid.Columns>
                         </DataGrid>
                     </Grid>
