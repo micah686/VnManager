@@ -295,7 +295,7 @@ namespace VnManager.ViewModels.Windows
 
                 RuleFor(x => x.Password).NotNull().WithMessage(App.ResMan.GetString("PasswordNoEmpty"));
 
-                RuleFor(x => x.ConfirmPassword).Cascade(CascadeMode.StopOnFirstFailure)
+                RuleFor(x => x.ConfirmPassword).Cascade(CascadeMode.Stop)
                     .NotNull().WithMessage(App.ResMan.GetString("PasswordNoEmpty"))
                     .Must(DoPasswordsMatch).WithMessage(App.ResMan.GetString("PasswordsNoMatch"));
 
@@ -303,7 +303,7 @@ namespace VnManager.ViewModels.Windows
 
             When(x => x.IsUnlockPasswordVisible && x.ShouldCheckPassword, () =>
             {
-                RuleFor(x => x.Password).Cascade(CascadeMode.StopOnFirstFailure)
+                RuleFor(x => x.Password).Cascade(CascadeMode.Stop)
                     .Must(IsNoDbError).WithMessage(CreateDbErrorMessage)
                     .Must(DoPasswordsMatch).WithMessage(App.ResMan.GetString("PassIncorrect"));
 

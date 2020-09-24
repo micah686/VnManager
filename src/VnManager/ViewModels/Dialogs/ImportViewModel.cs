@@ -371,11 +371,11 @@ namespace VnManager.ViewModels.Dialogs
     {
         public ImportUserDataValidator()
         {
-            RuleFor(x => x.Id).Cascade(CascadeMode.StopOnFirstFailure)
+            RuleFor(x => x.Id).Cascade(CascadeMode.Stop)
                 .Must(IsValidGuid).WithMessage($"{App.ResMan.GetString("ValidationBadId")}")
                 .Must(IsNotDuplicateGuid).WithMessage($"{App.ResMan.GetString("ValidationIdAlreadyExists")}");
 
-            RuleFor(x => x.GameId).Cascade(CascadeMode.StopOnFirstFailure)
+            RuleFor(x => x.GameId).Cascade(CascadeMode.Stop)
                 .Must(ValidateInteger).WithMessage($"{App.ResMan.GetString("ValidationBadGameID")}");
 
             RuleFor(x => x.SourceType).Must((x, y) => IsDefinedInEnum(x.SourceType, y.GetType()))
@@ -389,12 +389,12 @@ namespace VnManager.ViewModels.Dialogs
             RuleFor(x => x.PlayTime).Must(ValidateTimeSpan).WithMessage($"{App.ResMan.GetString("ValidationBadPlayTime")}");
 
 
-            RuleFor(x => x.ExePath).Cascade(CascadeMode.StopOnFirstFailure).ExeValidation();
+            RuleFor(x => x.ExePath).Cascade(CascadeMode.Stop).ExeValidation();
 
-            RuleFor(x => x.IconPath).Cascade(CascadeMode.StopOnFirstFailure).IcoValidation().Unless(x =>
+            RuleFor(x => x.IconPath).Cascade(CascadeMode.Stop).IcoValidation().Unless(x =>
                 string.IsNullOrEmpty(x.IconPath) || string.IsNullOrWhiteSpace(x.IconPath));
 
-            RuleFor(x => x.Arguments).Cascade(CascadeMode.StopOnFirstFailure).ArgsValidation().Unless(x =>
+            RuleFor(x => x.Arguments).Cascade(CascadeMode.Stop).ArgsValidation().Unless(x =>
                 string.IsNullOrEmpty(x.Arguments) || string.IsNullOrWhiteSpace(x.Arguments));
 
             RuleForEach(x => x.Categories).Must(ValidationHelpers.ContainsIllegalCharacters)

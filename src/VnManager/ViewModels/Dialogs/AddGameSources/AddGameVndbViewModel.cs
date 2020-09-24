@@ -335,7 +335,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
         {
 
             //VnId
-            RuleFor(x => x.VnId).Cascade(CascadeMode.StopOnFirstFailure)
+            RuleFor(x => x.VnId).Cascade(CascadeMode.Stop)
                 .NotEmpty().When(x => x.IsNameChecked == false)
                     .WithMessage(App.ResMan.GetString("ValidationVnIdNotAboveZero")).MustAsync(IsNotAboveMaxIdAsync)
                     .When(x => x.IsNameChecked == false).WithMessage(App.ResMan.GetString("ValidationVnIdAboveMax"))
@@ -346,7 +346,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             When(x => x.IsNameChecked == true, () =>
             {
                 RuleFor(x => x.CanChangeVnName).NotEqual(true).WithMessage(App.ResMan.GetString("ValidationVnNameSelection"));
-                RuleFor(x => x.VnName).Cascade(CascadeMode.StopOnFirstFailure).NotEmpty().When(x => x.CanChangeVnName == false)
+                RuleFor(x => x.VnName).Cascade(CascadeMode.Stop).NotEmpty().When(x => x.CanChangeVnName == false)
                     .WithMessage(App.ResMan.GetString("ValidationVnNameEmpty"))
                     .Must(TrySetNameId).Unless(x => x.IsLockDown == false).WithMessage(App.ResMan.GetString("SetIdFromNameFail"));
             });
@@ -355,20 +355,20 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
 
 
             //Exe Path Validation
-            RuleFor(x => x.ExePath).Cascade(CascadeMode.StopOnFirstFailure).ExeValidation()
+            RuleFor(x => x.ExePath).Cascade(CascadeMode.Stop).ExeValidation()
                 .Must(IsNotDuplicateVndbExe).WithMessage(App.ResMan.GetString("ExeAlreadyExistsInDb"));
             
             //Icon
             When(x => x.IsIconChecked == true, () =>
             {
-                RuleFor(x => x.IconPath).Cascade(CascadeMode.StopOnFirstFailure).IcoValidation();
+                RuleFor(x => x.IconPath).Cascade(CascadeMode.Stop).IcoValidation();
             });
 
 
             //Arguments
             When(x => x.IsArgsChecked == true, () =>
             {
-                RuleFor(x => x.ExeArguments).Cascade(CascadeMode.StopOnFirstFailure).ArgsValidation();
+                RuleFor(x => x.ExeArguments).Cascade(CascadeMode.Stop).ArgsValidation();
             });
 
         }

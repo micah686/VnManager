@@ -566,7 +566,7 @@ namespace VnManager.MetadataProviders.Vndb
                     var links = prevVnProducerLinks.FirstOrDefault() ?? new VnProducerLinks();
                     links.ProducerId = (int)vnProducer.Id;
                     links.Homepage = vnProducer.Links.Homepage;
-                    links.WikiData = vnProducer.Links.Wikipedia;
+                    links.WikiData = vnProducer.Links.Wikidata;
                     vnProducerLinksList.Add(links);
 
                     ILiteQueryable<VnProducerRelations> prevVnProducerRelations =
@@ -632,7 +632,7 @@ namespace VnManager.MetadataProviders.Vndb
                         Twitter = vnStaff.StaffLinks.Twitter,
                         AniDb = vnStaff.StaffLinks.AniDb,
                         Pixiv = vnStaff.StaffLinks.Pixiv,
-                        Wikidata = vnStaff.StaffLinks.WikiData
+                        Wikidata = vnStaff.StaffLinks.Wikidata
                     };
                     staff.Description = vnStaff.Description;
                     staff.MainAliasId = vnStaff.MainAlias;

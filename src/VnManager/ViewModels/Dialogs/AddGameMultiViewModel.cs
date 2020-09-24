@@ -152,18 +152,18 @@ namespace VnManager.ViewModels.Dialogs
     {
         public AddGameMultiViewModelValidator()
         {
-            RuleFor(x => x.ExePath).Cascade(CascadeMode.StopOnFirstFailure).ExeValidation()
+            RuleFor(x => x.ExePath).Cascade(CascadeMode.Stop).ExeValidation()
                 .Unless(x => x.ShowValidationErrors == false);
 
             When(x => x.IsIconChecked == true, () =>
             {
-                RuleFor(x => x.IconPath).Cascade(CascadeMode.StopOnFirstFailure).IcoValidation()
+                RuleFor(x => x.IconPath).Cascade(CascadeMode.Stop).IcoValidation()
                     .Unless(x => x.ShowValidationErrors == false && x.HideIconError == true);
             });
 
             When(x => x.IsArgsChecked == true, () =>
             {
-                RuleFor(x => x.ExeArguments).Cascade(CascadeMode.StopOnFirstFailure).ArgsValidation()
+                RuleFor(x => x.ExeArguments).Cascade(CascadeMode.Stop).ArgsValidation()
                     .Unless(x => x.ShowValidationErrors == false && x.HideArgumentsError == true);
             });
                         

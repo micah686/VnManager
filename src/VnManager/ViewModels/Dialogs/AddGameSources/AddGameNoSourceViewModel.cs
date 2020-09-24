@@ -128,17 +128,17 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
 
         public AddGameNoSourceViewModelValidator()
         {
-            RuleFor(x => x.ExePath).Cascade(CascadeMode.StopOnFirstFailure).ExeValidation()
+            RuleFor(x => x.ExePath).Cascade(CascadeMode.Stop).ExeValidation()
                 .Must(IsNotDuplicateExe).WithMessage(App.ResMan.GetString("ExeAlreadyExistsInDb"));
 
             When(x => x.IsIconChecked == true, () =>
             {
-                RuleFor(x => x.IconPath).Cascade(CascadeMode.StopOnFirstFailure).IcoValidation();
+                RuleFor(x => x.IconPath).Cascade(CascadeMode.Stop).IcoValidation();
             });
 
             When(x => x.IsArgsChecked == true, () =>
             {
-                RuleFor(x => x.ExeArguments).Cascade(CascadeMode.StopOnFirstFailure).ArgsValidation();
+                RuleFor(x => x.ExeArguments).Cascade(CascadeMode.Stop).ArgsValidation();
             });
 
         }
