@@ -27,6 +27,11 @@ A program to keep track of your visual novels
 ### Please note that all work on v2 of the program has ceased (Visual-Novel-Manager-v2) 
 
 The application is being completely redesinged, using new frameworks. 
-The old application archive can be found in the v2-archive branch
+
+The old application archive can be found in the v2-archive branch. 
+
+This application is still under heavy development. 
+
+If you want to clone this project, make sure that you clone the submodules too, otherwise it won't compile.
 
 
