@@ -28,6 +28,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
         #endregion
         public static VndbContentViewModel Instance { get; internal set; }
         private readonly IContainer _container;
+        internal static int _vnid;
 
         public VndbContentViewModel(IContainer container)
         {

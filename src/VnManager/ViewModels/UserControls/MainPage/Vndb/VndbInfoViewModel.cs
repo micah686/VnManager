@@ -89,6 +89,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             if (dbUserData != null)
             {
                 _vnId = dbUserData.GameId;
+                VndbContentViewModel._vnid = dbUserData.GameId;
             }
         }
 

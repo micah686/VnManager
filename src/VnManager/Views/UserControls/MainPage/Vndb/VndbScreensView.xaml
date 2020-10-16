@@ -11,8 +11,9 @@
     <Grid Background="Aqua">
             <Grid.RowDefinitions>
                 <RowDefinition Height="30"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
+                <RowDefinition Height="9*"/>
+                <RowDefinition Height="2.5"/>
+        </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="8*"/>
                 <ColumnDefinition Width="1*"/>
@@ -32,6 +33,10 @@
                     </iconPacks:PackIconMaterial.Effect>
                 </iconPacks:PackIconMaterial>
             </Grid>
+        </Grid>
+
+        <Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
+
         </Grid>
     </Grid>
 </UserControl>

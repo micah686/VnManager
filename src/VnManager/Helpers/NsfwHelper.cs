@@ -17,18 +17,19 @@ namespace VnManager.Helpers
         public static bool IsNsfw(ImageRating rating)
         {
             if (rating == null) return false;
-            var isSexualValid = false;
-            var isViolenceValid = false;
+            var isSexualNsfwValid = false;
+            var isViolenceNsfwValid = false;
             if (rating.SexualAvg != null && rating.SexualAvg > Convert.ToDouble(App.UserSettings.MaxSexualRating, CultureInfo.InvariantCulture))
             {
-                isSexualValid = true;
+                isSexualNsfwValid = true;
             }
 
             if (rating.ViolenceAvg != null && rating.ViolenceAvg > Convert.ToDouble(App.UserSettings.MaxViolenceRating, CultureInfo.InvariantCulture))
             {
-                isViolenceValid = true;
+                isViolenceNsfwValid = true;
             }
-            return isSexualValid || isViolenceValid;
+            //if either is true, mark item as a NSFW item
+            return isSexualNsfwValid || isViolenceNsfwValid;
         }
     }
 

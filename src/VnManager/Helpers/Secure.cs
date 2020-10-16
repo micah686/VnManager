@@ -199,27 +199,25 @@ namespace VnManager.Helpers
         }
 
         /// <summary>
-        /// Take a Stream, decrypt it, and write it out to a file
+        /// Take a Stream, decrypt it, and returns an unencrypted stream
         /// </summary>
         /// <param name="stream">Stream of the object you want to decrypt</param>
-        /// <param name="path">Path of where you want the file saved. Should not include the .aes extension</param>
-        //TODO:This method is never used
         [DebuggerHidden]
-        public static void DecStream(MemoryStream stream, string path)
+        public static Stream DecStreamToStream(MemoryStream stream)
         {
             try
             {
-                string encPath = $"{path}.aes";
                 byte[] encBytes = stream.ToArray();
-                if (encBytes.Length < 20) return; //don't decrypt streams less than 20 bytes, as that indicates that the file might be bad
+                if (encBytes.Length < 20) return null; //don't decrypt streams less than 20 bytes, as that indicates that the file might be bad
                 byte[] bytes = Decrypt(encBytes);
-                if (bytes == null || bytes.Length < 20) return;
-                File.WriteAllBytes(path, bytes);
-                File.Delete(encPath);
+                if (bytes == null || bytes.Length < 20) return null;
+                var decStream = new MemoryStream(bytes);
+                return decStream;
             }
             catch (Exception ex)
             {
                 App.Logger.Error(ex, "Failed to decrypt stream");
+                return null;
             }
 
         }

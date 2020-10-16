@@ -84,7 +84,39 @@ namespace VnManager.Helpers
             }
             catch (Exception e)
             {
-                App.Logger.Warning(e, "Failed to get cover image");
+                App.Logger.Warning(e, "Failed to get create bitmap from path");
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Creates a BitmapSource from a specified stream. If the stream is too small, it creates a blank/empty Image
+        /// </summary>
+        /// <param name="stream">Stream of the image</param>
+        /// <returns></returns>
+        public static BitmapSource CreateBitmapFromStream(Stream stream)
+        {
+            try
+            {
+                if (stream.Length > 20)
+                {
+                    var img = new BitmapImage();
+                    img.BeginInit();
+                    img.CacheOption = BitmapCacheOption.OnLoad;
+                    img.StreamSource = stream;
+                    img.EndInit();
+                    img.Freeze();
+                    stream.Dispose();
+                    return img;
+                }
+                else
+                {
+                    return CreateEmptyBitmapImage();
+                }
+            }
+            catch (Exception e)
+            {
+                App.Logger.Warning(e, "Failed to get create bitmap from stream");
                 throw;
             }
         }
@@ -102,13 +134,18 @@ namespace VnManager.Helpers
                 if (imageList == null || !imageList.Any()) return;
                 using (var client = new WebClient())
                 {
+                    if (!Directory.Exists($@"{imageDirectory}\thumbs\"))
+                    {
+                        Directory.CreateDirectory($@"{imageDirectory}\thumbs\");
+                    }
+                    
                     foreach (var screen in imageList)
                     {
                         if (screen.Uri == null || string.IsNullOrEmpty(screen.Uri.AbsoluteUri)) continue;
-                        var imageDir = $@"{imageDirectory}\{Path.GetFileName(screen.Uri.AbsoluteUri)}";
-                        var thumbDir = $@"{imageDirectory}\thumbs\{Path.GetFileName(screen.Uri.AbsoluteUri)}";
+                        var imagePath = $@"{imageDirectory}\{Path.GetFileName(screen.Uri.AbsoluteUri)}";
+                        var thumbPath = $@"{imageDirectory}\thumbs\{Path.GetFileName(screen.Uri.AbsoluteUri)}";
 
-                        if(File.Exists(imageDir))continue;
+                        if(File.Exists(imagePath))continue;
 
                         var imageStream = new MemoryStream(await client.DownloadDataTaskAsync(screen.Uri.AbsoluteUri));
                         var thumbImg = GetThumbnailImage(imageStream,0);
@@ -116,16 +153,16 @@ namespace VnManager.Helpers
                         if (screen.IsNsfw && App.UserSettings.IsVisibleSavedNsfwContent == false)
                         {
 
-                            Secure.EncStream(imageStream, imageDir);
+                            Secure.EncStream(imageStream, imagePath);
                             var thumbStream = new MemoryStream();
                             thumbImg.Save(thumbStream, ImageFormat.Jpeg);
-                            Secure.EncStream(thumbStream, thumbDir);
+                            Secure.EncStream(thumbStream, thumbPath);
                             await thumbStream.DisposeAsync();
                         }
                         else
                         {
-                            Image.FromStream(imageStream).Save(imageDir);
-                            thumbImg.Save(thumbDir);
+                            Image.FromStream(imageStream).Save(imagePath);
+                            thumbImg.Save(thumbPath);
                             await imageStream.DisposeAsync();
                         }
                         await imageStream.DisposeAsync();
@@ -135,7 +172,7 @@ namespace VnManager.Helpers
             }
             catch (Exception ex)
             {
-                App.Logger.Warning(ex, "Failed to download images");
+                App.Logger.Warning(ex, "Failed to download images with thumbnails");
             }
             
         }
