@@ -39,9 +39,9 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
         }
         #endregion
 
-        public BitmapSource MainImage { get; set; }
+        public ScreenshotData MainImage { get; set; }
         public BindableCollection<BitmapSource> ScreenshotCollection { get; set; } = new BindableCollection<BitmapSource>();
-
+        public BindableCollection<ScreenshotData> ZYZ { get; set; }= new BindableCollection<ScreenshotData>();
         private readonly List<ScreenShot> _screenList = LoadScreenshotList();
 
         public VndbScreensViewModel(IContainer container)
@@ -83,7 +83,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
 
         private async Task ResetInvalidScreenshots()
         {
-            return;
+            
             List<ScreenShot> scrExistList = new List<ScreenShot>();
             List<string> fileExistList = new List<string>();
             string mainDir = $@"{App.AssetDirPath}\sources\vndb\images\screenshots\{VndbContentViewModel._vnid}";
@@ -138,16 +138,17 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
                         {
                             var imgBytes = File.ReadAllBytes($"{path}.aes");
                             var imgStream = Secure.DecStreamToStream(new MemoryStream(imgBytes));
-                            MainImage = ImageHelper.CreateBitmapFromStream(imgStream);
+                            var imgNsfw = ImageHelper.CreateBitmapFromStream(imgStream);
+                            MainImage = new ScreenshotData{Image = imgNsfw, IsNsfw = true};
                         }
                         else
                         {
-                            MainImage = ImageHelper.CreateBitmapFromPath(path);
+                            //MainImage = ImageHelper.CreateBitmapFromPath(path);
                         }
                         break;
                     case false:
-
-                        MainImage = ImageHelper.CreateBitmapFromPath(path);
+                        var img = ImageHelper.CreateBitmapFromPath(path);
+                        MainImage = new ScreenshotData{Image = img, IsNsfw = false};
                         break;
                 }
             }
@@ -173,13 +174,21 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
                         var imgBytes = File.ReadAllBytes($"{path}.aes");
                         var imgStream = Secure.DecStreamToStream(new MemoryStream(imgBytes));
                         image= ImageHelper.CreateBitmapFromStream(imgStream);
+                        ZYZ.Add(new ScreenshotData{Image = image, IsNsfw = true});
                         break;
                     case false when File.Exists(path):
                         image = ImageHelper.CreateBitmapFromPath(path);
+                        ZYZ.Add(new ScreenshotData { Image = image, IsNsfw = false });
                         break;
                 }
                 ScreenshotCollection.Add(image);
             }
+        }
+
+        public class ScreenshotData
+        {
+            public BitmapSource Image { get; set; }
+            public bool IsNsfw { get; set; }
         }
 
     }

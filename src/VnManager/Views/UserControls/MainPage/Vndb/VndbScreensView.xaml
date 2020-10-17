@@ -1,4 +1,5 @@
 ﻿<UserControl x:Class="VnManager.Views.UserControls.MainPage.Vndb.VndbScreensView"
+             x:Name="ScreenUserControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -7,7 +8,7 @@
              xmlns:s="https://github.com/canton7/Stylet"
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:uc="clr-namespace:VnManager.ViewModels.UserControls.MainPage.Vndb"
-             
+             xmlns:controls="clr-namespace:BlurryControls.Controls;assembly=BlurryControls"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              d:DataContext="{d:DesignInstance uc:VndbScreensViewModel}">
@@ -15,6 +16,7 @@
         <DataTemplate x:Key="ImageDataTemplate">
             <Image Source="{Binding }" Stretch="UniformToFill" RenderOptions.BitmapScalingMode="HighQuality"/>
         </DataTemplate>
+        <s:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
     </UserControl.Resources>
     <Grid Background="Aqua">
             <Grid.RowDefinitions>
@@ -44,16 +46,55 @@
         </Grid>
 
         <Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
-            <Image Source="{Binding MainImage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></Image>
+            <Image Source="{Binding MainImage.Image, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <!--<Image Source="{Binding MainImage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                <Image.Effect>
+                    <BlurEffect RenderingBias="Quality" KernelType="Gaussian" Radius="15"/>
+                </Image.Effect>
+            </Image>-->
+            <Grid x:Name="nsfwImage" Visibility="{Binding MainImage.IsNsfw, Converter={StaticResource BoolToVisibilityConverter}}">
+                <Grid x:Name="OuterBlurContainer">
+                    <Grid x:Name="InnerBlurContainer">
+                        <Image Stretch="UniformToFill" Source="{Binding MainImage.Image, Mode=OneWay}" RenderOptions.BitmapScalingMode="Fant"
+                               Height="{Binding ElementName=ScreenUserControl, Path=Height, Mode=TwoWay}" 
+                               Width="{Binding ElementName=ScreenUserControl, Path=Width, Mode=TwoWay}"/>
+                    </Grid>
+                </Grid>
+                <controls:BlurryUserControl Height="{Binding ElementName=ScreenUserControl, Path=Height, Mode=TwoWay}" 
+                                            Width="{Binding ElementName=ScreenUserControl, Path=Width, Mode=TwoWay}"
+                                            Background="Transparent"
+                                            Panel.ZIndex="100"
+                                            BlurContainer="{Binding ElementName=OuterBlurContainer}"
+                                            BlurRadius="50"
+                                            Magnification="0.25"/>
+            </Grid>
+
+            
+
+
         </Grid>
+
         <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0,5,0,0" >
-            <ListBox  ItemsSource="{Binding ScreenshotCollection}" HorizontalAlignment="Center"  VerticalAlignment="Top" ScrollViewer.HorizontalScrollBarVisibility="Auto" Margin="2" 
-                     ItemTemplate="{StaticResource ImageDataTemplate}" SelectedIndex="{Binding SelectedScreenIndex}">
+            <ListBox ItemsSource="{Binding ZYZ}" HorizontalAlignment="Center"  VerticalAlignment="Top" ScrollViewer.HorizontalScrollBarVisibility="Auto" Margin="2"
+                     SelectedIndex="{Binding SelectedScreenIndex}">
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <StackPanel Orientation="Horizontal"/>
+                        <WrapPanel Orientation="Horizontal"/>
                     </ItemsPanelTemplate>
                 </ListBox.ItemsPanel>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid >
+                            <Image  Source="{Binding Image}" />
+                            <Image Source="{Binding Image}" 
+                                   Visibility="{Binding IsNsfw, Converter={StaticResource BoolToVisibilityConverter}}" >
+                                <Image.Effect>
+                                    <BlurEffect RenderingBias="Quality" KernelType="Box" Radius="5"/>
+                                </Image.Effect>
+                            </Image>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
             </ListBox>
 
         </Grid>
