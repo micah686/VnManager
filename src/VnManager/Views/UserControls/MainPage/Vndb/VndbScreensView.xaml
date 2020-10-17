@@ -6,13 +6,21 @@
              xmlns:local="clr-namespace:VnManager.Views.UserControls.MainPage.Vndb"
              xmlns:s="https://github.com/canton7/Stylet"
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             xmlns:uc="clr-namespace:VnManager.ViewModels.UserControls.MainPage.Vndb"
+             
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="800"
+             d:DataContext="{d:DesignInstance uc:VndbScreensViewModel}">
+    <UserControl.Resources>
+        <DataTemplate x:Key="ImageDataTemplate">
+            <Image Source="{Binding }" Stretch="UniformToFill" RenderOptions.BitmapScalingMode="HighQuality"/>
+        </DataTemplate>
+    </UserControl.Resources>
     <Grid Background="Aqua">
             <Grid.RowDefinitions>
                 <RowDefinition Height="30"/>
-                <RowDefinition Height="9*"/>
-                <RowDefinition Height="2.5"/>
+                <RowDefinition Height="7*"/>
+                <RowDefinition Height="80"/>
         </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="8*"/>
@@ -36,6 +44,17 @@
         </Grid>
 
         <Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
+            <Image Source="{Binding MainImage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></Image>
+        </Grid>
+        <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0,5,0,0" >
+            <ListBox x:Name="test1" ItemsSource="{Binding ScreenshotCollection, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center"  VerticalAlignment="Top" ScrollViewer.HorizontalScrollBarVisibility="Auto" Margin="2" 
+                     ItemTemplate="{StaticResource ImageDataTemplate}" >
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+            </ListBox>
 
         </Grid>
     </Grid>

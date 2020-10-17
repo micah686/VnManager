@@ -40,7 +40,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
         #endregion
 
         public BitmapSource MainImage { get; set; }
-        public BindableCollection<BitmapSource> ScreenshotCollection = new BindableCollection<BitmapSource>();
+        public BindableCollection<BitmapSource> ScreenshotCollection { get; set; } = new BindableCollection<BitmapSource>();
 
         private readonly List<ScreenShot> _screenList = LoadScreenshotList();
 
@@ -51,7 +51,17 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
 
         protected override async void OnViewLoaded()
         {
-            await ResetInvalidScreenshots();
+            //await ResetInvalidScreenshots();
+            //BindScreenshotCollection();
+            //LoadLargeScreenshot();
+
+
+            foreach (var file in Directory.EnumerateFiles(@"C:\Users\Micah\thumbs"))
+            {
+                var bi = ImageHelper.CreateBitmapFromPath(file);
+                ScreenshotCollection.Add(bi);
+                //items.Add(new Uri(file));
+            }
         }
 
         public void ShowInfo()
@@ -80,6 +90,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
 
         private async Task ResetInvalidScreenshots()
         {
+            return;
             List<ScreenShot> scrExistList = new List<ScreenShot>();
             List<string> fileExistList = new List<string>();
             string mainDir = $@"{App.AssetDirPath}\sources\vndb\images\screenshots\{VndbContentViewModel._vnid}";
@@ -126,8 +137,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             {
                 List<ScreenShot> screenshotList = LoadScreenshotList();
                 if (screenshotList.Count <= 0) return;
-                string path = $@"{App.AssetDirPath}\sources\vndb\images\screenshots\
-                        {VndbContentViewModel._vnid}\{Path.GetFileName(screenshotList[SelectedScreenIndex].Uri.AbsoluteUri)}";
+                string path = $@"{App.AssetDirPath}\sources\vndb\images\screenshots\{VndbContentViewModel._vnid}\{Path.GetFileName(screenshotList[SelectedScreenIndex].Uri.AbsoluteUri)}";
                 switch (screenshotList[SelectedScreenIndex].IsNsfw)
                 {
                     case true:
