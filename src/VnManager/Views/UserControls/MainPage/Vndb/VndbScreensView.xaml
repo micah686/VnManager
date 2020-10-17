@@ -47,8 +47,8 @@
             <Image Source="{Binding MainImage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></Image>
         </Grid>
         <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0,5,0,0" >
-            <ListBox x:Name="test1" ItemsSource="{Binding ScreenshotCollection, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center"  VerticalAlignment="Top" ScrollViewer.HorizontalScrollBarVisibility="Auto" Margin="2" 
-                     ItemTemplate="{StaticResource ImageDataTemplate}" >
+            <ListBox  ItemsSource="{Binding ScreenshotCollection}" HorizontalAlignment="Center"  VerticalAlignment="Top" ScrollViewer.HorizontalScrollBarVisibility="Auto" Margin="2" 
+                     ItemTemplate="{StaticResource ImageDataTemplate}" SelectedIndex="{Binding SelectedScreenIndex}">
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                         <StackPanel Orientation="Horizontal"/>

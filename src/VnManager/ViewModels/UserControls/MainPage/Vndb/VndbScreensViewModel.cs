@@ -52,16 +52,9 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
         protected override async void OnViewLoaded()
         {
             //await ResetInvalidScreenshots();
-            //BindScreenshotCollection();
+            BindScreenshotCollection();
             //LoadLargeScreenshot();
 
-
-            foreach (var file in Directory.EnumerateFiles(@"C:\Users\Micah\thumbs"))
-            {
-                var bi = ImageHelper.CreateBitmapFromPath(file);
-                ScreenshotCollection.Add(bi);
-                //items.Add(new Uri(file));
-            }
         }
 
         public void ShowInfo()
@@ -173,8 +166,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             {
                 var image = ImageHelper.CreateEmptyBitmapImage();
                 if (screenshotList.Count < 1) return;
-                string path = $@"{App.AssetDirPath}\sources\vndb\images\screenshots\
-                        {VndbContentViewModel._vnid}\{Path.GetFileName(item.Uri.AbsoluteUri)}";
+                string path = $@"{App.AssetDirPath}\sources\vndb\images\screenshots\{VndbContentViewModel._vnid}\thumbs\{Path.GetFileName(item.Uri.AbsoluteUri)}";
                 switch (item.IsNsfw)
                 {
                     case true when File.Exists($"{path}.aes"):
