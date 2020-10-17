@@ -29,20 +29,7 @@ namespace VnManager.ViewModels.UserControls
     public class SettingsViewModel :Screen
     {
 
-        private bool _didChangeNsfwContentVisible = false;
-
-        private bool _nsfwSavedContentVisible;
-        public bool NsfwContentSavedVisible
-        {
-            get => _nsfwSavedContentVisible;
-            set
-            {
-                _nsfwSavedContentVisible = value;
-                SetAndNotify(ref _nsfwSavedContentVisible, value);
-                _didChangeNsfwContentVisible = true;
-            }
-        }
-
+        
         public int SpoilerIndex { get; set; } = 0;
         public int MaxSexualIndex { get; set; }
         public int MaxViolenceIndex { get; set; }
@@ -56,8 +43,6 @@ namespace VnManager.ViewModels.UserControls
             _container = container;
             _windowManager = windowManager;
             _dialogService = dialogService;
-            //NsfwEnabled = App.UserSettings.IsNsfwEnabled;
-            NsfwContentSavedVisible = App.UserSettings.IsVisibleSavedNsfwContent;
             FillSexualDropdown();
             FillViolenceDropdown();
             FillSpoilerDropdown();
@@ -137,23 +122,6 @@ namespace VnManager.ViewModels.UserControls
 
         public void SaveUserSettings(bool useEncryption)
         {
-            if (_didChangeNsfwContentVisible == true)
-            {
-                var message = App.ResMan.GetString("ChangeNsfwVisibilityMessage")
-                    ?.Replace(@"\n", Environment.NewLine);
-                var result = _windowManager.ShowMessageBox($"{message}",
-                    App.ResMan.GetString("ChangeNsfwVisibilityTitle"), MessageBoxButton.YesNo);
-                if (result == MessageBoxResult.Yes)
-                {
-                    DeleteNsfwImages();
-                }
-                else
-                {
-                    return;
-                }
-
-            }
-
 
             UserSettingsVndb vndb = new UserSettingsVndb
             {
@@ -161,7 +129,6 @@ namespace VnManager.ViewModels.UserControls
             };
             UserSettings settings = new UserSettings
             {
-                IsVisibleSavedNsfwContent = NsfwContentSavedVisible,
                 SettingsVndb = vndb,
                 RequirePasswordEntry = useEncryption,
                 MaxSexualRating = (SexualRating)MaxSexualIndex,
@@ -197,76 +164,6 @@ namespace VnManager.ViewModels.UserControls
             }
         }
 
-
-        public static void DeleteNsfwImages()
-        {
-            //Use CheckWriteAccess to see if you can delete from the images
-            var cred = CredentialManager.GetCredentials(App.CredDb);
-            if (cred == null || cred.UserName.Length < 1) return;
-            using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
-            {
-                List<VnInfoScreens> vnScreens = db.GetCollection<VnInfoScreens>(DbVnInfo.VnInfo_Screens.ToString()).Query().Where(x => NsfwHelper.IsNsfw(x.ImageRating) == true).ToList();
-                List<VnInfo> vnCovers = db.GetCollection<VnInfo>(DbVnInfo.VnInfo.ToString()).Query().Where(x => NsfwHelper.IsNsfw(x.ImageRating) == true).ToList();
-
-                ResetNsfwScreenshots(vnScreens);
-                ResetNsfwCoverImages(vnCovers);
-            }
-
-        }
-
-        private static void ResetNsfwScreenshots(List<VnInfoScreens> vnScreens)
-        {
-            foreach (var screen in vnScreens)
-            {
-                var directory = Path.Combine(App.AssetDirPath, @$"sources\vndb\images\screenshots\{screen.VnId}");
-                var imageFile = $@"{directory}\{Path.GetFileName(screen.ImageUri.AbsoluteUri)}";
-                var thumbFile = $@"{directory}\thumbs\{Path.GetFileName(screen.ImageUri.AbsoluteUri)}";
-
-                if (App.UserSettings.IsVisibleSavedNsfwContent == false)
-                {
-                    if (File.Exists(imageFile) && File.Exists(thumbFile))
-                    {
-                        Secure.EncFile(imageFile);
-
-                        Secure.EncFile(thumbFile);
-                    }
-                }
-                else
-                {
-                    if (File.Exists($"{imageFile}.aes") && File.Exists($"{thumbFile}.aes"))
-                    {
-                        Secure.DecFile(imageFile);
-
-                        Secure.DecFile(thumbFile);
-                    }
-
-                }
-            }
-        }
-
-        private static void ResetNsfwCoverImages(List<VnInfo> vnCovers)
-        {
-            foreach (var cover in vnCovers)
-            {
-                var directory = Path.Combine(App.AssetDirPath, @"sources\vndb\images\cover");
-                var imageFile = $@"{directory}\{Path.GetFileName(cover.ImageLink.AbsoluteUri)}";
-                if (App.UserSettings.IsVisibleSavedNsfwContent == false)
-                {
-                    if (File.Exists(imageFile))
-                    {
-                        Secure.EncFile(imageFile);
-                    }
-                }
-                else
-                {
-                    if (File.Exists(imageFile))
-                    {
-                        Secure.DecFile(imageFile);
-                    }
-                }
-
-            }
-        }
 
         //TODO: move this to a better area, like maybe an information page?
         public void ExportUserData()

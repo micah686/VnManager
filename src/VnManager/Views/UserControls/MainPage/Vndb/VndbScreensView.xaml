@@ -65,8 +65,8 @@
                                             Background="Transparent"
                                             Panel.ZIndex="100"
                                             BlurContainer="{Binding ElementName=OuterBlurContainer}"
-                                            BlurRadius="50"
-                                            Magnification="0.25"/>
+                                            BlurRadius="80"
+                                            Magnification="0.45"/>
             </Grid>
 
             
@@ -75,7 +75,7 @@
         </Grid>
 
         <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0,5,0,0" >
-            <ListBox ItemsSource="{Binding ZYZ}" HorizontalAlignment="Center"  VerticalAlignment="Top" ScrollViewer.HorizontalScrollBarVisibility="Auto" Margin="2"
+            <ListBox ItemsSource="{Binding ScreenshotCollection}" HorizontalAlignment="Center"  VerticalAlignment="Top" ScrollViewer.HorizontalScrollBarVisibility="Auto" Margin="2"
                      SelectedIndex="{Binding SelectedScreenIndex}">
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>

@@ -10,7 +10,6 @@ namespace VnManager.Models.Settings
     {
         public SexualRating MaxSexualRating { get; set; }
         public ViolenceRating MaxViolenceRating { get; set; }
-        public bool IsVisibleSavedNsfwContent { get; set; } = false;
         public UserSettingsVndb SettingsVndb { get; set; }
         /// <summary>
         /// Is the user required to input a password to unlock the database

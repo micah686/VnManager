@@ -34,7 +34,7 @@ namespace VnManager.MetadataProviders.Vndb
                 {
                     App.StatusBar.IsFileDownloading = true;
                     string path = $@"{App.AssetDirPath}\sources\vndb\images\cover\{Path.GetFileName(entry.ImageLink.AbsoluteUri)}";
-                    await ImageHelper.DownloadImageAsync(entry.ImageLink, NsfwHelper.IsNsfw(entry.ImageRating), path);
+                    await ImageHelper.DownloadImageAsync(entry.ImageLink, NsfwHelper.TrueIsNsfw(entry.ImageRating), path);
                 }
             }
             catch (Exception ex)
@@ -109,7 +109,7 @@ namespace VnManager.MetadataProviders.Vndb
                     {
                         Directory.CreateDirectory($@"{directory}\thumbs");
                     }
-                    List<ScreenShot> scrList = entries.Select(screen => new ScreenShot { IsNsfw = NsfwHelper.IsNsfw(screen.ImageRating), Uri = screen.ImageUri }).ToList();
+                    List<ScreenShot> scrList = entries.Select(screen => new ScreenShot { IsNsfw = NsfwHelper.TrueIsNsfw(screen.ImageRating), Uri = screen.ImageUri }).ToList();
 
                     App.StatusBar.IsFileDownloading = true;
                     await ImageHelper.DownloadImagesWithThumbnailsAsync(scrList, directory);

@@ -268,24 +268,6 @@ namespace VnManager.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Changing the nsfw content visibility may make nsfw images visible to photo viewers. Do you want to continue?.
-        /// </summary>
-        public static string ChangeNsfwVisibilityMessage {
-            get {
-                return ResourceManager.GetString("ChangeNsfwVisibilityMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Change Nsfw Visibility?.
-        /// </summary>
-        public static string ChangeNsfwVisibilityTitle {
-            get {
-                return ResourceManager.GetString("ChangeNsfwVisibilityTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Collection.
         /// </summary>
         public static string Collection {
@@ -516,33 +498,6 @@ namespace VnManager.Strings {
         public static string EnableCustomIcon {
             get {
                 return ResourceManager.GetString("EnableCustomIcon", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to If disabled, Nsfw images will be saved as encrypted files that will not be visible in photo viewers..
-        /// </summary>
-        public static string EnableNsfwDiskDisabledTooltip {
-            get {
-                return ResourceManager.GetString("EnableNsfwDiskDisabledTooltip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to If enabled, Nsfw images will be saved as .jpg and .png that will be visible in photo viewers..
-        /// </summary>
-        public static string EnableNsfwDiskEnabledTooltip {
-            get {
-                return ResourceManager.GetString("EnableNsfwDiskEnabledTooltip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Enable Nsfw Images on Disk.
-        /// </summary>
-        public static string EnableNsfwImagesOnDisk {
-            get {
-                return ResourceManager.GetString("EnableNsfwImagesOnDisk", resourceCulture);
             }
         }
         

@@ -13,6 +13,7 @@ using System.Windows;
 using System.Windows.Media.Imaging;
 using VnManager.MetadataProviders.Vndb;
 using System.Windows.Media;
+using VndbSharp.Models.Common;
 using Color = System.Windows.Media.Color;
 using PixelFormat = System.Drawing.Imaging.PixelFormat;
 using Size = System.Drawing.Size;
@@ -150,7 +151,7 @@ namespace VnManager.Helpers
                         var imageStream = new MemoryStream(await client.DownloadDataTaskAsync(screen.Uri.AbsoluteUri));
                         var thumbImg = GetThumbnailImage(imageStream,0);
                         if (thumbImg == null) continue;
-                        if (screen.IsNsfw && App.UserSettings.IsVisibleSavedNsfwContent == false)
+                        if (NsfwHelper.TrueIsNsfw(screen.Rating))
                         {
 
                             Secure.EncStream(imageStream, imagePath);
@@ -193,7 +194,7 @@ namespace VnManager.Helpers
                 if (string.IsNullOrEmpty(uri.AbsoluteUri)) return;
                 using (var client = new WebClient())
                 {
-                    if (isNsfw && App.UserSettings.IsVisibleSavedNsfwContent == false)
+                    if (isNsfw)
                     {
 
                         byte[] imageBytes = await client.DownloadDataTaskAsync(uri);
@@ -258,5 +259,7 @@ namespace VnManager.Helpers
     {
         public Uri Uri { get; set; }
         public bool IsNsfw { get; set; }
+        public ImageRating Rating { get; set; }
+        public BitmapSource Image { get; set; }
     }
 }

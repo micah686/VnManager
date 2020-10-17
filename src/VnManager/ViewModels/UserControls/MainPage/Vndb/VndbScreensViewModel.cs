@@ -11,6 +11,7 @@ using AdysTech.CredentialManager;
 using LiteDB;
 using Stylet;
 using StyletIoC;
+using VndbSharp.Models.Common;
 using VnManager.Helpers;
 using VnManager.Models.Db;
 using VnManager.Models.Db.User;
@@ -39,10 +40,9 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
         }
         #endregion
 
-        public ScreenshotData MainImage { get; set; }
-        public BindableCollection<BitmapSource> ScreenshotCollection { get; set; } = new BindableCollection<BitmapSource>();
-        public BindableCollection<ScreenshotData> ZYZ { get; set; }= new BindableCollection<ScreenshotData>();
-        private readonly List<ScreenShot> _screenList = LoadScreenshotList();
+        public ScreenShot MainImage { get; set; }
+        
+        public BindableCollection<ScreenShot> ScreenshotCollection { get; set; }= new BindableCollection<ScreenShot>();
 
         public VndbScreensViewModel(IContainer container)
         {
@@ -76,7 +76,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
             var dbUserData = db.GetCollection<VnInfoScreens>(DbVnInfo.VnInfo_Screens.ToString()).Query()
                 .Where(x => x.VnId == VndbContentViewModel._vnid).ToEnumerable();
-            var scrList = dbUserData.Select(item => new ScreenShot {Uri = item.ImageUri, IsNsfw = NsfwHelper.IsNsfw(item.ImageRating)}).ToList();
+            var scrList = dbUserData.Select(item => new ScreenShot {Uri = item.ImageUri, Rating = item.ImageRating}).ToList();
             return scrList;
         }
 
@@ -87,10 +87,10 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             List<ScreenShot> scrExistList = new List<ScreenShot>();
             List<string> fileExistList = new List<string>();
             string mainDir = $@"{App.AssetDirPath}\sources\vndb\images\screenshots\{VndbContentViewModel._vnid}";
-            foreach (var item in _screenList)
+            foreach (var item in LoadScreenshotList())
             {
                 string fileName = Path.GetFileName(item.Uri.AbsoluteUri);
-                switch (item.IsNsfw)
+                switch (NsfwHelper.TrueIsNsfw(item.Rating))
                 {
                         
                     case true when File.Exists($@"{mainDir}\{fileName}.aes"):
@@ -120,7 +120,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
                 }
             }
 
-            var downloadList = _screenList.Except(scrExistList).ToList();
+            var downloadList = LoadScreenshotList().Except(scrExistList).ToList();
             await ImageHelper.DownloadImagesWithThumbnailsAsync(downloadList, mainDir);
         }
 
@@ -131,7 +131,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
                 List<ScreenShot> screenshotList = LoadScreenshotList();
                 if (screenshotList.Count <= 0) return;
                 string path = $@"{App.AssetDirPath}\sources\vndb\images\screenshots\{VndbContentViewModel._vnid}\{Path.GetFileName(screenshotList[SelectedScreenIndex].Uri.AbsoluteUri)}";
-                switch (screenshotList[SelectedScreenIndex].IsNsfw)
+                switch (NsfwHelper.TrueIsNsfw(screenshotList[SelectedScreenIndex].Rating))
                 {
                     case true:
                         if (File.Exists($"{path}.aes"))
@@ -139,16 +139,12 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
                             var imgBytes = File.ReadAllBytes($"{path}.aes");
                             var imgStream = Secure.DecStreamToStream(new MemoryStream(imgBytes));
                             var imgNsfw = ImageHelper.CreateBitmapFromStream(imgStream);
-                            MainImage = new ScreenshotData{Image = imgNsfw, IsNsfw = true};
-                        }
-                        else
-                        {
-                            //MainImage = ImageHelper.CreateBitmapFromPath(path);
+                            MainImage = new ScreenShot{Image = imgNsfw, IsNsfw = NsfwHelper.UserIsNsfw(screenshotList[SelectedScreenIndex].Rating)};
                         }
                         break;
                     case false:
                         var img = ImageHelper.CreateBitmapFromPath(path);
-                        MainImage = new ScreenshotData{Image = img, IsNsfw = false};
+                        MainImage = new ScreenShot{Image = img, IsNsfw = false};
                         break;
                 }
             }
@@ -165,31 +161,26 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             List<ScreenShot> screenshotList = LoadScreenshotList();
             foreach (var item in screenshotList)
             {
-                var image = ImageHelper.CreateEmptyBitmapImage();
+                BitmapSource image;
                 if (screenshotList.Count < 1) return;
                 string path = $@"{App.AssetDirPath}\sources\vndb\images\screenshots\{VndbContentViewModel._vnid}\thumbs\{Path.GetFileName(item.Uri.AbsoluteUri)}";
-                switch (item.IsNsfw)
+                switch (NsfwHelper.TrueIsNsfw(item.Rating))
                 {
                     case true when File.Exists($"{path}.aes"):
                         var imgBytes = File.ReadAllBytes($"{path}.aes");
                         var imgStream = Secure.DecStreamToStream(new MemoryStream(imgBytes));
                         image= ImageHelper.CreateBitmapFromStream(imgStream);
-                        ZYZ.Add(new ScreenshotData{Image = image, IsNsfw = true});
+                        ScreenshotCollection.Add(new ScreenShot{Image = image, IsNsfw = NsfwHelper.UserIsNsfw(item.Rating)});
                         break;
                     case false when File.Exists(path):
                         image = ImageHelper.CreateBitmapFromPath(path);
-                        ZYZ.Add(new ScreenshotData { Image = image, IsNsfw = false });
+                        ScreenshotCollection.Add(new ScreenShot { Image = image, IsNsfw = false });
                         break;
                 }
-                ScreenshotCollection.Add(image);
             }
         }
 
-        public class ScreenshotData
-        {
-            public BitmapSource Image { get; set; }
-            public bool IsNsfw { get; set; }
-        }
+        
 
     }
 }

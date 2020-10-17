@@ -53,27 +53,9 @@
             <ComboBox Grid.Column="1" Margin="5,0,0,0" ItemsSource="{Binding Source={ext:EnumBindingSource {x:Type userSetting:ViolenceRating}}}"  SelectedIndex="{Binding MaxViolenceIndex}"  Width="70"/>
         </Grid>
 
+        
+
         <Grid Grid.Row="3" Margin="5,10,0,0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0" Text="{x:Static res:Resources.EnableNsfwImagesOnDisk}"/>
-            <iconPacks:PackIconMaterial Grid.Column="1" Margin="5,0,0,0" Kind="{x:Static iconPacks:PackIconMaterialKind.HelpCircleOutline}"  
-                       Height="14" Width="14">
-                <iconPacks:PackIconMaterial.ToolTip>
-                    <StackPanel>
-                        <TextBlock Text="{x:Static res:Resources.EnableNsfwDiskEnabledTooltip}"/>
-                        <TextBlock Text="{x:Static res:Resources.EnableNsfwDiskDisabledTooltip}"/>
-                    </StackPanel>
-                </iconPacks:PackIconMaterial.ToolTip>
-            </iconPacks:PackIconMaterial>
-            <CheckBox Grid.Column="2" Margin="8,0,0,0" Content="Yes" IsChecked="{Binding NsfwContentSavedVisible}"/>
-
-        </Grid>
-
-        <Grid Grid.Row="4" Margin="5,10,0,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
@@ -82,13 +64,13 @@
             <ComboBox Grid.Column="1" Margin="5,0,0,0" ItemsSource="{Binding Source={ext:EnumBindingSource {x:Type vnMdl:SpoilerLevel}}}"  SelectedIndex="{Binding SpoilerIndex}"  Width="70"/>
         </Grid>
 
-        <Grid Grid.Row="5" Margin="5,10,0,0" HorizontalAlignment="Left">
+        <Grid Grid.Row="4" Margin="5,10,0,0" HorizontalAlignment="Left">
             <Button Width="100"  HorizontalAlignment="Center" Content="{x:Static res:Resources.ExportData}" Command="{s:Action ExportUserData}"/>
         </Grid>
 
-        <Button Grid.Row="6" Content="{x:Static res:Resources.Save}" Command="{s:Action SaveUserSettings}" Margin="10" Width="70" Style="{DynamicResource {x:Static adonisUi:Styles.AccentButton}}"/>
+        <Button Grid.Row="5" Content="{x:Static res:Resources.Save}" Command="{s:Action SaveUserSettings}" Margin="10" Width="70" Style="{DynamicResource {x:Static adonisUi:Styles.AccentButton}}"/>
 
-        <Button Grid.Row="7" Margin="0,20,0,0" Width="120" Background="Crimson" Foreground="White" adExt:RippleExtension.BackgroundBrush="Crimson" adExt:RippleExtension.BorderBrush="Red" adExt:RippleExtension.ForegroundBrush="White"
+        <Button Grid.Row="6" Margin="0,20,0,0" Width="120" Background="Crimson" Foreground="White" adExt:RippleExtension.BackgroundBrush="Crimson" adExt:RippleExtension.BorderBrush="Red" adExt:RippleExtension.ForegroundBrush="White"
                 adExt:CursorSpotlightExtension.BorderBrush="Red" adExt:CursorSpotlightExtension.BackgroundBrush="Crimson" 
                 Content="{x:Static res:Resources.ResetApplication}" Command="{s:Action ResetApplication}"/>
 

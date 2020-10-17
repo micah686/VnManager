@@ -186,12 +186,6 @@
   <data name="Categories" xml:space="preserve">
     <value>Categories</value>
   </data>
-  <data name="ChangeNsfwVisibilityMessage" xml:space="preserve">
-    <value>Changing the nsfw content visibility may make nsfw images visible to photo viewers. Do you want to continue?</value>
-  </data>
-  <data name="ChangeNsfwVisibilityTitle" xml:space="preserve">
-    <value>Change Nsfw Visibility?</value>
-  </data>
   <data name="Collection" xml:space="preserve">
     <value>Collection</value>
   </data>
@@ -269,15 +263,6 @@
   </data>
   <data name="EnableCustomIcon" xml:space="preserve">
     <value>Enable Custom Icon</value>
-  </data>
-  <data name="EnableNsfwDiskDisabledTooltip" xml:space="preserve">
-    <value>If disabled, Nsfw images will be saved as encrypted files that will not be visible in photo viewers.</value>
-  </data>
-  <data name="EnableNsfwDiskEnabledTooltip" xml:space="preserve">
-    <value>If enabled, Nsfw images will be saved as .jpg and .png that will be visible in photo viewers.</value>
-  </data>
-  <data name="EnableNsfwImagesOnDisk" xml:space="preserve">
-    <value>Enable Nsfw Images on Disk</value>
   </data>
   <data name="EnterPass" xml:space="preserve">
     <value>Please enter your password</value>
