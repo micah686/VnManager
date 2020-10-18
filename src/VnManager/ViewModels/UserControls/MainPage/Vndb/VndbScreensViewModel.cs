@@ -76,7 +76,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             if (cred == null || cred.UserName.Length < 1) return new List<ScreenShot>();
             using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
             var dbUserData = db.GetCollection<VnInfoScreens>(DbVnInfo.VnInfo_Screens.ToString()).Query()
-                .Where(x => x.VnId == VndbContentViewModel._vnid).ToEnumerable();
+                .Where(x => x.VnId == VndbContentViewModel.Instance.VnId).ToEnumerable();
             var scrList = dbUserData.Select(item => new ScreenShot {Uri = item.ImageUri, Rating = item.ImageRating}).ToList();
             return scrList;
         }
@@ -88,7 +88,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             {
                 List<ScreenShot> screenshotList = LoadScreenshotList();
                 if (screenshotList.Count <= 0) return;
-                string path = $@"{App.AssetDirPath}\sources\vndb\images\screenshots\{VndbContentViewModel._vnid}\{Path.GetFileName(screenshotList[SelectedScreenIndex].Uri.AbsoluteUri)}";
+                string path = $@"{App.AssetDirPath}\sources\vndb\images\screenshots\{VndbContentViewModel.Instance.VnId}\{Path.GetFileName(screenshotList[SelectedScreenIndex].Uri.AbsoluteUri)}";
                 switch (NsfwHelper.TrueIsNsfw(screenshotList[SelectedScreenIndex].Rating))
                 {
                     case true:
@@ -121,7 +121,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             {
                 BitmapSource image;
                 if (screenshotList.Count < 1) return;
-                string path = $@"{App.AssetDirPath}\sources\vndb\images\screenshots\{VndbContentViewModel._vnid}\thumbs\{Path.GetFileName(item.Uri.AbsoluteUri)}";
+                string path = $@"{App.AssetDirPath}\sources\vndb\images\screenshots\{VndbContentViewModel.Instance.VnId}\thumbs\{Path.GetFileName(item.Uri.AbsoluteUri)}";
                 switch (NsfwHelper.TrueIsNsfw(item.Rating))
                 {
                     case true when File.Exists($"{path}.aes"):

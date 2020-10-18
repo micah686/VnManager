@@ -18,9 +18,9 @@
         </DataTemplate>
         <s:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
     </UserControl.Resources>
-    <Grid Background="Aqua">
+    <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="30"/>
+                <RowDefinition Height="50"/>
                 <RowDefinition Height="7*"/>
                 <RowDefinition Height="80"/>
         </Grid.RowDefinitions>
@@ -29,10 +29,10 @@
                 <ColumnDefinition Width="1*"/>
             </Grid.ColumnDefinitions>
 
-        <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" Margin="10,10,0,0">
-            <Button Content="Info" Command="{s:Action ShowInfo}"/>
-            <Button Content="Characters" Margin="15,0,0,0" Command="{s:Action ShowCharacters}"/>
-            <Button Content="Screens" Margin="15,0,0,0" IsEnabled="False"/>
+        <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" Margin="10,10,0,0" Height="25">
+            <Button Content="Info" Command="{s:Action ShowInfo}" Height="25"/>
+            <Button Content="Characters" Margin="15,0,0,0" Command="{s:Action ShowCharacters}" Height="25"/>
+            
         </StackPanel>
 
         <Grid Grid.Row="0" Grid.Column="1">
