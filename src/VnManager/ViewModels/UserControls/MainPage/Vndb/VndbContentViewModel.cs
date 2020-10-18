@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using AdysTech.CredentialManager;
+using LiteDB;
 using Stylet;
 using StyletIoC;
+using VnManager.Models.Db;
+using VnManager.Models.Db.User;
 
 namespace VnManager.ViewModels.UserControls.MainPage.Vndb
 {
@@ -21,14 +25,12 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
                 }
             }
         }
-        internal void SetUserDataId(Guid guid)
-        {
-            UserDataId = guid;
-        }
+       
         #endregion
         public static VndbContentViewModel Instance { get; internal set; }
         private readonly IContainer _container;
         internal int VnId;
+
 
         public VndbContentViewModel(IContainer container)
         {
@@ -38,16 +40,32 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
 
         protected override void OnViewLoaded()
         {
-            LoadContent();
+            ActivateVnInfo();
             Instance ??= this;
         }
 
-        private void LoadContent()
+
+        internal void SetUserDataId(Guid guid)
         {
-            var vm = _container.Get<VndbInfoViewModel>();
-            ActivateItem(vm);
-            vm.SetUserDataId(UserDataId);
+            UserDataId = guid;
+            SetGameId();
         }
+
+        private void SetGameId()
+        {
+            var cred = CredentialManager.GetCredentials(App.CredDb);
+            if (cred == null || cred.UserName.Length < 1) return;
+            using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
+            var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString()).Query()
+                .Where(x => x.Id == UserDataId).FirstOrDefault();
+            if (dbUserData != null)
+            {
+                VnId = dbUserData.GameId;
+            }
+        }
+
+
+
 
         internal void ActivateVnScreenshots()
         {

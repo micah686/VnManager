@@ -66,6 +66,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
 
         protected override void OnViewLoaded()
         {
+            _vnId = VndbContentViewModel.Instance.VnId;
             GetGameId();
             LoadImage();
             LoadMainData();
