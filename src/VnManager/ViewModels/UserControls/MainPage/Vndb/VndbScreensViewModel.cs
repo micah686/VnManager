@@ -51,7 +51,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
 
         protected override async void OnViewLoaded()
         {
-            //await ResetInvalidScreenshots();
+            await ResetInvalidScreenshots();
             BindScreenshotCollection();
             //LoadLargeScreenshot();
 
@@ -93,11 +93,11 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
                 switch (NsfwHelper.TrueIsNsfw(item.Rating))
                 {
                         
-                    case true when File.Exists($@"{mainDir}\{fileName}.aes"):
+                    case true when (File.Exists($@"{mainDir}\{fileName}.aes")&& File.Exists($@"{mainDir}\thumbs\{fileName}.aes")):
                         scrExistList.Add(item);
                         fileExistList.Add($@"{mainDir}\{fileName}.aes");
                         break;
-                    case false when File.Exists($@"{mainDir}\{fileName}"):
+                    case false when (File.Exists($@"{mainDir}\{fileName}")&& File.Exists($@"{mainDir}\thumbs\{fileName}")):
                         scrExistList.Add(item);
                         fileExistList.Add($@"{mainDir}\{fileName}");
                         break;
@@ -120,8 +120,25 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
                 }
             }
 
-            var downloadList = LoadScreenshotList().Except(scrExistList).ToList();
-            await ImageHelper.DownloadImagesWithThumbnailsAsync(downloadList, mainDir);
+
+            var scrList = LoadScreenshotList();
+
+            //everything that isn't in scrList
+            if (scrExistList.Count == 0)
+            {
+                await ImageHelper.DownloadImagesWithThumbnailsAsync(scrList, mainDir);
+
+            }
+            else if(fileExistList.Count >0)
+            {
+                var downloadList = scrList.Where((t, i) => t.Uri != scrExistList[i].Uri).ToList();
+                if (downloadList.Count > 0)
+                {
+                    await ImageHelper.DownloadImagesWithThumbnailsAsync(downloadList, mainDir);
+                }
+            }
+           
+            
         }
 
         private void LoadLargeScreenshot()
