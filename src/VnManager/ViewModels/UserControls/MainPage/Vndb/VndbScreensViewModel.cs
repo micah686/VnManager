@@ -22,6 +22,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
     public class VndbScreensViewModel:Screen
     {
         private readonly IContainer _container;
+        private readonly IWindowManager _windowManager;
 
         #region SelectedScreenIndex
         private int _selectedScreenIndex = -1;
@@ -44,14 +45,14 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
         
         public BindableCollection<ScreenShot> ScreenshotCollection { get; set; }= new BindableCollection<ScreenShot>();
 
-        public VndbScreensViewModel(IContainer container)
+        public VndbScreensViewModel(IContainer container, IWindowManager windowManager)
         {
             _container = container;
+            _windowManager = windowManager;
         }
 
-        protected override async void OnViewLoaded()
+        protected override void OnViewLoaded()
         {
-            await ResetInvalidScreenshots();
             BindScreenshotCollection();
             //LoadLargeScreenshot();
 
@@ -72,7 +73,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
         private static List<ScreenShot> LoadScreenshotList()
         {
             var cred = CredentialManager.GetCredentials(App.CredDb);
-            if (cred == null || cred.UserName.Length < 1) return null;
+            if (cred == null || cred.UserName.Length < 1) return new List<ScreenShot>();
             using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
             var dbUserData = db.GetCollection<VnInfoScreens>(DbVnInfo.VnInfo_Screens.ToString()).Query()
                 .Where(x => x.VnId == VndbContentViewModel._vnid).ToEnumerable();
@@ -80,66 +81,6 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             return scrList;
         }
 
-
-        private async Task ResetInvalidScreenshots()
-        {
-            
-            List<ScreenShot> scrExistList = new List<ScreenShot>();
-            List<string> fileExistList = new List<string>();
-            string mainDir = $@"{App.AssetDirPath}\sources\vndb\images\screenshots\{VndbContentViewModel._vnid}";
-            foreach (var item in LoadScreenshotList())
-            {
-                string fileName = Path.GetFileName(item.Uri.AbsoluteUri);
-                switch (NsfwHelper.TrueIsNsfw(item.Rating))
-                {
-                        
-                    case true when (File.Exists($@"{mainDir}\{fileName}.aes")&& File.Exists($@"{mainDir}\thumbs\{fileName}.aes")):
-                        scrExistList.Add(item);
-                        fileExistList.Add($@"{mainDir}\{fileName}.aes");
-                        break;
-                    case false when (File.Exists($@"{mainDir}\{fileName}")&& File.Exists($@"{mainDir}\thumbs\{fileName}")):
-                        scrExistList.Add(item);
-                        fileExistList.Add($@"{mainDir}\{fileName}");
-                        break;
-                }
-            }
-
-            foreach (var file in Directory.EnumerateFiles(mainDir))
-            {
-                if (fileExistList.Contains(file)) continue;
-                File.Delete(file);
-
-            }
-
-            if (Directory.Exists($@"{mainDir}\thumbs"))
-            {
-                foreach (var file in Directory.EnumerateFiles($@"{mainDir}\thumbs"))
-                {
-                    if (fileExistList.Contains(file)) continue;
-                    File.Delete(file);
-                }
-            }
-
-
-            var scrList = LoadScreenshotList();
-
-            //everything that isn't in scrList
-            if (scrExistList.Count == 0)
-            {
-                await ImageHelper.DownloadImagesWithThumbnailsAsync(scrList, mainDir);
-
-            }
-            else if(fileExistList.Count >0)
-            {
-                var downloadList = scrList.Where((t, i) => t.Uri != scrExistList[i].Uri).ToList();
-                if (downloadList.Count > 0)
-                {
-                    await ImageHelper.DownloadImagesWithThumbnailsAsync(downloadList, mainDir);
-                }
-            }
-           
-            
-        }
 
         private void LoadLargeScreenshot()
         {

@@ -186,6 +186,15 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
         }
 
 
+        /// <summary>
+        /// Reset Vndb Data completely (clear out all images, re-download them all
+        /// Then get updated information from the API, overwriting old info
+        /// </summary>
+        private void RepairVndbData()
+        {
+            throw new NotImplementedException("not done");
+        }
+
         public void ShowInfo()
         {
             var vm = VndbContentViewModel.Instance;

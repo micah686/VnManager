@@ -45,7 +45,7 @@
             </Grid>
         </Grid>
 
-        <Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
+        <Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="15">
             <Image Source="{Binding MainImage.Image, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
             <!--<Image Source="{Binding MainImage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                 <Image.Effect>
