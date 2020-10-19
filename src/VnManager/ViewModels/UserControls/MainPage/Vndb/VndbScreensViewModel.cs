@@ -54,8 +54,6 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
         protected override void OnViewLoaded()
         {
             BindScreenshotCollection();
-            //LoadLargeScreenshot();
-
         }
 
         public void ShowInfo()
@@ -64,9 +62,16 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             vm.ActivateVnInfo();
         }
 
+        public void ShowCharacters()
+        {
+            var vm = VndbContentViewModel.Instance;
+            vm.ActivateVnCharacters();
+        }
+
         public static void CloseClick()
         {
             RootViewModel.Instance.ActivateMainClick();
+            VndbContentViewModel.Instance.Cleanup();
         }
 
 

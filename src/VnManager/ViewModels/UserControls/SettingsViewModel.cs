@@ -234,7 +234,8 @@ namespace VnManager.ViewModels.UserControls
                     }
                     CredentialManager.RemoveCredentials(App.CredDb);
                     CredentialManager.RemoveCredentials(App.CredFile);
-                    Environment.Exit(0);
+                    _windowManager.ShowMessageBox($"{App.ResMan.GetString("AppExit")}", "");
+                        Environment.Exit(0);
                     break;
                 }
                 default:

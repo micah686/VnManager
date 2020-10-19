@@ -84,6 +84,23 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             var vm = _container.Get<VndbInfoViewModel>();
             ActivateItem(vm);
         }
+
+        
+        /// <summary>
+        /// Cleanup Vndb views when pressing the close button
+        /// CLoses Info, Character, Screens, and sets ContentViewModel Instance to null
+        /// </summary>
+        internal void Cleanup()
+        {
+            var info = _container.Get<VndbInfoViewModel>();
+            var characters = _container.Get<VndbCharactersViewModel>();
+            var screens = _container.Get<VndbScreensViewModel>();
+            Instance.CloseItem(info);
+            Instance.CloseItem(characters);
+            Instance.CloseItem(screens);
+            Instance = null;
+            
+        }
     }
 
 }
