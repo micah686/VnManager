@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -15,22 +16,29 @@ namespace VnManager.Helpers
     // ReSharper disable once InconsistentNaming
     public static class BBCodeHelper
     {
-
+        private const char SplitChar = '\x205E'; //this is a unicode 4 vertical dots(⁞) that can be used as a splitter
         public static List<Inline> Helper(string text)
         {
             string modifiedText = text;
             if (string.IsNullOrEmpty(modifiedText)) return new List<Inline>();
             modifiedText = ReplaceSpoilers(text);
             modifiedText = ReplaceVndbLocalUrls(modifiedText);
+            modifiedText = StripUnneededBbCode(modifiedText);
+            modifiedText = ReplaceUrls(modifiedText);
 
-            var inlineList = ReplaceUrls(modifiedText);
+            var p = new Paragraph();
+            var inlineList = Format(modifiedText, p.Inlines);
 
 
             return inlineList;
         }
 
 
-
+        /// <summary>
+        /// Replace any BBCode [Spoiler][/Spoiler] blocks with a content hidden message if your spoiler level settings don't allow major spoilers
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
         private static string ReplaceSpoilers(string text)
         {
             try
@@ -59,6 +67,11 @@ namespace VnManager.Helpers
             }
         }
 
+        /// <summary>
+        /// Replace local Vndb urls (/v92) with full urls (vndb.org/v92)
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
         private static string ReplaceVndbLocalUrls(string text)
         {
             try
@@ -89,68 +102,164 @@ namespace VnManager.Helpers
             }
         }
 
-        private static List<Inline> ReplaceUrls(string text)
+        /// <summary>
+        /// Strip out all unwanted BBCode blocks (bold, italics, strikethrough,...)
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        public static string StripUnneededBbCode(string text)
         {
-            string rawText= text;
-            List<BBReplacement> replacementList = SplitUrl(text);
-            List<Inline> inlineList = new List<Inline>();
+            //Regex has nested capturing groups!!
+            //0th block is full string [raw]sample[/raw]
+            //First block: (\[url=) captures: [code], [raw], [s], [u], [i], [b]
+            //Second block is bbcode start without brackets, such as 'raw'
+            //Third block (.+?(?=\[) captures everything forward UNTIL the first '[', but doesn't include the '[', basically the inside text
+            //Fourth block contains the ending bbcode block with the brackets, like [/raw]
+            //Fifth block captures the ending bbcode, but without brackets, like 'raw'
+            var rgx = new Regex(@"(\[(code|raw|s|u|i|b)\])(.+?(?=\[))(\[\/(code|raw|s|u|i|b)])", RegexOptions.IgnoreCase);
+            var matches = rgx.Matches(text);
+            var modString = text;
+            foreach (Match match in matches)
+            {
+                var inputStr = match.Value;
+                var outputStr = match.Groups[3].Value;
+                modString = modString.Replace(inputStr, outputStr, false, CultureInfo.InvariantCulture);
+            }
+            return modString;
+        }
+
+        /// <summary>
+        /// Strip bbcode url brackets, and split the url into the URL+Label
+        /// So the resulting urls would be something like https://google.com⁞Google
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        private static string ReplaceUrls(string text)
+        {
+            var modifiedText = text;
+            //First block: (\[url=) captures: [url=
+            //Second block (.+?(?=\])) captures everything forward UNTIL the first ']', but doesn't include the ']'
+            //Third block (\]) captures JUST the ']'
+            //Fourth block (.+?(?=\[) captures everything forward UNTIL the first '[', but doesn't include the '['
+            //Fifth block (\[\/url]) captures the [/url]
             var rgx = new Regex(@"(\[url=)(.+?(?=\]))(\])(.+?(?=\[))(\[\/url])", RegexOptions.IgnoreCase);
-            var bbTags = new List<BBTag>()
+            var matches = rgx.Matches(modifiedText);
+            if (matches.Count > 0)
             {
-                new BBTag("b", "<strong>", "</strong>"),
-                new BBTag("i", "<em>", "</em>"),
-                new BBTag("u", "<span style=\"text-decoration: line-through\">", "</span>"),
-
-                new BBTag("list", "<ul>", "</ul>") { SuppressFirstNewlineAfter = true },
-                new BBTag("li", "<li>", "</li>", true, false),
-
-                new BBTag("url", "<a href=\"${url}\">", "</a>",
-                    new BBAttribute("url", "")),
-
-                new BBTag("code", "<pre class=\"prettyprint\">", "</pre>")
+                foreach (Match match in matches)
                 {
-                    StopProcessing = true,
-                    SuppressFirstNewlineAfter = true
-                },
-            };
-            var parser = new BBCodeParser(bbTags);
-            var split = parser.ParseSyntaxTree(rawText);
-
-            foreach (var node in split.SubNodes)
-            {
-                
-                if (rgx.IsMatch(node.ToString()))
-                {
-                    Match match = rgx.Matches(node.ToString()).FirstOrDefault();
-                    int idx = replacementList.FindIndex(x =>  match != null && x.ToRemove == match.Groups[0].ToString());
-                    var run = new Run(replacementList[idx].StringName);
-                    var validUri = Uri.IsWellFormedUriString(replacementList[idx].Url, UriKind.Absolute);
-                    if (validUri)
-                    {
-                        var hyperlink = new Hyperlink(run)
-                        {
-                            NavigateUri = new Uri(replacementList[idx].Url)
-                        };
-                        hyperlink.RequestNavigate += Hyperlink_RequestNavigate;
-                        inlineList.Add(hyperlink);
-                    }
-                    else
-                    {
-                        inlineList.Add(run);
-                    }
-
-                }
-                else
-                {
-                    var run = new Run(node.ToString());
-                    inlineList.Add(run);
+                    var originalStr = match.Groups[0].Value;
+                    var url = match.Groups[2].Value;
+                    var displayName = match.Groups[4].Value;
+                    var newUrlAndName = url + SplitChar + displayName;
+                    modifiedText = modifiedText.Replace(originalStr, newUrlAndName, false, CultureInfo.InvariantCulture);
                 }
             }
 
-            return inlineList;
+            return modifiedText;
         }
 
 
+        
+        
+
+
+        public struct UrlMatch
+        {
+            public int Offset;
+            public string Text;
+        }
+
+        internal struct SplitUrl
+        {
+            internal string Url;
+            internal string Label;
+        }
+
+        /// <summary>
+        /// Tries to get a match to a valid url
+        /// https://github.com/pointgaming/point-gaming-desktop/blob/f9bc16a69d66cab39e23a3ce3a05d06a3888071c/PointGaming/Chat/ChatCommon.cs
+        /// </summary>
+        /// <param name="mine"></param>
+        /// <param name="startOffset"></param>
+        /// <param name="urlMatch"></param>
+        /// <returns></returns>
+        public static bool TryGetMatch(string mine, int startOffset, out UrlMatch urlMatch)
+        {
+            var regex = new Regex("http[s]?://[^\\s]*");
+            var match = regex.Match(mine, startOffset);
+            if (match.Success)
+            {
+                var result = match.Value;
+                if (result.EndsWith(".") || result.EndsWith("?") || result.EndsWith("!"))
+                    result = result.Substring(0, result.Length - 1);
+                urlMatch = new UrlMatch { Offset = match.Index, Text = result };
+                return true;
+            }
+            urlMatch = new UrlMatch();
+            return false;
+        }
+
+        
+        /// <summary>
+        /// Create hyperlinks out of urls, and add each of the inlines to a list
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="collection"></param>
+        /// <returns></returns>
+        public static List<Inline> Format(string message, InlineCollection collection)
+        {
+            string modifiedText = message;
+            UrlMatch urlMatch;
+            int cur = 0;
+            while (TryGetMatch(modifiedText, cur, out urlMatch))
+            {
+                string before = modifiedText.Substring(cur, urlMatch.Offset - cur);
+                if (before.Length > 0)
+                    collection.Add(new Run(before));
+
+                var split = urlMatch.Text.Split(SplitChar);
+                SplitUrl splitUrl= new SplitUrl(){Url = split[0], Label = split[1]};
+                modifiedText = modifiedText.Replace(urlMatch.Text, splitUrl.Label, false, CultureInfo.InvariantCulture);
+                
+                var matchRun = new Run(splitUrl.Label);
+                try
+                {
+                    Hyperlink link = new Hyperlink(matchRun);
+                    var isValid = Uri.IsWellFormedUriString(splitUrl.Url, UriKind.Absolute);
+                    if (isValid)
+                    {
+                        link.NavigateUri = new Uri(splitUrl.Url);
+                        link.RequestNavigate += Hyperlink_RequestNavigate;
+                        collection.Add(link);
+                    }
+                    else
+                    {
+                        collection.Add(matchRun);
+                    }
+                    
+                }
+                catch
+                {
+                    collection.Add(matchRun);
+                }
+
+                cur = urlMatch.Offset + splitUrl.Label.Length;
+                string ending = modifiedText.Substring(cur);
+                if (ending.Length > 0)
+                    collection.Add(new Run(ending));
+            }
+
+
+            return collection.ToList();
+        }
+
+
+        /// <summary>
+        /// Method that adds the code to actually navigate to the link that was specified
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         internal static void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
         {
             var targetUrl = e.Uri.ToString();
@@ -162,39 +271,5 @@ namespace VnManager.Helpers
             Process.Start(psi);
         }
 
-        private static List<BBReplacement> SplitUrl(string text)
-        {
-
-            List<BBReplacement> replacementList = new List<BBReplacement>();
-            //First block: (\[url=) captures: [url=
-            //Second block (.+?(?=\])) captures everything forward UNTIL the first ']', but doesn't include the ']'
-            //Third block (\]) captures JUST the ']'
-            //Fourth block (.+?(?=\[) captures everything forward UNTIL the first ']', but doesn't include the '['
-            //Fifth block (\[\/url]) captures the [/url]
-            var rgx = new Regex(@"(\[url=)(.+?(?=\]))(\])(.+?(?=\[))(\[\/url])", RegexOptions.IgnoreCase);
-            var matches = rgx.Matches(text);
-            if (matches.Count > 0)
-            {
-                foreach (Match match in matches)
-                {
-                    var groups = match.Groups;
-                    var toDelete = groups[0].Value;
-                    var url = groups[2].Value; 
-                    var stringVal = groups[4].Value; //the name of the element between the two [url][/url] blocks
-
-                    var replacement = new BBReplacement(){ToRemove = toDelete, Url = url, StringName = stringVal};
-                    replacementList.Add(replacement);
-                }
-            }
-
-            return replacementList;
-        }
-
-        private class BBReplacement
-        {
-            internal string ToRemove { get; set; }
-            internal string Url { get; set; }
-            internal string StringName { get; set; }
-        }
     }
 }

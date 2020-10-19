@@ -47,12 +47,6 @@
         "resolved": "7.1.1",
         "contentHash": "zqmycGZ3zdSqaUDwAOpTfhePRPcCWtT226V0AWAK6iR6Y//V6skiO3NvLiUNwtVDGvvn40CyNnrsPqLrvD+sgA=="
       },
-      "PoLaKoSz.CodeKicker.BBCode": {
-        "type": "Direct",
-        "requested": "[5.2.0, )",
-        "resolved": "5.2.0",
-        "contentHash": "3wy9dxgfW5YX2QdkvHiS9nvgCL+hKvyfg2fknU2KiryURoxp7fZJgFmd3Yul/AOtJdJlOl50gOYnmADPRGP9gA=="
-      },
       "PropertyChanged.Fody": {
         "type": "Direct",
         "requested": "[3.2.9, )",
@@ -62,12 +56,6 @@
           "Fody": "6.2.4",
           "NETStandard.Library": "1.6.1"
         }
-      },
-      "Q101.BbCodeNetCore": {
-        "type": "Direct",
-        "requested": "[1.0.1, )",
-        "resolved": "1.0.1",
-        "contentHash": "PN/siIgp2LcpC9M+56S/e5ONvqlc6F/ZIAZvGMl49rg7YLu0mGEKYna3KcKjengrTMkxC9h8VshfBu0a6oWcAQ=="
       },
       "Serilog": {
         "type": "Direct",
