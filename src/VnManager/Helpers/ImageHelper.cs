@@ -99,6 +99,7 @@ namespace VnManager.Helpers
         {
             try
             {
+                if(stream== null) return CreateEmptyBitmapImage();
                 if (stream.Length > 20)
                 {
                     var img = new BitmapImage();
