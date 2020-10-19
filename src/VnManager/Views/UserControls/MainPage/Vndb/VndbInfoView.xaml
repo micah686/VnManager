@@ -96,7 +96,6 @@
                         </StackPanel>
 
                         <StackPanel Grid.Row="3" Grid.Column="0" Orientation="Horizontal" Margin="0,5,0,0">
-                            <Button Content="Info"/>
                             <Button Content="Characters" Margin="15,0,0,0" Command="{s:Action ShowCharacters}"/>
                             <Button Content="Screens" Margin="15,0,0,0" Command="{s:Action ShowScreenshots}"/>
                         </StackPanel>

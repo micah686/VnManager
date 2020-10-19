@@ -74,11 +74,6 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             LoadRelations();
         }
 
-        public static void CloseClick()
-        {
-            VndbContentViewModel.Instance = null;
-            RootViewModel.Instance.ActivateMainClick();
-        }
 
         private void GetGameId()
         {
@@ -196,12 +191,6 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             throw new NotImplementedException("not done");
         }
 
-        public void ShowInfo()
-        {
-            var vm = VndbContentViewModel.Instance;
-            vm.ActivateVnInfo();
-        }
-
         public void ShowCharacters()
         {
             var vm = VndbContentViewModel.Instance;
@@ -212,6 +201,12 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
         {
             var vm = VndbContentViewModel.Instance;
             vm.ActivateVnScreenshots();
+        }
+
+        public static void CloseClick()
+        {
+            RootViewModel.Instance.ActivateMainClick();
+            VndbContentViewModel.Instance.Cleanup();
         }
 
         public class VnRelationsBinding

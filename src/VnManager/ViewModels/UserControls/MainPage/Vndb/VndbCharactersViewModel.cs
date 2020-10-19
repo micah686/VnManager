@@ -43,9 +43,22 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
 
         }
 
+        public void ShowInfo()
+        {
+            var vm = VndbContentViewModel.Instance;
+            vm.ActivateVnInfo();
+        }
+
+        public void ShowScreens()
+        {
+            var vm = VndbContentViewModel.Instance;
+            vm.ActivateVnScreenshots();
+        }
+
         public static void CloseClick()
         {
             RootViewModel.Instance.ActivateMainClick();
+            VndbContentViewModel.Instance.Cleanup();
         }
 
     }
