@@ -7,7 +7,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Documents;
 using System.Windows.Navigation;
-using CodeKicker.BBCode;
 using VndbSharp.Models.Common;
 using VnManager.Models.Settings;
 
