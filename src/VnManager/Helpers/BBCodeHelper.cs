@@ -25,6 +25,9 @@ namespace VnManager.Helpers
             modifiedText = StripUnneededBbCode(modifiedText);
             modifiedText = ReplaceUrls(modifiedText);
 
+
+            
+
             var p = new Paragraph();
             var inlineList = Format(modifiedText, p.Inlines);
 
@@ -150,7 +153,7 @@ namespace VnManager.Helpers
                     var originalStr = match.Groups[0].Value;
                     var url = match.Groups[2].Value;
                     var displayName = match.Groups[4].Value;
-                    var newUrlAndName = url + SplitChar + displayName;
+                    var newUrlAndName = url + SplitChar + displayName + SplitChar;
                     modifiedText = modifiedText.Replace(originalStr, newUrlAndName, false, CultureInfo.InvariantCulture);
                 }
             }
@@ -185,21 +188,26 @@ namespace VnManager.Helpers
         /// <returns></returns>
         public static bool TryGetMatch(string mine, int startOffset, out UrlMatch urlMatch)
         {
-            var regex = new Regex("http[s]?://[^\\s]*");
-            var match = regex.Match(mine, startOffset);
-            if (match.Success)
+            //matches the https://... with a lookahead to '⁞', not capturing it
+            //then capture everything after the ⁞, not including it
+            //finally, capture the ⁞
+            var regex = new Regex(@"http[s]?://[^\\s](.+?(?=\⁞))(.+?(?=\⁞))\⁞");
+            var matches = regex.Matches(mine, startOffset);
+            if (matches.Count > 0 && matches[0].Success)
             {
-                var result = match.Value;
+                var result = matches[0].Value;
                 if (result.EndsWith(".") || result.EndsWith("?") || result.EndsWith("!"))
                     result = result.Substring(0, result.Length - 1);
-                urlMatch = new UrlMatch { Offset = match.Index, Text = result };
+                urlMatch = new UrlMatch { Offset = matches[0].Index, Text = result };
                 return true;
             }
+
+
             urlMatch = new UrlMatch();
             return false;
         }
 
-        
+
         /// <summary>
         /// Create hyperlinks out of urls, and add each of the inlines to a list
         /// </summary>
@@ -208,6 +216,7 @@ namespace VnManager.Helpers
         /// <returns></returns>
         public static List<Inline> Format(string message, InlineCollection collection)
         {
+            List<string> dupeList= new List<string>();
             string modifiedText = message;
             UrlMatch urlMatch;
             int cur = 0;
@@ -215,9 +224,12 @@ namespace VnManager.Helpers
             {
                 string before = modifiedText.Substring(cur, urlMatch.Offset - cur);
                 if (before.Length > 0)
-                    collection.Add(new Run(before));
-
+                {
+                    DupeCheck(before, ref dupeList, ref collection);
+                }
+                
                 var split = urlMatch.Text.Split(SplitChar);
+                
                 SplitUrl splitUrl= new SplitUrl(){Url = split[0], Label = split[1]};
                 modifiedText = modifiedText.Replace(urlMatch.Text, splitUrl.Label, false, CultureInfo.InvariantCulture);
                 
@@ -246,13 +258,61 @@ namespace VnManager.Helpers
                 cur = urlMatch.Offset + splitUrl.Label.Length;
                 string ending = modifiedText.Substring(cur);
                 if (ending.Length > 0)
+                {
+                    ending = LookAheadHttp(ending);
                     collection.Add(new Run(ending));
+                    dupeList.Add(ending);
+                }
+                    
             }
 
 
             return collection.ToList();
         }
 
+        /// <summary>
+        /// Checks to see if the word that we want to add was already added, and if so, skip adding it
+        /// </summary>
+        /// <param name="before">text preparing to add</param>
+        /// <param name="dupeList">Reference of List of duplicate entries</param>
+        /// <param name="collection">Inline collection</param>
+        private static void DupeCheck(string before, ref List<string> dupeList, ref InlineCollection collection)
+        {
+            dupeList.Add(before);
+            if (dupeList.Count == 2)
+            {
+                string entry1 = string.Concat(dupeList[0].Where(c => !char.IsWhiteSpace(c))).ToLower();
+                string entry2 = string.Concat(dupeList[0].Where(c => !char.IsWhiteSpace(c))).ToLower();
+                if (!entry1.Equals(entry2))
+                {
+                    collection.Add(new Run(before));
+                }
+                
+            }
+            else
+            {
+                collection.Add(new Run(before));
+            }
+            dupeList.Clear();
+        }
+
+        /// <summary>
+        /// Grabs the the text BEFORE the https://....
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        private static string LookAheadHttp(string text)
+        {
+            string outputText = text;
+            //captures everything forward UNTIL the first http://..., but not including the http://...
+            var regex = new Regex("(.+?(?=http[s]?://[^\\s]*))");
+            var match = regex.Match(text);
+            if (match.Success)
+            {
+                outputText = match.Groups[0].Value;
+            }
+            return outputText;
+        }
 
         /// <summary>
         /// Method that adds the code to actually navigate to the link that was specified
