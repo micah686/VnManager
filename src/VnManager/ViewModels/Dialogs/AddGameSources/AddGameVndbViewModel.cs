@@ -173,8 +173,11 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
                         if (stopwatch.Elapsed > maxTime) return;
                         shouldContinue = false;
                         VnNameList = await client.GetVisualNovelAsync(VndbFilters.Search.Fuzzy(VnName), VndbFlags.Basic);
-                        //do I need to check for null?
-                        if (VnNameList.Count < 1 && client.GetLastError().Type == ErrorType.Throttled)
+                        if (VnNameList.Count < 1 && client.GetLastError() == null)
+                        {
+                            //do nothing, needs to check for null
+                        }
+                        else if (VnNameList.Count < 1 && client.GetLastError().Type == ErrorType.Throttled)
                         {
                             await HandleVndbErrors.ThrottledWaitAsync((ThrottledError)client.GetLastError(), 0);
                             shouldContinue = true;

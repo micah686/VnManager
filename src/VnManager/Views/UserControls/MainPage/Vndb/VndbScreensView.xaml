@@ -47,11 +47,6 @@
 
         <Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="15">
             <Image Source="{Binding MainImage.Image, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
-            <!--<Image Source="{Binding MainImage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                <Image.Effect>
-                    <BlurEffect RenderingBias="Quality" KernelType="Gaussian" Radius="15"/>
-                </Image.Effect>
-            </Image>-->
             <Grid x:Name="nsfwImage" Visibility="{Binding MainImage.IsNsfw, Converter={StaticResource BoolToVisibilityConverter}}">
                 <Grid x:Name="OuterBlurContainer">
                     <Grid x:Name="InnerBlurContainer">
@@ -68,9 +63,6 @@
                                             BlurRadius="80"
                                             Magnification="0.45"/>
             </Grid>
-
-            
-
 
         </Grid>
 

@@ -16,6 +16,7 @@ namespace VnManager.Helpers
     public static class BBCodeHelper
     {
         private const char SplitChar = '\x205E'; //this is a unicode 4 vertical dots(⁞) that can be used as a splitter
+        private static readonly TimeSpan RegexTimeout = new TimeSpan(0,0,0,0,500);
         public static List<Inline> Helper(string text)
         {
             string modifiedText = text;
@@ -144,7 +145,7 @@ namespace VnManager.Helpers
             //Third block (\]) captures JUST the ']'
             //Fourth block (.+?(?=\[) captures everything forward UNTIL the first '[', but doesn't include the '['
             //Fifth block (\[\/url]) captures the [/url]
-            var rgx = new Regex(@"(\[url=)(.+?(?=\]))(\])(.+?(?=\[))(\[\/url])", RegexOptions.IgnoreCase);
+            var rgx = new Regex(@"(\[url=)(.+?(?=\]))(\])(.+?(?=\[))(\[\/url])", RegexOptions.IgnoreCase, RegexTimeout);
             var matches = rgx.Matches(modifiedText);
             if (matches.Count > 0)
             {
@@ -191,7 +192,7 @@ namespace VnManager.Helpers
             //matches the https://... with a lookahead to '⁞', not capturing it
             //then capture everything after the ⁞, not including it
             //finally, capture the ⁞
-            var regex = new Regex(@"http[s]?://[^\\s](.+?(?=\⁞))(.+?(?=\⁞))\⁞");
+            var regex = new Regex(@"http[s]?://[^\\s](.+?(?=\⁞))(.+?(?=\⁞))\⁞", RegexOptions.None, RegexTimeout);
             var matches = regex.Matches(mine, startOffset);
             if (matches.Count > 0 && matches[0].Success)
             {
@@ -305,7 +306,7 @@ namespace VnManager.Helpers
         {
             string outputText = text;
             //captures everything forward UNTIL the first http://..., but not including the http://...
-            var regex = new Regex("(.+?(?=http[s]?://[^\\s]*))");
+            var regex = new Regex("(.+?(?=http[s]?://[^\\s]*))", RegexOptions.None, RegexTimeout);
             var match = regex.Match(text);
             if (match.Success)
             {

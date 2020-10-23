@@ -15,6 +15,7 @@ namespace VnManager.Helpers.Vndb
     {
         public static void HandleErrors(IVndbError error)
         {
+            if(error == null) return;
             switch (error)
             {
                 case MissingError missing:

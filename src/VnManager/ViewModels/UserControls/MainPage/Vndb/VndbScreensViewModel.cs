@@ -113,7 +113,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                App.Logger.Error(e, "Failed to load large screenshot");
                 throw;
             }
             
