@@ -5,7 +5,6 @@ using System.Text;
 using System.Windows;
 using System.Windows.Media.Imaging;
 using Stylet;
-using StyletIoC;
 
 namespace VnManager.ViewModels.UserControls.MainPage.Vndb
 {
@@ -13,11 +12,9 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
     {
         
         public BitmapSource BackgroundImage { get; private set; }
-        private readonly IContainer _container;
 
-        public VndbCharactersViewModel(IContainer container)
+        public VndbCharactersViewModel()
         {
-            _container = container;
         }
 
         protected override void OnViewLoaded()

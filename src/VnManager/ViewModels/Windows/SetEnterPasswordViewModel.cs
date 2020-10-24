@@ -83,7 +83,7 @@ namespace VnManager.ViewModels.Windows
             
         }
 
-        private void ClearPreviousCredentials()
+        private static void ClearPreviousCredentials()
         {
             //remove any previous credentials
             string[] credStrings = new[] { App.CredDb, App.CredFile };

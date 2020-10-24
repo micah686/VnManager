@@ -7,7 +7,7 @@ using System.Windows.Documents;
 
 namespace VnManager.Extensions
 {
-    public class TextBlockInLineBinding
+    public static class TextBlockInLineBinding
     {
         public static IEnumerable<Inline> GetInlines(DependencyObject d)
         {

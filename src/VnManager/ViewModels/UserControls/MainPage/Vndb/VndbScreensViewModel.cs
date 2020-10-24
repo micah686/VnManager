@@ -21,9 +21,6 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
 {
     public class VndbScreensViewModel:Screen
     {
-        private readonly IContainer _container;
-        private readonly IWindowManager _windowManager;
-
         #region SelectedScreenIndex
         private int _selectedScreenIndex = -1;
         public int SelectedScreenIndex
@@ -45,10 +42,8 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
         
         public BindableCollection<ScreenShot> ScreenshotCollection { get; set; }= new BindableCollection<ScreenShot>();
 
-        public VndbScreensViewModel(IContainer container, IWindowManager windowManager)
+        public VndbScreensViewModel()
         {
-            _container = container;
-            _windowManager = windowManager;
         }
 
         protected override void OnViewLoaded()
@@ -56,7 +51,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             BindScreenshotCollection();
         }
 
-        public void ShowInfo()
+        public static void ShowInfo()
         {
             var vm = VndbContentViewModel.Instance;
             vm.ActivateVnInfo();
@@ -94,21 +89,18 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
                 List<ScreenShot> screenshotList = LoadScreenshotList();
                 if (screenshotList.Count <= 0) return;
                 string path = $@"{App.AssetDirPath}\sources\vndb\images\screenshots\{VndbContentViewModel.Instance.VnId}\{Path.GetFileName(screenshotList[SelectedScreenIndex].Uri.AbsoluteUri)}";
-                switch (NsfwHelper.TrueIsNsfw(screenshotList[SelectedScreenIndex].Rating))
+                var rating = NsfwHelper.TrueIsNsfw(screenshotList[SelectedScreenIndex].Rating);
+                if (rating == true && File.Exists($"{path}.aes"))
                 {
-                    case true:
-                        if (File.Exists($"{path}.aes"))
-                        {
-                            var imgBytes = File.ReadAllBytes($"{path}.aes");
-                            var imgStream = Secure.DecStreamToStream(new MemoryStream(imgBytes));
-                            var imgNsfw = ImageHelper.CreateBitmapFromStream(imgStream);
-                            MainImage = new ScreenShot{Image = imgNsfw, IsNsfw = NsfwHelper.UserIsNsfw(screenshotList[SelectedScreenIndex].Rating)};
-                        }
-                        break;
-                    case false:
-                        var img = ImageHelper.CreateBitmapFromPath(path);
-                        MainImage = new ScreenShot{Image = img, IsNsfw = false};
-                        break;
+                    var imgBytes = File.ReadAllBytes($"{path}.aes");
+                    var imgStream = Secure.DecStreamToStream(new MemoryStream(imgBytes));
+                    var imgNsfw = ImageHelper.CreateBitmapFromStream(imgStream);
+                    MainImage = new ScreenShot { Image = imgNsfw, IsNsfw = NsfwHelper.UserIsNsfw(screenshotList[SelectedScreenIndex].Rating) };
+                }
+                else
+                {
+                    var img = ImageHelper.CreateBitmapFromPath(path);
+                    MainImage = new ScreenShot { Image = img, IsNsfw = false };
                 }
             }
             catch (Exception e)
@@ -127,18 +119,18 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
                 BitmapSource image;
                 if (screenshotList.Count < 1) return;
                 string path = $@"{App.AssetDirPath}\sources\vndb\images\screenshots\{VndbContentViewModel.Instance.VnId}\thumbs\{Path.GetFileName(item.Uri.AbsoluteUri)}";
-                switch (NsfwHelper.TrueIsNsfw(item.Rating))
+                bool rating = NsfwHelper.TrueIsNsfw(item.Rating);
+                if (rating && File.Exists($"{path}.aes"))
                 {
-                    case true when File.Exists($"{path}.aes"):
-                        var imgBytes = File.ReadAllBytes($"{path}.aes");
-                        var imgStream = Secure.DecStreamToStream(new MemoryStream(imgBytes));
-                        image= ImageHelper.CreateBitmapFromStream(imgStream);
-                        ScreenshotCollection.Add(new ScreenShot{Image = image, IsNsfw = NsfwHelper.UserIsNsfw(item.Rating)});
-                        break;
-                    case false when File.Exists(path):
-                        image = ImageHelper.CreateBitmapFromPath(path);
-                        ScreenshotCollection.Add(new ScreenShot { Image = image, IsNsfw = false });
-                        break;
+                    var imgBytes = File.ReadAllBytes($"{path}.aes");
+                    var imgStream = Secure.DecStreamToStream(new MemoryStream(imgBytes));
+                    image = ImageHelper.CreateBitmapFromStream(imgStream);
+                    ScreenshotCollection.Add(new ScreenShot { Image = image, IsNsfw = NsfwHelper.UserIsNsfw(item.Rating) });
+                }
+                else if(rating == false && File.Exists(path))
+                {
+                    image = ImageHelper.CreateBitmapFromPath(path);
+                    ScreenshotCollection.Add(new ScreenShot { Image = image, IsNsfw = false });
                 }
             }
         }

@@ -223,19 +223,7 @@ namespace VnManager.ViewModels.UserControls
                     return;
                 case true:
                 {
-                    if (App.AssetDirPath.Equals(App.ConfigDirPath))
-                    {
-                        Directory.Delete(App.AssetDirPath, true);
-                    }
-                    else
-                    {
-                        Directory.Delete(App.AssetDirPath, true);
-                        Directory.Delete(App.ConfigDirPath, true);
-                    }
-                    CredentialManager.RemoveCredentials(App.CredDb);
-                    CredentialManager.RemoveCredentials(App.CredFile);
-                    _windowManager.ShowMessageBox($"{App.ResMan.GetString("AppExit")}", "");
-                        Environment.Exit(0);
+                    DeleteEverything();
                     break;
                 }
                 default:
@@ -243,6 +231,22 @@ namespace VnManager.ViewModels.UserControls
             }
         }
 
+        private void DeleteEverything()
+        {
+            if (App.AssetDirPath.Equals(App.ConfigDirPath))
+            {
+                Directory.Delete(App.AssetDirPath, true);
+            }
+            else
+            {
+                Directory.Delete(App.AssetDirPath, true);
+                Directory.Delete(App.ConfigDirPath, true);
+            }
+            CredentialManager.RemoveCredentials(App.CredDb);
+            CredentialManager.RemoveCredentials(App.CredFile);
+            _windowManager.ShowMessageBox($"{App.ResMan.GetString("AppExit")}");
+            Environment.Exit(0);
+        }
 
     }
 

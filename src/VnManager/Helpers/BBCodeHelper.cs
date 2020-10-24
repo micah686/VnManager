@@ -231,7 +231,7 @@ namespace VnManager.Helpers
                 
                 var split = urlMatch.Text.Split(SplitChar);
                 
-                SplitUrl splitUrl= new SplitUrl(){Url = split[0], Label = split[1]};
+                SplitUrl splitUrl= new SplitUrl {Url = split[0], Label = split[1]};
                 modifiedText = modifiedText.Replace(urlMatch.Text, splitUrl.Label, false, CultureInfo.InvariantCulture);
                 
                 var matchRun = new Run(splitUrl.Label);
@@ -282,8 +282,8 @@ namespace VnManager.Helpers
             dupeList.Add(before);
             if (dupeList.Count == 2)
             {
-                string entry1 = string.Concat(dupeList[0].Where(c => !char.IsWhiteSpace(c))).ToLower();
-                string entry2 = string.Concat(dupeList[0].Where(c => !char.IsWhiteSpace(c))).ToLower();
+                string entry1 = string.Concat(dupeList[0].Where(c => !char.IsWhiteSpace(c)),CultureInfo.InvariantCulture).ToLower();
+                string entry2 = string.Concat(dupeList[0].Where(c => !char.IsWhiteSpace(c)), CultureInfo.InvariantCulture).ToLower();
                 if (!entry1.Equals(entry2))
                 {
                     collection.Add(new Run(before));

@@ -58,10 +58,8 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
         #endregion
 
 
-        private readonly IContainer _container;
         public VndbInfoViewModel(IContainer container)
         {
-            _container = container;
         }
 
         protected override void OnViewLoaded()
