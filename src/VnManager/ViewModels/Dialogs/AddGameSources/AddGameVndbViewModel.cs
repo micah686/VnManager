@@ -310,7 +310,6 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
         {
             ClearData();
             var parent = (AddGameMainViewModel)Parent;
-            var chil = parent.GetChildren();
             parent.RequestClose();
         }
 
