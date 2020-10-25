@@ -289,8 +289,8 @@ namespace VnManager.Helpers
             dupeList.Add(before);
             if (dupeList.Count == 2)
             {
-                string entry1 = string.Concat(dupeList[0].Where(c => !char.IsWhiteSpace(c))).ToLowerInvariant();
-                string entry2 = string.Concat(dupeList[0].Where(c => !char.IsWhiteSpace(c))).ToLowerInvariant();
+                string entry1 = string.Concat(dupeList[0].Where(c => !char.IsWhiteSpace(c))).ToUpperInvariant();
+                string entry2 = string.Concat(dupeList[0].Where(c => !char.IsWhiteSpace(c))).ToUpperInvariant();
                 if (!entry1.Equals(entry2))
                 {
                     collection.Add(new Run(before));

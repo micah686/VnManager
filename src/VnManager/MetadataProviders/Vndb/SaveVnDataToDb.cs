@@ -37,7 +37,7 @@ using VnManager.ViewModels.Windows;
 
 namespace VnManager.MetadataProviders.Vndb
 {
-    public class SaveVnDataToDb
+    public static class SaveVnDataToDb
     {
 
         public static async Task SortVnInfoAsync(AddItemDbModel entry, VisualNovel vn, ICollection<Release>rel,List<Producer> prod, ICollection<Character> character, List<Staff> staff, double currentProgress)

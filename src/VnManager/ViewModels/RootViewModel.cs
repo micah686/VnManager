@@ -28,7 +28,8 @@ namespace VnManager.ViewModels
         private int _windowButtonPressedCounter = 0;
 
         public static RootViewModel Instance { get; private set; }
-        public string WindowTitle { get; } = string.Format($"{App.ResMan.GetString("ApplicationTitle")} {App.VersionString}",CultureInfo.InvariantCulture);
+        public string WindowTitle { get; } = 
+            string.Format($"{App.ResMan.GetString("ApplicationTitle", CultureInfo.InvariantCulture)} {App.VersionString}",CultureInfo.InvariantCulture);
 
         #region SettingsPressed
         private bool _isSettingsPressed;
