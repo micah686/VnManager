@@ -16,15 +16,13 @@ namespace VnManager.ViewModels.UserControls
         public CategoryListViewModel CategoryListPage { get; set; }
         public AddGameButtonViewModel AddGamePage { get; set; }
 
-        private readonly IContainer _container;
-        
 
         public static MainGridViewModel Instance { get; private set; }
 
         public MainGridViewModel(IContainer container, IWindowManager windowManager, IDialogService dialogService)
         {
             Instance = this;
-            _container = container;
+            var _container = container;
             
 
             TopInfoBarPage = _container.Get<TopInfoBarViewModel>();           
@@ -39,6 +37,9 @@ namespace VnManager.ViewModels.UserControls
             ActivateItem(gg);
         }
 
-
+        public sealed override void ActivateItem(Screen item)
+        {
+            base.ActivateItem(item);
+        }
     }
 }

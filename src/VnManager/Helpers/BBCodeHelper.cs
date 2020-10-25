@@ -170,16 +170,16 @@ namespace VnManager.Helpers
             public int Offset;
             public string Text;
 
-            public bool Equals(UrlMatch um) =>
-                (Offset, Text) == (um.Offset, um.Text);
+            public bool Equals(UrlMatch other) =>
+                (Offset, Text) == (other.Offset, other.Text);
         }
 
         internal struct SplitUrl: IEquatable<SplitUrl>
         {
             internal string Url;
             internal string Label;
-            public bool Equals(SplitUrl su) =>
-                (Url, Label) == (su.Url, su.Label);
+            public bool Equals(SplitUrl other) =>
+                (Url, Label) == (other.Url, other.Label);
         }
 
         /// <summary>

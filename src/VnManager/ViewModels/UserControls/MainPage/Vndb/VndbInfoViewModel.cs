@@ -132,7 +132,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
             {
                 var vnRelations = db.GetCollection<VnInfoRelations>(DbVnInfo.VnInfo_Relations.ToString()).Query()
-                    .Where(x => x.VnId == _vnId && x.Official.ToLower(CultureInfo.InvariantCulture) == "yes").ToList();
+                    .Where(x => x.VnId == _vnId && x.Official.ToUpper(CultureInfo.InvariantCulture) == "YES").ToList();
                 foreach (var relation in vnRelations)
                 {
                     var entry = new VnRelationsBinding {RelTitle = relation.Title, RelRelation = relation.Relation};

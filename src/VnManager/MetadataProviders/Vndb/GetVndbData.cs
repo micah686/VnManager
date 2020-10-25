@@ -84,8 +84,7 @@ namespace VnManager.MetadataProviders.Vndb
                     {
                         //run code to add info to database
                         
-                        SaveVnDataToDb save = new SaveVnDataToDb();
-                        await save.SortVnInfoAsync(entry, visualNovel, releases, producers, characters, staff, current);
+                        await SaveVnDataToDb.SortVnInfoAsync(entry, visualNovel, releases, producers, characters, staff, current);
                     }
 
                     

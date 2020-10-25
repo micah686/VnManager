@@ -40,7 +40,7 @@ namespace VnManager.MetadataProviders.Vndb
     public class SaveVnDataToDb
     {
 
-        public async Task SortVnInfoAsync(AddItemDbModel entry, VisualNovel vn, List<Release>rel,List<Producer> prod, List<Character> character, List<Staff> staff, double currentProgress)
+        public static async Task SortVnInfoAsync(AddItemDbModel entry, VisualNovel vn, ICollection<Release>rel,List<Producer> prod, ICollection<Character> character, List<Staff> staff, double currentProgress)
         {
 
             //await DownloadCharacterImages(character, vn.Id);
