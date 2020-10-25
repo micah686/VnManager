@@ -75,14 +75,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             set
             {
                 SetAndNotify(ref _exeType, value);
-                if (_exeType != ExeTypeEnum.Collection)
-                {
-                    IsNotExeCollection = true;
-                }
-                else
-                {
-                    IsNotExeCollection = false;
-                }
+                IsNotExeCollection = _exeType != ExeTypeEnum.Collection;
             }
         }
 
@@ -172,7 +165,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
                     {
                         if (stopwatch.Elapsed > maxTime) return;
                         shouldContinue = false;
-                        VnNameList = await client.GetVisualNovelAsync(VndbFilters.Search.Fuzzy(VnName), VndbFlags.Basic);
+                        VnNameList = await client.GetVisualNovelAsync(VndbFilters.Search.Fuzzy(VnName));
                         if (VnNameList.Count < 1 && client.GetLastError() == null)
                         {
                             //do nothing, needs to check for null
@@ -216,22 +209,20 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             IsResetNameButtonEnabled = false;
             //await ValidateAsync();
             const int retryCount = 5;
-            bool didSucceed = false;
             for (int i = 0; i < retryCount; i++)
             {
                 if (VndbConnectionTest.VndbTcpSocketTest() == false)
                 {
                     App.Logger.Warning("Could not connect to the Vndb API over SSL");
                     await Task.Delay(3500);
-                    didSucceed = false;
                 }
                 else
                 {
-                    didSucceed = true;
-                    break;
+                    return true;
                 }
+
             }
-            return didSucceed;
+            return false;
         }
 
         public void ResetName()
@@ -413,14 +404,11 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
                     VndbResponse<VisualNovel> response = await client.GetVisualNovelAsync(VndbFilters.Id.GreaterThan(1), VndbFlags.Basic, ro);
                     if (response != null)
                     {
-                        if (id < response.Items[0].Id) return true;
-                        else return false;
+                        return id < response.Items[0].Id;
                     }
-                    else
-                    {
-                        HandleVndbErrors.HandleErrors(client.GetLastError());
-                        return false;
-                    }
+
+                    HandleVndbErrors.HandleErrors(client.GetLastError());
+                    return false;
                 }
             }
             catch (Exception ex)

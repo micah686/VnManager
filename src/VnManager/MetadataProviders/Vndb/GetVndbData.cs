@@ -22,17 +22,17 @@ namespace VnManager.MetadataProviders.Vndb
     public class GetVndbData
     {
         private readonly Stopwatch stopwatch = new Stopwatch();
-		private readonly TimeSpan maxTime = TimeSpan.FromMinutes(3);
+        private readonly TimeSpan maxTime = TimeSpan.FromMinutes(3);
         private bool _didErrorOccur = false;
-		public async Task GetDataAsync(AddItemDbModel entry)
+        public async Task GetDataAsync(AddItemDbModel entry)
         {
-			uint vnid = (uint)entry.GameId;
-			try
-			{
-				using (var client = new VndbSharp.Vndb(true))
+            uint vnid = (uint)entry.GameId;
+            try
+            {
+                using (var client = new VndbSharp.Vndb(true))
                 {
                     App.StatusBar.IsWorking = true;
-					App.StatusBar.StatusString = App.ResMan.GetString("Working");
+                    App.StatusBar.StatusString = App.ResMan.GetString("Working");
                     const double increment = (double)100 / 7;
                     double current = increment;
 
@@ -40,76 +40,76 @@ namespace VnManager.MetadataProviders.Vndb
                     App.StatusBar.ProgressBarValue = 0;
                     App.StatusBar.IsProgressBarInfinite = false;
 
-					RequestOptions ro = new RequestOptions { Count = 25 };
-					stopwatch.Start();
+                    RequestOptions ro = new RequestOptions { Count = 25 };
+                    stopwatch.Start();
                     App.StatusBar.InfoText = App.ResMan.GetString("DownVnInfo");
-					var visualNovel = await GetVisualNovelAsync(client, vnid);
+                    var visualNovel = await GetVisualNovelAsync(client, vnid);
                     current += increment;
                     App.StatusBar.ProgressBarValue = current;
 
                     App.StatusBar.InfoText = App.ResMan.GetString("DownReleasesInfo");
-					var releases = await GetReleasesAsync(client, vnid, ro);
+                    var releases = await GetReleasesAsync(client, vnid, ro);
                     current += increment;
                     App.StatusBar.ProgressBarValue = current;
 
-					uint[] producerIds = releases.SelectMany(x => x.Producers.Select(y => y.Id)).Distinct().ToArray();
+                    uint[] producerIds = releases.SelectMany(x => x.Producers.Select(y => y.Id)).Distinct().ToArray();
                     App.StatusBar.InfoText = App.ResMan.GetString("DownProducersInfo");
-					var producers = await GetProducersAsync(client, producerIds, ro);
-					current += increment;
+                    var producers = await GetProducersAsync(client, producerIds, ro);
+                    current += increment;
                     App.StatusBar.ProgressBarValue = current;
 
-					App.StatusBar.InfoText = App.ResMan.GetString("DownCharacterInfo");
-					var characters = await GetCharactersAsync(client, vnid, ro);
-					current += increment;
+                    App.StatusBar.InfoText = App.ResMan.GetString("DownCharacterInfo");
+                    var characters = await GetCharactersAsync(client, vnid, ro);
+                    current += increment;
                     App.StatusBar.ProgressBarValue = current;
 
-					uint[] staffIds = visualNovel.Staff.Select(x => x.StaffId).Distinct().ToArray();
+                    uint[] staffIds = visualNovel.Staff.Select(x => x.StaffId).Distinct().ToArray();
                     App.StatusBar.InfoText = App.ResMan.GetString("DownStaffInfo");
-					var staff = await GetStaffAsync(client, staffIds, ro);
-					current += increment;
+                    var staff = await GetStaffAsync(client, staffIds, ro);
+                    current += increment;
                     App.StatusBar.ProgressBarValue = current;
 
-					stopwatch.Stop();
-					stopwatch.Reset();
+                    stopwatch.Stop();
+                    stopwatch.Reset();
 
-					
-					if(_didErrorOccur)
-					{
-						App.Logger.Error("Failed to get all of the Vndb Info from the API, one of the items was null");
-						//stop the progressbar here, and force it to show an error icon
+                    
+                    if(_didErrorOccur)
+                    {
+                        App.Logger.Error("Failed to get all of the Vndb Info from the API, one of the items was null");
+                        //stop the progressbar here, and force it to show an error icon
                         App.StatusBar.IsWorking = false;
                         App.StatusBar.InfoText = "";
                     }
-					else
-					{
-						//run code to add info to database
+                    else
+                    {
+                        //run code to add info to database
                         
-						SaveVnDataToDb save = new SaveVnDataToDb();
-						await save.SortVnInfoAsync(entry, visualNovel, releases, producers, characters, staff, current);
+                        SaveVnDataToDb save = new SaveVnDataToDb();
+                        await save.SortVnInfoAsync(entry, visualNovel, releases, producers, characters, staff, current);
                     }
 
-					
+                    
 
-				}
-			}
-			catch (Exception ex)
-			{
-				App.Logger.Error(ex, "An error occurred when trying to get the vndb data from the API");
+                }
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Error(ex, "An error occurred when trying to get the vndb data from the API");
                 StatusBarViewModel.ResetValues();
-				throw;
-			}
+                throw;
+            }
         }
 
-		internal async Task<VisualNovel> GetVisualNovelAsync(VndbSharp.Vndb client, uint vnid)
-		{
-			stopwatch.Restart();
-			while (true)
-			{
+        internal async Task<VisualNovel> GetVisualNovelAsync(VndbSharp.Vndb client, uint vnid)
+        {
+            stopwatch.Restart();
+            while (true)
+            {
                 if (stopwatch.Elapsed > maxTime) return null;
-				VndbResponse<VisualNovel> visualNovels = await client.GetVisualNovelAsync(VndbFilters.Id.Equals(vnid), VndbFlags.FullVisualNovel);
+                VndbResponse<VisualNovel> visualNovels = await client.GetVisualNovelAsync(VndbFilters.Id.Equals(vnid), VndbFlags.FullVisualNovel);
 
 
-				switch (visualNovels)
+                switch (visualNovels)
                 {
                     case null when client.GetLastError().Type == ErrorType.Throttled:
                         await HandleVndbErrors.ThrottledWaitAsync((ThrottledError)client.GetLastError(), 0);
@@ -121,25 +121,25 @@ namespace VnManager.MetadataProviders.Vndb
                     default:
                         return visualNovels.First();
                 }
-				
-			}
-		}
+                
+            }
+        }
 
-		internal async Task<List<Release>> GetReleasesAsync(VndbSharp.Vndb client, uint vnid, RequestOptions ro)
-		{
-			stopwatch.Restart();
-			bool hasMore = true;
-			int pageCount = 1;
-			int releasesCount = 0;
-			List<Release> releaseList = new List<Release>();
-			bool shouldContinue = true;
-			while (hasMore && shouldContinue)
-			{
-				shouldContinue = true;
-				ro.Page = pageCount;
-				VndbResponse<Release> releases = await client.GetReleaseAsync(VndbFilters.VisualNovel.Equals(vnid), VndbFlags.FullRelease, ro);
+        internal async Task<List<Release>> GetReleasesAsync(VndbSharp.Vndb client, uint vnid, RequestOptions ro)
+        {
+            stopwatch.Restart();
+            bool hasMore = true;
+            int pageCount = 1;
+            int releasesCount = 0;
+            List<Release> releaseList = new List<Release>();
+            bool shouldContinue = true;
+            while (hasMore && shouldContinue)
+            {
+                shouldContinue = true;
+                ro.Page = pageCount;
+                VndbResponse<Release> releases = await client.GetReleaseAsync(VndbFilters.VisualNovel.Equals(vnid), VndbFlags.FullRelease, ro);
 
-				switch (releases)
+                switch (releases)
                 {
                     case null when client.GetLastError().Type == ErrorType.Throttled:
                         await HandleVndbErrors.ThrottledWaitAsync((ThrottledError)client.GetLastError(), 0);
@@ -159,27 +159,27 @@ namespace VnManager.MetadataProviders.Vndb
                         break;
                     }
                 }
-				
-			}
-			return releaseList;
+                
+            }
+            return releaseList;
 
-		}
+        }
 
-		internal async Task<List<Character>> GetCharactersAsync(VndbSharp.Vndb client, uint vnid, RequestOptions ro)
-		{
-			stopwatch.Restart();
-			bool hasMore = true;
-			int pageCount = 1;
-			int characterCount = 0;
-			List<Character> characterList = new List<Character>();
-			bool shouldContinue = true;
-			while (hasMore && shouldContinue)
-			{
-				shouldContinue = true;
-				ro.Page = pageCount;
-				VndbResponse<Character> characters = await client.GetCharacterAsync(VndbFilters.VisualNovel.Equals(vnid), VndbFlags.FullCharacter, ro);
+        internal async Task<List<Character>> GetCharactersAsync(VndbSharp.Vndb client, uint vnid, RequestOptions ro)
+        {
+            stopwatch.Restart();
+            bool hasMore = true;
+            int pageCount = 1;
+            int characterCount = 0;
+            List<Character> characterList = new List<Character>();
+            bool shouldContinue = true;
+            while (hasMore && shouldContinue)
+            {
+                shouldContinue = true;
+                ro.Page = pageCount;
+                VndbResponse<Character> characters = await client.GetCharacterAsync(VndbFilters.VisualNovel.Equals(vnid), VndbFlags.FullCharacter, ro);
 
-				switch (characters)
+                switch (characters)
                 {
                     case null when client.GetLastError().Type == ErrorType.Throttled:
                         await HandleVndbErrors.ThrottledWaitAsync((ThrottledError)client.GetLastError(), 0);
@@ -199,64 +199,64 @@ namespace VnManager.MetadataProviders.Vndb
                         break;
                     }
                 }
-				
-			}
-			return characterList;
-		}
+                
+            }
+            return characterList;
+        }
 
-		internal async Task<List<Producer>> GetProducersAsync(VndbSharp.Vndb client, uint[] producerIdList, RequestOptions ro)
-		{
-			stopwatch.Restart();
-			bool hasMore = true;
-			int pageCount = 1;
-			int producerCount = 0;
-			List<Producer> producerList = new List<Producer>();
-			bool shouldContinue = true;
-			while (hasMore && shouldContinue)
-			{
-				shouldContinue = true;
-				ro.Page = pageCount;
-				var producers = await client.GetProducerAsync(VndbFilters.Id.Equals(producerIdList), VndbFlags.FullProducer, ro);
+        internal async Task<List<Producer>> GetProducersAsync(VndbSharp.Vndb client, uint[] producerIdList, RequestOptions ro)
+        {
+            stopwatch.Restart();
+            bool hasMore = true;
+            int pageCount = 1;
+            int producerCount = 0;
+            List<Producer> producerList = new List<Producer>();
+            bool shouldContinue = true;
+            while (hasMore && shouldContinue)
+            {
+                shouldContinue = true;
+                ro.Page = pageCount;
+                var producers = await client.GetProducerAsync(VndbFilters.Id.Equals(producerIdList), VndbFlags.FullProducer, ro);
 
-				if (producers == null && client.GetLastError().Type == ErrorType.Throttled)
-				{
-					await HandleVndbErrors.ThrottledWaitAsync((ThrottledError)client.GetLastError(), 0);
-				}
-				else if (producers == null)
-				{
-					HandleVndbErrors.HandleErrors(client.GetLastError());
+                if (producers == null && client.GetLastError().Type == ErrorType.Throttled)
+                {
+                    await HandleVndbErrors.ThrottledWaitAsync((ThrottledError)client.GetLastError(), 0);
+                }
+                else if (producers == null)
+                {
+                    HandleVndbErrors.HandleErrors(client.GetLastError());
                     _didErrorOccur = true;
                     return null;
-				}
-				else
-				{
-					shouldContinue = false;
+                }
+                else
+                {
+                    shouldContinue = false;
                     hasMore = producers.HasMore;
                     producerList.AddRange(producers.Items);
                     producerCount = producerCount + producers.Count;
                     pageCount++;
                     if (stopwatch.Elapsed > maxTime) return null;
-				}
-				
-			}
-			return producerList;
-		}
+                }
+                
+            }
+            return producerList;
+        }
 
-		internal async Task<List<Staff>> GetStaffAsync(VndbSharp.Vndb client, uint[] staffId, RequestOptions ro)
-		{
-			stopwatch.Restart();
-			bool hasMore = true;
-			int pageCount = 1;
-			int staffCount = 0;
-			List<Staff> staffList = new List<Staff>();
-			bool shouldContinue = true;
-			while (hasMore && shouldContinue)
-			{
-				shouldContinue = true;
-				ro.Page = pageCount;
-				VndbResponse<Staff> staff = await client.GetStaffAsync(VndbFilters.Id.Equals(staffId), VndbFlags.FullStaff, ro);
+        internal async Task<List<Staff>> GetStaffAsync(VndbSharp.Vndb client, uint[] staffId, RequestOptions ro)
+        {
+            stopwatch.Restart();
+            bool hasMore = true;
+            int pageCount = 1;
+            int staffCount = 0;
+            List<Staff> staffList = new List<Staff>();
+            bool shouldContinue = true;
+            while (hasMore && shouldContinue)
+            {
+                shouldContinue = true;
+                ro.Page = pageCount;
+                VndbResponse<Staff> staff = await client.GetStaffAsync(VndbFilters.Id.Equals(staffId), VndbFlags.FullStaff, ro);
 
-				switch (staff)
+                switch (staff)
                 {
                     case null when client.GetLastError().Type == ErrorType.Throttled:
                         await HandleVndbErrors.ThrottledWaitAsync((ThrottledError)client.GetLastError(), 0);
@@ -276,11 +276,11 @@ namespace VnManager.MetadataProviders.Vndb
                         break;
                     }
                 }
-				
-			}
-			return staffList;
+                
+            }
+            return staffList;
 
-		}
-		
+        }
+        
     }
 }

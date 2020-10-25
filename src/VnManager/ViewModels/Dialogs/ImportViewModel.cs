@@ -289,11 +289,10 @@ namespace VnManager.ViewModels.Dialogs
         }
 
 
-        private async Task UpdateVndbDataAsync(List<int> gameIds)
+        private async Task UpdateVndbDataAsync(ICollection<int> gameIds)
         {
             RequestOptions ro = new RequestOptions { Count = 25 };
-            var getData = new MetadataProviders.Vndb.GetVndbData();
-            var saveData = new MetadataProviders.Vndb.SaveVnDataToDb();
+            var getData = new GetVndbData();
             using (var client = new VndbSharp.Vndb(true))
             {
                 IsImportingVisible = true;
@@ -319,11 +318,11 @@ namespace VnManager.ViewModels.Dialogs
                     var staff = await getData.GetStaffAsync(client, staffIds, ro);
 
                     CurrentProgressMsg = $"{App.ResMan.GetString("ImportDbProg2")}";
-                    saveData.SaveVnInfo(visualNovel);
-                    saveData.SaveVnCharacters(characters, id);
-                    saveData.SaveVnReleases(releases);
-                    saveData.SaveProducers(producers);
-                    saveData.SaveStaff(staff, (int)id);
+                    SaveVnDataToDb.SaveVnInfo(visualNovel);
+                    SaveVnDataToDb.SaveVnCharacters(characters, id);
+                    SaveVnDataToDb.SaveVnReleases(releases);
+                    SaveVnDataToDb.SaveProducers(producers);
+                    SaveVnDataToDb.SaveStaff(staff, (int)id);
 
                     CurrentProgressMsg = $"{App.ResMan.GetString("ImportDbProg3")}";
                     await DownloadVndbContent.DownloadCoverImageAsync(id);
@@ -446,7 +445,7 @@ namespace VnManager.ViewModels.Dialogs
 
         private static bool ValidateTimeSpan(TimeSpan ts)
         {
-            var result = TimeSpan.TryParse(ts.ToString(), out _);
+            var result = TimeSpan.TryParse(ts.ToString(), CultureInfo.InvariantCulture, out _);
             return result;
         }
         #endregion

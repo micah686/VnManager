@@ -68,7 +68,7 @@ namespace VnManager.MetadataProviders.Vndb
 
 
         #region VnInfo
-        public void SaveVnInfo(VisualNovel visualNovel)
+        public static void SaveVnInfo(VisualNovel visualNovel)
         {
             if (visualNovel == null) return;
             try
@@ -267,7 +267,7 @@ namespace VnManager.MetadataProviders.Vndb
         #endregion
 
         #region VnCharacters
-        public void SaveVnCharacters(List<Character> characters, uint vnid)
+        public static void SaveVnCharacters(ICollection<Character> characters, uint vnid)
         {
             if (characters.Count < 1) return;
             var cred = CredentialManager.GetCredentials(App.CredDb);
@@ -414,7 +414,7 @@ namespace VnManager.MetadataProviders.Vndb
         #endregion
 
         #region VnReleases
-        public void SaveVnReleases(List<Release> vnReleases)
+        public static void SaveVnReleases(ICollection<Release> vnReleases)
         {
             var cred = CredentialManager.GetCredentials(App.CredDb);
             if (cred == null || cred.UserName.Length < 1) return;
@@ -444,7 +444,7 @@ namespace VnManager.MetadataProviders.Vndb
                     release.Languages = CsvConverter.ConvertToCsv(vnRelease.Languages);
                     release.Website = vnRelease.Website;
                     release.Notes = vnRelease.Notes;
-                    release.MinAge = Convert.ToByte(vnRelease.MinimumAge);
+                    release.MinAge = Convert.ToByte(vnRelease.MinimumAge, CultureInfo.InvariantCulture);
                     release.Gtin = vnRelease.Gtin;
                     release.Catalog = vnRelease.Catalog;
                     release.Platforms = CsvConverter.ConvertToCsv(vnRelease.Platforms);
@@ -535,7 +535,7 @@ namespace VnManager.MetadataProviders.Vndb
         #endregion
 
         #region VnProducers
-        public void SaveProducers(List<Producer> vnProducers)
+        public static void SaveProducers(List<Producer> vnProducers)
         {
             var cred = CredentialManager.GetCredentials(App.CredDb);
             if (cred == null || cred.UserName.Length < 1) return;
@@ -600,7 +600,7 @@ namespace VnManager.MetadataProviders.Vndb
         #endregion
 
         #region VnStaff
-        public void SaveStaff(List<Staff> vnStaffList, int vnid)
+        public static void SaveStaff(List<Staff> vnStaffList, int vnid)
         {
             var cred = CredentialManager.GetCredentials(App.CredDb);
             if (cred == null || cred.UserName.Length < 1) return;

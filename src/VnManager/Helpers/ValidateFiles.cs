@@ -54,8 +54,8 @@ namespace VnManager.Helpers
             try
             {
                 if (!File.Exists(path)) return false;
-                string ext = Path.GetExtension(path).ToLower(CultureInfo.InvariantCulture) ?? string.Empty;
-                return ext.EndsWith(".exe");
+                string ext = Path.GetExtension(path).ToUpperInvariant() ?? string.Empty;
+                return ext.EndsWith(".EXE");
             }
             catch (Exception ex)
             {
@@ -74,8 +74,8 @@ namespace VnManager.Helpers
             try
             {
                 if (!File.Exists(path)) return false;
-                string ext = Path.GetExtension(path).ToLower(CultureInfo.InvariantCulture) ?? string.Empty;
-                return ext.EndsWith(".ico") || ext.EndsWith(".exe");
+                string ext = Path.GetExtension(path).ToUpperInvariant() ?? string.Empty;
+                return ext.EndsWith(".ICO") || ext.EndsWith(".EXE");
             }
             catch (Exception ex)
             {

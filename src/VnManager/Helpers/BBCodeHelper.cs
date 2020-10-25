@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Documents;
 using System.Windows.Navigation;
 using VndbSharp.Models.Common;
-using VnManager.Models.Settings;
 
 namespace VnManager.Helpers
 {
@@ -167,16 +165,21 @@ namespace VnManager.Helpers
         
 
 
-        public struct UrlMatch
+        public struct UrlMatch: IEquatable<UrlMatch>
         {
             public int Offset;
             public string Text;
+
+            public bool Equals(UrlMatch um) =>
+                (Offset, Text) == (um.Offset, um.Text);
         }
 
-        internal struct SplitUrl
+        internal struct SplitUrl: IEquatable<SplitUrl>
         {
             internal string Url;
             internal string Label;
+            public bool Equals(SplitUrl su) =>
+                (Url, Label) == (su.Url, su.Label);
         }
 
         /// <summary>
@@ -267,6 +270,10 @@ namespace VnManager.Helpers
                     
             }
 
+            if (collection.Count < 1)
+            {
+                collection.Add(modifiedText);
+            }
 
             return collection.ToList();
         }
@@ -282,8 +289,8 @@ namespace VnManager.Helpers
             dupeList.Add(before);
             if (dupeList.Count == 2)
             {
-                string entry1 = string.Concat(dupeList[0].Where(c => !char.IsWhiteSpace(c)),CultureInfo.InvariantCulture).ToLower();
-                string entry2 = string.Concat(dupeList[0].Where(c => !char.IsWhiteSpace(c)), CultureInfo.InvariantCulture).ToLower();
+                string entry1 = string.Concat(dupeList[0].Where(c => !char.IsWhiteSpace(c))).ToLowerInvariant();
+                string entry2 = string.Concat(dupeList[0].Where(c => !char.IsWhiteSpace(c))).ToLowerInvariant();
                 if (!entry1.Equals(entry2))
                 {
                     collection.Add(new Run(before));
