@@ -133,7 +133,8 @@ namespace VnManager.Helpers
         {
             try
             {
-                if (imageList == null || !imageList.Any()) return;
+                var images = imageList.ToArray();
+                if (!images.Any()) return;
                 using (var client = new WebClient())
                 {
                     if (!Directory.Exists($@"{imageDirectory}\thumbs\"))
@@ -141,7 +142,7 @@ namespace VnManager.Helpers
                         Directory.CreateDirectory($@"{imageDirectory}\thumbs\");
                     }
                     
-                    foreach (var screen in imageList)
+                    foreach (var screen in images)
                     {
                         if (screen.Uri == null || string.IsNullOrEmpty(screen.Uri.AbsoluteUri)) continue;
                         var imagePath = $@"{imageDirectory}\{Path.GetFileName(screen.Uri.AbsoluteUri)}";
@@ -193,21 +194,19 @@ namespace VnManager.Helpers
             try
             {
                 if (string.IsNullOrEmpty(uri.AbsoluteUri)) return;
-                using (var client = new WebClient())
+                using var client = new WebClient();
+                if (isNsfw)
                 {
-                    if (isNsfw)
-                    {
 
-                        byte[] imageBytes = await client.DownloadDataTaskAsync(uri);
-                        var memStream = new MemoryStream(imageBytes);
-                        if (memStream.Length < 1) return;
-                        Secure.EncStream(memStream, path);
-                        await memStream.DisposeAsync();
-                    }
-                    else
-                    {
-                        await client.DownloadFileTaskAsync(uri, path);
-                    }
+                    byte[] imageBytes = await client.DownloadDataTaskAsync(uri);
+                    var memStream = new MemoryStream(imageBytes);
+                    if (memStream.Length < 1) return;
+                    Secure.EncStream(memStream, path);
+                    await memStream.DisposeAsync();
+                }
+                else
+                {
+                    await client.DownloadFileTaskAsync(uri, path);
                 }
             }
             catch (Exception ex)
@@ -256,6 +255,7 @@ namespace VnManager.Helpers
         }
         
     }
+
     public class ScreenShot
     {
         public Uri Uri { get; set; }

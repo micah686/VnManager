@@ -16,6 +16,9 @@ namespace VnManager.Converters
             if (parameterString is null)
                 return DependencyProperty.UnsetValue;
 
+            if (value == null)
+                return DependencyProperty.UnsetValue;
+            
             if (Enum.IsDefined(value.GetType(), value) == false)
                 return DependencyProperty.UnsetValue;
 

@@ -7,6 +7,9 @@ using System.Windows.Documents;
 
 namespace VnManager.Extensions
 {
+    /// <summary>
+    /// Extension method to bind a collection of InLines to a Text block. This is needed to add hyperlinks in a text block
+    /// </summary>
     public static class TextBlockInLineBinding
     {
         public static IEnumerable<Inline> GetInlines(DependencyObject d)

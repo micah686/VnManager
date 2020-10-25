@@ -14,6 +14,10 @@ namespace VnManager.Helpers.Vndb
 {
     public static class HandleVndbErrors
     {
+        /// <summary>
+        /// Handles Vndb API errors, writes the error message to a file, then resets the statusbar
+        /// </summary>
+        /// <param name="error">Vndb Error</param>
         public static void HandleErrors(IVndbError error)
         {
             if(error == null) return;
@@ -28,8 +32,8 @@ namespace VnManager.Helpers.Vndb
                     App.Logger.Warning($"A BadArgument Error occurred, the field {badArg.Field} is invalid.");
                     break;
                 case ThrottledError throttled:
-                    Debug.WriteLine($"A Throttled Error occurred, use the ThrottledWait() method to wait for the {throttled.MinimumWait.Second} seconds needed.");
-                    App.Logger.Warning($"A Throttled Error occurred, use the ThrottledWait() method to wait for the {throttled.MinimumWait.Second} seconds needed.");
+                    Debug.WriteLine($"A Throttled Error occurred, use the ThrottledWaitAsync() method to wait for the {throttled.MinimumWait.Second} seconds needed.");
+                    App.Logger.Warning($"A Throttled Error occurred, use the ThrottledWaitAsync() method to wait for the {throttled.MinimumWait.Second} seconds needed.");
                     break;
                 case GetInfoError getInfo:
                     Debug.WriteLine($"A GetInfo Error occurred, the flag {getInfo.Flag} is not valid on the issued command.");
@@ -50,6 +54,12 @@ namespace VnManager.Helpers.Vndb
             }
             StatusBarViewModel.ResetValues();
         }
+        /// <summary>
+        /// Waits a specified amount of time if the API is throttled, to allow enough time to send more commands to the API again
+        /// </summary>
+        /// <param name="throttled">The throttled Error object with the wait times</param>
+        /// <param name="counter">How many times in a loop this method has been called</param>
+        /// <returns></returns>
         public static async Task ThrottledWaitAsync(ThrottledError throttled, int counter)
         {
             

@@ -295,7 +295,6 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             if (result == true)
             {
                 IsLockDown = false;
-                ClearData();
                 parent.CanChangeSource = true;
                 parent.RequestClose(true);
             }

@@ -35,7 +35,7 @@ namespace VnManager
         /// </summary>
         public static bool StartupLockout
         {
-            get { return _startupLockout; }
+            get => _startupLockout;
             set
             {
                 if (!_wasSetStartupLockout)
@@ -58,7 +58,7 @@ namespace VnManager
         /// </summary>
         public static string AssetDirPath
         {
-            get { return _assetDirPath; }
+            get => _assetDirPath;
             set
             {
                 if (!StartupLockout)
@@ -80,7 +80,7 @@ namespace VnManager
         /// </summary>
         public static string ConfigDirPath
         {
-            get { return _configDirPath; }
+            get => _configDirPath;
             set
             {
                 if (!StartupLockout)
@@ -131,7 +131,7 @@ namespace VnManager
         /// <summary>
         /// Database connection string without the password. Use CredentialManager to get the password
         /// </summary>
-        public static string GetDbStringWithoutPass => $"Filename={Path.Combine(App.ConfigDirPath, App.DbPath)};Password=";
+        public static string GetDbStringWithoutPass => $"Filename={Path.Combine(ConfigDirPath, DbPath)};Password=";
 
         /// <summary>
         /// Static instance of the Statusbar, so any method can write values to it

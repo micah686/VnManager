@@ -16,7 +16,8 @@ namespace VnManager.Converters
         {
             if (targetType != typeof(bool))
                 throw new InvalidOperationException("The target must be a boolean");
-
+            if(value == null)
+                throw new InvalidOperationException("The target cannot be null");
             return !(bool)value;
         }
 
