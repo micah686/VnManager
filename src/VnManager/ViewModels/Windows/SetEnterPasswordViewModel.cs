@@ -304,7 +304,7 @@ namespace VnManager.ViewModels.Windows
             When(x => x.IsUnlockPasswordVisible && x.ShouldCheckPassword, () =>
             {
                 RuleFor(x => x.Password).Cascade(CascadeMode.Stop)
-                    .Must(IsNoDbError).WithMessage(CreateDbErrorMessage)
+                    .Must(IsNoDbError).WithMessage(CreateDbErrorMessage())
                     .Must(DoPasswordsMatch).WithMessage(App.ResMan.GetString("PassIncorrect"));
 
             });
@@ -316,7 +316,6 @@ namespace VnManager.ViewModels.Windows
         /// </summary>
         /// <param name="securePass"></param>
         /// <returns></returns>
-        //TODO:try to get rid of instance, if I can
         private bool DoPasswordsMatch(SecureString securePass)
         {
             var cred = CredentialManager.GetCredentials(App.CredDb);
@@ -367,9 +366,8 @@ namespace VnManager.ViewModels.Windows
         /// <summary>
         /// Tries to create the database, and generates a validation error if it fails
         /// </summary>
-        /// <param name="instance"></param>
         /// <returns></returns>
-        private static string CreateDbErrorMessage(SetEnterPasswordViewModel instance)
+        private static string CreateDbErrorMessage()
         {
             try
             {
@@ -391,11 +389,10 @@ namespace VnManager.ViewModels.Windows
             }
             catch (Exception ex)
             {
-                App.Logger.Error(ex,"CreateDbErrorMessage an unknown error occurred");
+                App.Logger.Error(ex, "CreateDbErrorMessage an unknown error occurred");
                 return App.ResMan.GetString("UnknownException");
             }
         }
-        
     }
 
 

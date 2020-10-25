@@ -295,6 +295,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             if (result == true)
             {
                 IsLockDown = false;
+                ClearData();
                 parent.CanChangeSource = true;
                 parent.RequestClose(true);
             }
@@ -307,7 +308,9 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
 
         public void Cancel()
         {
+            ClearData();
             var parent = (AddGameMainViewModel)Parent;
+            var chil = parent.GetChildren();
             parent.RequestClose();
         }
 
@@ -319,7 +322,20 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             return regex.IsMatch(text);
         }
 
-
+        private void ClearData()
+        {
+            IsLockDown = false;
+            ExeCollection.Clear();
+            SuggestedNamesCollection.Clear();
+            VnId = 0;
+            VnName= String.Empty;
+            ExePath = String.Empty;
+            IconPath = String.Empty;
+            ExeArguments= String.Empty;
+            ExeType = ExeTypeEnum.Normal;
+            IsIconChecked = false;
+            IsArgsChecked = false;
+        }
     }
 
 
@@ -331,12 +347,14 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             //VnId
             RuleFor(x => x.VnId).Cascade(CascadeMode.Stop)
                 .NotEmpty().When(x => x.IsNameChecked == false)
-                    .WithMessage(App.ResMan.GetString("ValidationVnIdNotAboveZero")).MustAsync(IsNotAboveMaxIdAsync)
-                    .When(x => x.IsNameChecked == false).WithMessage(App.ResMan.GetString("ValidationVnIdAboveMax"))
-                .MustAsync(IsNotDeletedVnAsync).When(x => x.IsNameChecked == false).WithMessage(App.ResMan.GetString("ValidationVnIdDoesNotExist"))
-                .Must(IsNotDuplicateId).WithMessage(App.ResMan.GetString("VnIdAlreadyExistsInDb"));
+                .WithMessage(App.ResMan.GetString("ValidationVnIdNotAboveZero")).MustAsync(IsNotAboveMaxIdAsync)
+                .When(x => x.IsNameChecked == false).WithMessage(App.ResMan.GetString("ValidationVnIdAboveMax"))
+                .MustAsync(IsNotDeletedVnAsync).When(x => x.IsNameChecked == false)
+                .WithMessage(App.ResMan.GetString("ValidationVnIdDoesNotExist"))
+                .Must((x,y)=> IsNotDuplicateId(x.VnId, x.ExeType)).WithMessage(App.ResMan.GetString("VnIdAlreadyExistsInDb"));
 
-            //Vn name validation
+
+                //Vn name validation
             When(x => x.IsNameChecked == true, () =>
             {
                 RuleFor(x => x.CanChangeVnName).NotEqual(true).WithMessage(App.ResMan.GetString("ValidationVnNameSelection"));
@@ -350,8 +368,8 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
 
             //Exe Path Validation
             RuleFor(x => x.ExePath).Cascade(CascadeMode.Stop).ExeValidation()
-                .Must(IsNotDuplicateVndbExe).WithMessage(App.ResMan.GetString("ExeAlreadyExistsInDb"));
-            
+                .Must((x,y)=> IsNotDuplicateVndbExe(x.ExePath, x.ExeType)).WithMessage(App.ResMan.GetString("ExeAlreadyExistsInDb"));
+
             //Icon
             When(x => x.IsIconChecked == true, () =>
             {
@@ -418,7 +436,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             }
         }
 
-        private static bool IsNotDuplicateVndbExe(AddGameVndbViewModel instance, string exePath)
+        private static bool IsNotDuplicateVndbExe(string exePath, ExeTypeEnum exeType)
         {
             //if type is normal and game id in db or exe in db
             try
@@ -427,21 +445,19 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
                 if (cred == null || cred.UserName.Length < 1) return false;
                 using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
                 {
-                    if (instance == null) return false;
-                    var exeType = instance.ExeType;
                     var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString()).Query().ToEnumerable();
                     switch (exeType)
                     {
                         case ExeTypeEnum.Normal:
-                            {
-                                var count = dbUserData.Count(x => x.ExePath == exePath);
-                                return count <= 0;
-                            }
+                        {
+                            var count = dbUserData.Count(x => x.ExePath == exePath);
+                            return count <= 0;
+                        }
                         case ExeTypeEnum.Launcher:
-                            {
-                                var count = dbUserData.Count(x => x.ExePath == exePath);
-                                return count <= 0;
-                            }
+                        {
+                            var count = dbUserData.Count(x => x.ExePath == exePath);
+                            return count <= 0;
+                        }
                         case ExeTypeEnum.Collection:
                             return true;
                         default:
@@ -456,7 +472,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             }
         }
 
-        private static bool IsNotDuplicateId(AddGameVndbViewModel instance, int id)
+        private static bool IsNotDuplicateId(int id, ExeTypeEnum exeType)
         {
             try
             {
@@ -464,22 +480,20 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
                 if (cred == null || cred.UserName.Length < 1) return false;
                 using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
                 {
-                    if (instance == null) return false;
-                    var exeType = instance.ExeType;
                     var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString()).Query()
                         .Where(x => x.SourceType == AddGameSourceType.Vndb).ToEnumerable();
                     switch (exeType)
                     {
                         case ExeTypeEnum.Normal:
-                            {
-                                var count = dbUserData.Count(x => x.GameId == id);
-                                return count <= 0;
-                            }
+                        {
+                            var count = dbUserData.Count(x => x.GameId == id);
+                            return count <= 0;
+                        }
                         case ExeTypeEnum.Collection:
-                            {
-                                var count = dbUserData.Count(x => x.GameId == id);
-                                return count <= 0;
-                            }
+                        {
+                            var count = dbUserData.Count(x => x.GameId == id);
+                            return count <= 0;
+                        }
                         case ExeTypeEnum.Launcher:
                             return true;
                         default:
@@ -514,7 +528,6 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
                 throw;
             }
         }
-
     }
 
 
