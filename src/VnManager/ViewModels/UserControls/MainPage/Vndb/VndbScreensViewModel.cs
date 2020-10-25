@@ -118,19 +118,25 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             {
                 BitmapSource image;
                 if (screenshotList.Count < 1) return;
-                string path = $@"{App.AssetDirPath}\sources\vndb\images\screenshots\{VndbContentViewModel.Instance.VnId}\thumbs\{Path.GetFileName(item.Uri.AbsoluteUri)}";
+                string thumbPath = $@"{App.AssetDirPath}\sources\vndb\images\screenshots\{VndbContentViewModel.Instance.VnId}\thumbs\{Path.GetFileName(item.Uri.AbsoluteUri)}";
+                string imagePath = $@"{App.AssetDirPath}\sources\vndb\images\screenshots\{VndbContentViewModel.Instance.VnId}\{Path.GetFileName(item.Uri.AbsoluteUri)}";
+
                 bool rating = NsfwHelper.TrueIsNsfw(item.Rating);
-                if (rating && File.Exists($"{path}.aes"))
+                if (rating && File.Exists($"{thumbPath}.aes") && File.Exists($"{imagePath}.aes"))
                 {
-                    var imgBytes = File.ReadAllBytes($"{path}.aes");
+                    var imgBytes = File.ReadAllBytes($"{thumbPath}.aes");
                     var imgStream = Secure.DecStreamToStream(new MemoryStream(imgBytes));
                     image = ImageHelper.CreateBitmapFromStream(imgStream);
                     ScreenshotCollection.Add(new ScreenShot { Image = image, IsNsfw = NsfwHelper.UserIsNsfw(item.Rating) });
                 }
-                else if(rating == false && File.Exists(path))
+                else if(rating == false && File.Exists(thumbPath) && File.Exists(imagePath))
                 {
-                    image = ImageHelper.CreateBitmapFromPath(path);
+                    image = ImageHelper.CreateBitmapFromPath(thumbPath);
                     ScreenshotCollection.Add(new ScreenShot { Image = image, IsNsfw = false });
+                }
+                else
+                {
+                    //Don't do anything, because either the thumbnail or the large image is missing
                 }
             }
         }

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using FluentValidation.Internal;
 
 namespace VnManager.Utilities
 {
@@ -42,10 +43,17 @@ namespace VnManager.Utilities
         /// <returns></returns>
         public async Task<IEnumerable<string>> ValidatePropertyAsync(string propertyName)
         {
-            // If someone's calling us synchronously, and ValidationAsync does not complete synchronously,
-            // we'll deadlock unless we continue on another thread.
-            return (await this.validator.ValidateAsync(this.subject, CancellationToken.None, propertyName).ConfigureAwait(false))
-                .Errors.Select(x => x.ErrorMessage);
+            //await this.validator.ValidateAsync(subject, delegate(ValidationStrategy<T> options) { options.IncludeProperties(propertyName); }, CancellationToken.None);
+            var result = await this.validator.ValidateAsync(subject, delegate (ValidationStrategy<T> options) { options.IncludeProperties(propertyName); }, CancellationToken.None);
+            if (result != null)
+            {
+                var errors = result.Errors.Select(x => x.ErrorMessage);
+                return errors;
+            }
+            else
+            {
+                return new List<string>();
+            }
         }
 
         /// <summary>

@@ -186,6 +186,12 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
         /// </summary>
         private void RepairVndbData()
         {
+            string screenshotPath = $@"{App.AssetDirPath}\sources\vndb\images\screenshots\{VndbContentViewModel.Instance.VnId}";
+            foreach (var file in Directory.GetFiles(screenshotPath, null, SearchOption.AllDirectories))
+            {
+                File.Delete(file);
+            }
+
             throw new NotImplementedException("not done");
         }
 
