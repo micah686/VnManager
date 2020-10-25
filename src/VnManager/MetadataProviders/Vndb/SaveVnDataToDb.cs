@@ -32,6 +32,7 @@ using VnManager.Models.Db.Vndb.Producer;
 using VnManager.Models.Db.Vndb.Release;
 using VnManager.Models.Db.Vndb.Staff;
 using VnManager.Models.Db.Vndb.TagTrait;
+using VnManager.ViewModels.UserControls;
 using VnManager.ViewModels.Windows;
 
 namespace VnManager.MetadataProviders.Vndb
@@ -62,7 +63,7 @@ namespace VnManager.MetadataProviders.Vndb
             App.StatusBar.IsDatabaseProcessing = true;
             await DownloadVndbContent.GetAndSaveTagDumpAsync();
             await DownloadVndbContent.GetAndSaveTraitDumpAsync();
-            App.StatusBar.ResetValues();
+            StatusBarViewModel.ResetValues();
         }
 
 

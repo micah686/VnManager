@@ -42,7 +42,7 @@ namespace VnManager.Helpers
                 else
                 {
                     
-                    output = dateTime.Date.ToString("MMM d, yyyy");
+                    output = dateTime.Date.ToString("MMM d, yyyy", CultureInfo.InvariantCulture);
                 }
             }
 

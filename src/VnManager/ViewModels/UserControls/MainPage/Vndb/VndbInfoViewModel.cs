@@ -11,7 +11,6 @@ using AdysTech.CredentialManager;
 using LiteDB;
 using MahApps.Metro.IconPacks;
 using Stylet;
-using StyletIoC;
 using VnManager.Helpers;
 using VnManager.Models.Db.User;
 using VnManager.Models.Db.Vndb.Main;
@@ -57,10 +56,6 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
 
         #endregion
 
-
-        public VndbInfoViewModel(IContainer container)
-        {
-        }
 
         protected override void OnViewLoaded()
         {
@@ -116,7 +111,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
                 MainTitle = $"Title: {vnInfoEntry.Title}";
                 JpnTitle = $"Original Title: {vnInfoEntry.Original}";
                 Aliases = $"Aliases: {vnInfoEntry.Aliases}";
-                ReleasedDate = $"Released: {TimeDateChanger.GetHumanDate(DateTime.Parse(vnInfoEntry.Released))}";
+                ReleasedDate = $"Released: {TimeDateChanger.GetHumanDate(DateTime.Parse(vnInfoEntry.Released, CultureInfo.InvariantCulture))}";
                 VnLength = $"Length: {vnInfoEntry.Length}";
                 Popularity = vnInfoEntry.Popularity.ToString();//make a UI use this double?
                 Rating = vnInfoEntry.Rating.ToString(CultureInfo.InvariantCulture);
@@ -137,10 +132,10 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
             {
                 var vnRelations = db.GetCollection<VnInfoRelations>(DbVnInfo.VnInfo_Relations.ToString()).Query()
-                    .Where(x => x.VnId == _vnId && x.Official.ToLower() == "yes").ToList();
+                    .Where(x => x.VnId == _vnId && x.Official.ToLower(CultureInfo.InvariantCulture) == "yes").ToList();
                 foreach (var relation in vnRelations)
                 {
-                    var entry = new VnRelationsBinding(){RelTitle = relation.Title, RelRelation = relation.Relation};
+                    var entry = new VnRelationsBinding {RelTitle = relation.Title, RelRelation = relation.Relation};
                     VnRelations.Add(entry);
                 }
             }
@@ -170,7 +165,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             }
         }
 
-        private IEnumerable<string> GetLanguages(string csv)
+        private static IEnumerable<string> GetLanguages(string csv)
         {
             string[] list = csv.Split(',');
             return list.Select(lang => File.Exists($@"{App.ExecutableDirPath}\Resources\flags\{lang}.png")
@@ -184,24 +179,29 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
         /// Reset Vndb Data completely (clear out all images, re-download them all
         /// Then get updated information from the API, overwriting old info
         /// </summary>
-        private void RepairVndbData()
+        public static void PrepRepairVndbData()
+        {
+            RepairImages();
+        }
+
+        private static void RepairImages()
         {
             string screenshotPath = $@"{App.AssetDirPath}\sources\vndb\images\screenshots\{VndbContentViewModel.Instance.VnId}";
             foreach (var file in Directory.GetFiles(screenshotPath, null, SearchOption.AllDirectories))
             {
                 File.Delete(file);
             }
-
-            throw new NotImplementedException("not done");
+            //TODO:finish this method
         }
 
-        public void ShowCharacters()
+        
+        public static void ShowCharacters()
         {
             var vm = VndbContentViewModel.Instance;
             vm.ActivateVnCharacters();
         }
 
-        public void ShowScreenshots()
+        public static void ShowScreenshots()
         {
             var vm = VndbContentViewModel.Instance;
             vm.ActivateVnScreenshots();

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using VndbSharp.Interfaces;
 using VndbSharp.Models.Errors;
 using VnManager.Utilities;
+using VnManager.ViewModels.UserControls;
 
 namespace VnManager.Helpers.Vndb
 {
@@ -47,7 +48,7 @@ namespace VnManager.Helpers.Vndb
                     App.Logger.Warning($"A {error.Type} Error occurred.\nMessage: {error.Message}");
                     break;
             }
-            App.StatusBar.ResetValues();
+            StatusBarViewModel.ResetValues();
         }
         public static async Task ThrottledWaitAsync(ThrottledError throttled, int counter)
         {

@@ -13,10 +13,6 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
         
         public BitmapSource BackgroundImage { get; private set; }
 
-        public VndbCharactersViewModel()
-        {
-        }
-
         protected override void OnViewLoaded()
         {
             
@@ -40,13 +36,13 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
 
         }
 
-        public void ShowInfo()
+        public static void ShowInfo()
         {
             var vm = VndbContentViewModel.Instance;
             vm.ActivateVnInfo();
         }
 
-        public void ShowScreens()
+        public static void ShowScreens()
         {
             var vm = VndbContentViewModel.Instance;
             vm.ActivateVnScreenshots();

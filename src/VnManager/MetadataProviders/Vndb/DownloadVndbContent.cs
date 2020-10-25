@@ -15,6 +15,7 @@ using VnManager.Models.Db;
 using VnManager.Models.Db.Vndb.Character;
 using VnManager.Models.Db.Vndb.Main;
 using VnManager.Models.Db.Vndb.TagTrait;
+using VnManager.ViewModels.UserControls;
 
 namespace VnManager.MetadataProviders.Vndb
 {
@@ -173,7 +174,7 @@ namespace VnManager.MetadataProviders.Vndb
             catch (Exception ex)
             {
                 App.Logger.Error(ex, "An error happened while getting/saving the tag dump");
-                App.StatusBar.ResetValues();
+                StatusBarViewModel.ResetValues();
             }
         }
 
@@ -220,7 +221,7 @@ namespace VnManager.MetadataProviders.Vndb
             catch (Exception ex)
             {
                 App.Logger.Error(ex, "An error happened while getting/saving the trait dump");
-                App.StatusBar.ResetValues();
+                StatusBarViewModel.ResetValues();
                 throw;
             }
         }

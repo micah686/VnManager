@@ -42,12 +42,11 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
         
         public BindableCollection<ScreenShot> ScreenshotCollection { get; set; }= new BindableCollection<ScreenShot>();
 
-        public VndbScreensViewModel()
-        {
-        }
+        private List<ScreenShot> _scrList= new List<ScreenShot>();
 
         protected override void OnViewLoaded()
         {
+            _scrList = LoadScreenshotList();
             BindScreenshotCollection();
         }
 
@@ -57,7 +56,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             vm.ActivateVnInfo();
         }
 
-        public void ShowCharacters()
+        public static void ShowCharacters()
         {
             var vm = VndbContentViewModel.Instance;
             vm.ActivateVnCharacters();
@@ -86,7 +85,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
         {
             try
             {
-                List<ScreenShot> screenshotList = LoadScreenshotList();
+                List<ScreenShot> screenshotList = _scrList;
                 if (screenshotList.Count <= 0) return;
                 string path = $@"{App.AssetDirPath}\sources\vndb\images\screenshots\{VndbContentViewModel.Instance.VnId}\{Path.GetFileName(screenshotList[SelectedScreenIndex].Uri.AbsoluteUri)}";
                 var rating = NsfwHelper.TrueIsNsfw(screenshotList[SelectedScreenIndex].Rating);
@@ -113,7 +112,8 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
 
         private void BindScreenshotCollection()
         {
-            List<ScreenShot> screenshotList = LoadScreenshotList();
+            List<ScreenShot> screenshotList = _scrList;
+            List<ScreenShot>toDelete = new List<ScreenShot>();
             foreach (var item in screenshotList)
             {
                 BitmapSource image;
@@ -136,8 +136,14 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
                 }
                 else
                 {
-                    //Don't do anything, because either the thumbnail or the large image is missing
+                    toDelete.Add(item);
+
                 }
+            }
+
+            foreach (var delete in toDelete)
+            {
+                _scrList.Remove(delete);
             }
         }
 

@@ -32,6 +32,7 @@ using VnManager.Models.Db.User;
 using VnManager.Models.Db.Vndb.TagTrait;
 using VnManager.ViewModels.Dialogs;
 using VnManager.ViewModels.Dialogs.AddGameSources;
+using VnManager.ViewModels.UserControls.MainPage.Vndb;
 using VnManager.ViewModels.Windows;
 
 
@@ -153,18 +154,14 @@ namespace VnManager.ViewModels.UserControls
 
         public void TestEncryption()
         {
-            //Secure.EncFile("sample.jpg");
-
-            //Secure.DecFile("sample.jpg");
-            //_windowManager.ShowMessageBox("THis is a test message", "Title Here", MessageBoxButton.OKCancel, MessageBoxImage.Asterisk);
-            var ts = new  TimeSpan(7,15,1,0);
-            Helpers.TimeDateChanger.GetHumanTime(ts);
+            App.StatusBar.InfoText = "foo";
+            App.StatusBar.StatusString = "foo2";
+            VndbInfoViewModel.PrepRepairVndbData();
         }
 
         public void ExportImport()
         {
-            var vm = _container.Get<ImportViewModel>();
-            _windowManager.ShowDialog(vm);
+            StatusBarViewModel.ResetValues();
         }
 
         public void CauseException()

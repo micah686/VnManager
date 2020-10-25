@@ -15,6 +15,7 @@ using VndbSharp.Models.Staff;
 using VndbSharp.Models.VisualNovel;
 using VnManager.Helpers.Vndb;
 using VnManager.Models;
+using VnManager.ViewModels.UserControls;
 
 namespace VnManager.MetadataProviders.Vndb
 {
@@ -94,7 +95,7 @@ namespace VnManager.MetadataProviders.Vndb
 			catch (Exception ex)
 			{
 				App.Logger.Error(ex, "An error occurred when trying to get the vndb data from the API");
-                App.StatusBar.ResetValues();
+                StatusBarViewModel.ResetValues();
 				throw;
 			}
         }
