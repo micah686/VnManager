@@ -129,7 +129,7 @@ namespace VnManager.Helpers
         /// <param name="imageList">List of Images (Uri and IsNsfw)</param>
         /// <param name="imageDirectory">Directory to save the images in</param>
         /// <returns></returns>
-        public static async Task DownloadImagesWithThumbnailsAsync(IEnumerable<ScreenShot> imageList, string imageDirectory)
+        public static async Task DownloadImagesWithThumbnailsAsync(IEnumerable<BindingImage> imageList, string imageDirectory)
         {
             try
             {
@@ -258,7 +258,10 @@ namespace VnManager.Helpers
         
     }
 
-    public class ScreenShot
+    /// <summary>
+    /// Custom class for dealing with properties of an image
+    /// </summary>
+    public class BindingImage
     {
         public string ImageLink { get; set; }
         public bool IsNsfw { get; set; }

@@ -111,7 +111,7 @@ namespace VnManager.MetadataProviders.Vndb
                     {
                         Directory.CreateDirectory($@"{directory}\thumbs");
                     }
-                    List<ScreenShot> scrList = entries.Select(screen => new ScreenShot { IsNsfw = NsfwHelper.TrueIsNsfw(screen.ImageRating), ImageLink = screen.ImageLink, Rating = screen.ImageRating}).ToList();
+                    List<BindingImage> scrList = entries.Select(screen => new BindingImage { IsNsfw = NsfwHelper.TrueIsNsfw(screen.ImageRating), ImageLink = screen.ImageLink, Rating = screen.ImageRating}).ToList();
 
                     App.StatusBar.IsFileDownloading = true;
                     await ImageHelper.DownloadImagesWithThumbnailsAsync(scrList, directory);
