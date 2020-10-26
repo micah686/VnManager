@@ -76,7 +76,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
             var dbUserData = db.GetCollection<VnInfoScreens>(DbVnInfo.VnInfo_Screens.ToString()).Query()
                 .Where(x => x.VnId == VndbContentViewModel.Instance.VnId).ToEnumerable();
-            var scrList = dbUserData.Select(item => new ScreenShot {Uri = item.ImageUri, Rating = item.ImageRating}).ToList();
+            var scrList = dbUserData.Select(item => new ScreenShot {ImageLink = item.ImageLink, Rating = item.ImageRating}).ToList();
             return scrList;
         }
 
@@ -87,7 +87,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             {
                 List<ScreenShot> screenshotList = _scrList;
                 if (screenshotList.Count <= 0) return;
-                string path = $@"{App.AssetDirPath}\sources\vndb\images\screenshots\{VndbContentViewModel.Instance.VnId}\{Path.GetFileName(screenshotList[SelectedScreenIndex].Uri.AbsoluteUri)}";
+                string path = $@"{App.AssetDirPath}\sources\vndb\images\screenshots\{VndbContentViewModel.Instance.VnId}\{Path.GetFileName(screenshotList[SelectedScreenIndex].ImageLink)}";
                 var rating = NsfwHelper.TrueIsNsfw(screenshotList[SelectedScreenIndex].Rating);
                 if (rating == true && File.Exists($"{path}.aes"))
                 {
@@ -118,8 +118,8 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             {
                 BitmapSource image;
                 if (screenshotList.Count < 1) return;
-                string thumbPath = $@"{App.AssetDirPath}\sources\vndb\images\screenshots\{VndbContentViewModel.Instance.VnId}\thumbs\{Path.GetFileName(item.Uri.AbsoluteUri)}";
-                string imagePath = $@"{App.AssetDirPath}\sources\vndb\images\screenshots\{VndbContentViewModel.Instance.VnId}\{Path.GetFileName(item.Uri.AbsoluteUri)}";
+                string thumbPath = $@"{App.AssetDirPath}\sources\vndb\images\screenshots\{VndbContentViewModel.Instance.VnId}\thumbs\{Path.GetFileName(item.ImageLink)}";
+                string imagePath = $@"{App.AssetDirPath}\sources\vndb\images\screenshots\{VndbContentViewModel.Instance.VnId}\{Path.GetFileName(item.ImageLink)}";
 
                 bool rating = NsfwHelper.TrueIsNsfw(item.Rating);
                 if (rating && File.Exists($"{thumbPath}.aes") && File.Exists($"{imagePath}.aes"))

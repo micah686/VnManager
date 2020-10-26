@@ -144,13 +144,15 @@ namespace VnManager.Helpers
                     
                     foreach (var screen in images)
                     {
-                        if (screen.Uri == null || string.IsNullOrEmpty(screen.Uri.AbsoluteUri)) continue;
-                        var imagePath = $@"{imageDirectory}\{Path.GetFileName(screen.Uri.AbsoluteUri)}";
-                        var thumbPath = $@"{imageDirectory}\thumbs\{Path.GetFileName(screen.Uri.AbsoluteUri)}";
+                        if (screen.ImageLink == null || string.IsNullOrEmpty(screen.ImageLink)) continue;
+                        var uri = new Uri(screen.ImageLink);
+                        var imagePath = $@"{imageDirectory}\{Path.GetFileName(screen.ImageLink)}";
+                        var thumbPath = $@"{imageDirectory}\thumbs\{Path.GetFileName(screen.ImageLink)}";
 
                         if(File.Exists(imagePath))continue;
 
-                        var imageStream = new MemoryStream(await client.DownloadDataTaskAsync(screen.Uri.AbsoluteUri));
+                        
+                        var imageStream = new MemoryStream(await client.DownloadDataTaskAsync(uri));
                         var thumbImg = GetThumbnailImage(imageStream,0);
                         if (thumbImg == null) continue;
                         if (NsfwHelper.TrueIsNsfw(screen.Rating))
@@ -258,7 +260,7 @@ namespace VnManager.Helpers
 
     public class ScreenShot
     {
-        public Uri Uri { get; set; }
+        public string ImageLink { get; set; }
         public bool IsNsfw { get; set; }
         public ImageRating Rating { get; set; }
         public BitmapSource Image { get; set; }

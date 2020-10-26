@@ -21,7 +21,7 @@ namespace VnManager.Models.Db.Vndb.Main
         public string Aliases { get; set; }
         public string Length { get; set; }
         public string Description { get; set; }
-        public Uri ImageLink { get; set; }
+        public string ImageLink { get; set; }
         public ImageRating ImageRating { get; set; }
         public double? Popularity { get; set; }
         public double Rating { get; set; }

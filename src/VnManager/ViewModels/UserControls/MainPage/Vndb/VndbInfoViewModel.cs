@@ -116,7 +116,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
                 Popularity = vnInfoEntry.Popularity.ToString();//make a UI use this double?
                 Rating = vnInfoEntry.Rating.ToString(CultureInfo.InvariantCulture);
                 LoadLanguages(ref vnInfoEntry);
-                var coverPath = $@"{App.AssetDirPath}\sources\vndb\images\cover\{Path.GetFileName(vnInfoEntry.ImageLink.AbsoluteUri)}";
+                var coverPath = $@"{App.AssetDirPath}\sources\vndb\images\cover\{Path.GetFileName(vnInfoEntry.ImageLink)}";
                 CoverImage = ImageHelper.CreateBitmapFromPath(coverPath);
 
                 DescriptionInLine = BBCodeHelper.Helper(vnInfoEntry.Description);

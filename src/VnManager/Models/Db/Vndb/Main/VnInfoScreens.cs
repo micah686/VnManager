@@ -9,7 +9,7 @@ namespace VnManager.Models.Db.Vndb.Main
         [BsonId]
         public int Index { get; set; }
         public uint? VnId { get; set; }
-        public Uri ImageUri { get; set; }
+        public string ImageLink { get; set; }
         public string ReleaseId { get; set; }
         public int? Height { get; set; }
         public int? Width { get; set; }

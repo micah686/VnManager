@@ -33,9 +33,10 @@ namespace VnManager.MetadataProviders.Vndb
                 if (entry == null) return;
                 if (entry.ImageLink != null)
                 {
+                    var uri = new Uri(entry.ImageLink);
                     App.StatusBar.IsFileDownloading = true;
-                    string path = $@"{App.AssetDirPath}\sources\vndb\images\cover\{Path.GetFileName(entry.ImageLink.AbsoluteUri)}";
-                    await ImageHelper.DownloadImageAsync(entry.ImageLink, NsfwHelper.TrueIsNsfw(entry.ImageRating), path);
+                    string path = $@"{App.AssetDirPath}\sources\vndb\images\cover\{Path.GetFileName(uri.AbsoluteUri)}";
+                    await ImageHelper.DownloadImageAsync(uri, NsfwHelper.TrueIsNsfw(entry.ImageRating), path);
                 }
             }
             catch (Exception ex)
@@ -66,7 +67,7 @@ namespace VnManager.MetadataProviders.Vndb
 
                 var directory = Path.Combine(App.AssetDirPath, @$"sources\vndb\images\characters\{vnId}");
                 if (!Directory.Exists(directory)) Directory.CreateDirectory(directory);
-                List<string> characterList = entries.Select(x => x.ImageLink.AbsoluteUri).ToList();
+                List<string> characterList = entries.Select(x => x.ImageLink).ToList();
                 using var client = new WebClient();
                 foreach (var character in characterList)
                 {
@@ -110,7 +111,7 @@ namespace VnManager.MetadataProviders.Vndb
                     {
                         Directory.CreateDirectory($@"{directory}\thumbs");
                     }
-                    List<ScreenShot> scrList = entries.Select(screen => new ScreenShot { IsNsfw = NsfwHelper.TrueIsNsfw(screen.ImageRating), Uri = screen.ImageUri, Rating = screen.ImageRating}).ToList();
+                    List<ScreenShot> scrList = entries.Select(screen => new ScreenShot { IsNsfw = NsfwHelper.TrueIsNsfw(screen.ImageRating), ImageLink = screen.ImageLink, Rating = screen.ImageRating}).ToList();
 
                     App.StatusBar.IsFileDownloading = true;
                     await ImageHelper.DownloadImagesWithThumbnailsAsync(scrList, directory);

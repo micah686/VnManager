@@ -106,7 +106,7 @@ namespace VnManager.MetadataProviders.Vndb
                     vn.Aliases = CsvConverter.ConvertToCsv(visualNovel.Aliases);
                     vn.Length = visualNovel.Length?.ToString();
                     vn.Description = visualNovel.Description;
-                    vn.ImageLink = new Uri(visualNovel.Image);
+                    vn.ImageLink = !string.IsNullOrEmpty(visualNovel.Image) ? visualNovel.Image : string.Empty;
                     vn.ImageRating = visualNovel.ImageRating;
                     vn.Popularity = visualNovel.Popularity;
                     vn.Rating = visualNovel.Rating;
@@ -184,10 +184,10 @@ namespace VnManager.MetadataProviders.Vndb
                 var prevVnInfoScreens = dbVnInfoScreens.Query().Where(x => x.VnId == visualNovel.Id).ToList();
                 foreach (var screenshot in visualNovel.Screenshots)
                 {
-                    var entry = prevVnInfoScreens.FirstOrDefault(x => x.ImageUri == new Uri(screenshot.Url)) ??
+                    var entry = prevVnInfoScreens.FirstOrDefault(x => x.ImageLink == screenshot.Url) ??
                                 new VnInfoScreens();
                     entry.VnId = visualNovel.Id;
-                    entry.ImageUri = new Uri(screenshot.Url);
+                    entry.ImageLink = !string.IsNullOrEmpty(screenshot.Url) ? screenshot.Url : string.Empty;
                     entry.ReleaseId = screenshot.ReleaseId;
                     entry.Height = screenshot.Height;
                     entry.Width = screenshot.Width;
@@ -301,7 +301,7 @@ namespace VnManager.MetadataProviders.Vndb
                         character.Birthday = BirthdayConverter.ConvertBirthday(vnCharacter.Birthday);
                         character.Aliases = CsvConverter.ConvertToCsv(vnCharacter.Aliases);
                         character.Description = vnCharacter.Description;
-                        character.ImageLink = new Uri(vnCharacter.Image);
+                        character.ImageLink = !string.IsNullOrEmpty(vnCharacter.Image) ? vnCharacter.Image : string.Empty;
                         character.ImageRating = vnCharacter.ImageRating;
                         character.Bust = Convert.ToInt32(vnCharacter.Bust, CultureInfo.InvariantCulture);
                         character.Waist = Convert.ToInt32(vnCharacter.Waist, CultureInfo.InvariantCulture);
