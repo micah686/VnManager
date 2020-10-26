@@ -4,6 +4,7 @@ using System.Text;
 using System.Windows.Media.Imaging;
 using Stylet;
 using StyletIoC;
+using VnManager.Helpers;
 using VnManager.ViewModels.UserControls.MainPage.Vndb;
 
 //using VnManager.ViewModels.UserControls.MainPage;
@@ -17,12 +18,13 @@ namespace VnManager.ViewModels.Controls
         {
             _container = container;
         }
-        public BitmapSource CoverImage { get; set; }
+        public BindingImage CoverImage { get; set; }
         public string LastPlayedString { get; set; }
         public string TotalTimeString { get; set; }
         public string Title { get; set; }
         public bool IsNsfwDisabled { get; set; }
         public bool IsMouseOver { get; set; } = false;
+
 
         public Guid UserDataId { get; set; }
 

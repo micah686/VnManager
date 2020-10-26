@@ -58,12 +58,12 @@
                         </Style>
                     </Grid.Style>
                     <Border Grid.Row="0" Name="ImgMask" Background="Black" CornerRadius="6,6,0,0" Width="{Binding ElementName=ImgMain, Path=ActualWidth}"/>
-                    <Image x:Name="ImgMain" Source="{Binding CoverImage}">
+                    <Image x:Name="ImgMain" Source="{Binding CoverImage.Image}">
                         <Image.OpacityMask>
                             <VisualBrush Visual="{Binding ElementName=ImgMask}"/>
                         </Image.OpacityMask>
                     </Image>
-                    <Image Source="{Binding CoverImage}" Visibility="{Binding IsNsfwDisabled, Converter={StaticResource BoolToVisibilityConverter}}" Margin="3"  >
+                    <Image Source="{Binding CoverImage.Image}" Visibility="{Binding IsNsfwDisabled, Converter={StaticResource BoolToVisibilityConverter}}" Margin="3"  >
                         <Image.OpacityMask>
                             <VisualBrush Visual="{Binding ElementName=ImgMask}"/>
                         </Image.OpacityMask>

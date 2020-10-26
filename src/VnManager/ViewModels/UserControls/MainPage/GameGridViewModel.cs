@@ -27,24 +27,6 @@ namespace VnManager.ViewModels.UserControls.MainPage
         public GameGridViewModel(IContainer container)
         {
             _container = container;
-            //var rand = new Random();
-            //for (int i = 0; i < 30; i++)
-            //{
-            //    var bol = rand.Next() > (Int32.MaxValue / 2);
-            //    var bi = new BitmapImage();
-            //    bi.BeginInit();
-            //    bi.UriSource = new Uri("https://upload.wikimedia.org/wikipedia/en/c/c2/Tron_Legacy_poster.jpg"); /*new Uri("https://s2.vndb.org/cv/23/23223.jpg");*/
-            //    bi.EndInit();
-            //    var card = new GameCardViewModel(_container, _windowManager)
-            //    {
-            //        CoverImage = bi,
-            //        Title = $"Title {i}",
-            //        LastPlayedString = $"Last Played: {i}",
-            //        TotalTimeString = $"Total Time: {i}",
-            //        IsNsfwDisabled = bol
-            //    };
-            //    GameCollection.Add(card);
-            //}
             GetVndbGames();
         }
 
@@ -65,17 +47,38 @@ namespace VnManager.ViewModels.UserControls.MainPage
                         var game = dbVnInfo.FirstOrDefault(x => x.VnId == entry.GameId);
                         if(game== null)continue;
                         var coverPath = $@"{App.AssetDirPath}\sources\vndb\images\cover\{Path.GetFileName(game.ImageLink)}";
-                        
 
-                        var card = new GameCardViewModel(_container)
+                        var rating = NsfwHelper.TrueIsNsfw(game.ImageRating);
+
+                        var card = new GameCardViewModel(_container);
+                        if (rating == true && File.Exists($"{coverPath}.aes"))
                         {
-                            CoverImage = ImageHelper.CreateBitmapFromPath(coverPath),
-                            Title = game.Title,
-                            LastPlayedString = $"Last Played: {TimeDateChanger.GetHumanDate(entry.LastPlayed)}",
-                            TotalTimeString = $"Play Time: {TimeDateChanger.GetHumanTime(entry.PlayTime)}",
-                            UserDataId = entry.Id,
-                            IsNsfwDisabled = NsfwHelper.UserIsNsfw(game.ImageRating)
-                        };
+                            var imgBytes = File.ReadAllBytes($"{coverPath}.aes");
+                            var imgStream = Secure.DecStreamToStream(new MemoryStream(imgBytes));
+                            var imgNsfw = ImageHelper.CreateBitmapFromStream(imgStream);
+                            var bi = new BindingImage { Image = imgNsfw, IsNsfw = NsfwHelper.TrueIsNsfw(game.ImageRating) };
+
+                            card.CoverImage = bi;
+                            card.Title = game.Title;
+                            card.LastPlayedString = $"Last Played: {TimeDateChanger.GetHumanDate(entry.LastPlayed)}";
+                            card.TotalTimeString = $"Play Time: {TimeDateChanger.GetHumanTime(entry.PlayTime)}";
+                            card.UserDataId = entry.Id;
+                            card.IsNsfwDisabled = NsfwHelper.UserIsNsfw(game.ImageRating);
+                        }
+                        else
+                        {
+                            var bi = new BindingImage
+                            {
+                                Image = ImageHelper.CreateBitmapFromPath(coverPath),
+                                IsNsfw = false
+                            };
+                            card.CoverImage = bi;
+                            card.Title = game.Title;
+                            card.LastPlayedString = $"Last Played: {TimeDateChanger.GetHumanDate(entry.LastPlayed)}";
+                            card.TotalTimeString = $"Play Time: {TimeDateChanger.GetHumanTime(entry.PlayTime)}";
+                            card.UserDataId = entry.Id;
+                            card.IsNsfwDisabled = NsfwHelper.UserIsNsfw(game.ImageRating);
+                        }
                         GameCollection.Add(card);
                     }
                 }
