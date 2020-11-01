@@ -98,7 +98,7 @@
         </Grid>
 
         <Grid x:Name="PlayData" Grid.Row="1" >
-            <StackPanel  HorizontalAlignment="Center" Margin="0,5,0,0" Visibility="{Binding IsMouseOver, Converter={StaticResource BoolToVisibilityConverter}}">
+            <StackPanel  HorizontalAlignment="Center" Margin="0,10,0,0" Visibility="{Binding IsMouseOver, Converter={StaticResource BoolToVisibilityConverter}}">
                 <TextBlock Text="{Binding LastPlayedString}" Foreground="{DynamicResource {x:Static adonisUi:Brushes.ForegroundBrush}}"/>
                 <TextBlock Text="{Binding TotalTimeString}" Foreground="{DynamicResource {x:Static adonisUi:Brushes.ForegroundBrush}}"/>
                 
