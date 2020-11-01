@@ -9,87 +9,86 @@
              xmlns:adonisUi="clr-namespace:AdonisUI;assembly=AdonisUI"
              xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:ext="clr-namespace:VnManager.Extensions"
+             xmlns:controls="clr-namespace:BlurryControls.Controls;assembly=BlurryControls"
              mc:Ignorable="d"
-             Width="144" Height="270"
+             Width="150" Height="270"
              d:DataContext="{d:DesignInstance {x:Type vm:GameCardViewModel}}">
     <UserControl.Resources>
         <s:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
     </UserControl.Resources>
-    <Grid Focusable="False">
+    <Grid >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="40"/>
+        </Grid.RowDefinitions>
 
 
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="80"/>
-            </Grid.RowDefinitions>
-            <Grid x:Name="MainGrid" Grid.Row="0" Height="220" ext:MouseObserver.Observe="True" ext:MouseObserver.ObservedMouseOver="{Binding IsMouseOver, Mode=OneWayToSource}" 
+
+
+
+        <Grid x:Name="MainGrid" Grid.Row="0" Height="220" ext:MouseObserver.Observe="True" ext:MouseObserver.ObservedMouseOver="{Binding IsMouseOver, Mode=OneWayToSource}" 
                   MouseLeftButtonDown="{s:Action MouseClick}">
-                <Grid.Effect>
-                    <DropShadowEffect BlurRadius="15" Direction="-90" RenderingBias="Quality" ShadowDepth="2"/>
-                </Grid.Effect>
-                
+            <Grid.Effect>
+                <DropShadowEffect BlurRadius="15" Direction="-90" RenderingBias="Quality" ShadowDepth="2"/>
+            </Grid.Effect>
+            <!-- Rounded border -->
+            <Border BorderThickness="1" BorderBrush="Transparent" CornerRadius="5" HorizontalAlignment="Center" VerticalAlignment="Center">
 
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="170"/>
-                    <RowDefinition MaxHeight="50"/>
-                </Grid.RowDefinitions>
-                <Grid Grid.Row="0" >
-                    <Grid.Style>
-                        <Style TargetType="Grid">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding IsMouseOver}" Value="True">
-                                    <DataTrigger.EnterActions>
-                                        <BeginStoryboard>
-                                            <Storyboard>
-                                                <DoubleAnimation Storyboard.TargetProperty="Height" From="170" To="200" Duration="0:0:.1" />
-                                            </Storyboard>
-                                        </BeginStoryboard>
-                                    </DataTrigger.EnterActions>
-                                    <DataTrigger.ExitActions>
-                                        <BeginStoryboard>
-                                            <Storyboard>
-                                                <DoubleAnimation Storyboard.TargetProperty="Height" From="200" To="170" Duration="0:0:0.1" />
-                                            </Storyboard>
-                                        </BeginStoryboard>
-                                    </DataTrigger.ExitActions>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Grid.Style>
-                    <Border Grid.Row="0" Name="ImgMask" Background="Black" CornerRadius="6,6,0,0" Width="{Binding ElementName=ImgMain, Path=ActualWidth}"/>
-                    <Image x:Name="ImgMain" Source="{Binding CoverImage.Image}">
-                        <Image.OpacityMask>
-                            <VisualBrush Visual="{Binding ElementName=ImgMask}"/>
-                        </Image.OpacityMask>
-                    </Image>
-                    <Image Source="{Binding CoverImage.Image}" Visibility="{Binding IsNsfwDisabled, Converter={StaticResource BoolToVisibilityConverter}}" Margin="3"  >
-                        <Image.OpacityMask>
-                            <VisualBrush Visual="{Binding ElementName=ImgMask}"/>
-                        </Image.OpacityMask>
-                        <Image.Effect>
-                            <BlurEffect RenderingBias="Quality" KernelType="Box" Radius="5"/>
-                        </Image.Effect>
-                    </Image>
+                <Grid>
+                    <!-- Rounded mask (stretches to fill Grid) -->
+                    <Border Name="RoundedMask" Background="{DynamicResource {x:Static adonisUi:Brushes.Layer1HighlightBrush}}" CornerRadius="5" ClipToBounds="True"/>
+
+                    <!-- Main content container -->
+                    <Grid x:Name="CardContentHost" >
+                        
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="50" />
+                        </Grid.RowDefinitions>
+                        <Grid Grid.Row="0" x:Name="ImageContainer"  MinHeight="170" Margin="5">
+                            <Image Grid.Row="0" Source="{Binding CoverImage.Image}" />
+                            <Grid x:Name="NsfwImage" Grid.Row="0" Visibility="{Binding CoverImage.IsNsfw, Converter={StaticResource BoolToVisibilityConverter}}">
+                                <Grid x:Name="OuterBlurContainer">
+                                    <Grid x:Name="InnerBlurContainer">
+                                        <Image Stretch="UniformToFill" Source="{Binding CoverImage.Image, Mode=OneWay}" RenderOptions.BitmapScalingMode="Fant"
+                                               Height="{Binding ElementName=ImageContainer, Path=Height, Mode=TwoWay}" 
+                                               Width="{Binding ElementName=ImageContainer, Path=Width, Mode=TwoWay}"/>
+                                    </Grid>
+                                </Grid>
+                                <controls:BlurryUserControl Background="Transparent" Panel.ZIndex="100" BlurRadius="20" Magnification="0.45"
+                                          BlurContainer="{Binding ElementName=OuterBlurContainer}" 
+                                          Height="{Binding ElementName=ImageContainer, Path=Height, Mode=TwoWay}" 
+                                          Width="{Binding ElementName=ImageContainer, Path=Width, Mode=TwoWay}"/>
+                            </Grid>
+                        </Grid>
+
+                        <!-- Grid Row 1 is for elements that show up on hovering over -->
+
+
+                        <Border Grid.Row="2" Name="TitleMask" Background="{DynamicResource {x:Static adonisUi:Brushes.Layer2HighlightBrush}}" CornerRadius="0,0,4,4" Width="{Binding ElementName=CardContentHost, Path=ActualWidth}">
+                            <TextBlock Text="{Binding Title}" ToolTip="{Binding Title}" TextWrapping="WrapWithOverflow" TextTrimming="CharacterEllipsis" FontSize="12" FontWeight="Medium"
+                                       Margin="0,3,0,0" HorizontalAlignment="Center" Foreground="{DynamicResource {x:Static adonisUi:Brushes.ForegroundBrush}}"/>
+                        </Border>
+                    </Grid>
+
+
+                    
+
                 </Grid>
 
-                <Border Grid.Row="1" Name="TitleMask" Background="{DynamicResource {x:Static adonisUi:Brushes.Layer3HighlightBorderBrush}}" CornerRadius="0,0,6,6" Width="{Binding ElementName=ImgMain, Path=ActualWidth}">
-                    <TextBlock Text="{Binding Title}" ToolTip="{Binding Title}" TextWrapping="WrapWithOverflow" TextTrimming="CharacterEllipsis" FontSize="12" FontWeight="Medium"
-                               Margin="0,3,0,0" HorizontalAlignment="Center" Foreground="{DynamicResource {x:Static adonisUi:Brushes.ForegroundBrush}}"/>
-                </Border>
-
-            </Grid>
+            </Border>
 
 
 
-
-
-            <StackPanel Grid.Row="1" HorizontalAlignment="Center" Margin="0,3,0,0" Visibility="{Binding IsMouseOver, Converter={StaticResource BoolToVisibilityConverter}}">
-                <TextBlock Text="{Binding LastPlayedString}" Foreground="{DynamicResource {x:Static adonisUi:Brushes.ForegroundBrush}}"/>
-                <TextBlock Text="{Binding TotalTimeString}" Foreground="{DynamicResource {x:Static adonisUi:Brushes.ForegroundBrush}}"/>
-                <Separator Background="Transparent" Margin="0,15,0,0"></Separator>
-            </StackPanel>
         </Grid>
 
+        <Grid x:Name="PlayData" Grid.Row="1" >
+            <StackPanel  HorizontalAlignment="Center" Margin="0,3,0,0" Visibility="{Binding IsMouseOver, Converter={StaticResource BoolToVisibilityConverter}}">
+                <TextBlock Text="{Binding LastPlayedString}" Foreground="{DynamicResource {x:Static adonisUi:Brushes.ForegroundBrush}}"/>
+                <TextBlock Text="{Binding TotalTimeString}" Foreground="{DynamicResource {x:Static adonisUi:Brushes.ForegroundBrush}}"/>
+                
+            </StackPanel>
+        </Grid>
     </Grid>
 </UserControl>
