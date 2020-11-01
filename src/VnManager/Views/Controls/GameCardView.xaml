@@ -10,13 +10,13 @@
              xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:ext="clr-namespace:VnManager.Extensions"
              xmlns:controls="clr-namespace:BlurryControls.Controls;assembly=BlurryControls"
-             mc:Ignorable="d"
-             Width="150" Height="270"
+             mc:Ignorable="d" d:DesignWidth="130" d:DesignHeight="250"
+              MaxWidth="130" MaxHeight="270"
              d:DataContext="{d:DesignInstance {x:Type vm:GameCardViewModel}}">
     <UserControl.Resources>
         <s:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
     </UserControl.Resources>
-    <Grid >
+    <Grid Margin="3">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="40"/>
@@ -31,6 +31,20 @@
             <Grid.Effect>
                 <DropShadowEffect BlurRadius="15" Direction="-90" RenderingBias="Quality" ShadowDepth="2"/>
             </Grid.Effect>
+
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsMouseOver}" Value="True">
+                            <Setter Property="RenderTransform">
+                                <Setter.Value>
+                                    <ScaleTransform ScaleX="1.03" ScaleY="1.03"/>
+                                </Setter.Value>
+                            </Setter>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
             <!-- Rounded border -->
             <Border BorderThickness="1" BorderBrush="Transparent" CornerRadius="5" HorizontalAlignment="Center" VerticalAlignment="Center">
 
@@ -84,7 +98,7 @@
         </Grid>
 
         <Grid x:Name="PlayData" Grid.Row="1" >
-            <StackPanel  HorizontalAlignment="Center" Margin="0,3,0,0" Visibility="{Binding IsMouseOver, Converter={StaticResource BoolToVisibilityConverter}}">
+            <StackPanel  HorizontalAlignment="Center" Margin="0,5,0,0" Visibility="{Binding IsMouseOver, Converter={StaticResource BoolToVisibilityConverter}}">
                 <TextBlock Text="{Binding LastPlayedString}" Foreground="{DynamicResource {x:Static adonisUi:Brushes.ForegroundBrush}}"/>
                 <TextBlock Text="{Binding TotalTimeString}" Foreground="{DynamicResource {x:Static adonisUi:Brushes.ForegroundBrush}}"/>
                 
