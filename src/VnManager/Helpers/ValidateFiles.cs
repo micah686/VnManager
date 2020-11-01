@@ -83,5 +83,20 @@ namespace VnManager.Helpers
                 return false;
             }
         }
+
+        public static bool EndsWithJpgOrPng(string path)
+        {
+            try
+            {
+                if (!File.Exists(path)) return false;
+                string ext = Path.GetExtension(path).ToUpperInvariant() ?? string.Empty;
+                return ext.EndsWith(".JPG") || ext.EndsWith(".PNG");
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Warning(ex, "EndsWithIco check failed");
+                return false;
+            }
+        }
     }
 }

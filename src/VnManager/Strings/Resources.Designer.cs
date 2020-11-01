@@ -1303,6 +1303,24 @@ namespace VnManager.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Not a valid path to an image.
+        /// </summary>
+        public static string ValidationImagePathNotValid {
+            get {
+                return ResourceManager.GetString("ValidationImagePathNotValid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not a valid image file.
+        /// </summary>
+        public static string ValidationNotValidImage {
+            get {
+                return ResourceManager.GetString("ValidationNotValidImage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ID entered is above maximum Vndb ID.
         /// </summary>
         public static string ValidationVnIdAboveMax {

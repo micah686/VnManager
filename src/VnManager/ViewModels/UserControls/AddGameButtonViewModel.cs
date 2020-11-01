@@ -26,7 +26,7 @@ namespace VnManager.ViewModels.UserControls
             _windowManager = windowManager;
         }
 
-        public void ClickAsync()
+        public void ShowAddGameDialog()
         {
             var parent = _container.Get<AddGameMainViewModel>();
             _windowManager.ShowDialog(parent);

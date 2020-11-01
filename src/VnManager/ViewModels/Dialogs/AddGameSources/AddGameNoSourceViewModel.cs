@@ -147,7 +147,9 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
                 IsArgumentsEnabled = IsArgsChecked,
                 ExeArguments = ExeArguments
             };
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             MetadataCommon.SetGameEntryData(gameEntry);
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
         }
 
         public void Cancel()
@@ -164,6 +166,13 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
 
         public AddGameNoSourceViewModelValidator()
         {
+            RuleFor(x => x.Title).Cascade(CascadeMode.Stop)
+                .Must(ValidationHelpers.ContainsIllegalCharacters).WithMessage(App.ResMan.GetString("ValidationArgumentsIllegalChars"));
+
+            RuleFor(x => x.CoverPath).Cascade(CascadeMode.Stop)
+                .Must(ValidateFiles.EndsWithJpgOrPng).WithMessage(App.ResMan.GetString("ValidationImagePathNotValid"))
+                .Must(ImageHelper.IsValidImage).WithMessage(App.ResMan.GetString("ValidationNotValidImage"));
+
             RuleFor(x => x.ExePath).Cascade(CascadeMode.Stop).ExeValidation()
                 .Must(IsNotDuplicateExe).WithMessage(App.ResMan.GetString("ExeAlreadyExistsInDb"));
 

@@ -255,7 +255,21 @@ namespace VnManager.Helpers
             sysIcon.Dispose();
             return bmpSrc;
         }
-        
+
+        public static bool IsValidImage(string path)
+        {
+            try
+            {
+                ImageFormat img = Image.FromFile(path).RawFormat;
+                return img.Equals(ImageFormat.Jpeg) || img.Equals(ImageFormat.Png);
+            }
+            catch(Exception)
+            {
+                return false;
+            }
+            
+        }
+
     }
 
     /// <summary>

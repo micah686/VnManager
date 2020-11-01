@@ -531,6 +531,12 @@
   <data name="ValidationIdAlreadyExists" xml:space="preserve">
     <value>This ID already exists in the database</value>
   </data>
+  <data name="ValidationImagePathNotValid" xml:space="preserve">
+    <value>Not a valid path to an image</value>
+  </data>
+  <data name="ValidationNotValidImage" xml:space="preserve">
+    <value>Not a valid image file</value>
+  </data>
   <data name="ValidationVnIdAboveMax" xml:space="preserve">
     <value>ID entered is above maximum Vndb ID</value>
   </data>

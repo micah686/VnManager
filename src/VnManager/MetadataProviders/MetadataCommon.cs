@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using AdysTech.CredentialManager;
 using LiteDB;
 using Stylet;
@@ -69,7 +70,7 @@ namespace VnManager.MetadataProviders
             App.StatusBar.IsDatabaseProcessing = false;
         }
 
-        public static async void SetGameEntryData(AddItemDbModel gameEntry)
+        public static async Task SetGameEntryData(AddItemDbModel gameEntry)
         {
             _addItemDbModel = gameEntry;
             if(_addItemDbModel == null) return;

@@ -83,7 +83,7 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <TextBlock Text="Icon:" Width="60" Margin="0,3,0,0"/>
-            <TextBox Grid.Column="1"  Width="300" IsReadOnly="True" IsReadOnlyCaretVisible="True" Text="{Binding IconPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBox Grid.Column="1"  Width="300" IsReadOnly="True" IsReadOnlyCaretVisible="True" Text="{Binding IconPath, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
             <Button Grid.Column="2" Content="Browse" Margin="5,0,0,0" Command="{s:Action BrowseIcon}" />
 
         </Grid>
