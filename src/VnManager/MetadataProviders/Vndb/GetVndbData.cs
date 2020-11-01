@@ -24,9 +24,9 @@ namespace VnManager.MetadataProviders.Vndb
         private readonly Stopwatch stopwatch = new Stopwatch();
         private readonly TimeSpan maxTime = TimeSpan.FromMinutes(3);
         private bool _didErrorOccur = false;
-        public async Task GetDataAsync(AddItemDbModel entry)
+        public async Task GetDataAsync(int gameId)
         {
-            uint vnid = (uint)entry.GameId;
+            uint vnId = (uint)gameId;
             try
             {
                 using (var client = new VndbSharp.Vndb(true))
@@ -43,12 +43,12 @@ namespace VnManager.MetadataProviders.Vndb
                     RequestOptions ro = new RequestOptions { Count = 25 };
                     stopwatch.Start();
                     App.StatusBar.InfoText = App.ResMan.GetString("DownVnInfo");
-                    var visualNovel = await GetVisualNovelAsync(client, vnid);
+                    var visualNovel = await GetVisualNovelAsync(client, vnId);
                     current += increment;
                     App.StatusBar.ProgressBarValue = current;
 
                     App.StatusBar.InfoText = App.ResMan.GetString("DownReleasesInfo");
-                    var releases = await GetReleasesAsync(client, vnid, ro);
+                    var releases = await GetReleasesAsync(client, vnId, ro);
                     current += increment;
                     App.StatusBar.ProgressBarValue = current;
 
@@ -59,7 +59,7 @@ namespace VnManager.MetadataProviders.Vndb
                     App.StatusBar.ProgressBarValue = current;
 
                     App.StatusBar.InfoText = App.ResMan.GetString("DownCharacterInfo");
-                    var characters = await GetCharactersAsync(client, vnid, ro);
+                    var characters = await GetCharactersAsync(client, vnId, ro);
                     current += increment;
                     App.StatusBar.ProgressBarValue = current;
 
@@ -84,7 +84,7 @@ namespace VnManager.MetadataProviders.Vndb
                     {
                         //run code to add info to database
                         
-                        await SaveVnDataToDb.SortVnInfoAsync(entry, visualNovel, releases, producers, characters, staff, current);
+                        await SaveVnDataToDb.SortVnInfoAsync(visualNovel, releases, producers, characters, staff, current);
                     }
 
                     

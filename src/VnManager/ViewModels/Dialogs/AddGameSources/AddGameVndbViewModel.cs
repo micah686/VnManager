@@ -24,8 +24,11 @@ using VndbSharp.Models.Errors;
 using VndbSharp.Models.VisualNovel;
 using VnManager.Helpers;
 using VnManager.Helpers.Vndb;
+using VnManager.MetadataProviders;
+using VnManager.Models;
 using VnManager.Models.Db;
 using VnManager.Models.Db.User;
+using VnManager.ViewModels.UserControls;
 using VnManager.ViewModels.Windows;
 using static VnManager.ViewModels.Dialogs.AddGameSources.AddGameMainViewModel;
 
@@ -294,6 +297,8 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             bool result = await ValidateAsync();
             if (result == true)
             {
+                SetGameDataEntry();
+
                 IsLockDown = false;
                 parent.CanChangeSource = true;
                 parent.RequestClose(true);
@@ -303,6 +308,23 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             parent.CanChangeSource = true;
         }
 
+        private void SetGameDataEntry()
+        {
+            var gameEntry = new AddItemDbModel
+            {
+                SourceType = AddGameSourceType.Vndb,
+                ExeType = ExeType,
+                IsCollectionEnabled = ExeType == ExeTypeEnum.Collection,
+                ExeCollection = null,
+                GameId = VnId,
+                ExePath = ExePath,
+                IsIconEnabled = IsIconChecked,
+                IconPath = IconPath,
+                IsArgumentsEnabled = IsArgsChecked,
+                ExeArguments = ExeArguments
+            };
+            MetadataCommon.SetGameEntryData(gameEntry);
+        }
         
 
         public void Cancel()

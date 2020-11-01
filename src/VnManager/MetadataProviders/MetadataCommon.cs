@@ -5,15 +5,19 @@ using AdysTech.CredentialManager;
 using LiteDB;
 using Stylet;
 using StyletIoC;
+using VnManager.MetadataProviders.Vndb;
 using VnManager.Models;
 using VnManager.Models.Db;
 using VnManager.Models.Db.User;
+using VnManager.ViewModels.Dialogs.AddGameSources;
 using VnManager.ViewModels.UserControls;
 
 namespace VnManager.MetadataProviders
 {
     internal static class MetadataCommon
     {
+        private static AddItemDbModel _addItemDbModel = null;
+        
         public static void SaveUserData(AddItemDbModel data)
         {
             App.StatusBar.IsWorking = true;
@@ -60,5 +64,21 @@ namespace VnManager.MetadataProviders
             App.StatusBar.StatusString = "";
             App.StatusBar.IsDatabaseProcessing = false;
         }
+
+        public static async void SetGameEntryData(AddItemDbModel gameEntry)
+        {
+            _addItemDbModel = gameEntry;
+            if(_addItemDbModel == null) return;
+            SaveUserData(gameEntry);
+
+            if (_addItemDbModel.SourceType == AddGameSourceType.Vndb)
+            {
+                GetVndbData getData = new GetVndbData();
+                await getData.GetDataAsync(gameEntry.GameId);
+            }
+
+            _addItemDbModel = null;
+        }
+
     }
 }

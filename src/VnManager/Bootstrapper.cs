@@ -43,8 +43,6 @@ namespace VnManager
             builder.Bind(typeof(IDialogService)).To(typeof(DialogService));
 
             builder.Bind<StatusBarViewModel>().ToSelf().InSingletonScope();
-            builder.Bind<AddGameNoSourceViewModel>().ToSelf().InSingletonScope();
-            builder.Bind<AddGameVndbViewModel>().ToSelf().InSingletonScope();
             builder.Bind<IMessageBoxViewModel>().To<CustomMsgBoxViewModel>();
         }
 

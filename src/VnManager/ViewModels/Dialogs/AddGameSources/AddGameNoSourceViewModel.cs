@@ -13,6 +13,8 @@ using MvvmDialogs.FrameworkDialogs.OpenFile;
 using Stylet;
 using StyletIoC;
 using VnManager.Helpers;
+using VnManager.MetadataProviders;
+using VnManager.Models;
 using VnManager.Models.Db;
 using VnManager.Models.Db.User;
 using VnManager.ViewModels.Windows;
@@ -109,9 +111,28 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             bool result = await ValidateAsync();
             if (result == true)
             {
+                SetGameDataEntry();
                 var parent = (AddGameMainViewModel)Parent;
                 parent.RequestClose(true);
             }
+        }
+
+        private void SetGameDataEntry()
+        {
+            var gameEntry = new AddItemDbModel
+            {
+                SourceType = AddGameSourceType.NoSource,
+                ExeType = ExeTypeEnum.Normal,
+                IsCollectionEnabled = false,
+                ExeCollection = null,
+                GameId = 0,
+                ExePath = ExePath,
+                IsIconEnabled = IsIconChecked,
+                IconPath = IconPath,
+                IsArgumentsEnabled = IsArgsChecked,
+                ExeArguments = ExeArguments
+            };
+            MetadataCommon.SetGameEntryData(gameEntry);
         }
 
         public void Cancel()
