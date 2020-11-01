@@ -205,6 +205,15 @@ namespace VnManager.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Browse for Cover Image.
+        /// </summary>
+        public static string BrowseForCover {
+            get {
+                return ResourceManager.GetString("BrowseForCover", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Browse for Game.
         /// </summary>
         public static string BrowseForGame {
@@ -282,6 +291,15 @@ namespace VnManager.Strings {
         public static string ConfirmPassword {
             get {
                 return ResourceManager.GetString("ConfirmPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cover Image:.
+        /// </summary>
+        public static string CoverImage {
+            get {
+                return ResourceManager.GetString("CoverImage", resourceCulture);
             }
         }
         
@@ -1074,6 +1092,15 @@ namespace VnManager.Strings {
         public static string Submit {
             get {
                 return ResourceManager.GetString("Submit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Title:.
+        /// </summary>
+        public static string Title {
+            get {
+                return ResourceManager.GetString("Title", resourceCulture);
             }
         }
         

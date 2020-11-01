@@ -30,5 +30,14 @@ namespace VnManager.Models.Db.User
         public string IconPath { get; set; }
         public string Arguments { get; set; }
         public string[] Categories { get; set; }
+
+        /// <summary>
+        /// CoverPath should ONLY be used for NoSource games
+        /// </summary>
+        public string CoverPath { get; set; }
+        /// <summary>
+        /// Title should ONLY be used for NoSource games
+        /// </summary>
+        public string Title { get; set; }
     }
 }

@@ -165,6 +165,9 @@
   <data name="BrowseExe" xml:space="preserve">
     <value>Browse Exe</value>
   </data>
+  <data name="BrowseForCover" xml:space="preserve">
+    <value>Browse for Cover Image</value>
+  </data>
   <data name="BrowseForGame" xml:space="preserve">
     <value>Browse for Game</value>
   </data>
@@ -191,6 +194,9 @@
   </data>
   <data name="ConfirmPassword" xml:space="preserve">
     <value>Confirm Password:</value>
+  </data>
+  <data name="CoverImage" xml:space="preserve">
+    <value>Cover Image:</value>
   </data>
   <data name="CreatePassTitle" xml:space="preserve">
     <value>Set a password</value>
@@ -455,6 +461,9 @@
   </data>
   <data name="Submit" xml:space="preserve">
     <value>Submit</value>
+  </data>
+  <data name="Title" xml:space="preserve">
+    <value>Title:</value>
   </data>
   <data name="TotalProgressColon" xml:space="preserve">
     <value>Total Progress:</value>

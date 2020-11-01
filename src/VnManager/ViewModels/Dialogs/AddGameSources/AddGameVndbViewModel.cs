@@ -36,7 +36,8 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
 {
     public class AddGameVndbViewModel: Screen
     {
-
+        #region Properties
+        private readonly OpenFileDialogSettings _defaultOpenFileDialogSettings;
         internal readonly List<MultiExeGamePaths> ExeCollection = new List<MultiExeGamePaths>();
         internal VndbResponse<VisualNovel> VnNameList;
         public BindableCollection<string> SuggestedNamesCollection { get; private set; }
@@ -115,6 +116,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
         }
 
         private bool _isArgsChecked;
+
         public bool IsArgsChecked
         {
             get => _isArgsChecked;
@@ -131,6 +133,10 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             }
         }
 
+        #endregion
+
+        
+
 
         private readonly IWindowManager _windowManager;
         private readonly IDialogService _dialogService;
@@ -143,6 +149,15 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             IsNotExeCollection = true;
             CanChangeVnName = true;
             SuggestedNamesCollection = new BindableCollection<string>();
+
+            _defaultOpenFileDialogSettings = new OpenFileDialogSettings
+            {
+                FileName = "",
+                DereferenceLinks = true,
+                CheckPathExists = true,
+                CheckFileExists = true,
+                ValidateNames = true
+            };
         }
 
 
@@ -238,17 +253,11 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
 
         public void BrowseExe()
         {
-            var settings = new OpenFileDialogSettings
-            {
-                Title = "Browse for Game",
-                DefaultExt = ".exe",
-                Filter = "Applications (*.exe)|*.exe",
-                FileName = "",
-                DereferenceLinks = true,
-                CheckPathExists = true,
-                CheckFileExists = true,
-                ValidateNames = true
-            };
+            var settings = _defaultOpenFileDialogSettings;
+            settings.Title = App.ResMan.GetString("BrowseExe") ?? string.Empty;
+            settings.DefaultExt = ".exe";
+            settings.Filter = "Applications (*.exe)|*.exe";
+
             bool? result = _dialogService.ShowOpenFileDialog(this, settings);
             if (result == true)
             {
@@ -271,17 +280,11 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
 
         public void BrowseIcon()
         {
-            var settings = new OpenFileDialogSettings
-            {
-                Title = "Browse for Game Icon",
-                DefaultExt = ".ico",
-                Filter = "Icons (*.ico,*.exe)|*.ico;*.exe",
-                FileName = "",
-                DereferenceLinks = true,
-                CheckPathExists = true,
-                CheckFileExists = true,
-                ValidateNames = true
-            };
+            var settings = _defaultOpenFileDialogSettings;
+            settings.Title = App.ResMan.GetString("BrowseForIcon") ?? string.Empty;
+            settings.DefaultExt = ".ico";
+            settings.Filter = "Icons (*.ico,*.exe)|*.ico;*.exe";
+
             bool? result = _dialogService.ShowOpenFileDialog(this, settings);
             if (result == true)
             {

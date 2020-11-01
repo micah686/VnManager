@@ -19,5 +19,14 @@ namespace VnManager.Models
         public string IconPath { get; set; }
         public bool IsArgumentsEnabled { get; set; }
         public string ExeArguments { get; set; }
+
+        /// <summary>
+        /// CoverPath should ONLY be used for NoSource games
+        /// </summary>
+        public string CoverPath { get; set; }
+        /// <summary>
+        /// Title should ONLY be used for NoSource games
+        /// </summary>
+        public string Title { get; set; }
     }
 }

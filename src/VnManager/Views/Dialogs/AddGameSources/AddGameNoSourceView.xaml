@@ -32,19 +32,37 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <TextBlock Grid.Row="0" Margin="0,10,0,0" Text="Choose a Game that is not associated with any metadata provider"/>
 
         <Grid Grid.Row="1" Margin="0,10,0,0">
             <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{x:Static res:Resources.Title}" Width="40" Margin="0,3,0,0"/>
+                <TextBox  Width="300" Height="25" Text="{Binding Title, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            </StackPanel>
+        </Grid>
+
+        <Grid Grid.Row="2" Margin="0,10,0,0">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{x:Static res:Resources.CoverImage}" Width="80" Margin="0,3,0,0"/>
+                <TextBox  Width="300" Height="25" IsReadOnly="True" IsReadOnlyCaretVisible="True" Text="{Binding CoverPath, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                <Button  Content="Browse" Height="25" Margin="5,0,0,0" Command="{s:Action BrowseCover}"/>
+            </StackPanel>
+        </Grid>
+
+        <Grid Grid.Row="3" Margin="0,10,0,0">
+            <StackPanel Orientation="Horizontal">
                 <TextBlock Text="Path:" Width="40" Margin="0,3,0,0"/>
-                <TextBox Grid.Column="1"  Width="300" Height="25" IsReadOnly="True" IsReadOnlyCaretVisible="True" Text="{Binding ExePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                <Button Grid.Column="2" Content="Browse" Height="25" Margin="5,0,0,0" Command="{s:Action BrowseExe}"/>
+                <TextBox   Width="300" Height="25" IsReadOnly="True" IsReadOnlyCaretVisible="True" Text="{Binding ExePath, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                <Button  Content="Browse" Height="25" Margin="5,0,0,0" Command="{s:Action BrowseExe}"/>
             </StackPanel>
         </Grid>
 
 
-        <Grid Grid.Row="2" Margin="0,10,0,15">
+        <Grid Grid.Row="4" Margin="0,10,0,15">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
@@ -53,7 +71,7 @@
             <CheckBox Grid.Column="1" x:Name="NoSrcArgsChk" Content="Custom Arguments" Margin="10,0,0,0" IsChecked="{Binding IsArgsChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
         </Grid>
 
-        <Grid Grid.Row="3" Margin="0,0,0,15">
+        <Grid Grid.Row="5" Margin="0,0,0,15">
             <Grid.IsEnabled>
                 <MultiBinding Converter="{StaticResource BooleanAndConverter}">
                     <Binding ElementName="NoSrcIconChk" Path="IsChecked"/>
@@ -70,7 +88,7 @@
 
         </Grid>
 
-        <Grid Grid.Row="4" Margin="0,0,0,15">
+        <Grid Grid.Row="6" Margin="0,0,0,15">
             <Grid.IsEnabled>
                 <MultiBinding Converter="{StaticResource BooleanAndConverter}">
                     <Binding ElementName="NoSrcArgsChk" Path="IsChecked"/>
@@ -88,7 +106,7 @@
 
 
 
-        <Grid Grid.Row="5" Margin="0,5,0,10">
+        <Grid Grid.Row="7" Margin="0,5,0,10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>

@@ -55,6 +55,10 @@ namespace VnManager.MetadataProviders
                     entry.ExePath = data.ExePath;
                     entry.IconPath = data.IconPath;
                     entry.Arguments = data.ExeArguments;
+                    //These last 2 should only have data on a NoSourceGame
+                    entry.CoverPath = data.CoverPath;
+                    entry.Title = data.Title;
+                    
                     gamesList.Add(entry);
                 }
                 dbUserData.Insert(gamesList);
