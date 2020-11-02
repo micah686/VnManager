@@ -300,7 +300,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             bool result = await ValidateAsync();
             if (result == true)
             {
-                SetGameDataEntry();
+                await SetGameDataEntry();
 
                 IsLockDown = false;
                 parent.CanChangeSource = true;
@@ -311,7 +311,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             parent.CanChangeSource = true;
         }
 
-        private void SetGameDataEntry()
+        private async Task SetGameDataEntry()
         {
             var gameEntry = new AddItemDbModel
             {
@@ -326,7 +326,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
                 IsArgumentsEnabled = IsArgsChecked,
                 ExeArguments = ExeArguments
             };
-            MetadataCommon.SetGameEntryData(gameEntry);
+            await MetadataCommon.SetGameEntryDataAsync(gameEntry);
         }
         
 

@@ -17,8 +17,7 @@ namespace VnManager.MetadataProviders
 {
     internal static class MetadataCommon
     {
-        private static AddItemDbModel _addItemDbModel = null;
-        
+
         public static void SaveUserData(AddItemDbModel data)
         {
             App.StatusBar.IsWorking = true;
@@ -70,19 +69,18 @@ namespace VnManager.MetadataProviders
             App.StatusBar.IsDatabaseProcessing = false;
         }
 
-        public static async Task SetGameEntryData(AddItemDbModel gameEntry)
+        public static async Task SetGameEntryDataAsync(AddItemDbModel gameEntry)
         {
-            _addItemDbModel = gameEntry;
-            if(_addItemDbModel == null) return;
+            var addItemDbModel = gameEntry;
+            if(addItemDbModel == null) return;
             SaveUserData(gameEntry);
 
-            if (_addItemDbModel.SourceType == AddGameSourceType.Vndb)
+            if (addItemDbModel.SourceType == AddGameSourceType.Vndb)
             {
                 GetVndbData getData = new GetVndbData();
                 await getData.GetDataAsync(gameEntry.GameId);
             }
 
-            _addItemDbModel = null;
         }
 
     }

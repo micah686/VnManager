@@ -126,13 +126,13 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             bool result = await ValidateAsync();
             if (result == true)
             {
-                SetGameDataEntry();
+                await SetGameDataEntry();
                 var parent = (AddGameMainViewModel)Parent;
                 parent.RequestClose(true);
             }
         }
 
-        private void SetGameDataEntry()
+        private async Task SetGameDataEntry()
         {
             var gameEntry = new AddItemDbModel
             {
@@ -147,9 +147,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
                 IsArgumentsEnabled = IsArgsChecked,
                 ExeArguments = ExeArguments
             };
-#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-            MetadataCommon.SetGameEntryData(gameEntry);
-#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+            await MetadataCommon.SetGameEntryDataAsync(gameEntry);
         }
 
         public void Cancel()

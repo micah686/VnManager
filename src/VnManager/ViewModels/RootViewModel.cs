@@ -28,8 +28,8 @@ namespace VnManager.ViewModels
         private int _windowButtonPressedCounter = 0;
 
         public static RootViewModel Instance { get; private set; }
-        public string WindowTitle { get; } = 
-            string.Format($"{App.ResMan.GetString("ApplicationTitle", CultureInfo.InvariantCulture)} {App.VersionString}",CultureInfo.InvariantCulture);
+
+        public string WindowTitle => FormatWindowTitle();
 
         #region SettingsPressed
         private bool _isSettingsPressed;
@@ -239,6 +239,19 @@ namespace VnManager.ViewModels
             App.UserSettings = UserSettingsHelper.ReadUserSettings();
             var useEncryption = App.UserSettings.RequirePasswordEntry;
             return !useEncryption;
+        }
+
+        /// <summary>
+        /// Creates a formatted window title
+        /// </summary>
+        /// <returns></returns>
+        private string FormatWindowTitle()
+        {
+            var appName = App.ResMan.GetString("ApplicationTitle", CultureInfo.InvariantCulture);
+            var appVersion = App.VersionString;
+
+            var formatted = string.Format($"{appName} {appVersion}", CultureInfo.InvariantCulture);
+            return formatted;
         }
 
 
