@@ -245,12 +245,12 @@ namespace VnManager.ViewModels
         /// Creates a formatted window title
         /// </summary>
         /// <returns></returns>
-        private string FormatWindowTitle()
+        private static string FormatWindowTitle()
         {
             var appName = App.ResMan.GetString("ApplicationTitle", CultureInfo.InvariantCulture);
             var appVersion = App.VersionString;
 
-            var formatted = string.Format($"{appName} {appVersion}", CultureInfo.InvariantCulture);
+            var formatted = string.Format(CultureInfo.InvariantCulture, $"{appName} {appVersion}");
             return formatted;
         }
 

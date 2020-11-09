@@ -438,6 +438,9 @@
   <data name="SearchCategory" xml:space="preserve">
     <value>Search Category</value>
   </data>
+  <data name="SearchCharacter" xml:space="preserve">
+    <value>Search Character</value>
+  </data>
   <data name="SelectTheme" xml:space="preserve">
     <value>Select Theme:</value>
   </data>

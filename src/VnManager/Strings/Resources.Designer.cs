@@ -1024,6 +1024,15 @@ namespace VnManager.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Search Character.
+        /// </summary>
+        public static string SearchCharacter {
+            get {
+                return ResourceManager.GetString("SearchCharacter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select Theme:.
         /// </summary>
         public static string SelectTheme {

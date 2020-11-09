@@ -16,91 +16,46 @@
              d:DataContext="{d:DesignInstance vm:VndbCharactersViewModel}"
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid >
-        <Grid x:Name="OuterBlurContainer">
-            <Grid x:Name="InnerBlurContainer">
-                <Image Stretch="UniformToFill" Source="{Binding BackgroundImage, Mode=OneWay}"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <StackPanel Grid.Row="0" x:Name="TopBar" Orientation="Horizontal" VerticalAlignment="Center" Margin="15">
+            <Grid MouseLeftButtonUp="{s:Action CloseClick}">
+                <iconPacks:PackIconMaterial Kind="ArrowLeft" Foreground="{DynamicResource {x:Static adonisUi:Brushes.ForegroundBrush}}">
+                    <iconPacks:PackIconMaterial.Effect>
+                        <DropShadowEffect Color="Black" ShadowDepth="0" BlurRadius="7"/>
+                    </iconPacks:PackIconMaterial.Effect>
+                </iconPacks:PackIconMaterial>
+            </Grid>
+            
+        </StackPanel>
+
+        <Grid Grid.Row="1" x:Name="MainContent">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="150"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid Grid.Column="0" x:Name="CharacterListBox" Margin="10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="5"/>
+                </Grid.RowDefinitions>
+                <TextBox Grid.Row="0" adonisExtensions:WatermarkExtension.Watermark="{x:Static res:Resources.SearchCharacter}" Text="{Binding CharacterNameSearch, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         TextChanged="{s:Action SearchCharacters}"/>
+                <ListBox Grid.Row="1" ItemsSource="{Binding CharacterNamesCollection, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" 
+                         Margin="0,5,0,5" adonisExtensions:ScrollViewerExtension.VerticalScrollBarExpansionMode="NeverExpand"/>
+            </Grid>
+
+            <Grid Grid.Column="1" x:Name="CharacterContent">
+                <TextBlock Text="{Binding TestBnd, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
             </Grid>
         </Grid>
 
-        <controls:BlurryUserControl Height="{Binding ElementName=CharUserControl, Path=Height, Mode=TwoWay}" 
-                                    Width="{Binding ElementName=CharUserControl, Path=Width, Mode=TwoWay}"
-                                    Background="Transparent"
-                                    Panel.ZIndex="100"
-                                    BlurContainer="{Binding ElementName=OuterBlurContainer}"
-                                    BlurRadius="40"
-                                    Magnification="0.25">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="8*"/>
-                    <ColumnDefinition Width="2*"/>
-                </Grid.ColumnDefinitions>
-
-                <Grid Grid.Row="0" Grid.Column="1" ZIndex="1">
-                    <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Width="32" Height="32"  Margin="0,5,20,0" Background="#01FFFFFF" MouseLeftButtonDown="{s:Action CloseClick}">
-                        <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.WindowClose}" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Black" BorderThickness="0">
-                            <iconPacks:PackIconMaterial.Effect>
-                                <DropShadowEffect Color="Crimson" ShadowDepth="0" BlurRadius="7"/>
-                            </iconPacks:PackIconMaterial.Effect>
-                        </iconPacks:PackIconMaterial>
-                    </Grid>
-                </Grid>
-
-                <Grid Grid.Row="1" Grid.Column="0" Margin="10,100,10,0" >
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-                    <Label Grid.Row="0" Content="{Binding MainTitle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="24" FontWeight="DemiBold"
-                       Margin="30,0,0,0"/>
-
-
-
-                    <StackPanel Grid.Row="3" Grid.Column="0" Orientation="Horizontal" Margin="0,5,0,0">
-                        <Button Content="Info" Command="{s:Action ShowInfo}"/>
-                        <Button Content="Screens" Margin="15,0,0,0" Command="{s:Action ShowScreens}"/>
-                    </StackPanel>
-
-                </Grid>
-
-                <Grid Grid.Row="1" Grid.Column="1"  Grid.RowSpan="2" Margin="15,65,15,0">
-                    <Border BorderThickness="3" BorderBrush="Black">
-                        <Image  MaxWidth="256" MaxHeight="400"  RenderOptions.BitmapScalingMode="Fant" Source="{Binding CoverImage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                    </Border>
-
-                </Grid>
-
-                <Grid Grid.Row="2" Grid.Column="0" >
-                    <TextBlock Text="Replace this with a BBCode block from MUI, so it supports hyperlinks"/>
-
-                </Grid>
-
-                <StackPanel Grid.Row="3" Grid.Column="1"  Margin="15,10,0,0">
-                    <Label Content="Title: Muv Luv"/>
-                    <Label Margin="0,0,0,0" Content="Origninal Title: ClannadJpn"/>
-                    <TextBlock Margin="0,5,0,0" Text="Aliases: Clannad, Claddan" TextWrapping="Wrap"/>
-                    <TextBlock Text="Released: Jun 26, 2020"/>
-                    <TextBlock Text="Length: Very Long"/>
-                    <TextBlock Text="Popularity:99.99"/>
-                    <TextBlock Text="Rating:9"/>
-                    <Label Content="Languages: Listbox"></Label>
-                    <Label Content="Original Languages: Listbox"></Label>
-                    <Label Content="Platforms: Listbox"></Label>
-                    <Label Content="Producer:Key"/>
-                </StackPanel>
-
-            </Grid>
-
-
-        </controls:BlurryUserControl>
-
+        
 
         <!--End of Control -->
     </Grid>
