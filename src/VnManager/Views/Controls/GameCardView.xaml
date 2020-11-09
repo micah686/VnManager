@@ -11,7 +11,7 @@
              xmlns:ext="clr-namespace:VnManager.Extensions"
              xmlns:controls="clr-namespace:BlurryControls.Controls;assembly=BlurryControls"
              mc:Ignorable="d" d:DesignWidth="130" d:DesignHeight="250"
-              MaxWidth="130" MaxHeight="270"
+              MaxWidth="140" MaxHeight="270"
              d:DataContext="{d:DesignInstance {x:Type vm:GameCardViewModel}}">
     <UserControl.Resources>
         <s:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
