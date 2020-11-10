@@ -9,6 +9,7 @@
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:uc="clr-namespace:VnManager.ViewModels.UserControls.MainPage.Vndb"
              xmlns:controls="clr-namespace:BlurryControls.Controls;assembly=BlurryControls"
+             xmlns:adonisUi="clr-namespace:AdonisUI;assembly=AdonisUI"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              d:DataContext="{d:DesignInstance uc:VndbScreensViewModel}">
@@ -19,76 +20,80 @@
         <s:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
     </UserControl.Resources>
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" x:Name="TopBar" Orientation="Horizontal" VerticalAlignment="Center" Margin="15,15,15,0">
+            <Grid MouseLeftButtonUp="{s:Action CloseClick}" Height="24" Width="24" Background="Transparent">
+                <iconPacks:PackIconMaterial Kind="ArrowLeft" Foreground="{DynamicResource {x:Static adonisUi:Brushes.ForegroundBrush}}" Height="24" Width="24">
+                    <iconPacks:PackIconMaterial.Effect>
+                        <DropShadowEffect Color="Black" ShadowDepth="0" BlurRadius="7"/>
+                    </iconPacks:PackIconMaterial.Effect>
+                </iconPacks:PackIconMaterial>
+            </Grid>
+        </StackPanel>
+
+        <Grid Grid.Row="1" x:Name="MainContent">
             <Grid.RowDefinitions>
                 <RowDefinition Height="50"/>
                 <RowDefinition Height="7*"/>
                 <RowDefinition Height="80"/>
-        </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="8*"/>
-                <ColumnDefinition Width="1*"/>
-            </Grid.ColumnDefinitions>
+            </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" Margin="10,10,0,0" Height="25">
-            <Button Content="Info" Command="{s:Action ShowInfo}" Height="25"/>
-            <Button Content="Characters" Margin="15,0,0,0" Command="{s:Action ShowCharacters}" Height="25"/>
-            
-        </StackPanel>
+            <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" Margin="10,10,0,0" Height="25">
+                <Button Content="Info" Command="{s:Action ShowInfo}" Height="25"/>
+                <Button Content="Characters" Margin="15,0,0,0" Command="{s:Action ShowCharacters}" Height="25"/>
 
-        <Grid Grid.Row="0" Grid.Column="1">
-            <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Width="32" Height="32"  Margin="0,5,20,0" Background="#01FFFFFF" MouseLeftButtonDown="{s:Action CloseClick}">
-                <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.WindowClose}" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Black" BorderThickness="0">
-                    <iconPacks:PackIconMaterial.Effect>
-                        <DropShadowEffect Color="Crimson" ShadowDepth="0" BlurRadius="7"/>
-                    </iconPacks:PackIconMaterial.Effect>
-                </iconPacks:PackIconMaterial>
-            </Grid>
-        </Grid>
+            </StackPanel>
 
-        <Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="15">
-            <Image Source="{Binding MainImage.Image, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
-            <Grid x:Name="nsfwImage" Visibility="{Binding MainImage.IsNsfw, Converter={StaticResource BoolToVisibilityConverter}}">
-                <Grid x:Name="OuterBlurContainer">
-                    <Grid x:Name="InnerBlurContainer">
-                        <Image Stretch="UniformToFill" Source="{Binding MainImage.Image, Mode=OneWay}" RenderOptions.BitmapScalingMode="Fant"
+            <Grid Grid.Row="1" Grid.Column="0" Margin="15">
+                <Image Source="{Binding MainImage.Image, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                <Grid x:Name="NsfwImage" Visibility="{Binding MainImage.IsNsfw, Converter={StaticResource BoolToVisibilityConverter}}">
+                    <Grid x:Name="OuterBlurContainer">
+                        <Grid x:Name="InnerBlurContainer">
+                            <Image Stretch="UniformToFill" Source="{Binding MainImage.Image, Mode=OneWay}" RenderOptions.BitmapScalingMode="Fant"
                                Height="{Binding ElementName=ScreenUserControl, Path=Height, Mode=TwoWay}" 
                                Width="{Binding ElementName=ScreenUserControl, Path=Width, Mode=TwoWay}"/>
+                        </Grid>
                     </Grid>
-                </Grid>
-                <controls:BlurryUserControl Height="{Binding ElementName=ScreenUserControl, Path=Height, Mode=TwoWay}" 
+                    <controls:BlurryUserControl Height="{Binding ElementName=ScreenUserControl, Path=Height, Mode=TwoWay}" 
                                             Width="{Binding ElementName=ScreenUserControl, Path=Width, Mode=TwoWay}"
                                             Background="Transparent"
                                             Panel.ZIndex="100"
                                             BlurContainer="{Binding ElementName=OuterBlurContainer}"
                                             BlurRadius="80"
                                             Magnification="0.45"/>
+                </Grid>
+
             </Grid>
 
-        </Grid>
-
-        <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0,5,0,0" >
-            <ListBox ItemsSource="{Binding ScreenshotCollection}" HorizontalAlignment="Center"  VerticalAlignment="Top" ScrollViewer.HorizontalScrollBarVisibility="Auto" Margin="2"
+            <Grid Grid.Row="2" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0,5,0,0" >
+                <ListBox ItemsSource="{Binding ScreenshotCollection}" HorizontalAlignment="Center"  VerticalAlignment="Top" ScrollViewer.HorizontalScrollBarVisibility="Auto" Margin="2"
                      SelectedIndex="{Binding SelectedScreenIndex}">
-                <ListBox.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <WrapPanel Orientation="Horizontal"/>
-                    </ItemsPanelTemplate>
-                </ListBox.ItemsPanel>
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <Grid >
-                            <Image  Source="{Binding Image}" />
-                            <Image Source="{Binding Image}" 
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid >
+                                <Image  Source="{Binding Image}" />
+                                <Image Source="{Binding Image}" 
                                    Visibility="{Binding IsNsfw, Converter={StaticResource BoolToVisibilityConverter}}" >
-                                <Image.Effect>
-                                    <BlurEffect RenderingBias="Quality" KernelType="Box" Radius="5"/>
-                                </Image.Effect>
-                            </Image>
-                        </Grid>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+                                    <Image.Effect>
+                                        <BlurEffect RenderingBias="Quality" KernelType="Box" Radius="5"/>
+                                    </Image.Effect>
+                                </Image>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
 
+            </Grid>
         </Grid>
     </Grid>
+    
 </UserControl>

@@ -20,16 +20,15 @@
             <RowDefinition Height="50"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        
-        <StackPanel Grid.Row="0" x:Name="TopBar" Orientation="Horizontal" VerticalAlignment="Center" Margin="15">
-            <Grid MouseLeftButtonUp="{s:Action CloseClick}">
-                <iconPacks:PackIconMaterial Kind="ArrowLeft" Foreground="{DynamicResource {x:Static adonisUi:Brushes.ForegroundBrush}}">
+
+        <StackPanel Grid.Row="0" x:Name="TopBar" Orientation="Horizontal" VerticalAlignment="Center" Margin="15,15,15,0">
+            <Grid MouseLeftButtonUp="{s:Action CloseClick}" Height="24" Width="24" Background="Transparent">
+                <iconPacks:PackIconMaterial Kind="ArrowLeft" Foreground="{DynamicResource {x:Static adonisUi:Brushes.ForegroundBrush}}" Height="24" Width="24">
                     <iconPacks:PackIconMaterial.Effect>
                         <DropShadowEffect Color="Black" ShadowDepth="0" BlurRadius="7"/>
                     </iconPacks:PackIconMaterial.Effect>
                 </iconPacks:PackIconMaterial>
             </Grid>
-            
         </StackPanel>
 
         <Grid Grid.Row="1" x:Name="MainContent">
