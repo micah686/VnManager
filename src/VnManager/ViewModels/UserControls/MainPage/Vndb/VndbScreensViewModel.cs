@@ -65,7 +65,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
         public static void CloseClick()
         {
             RootViewModel.Instance.ActivateMainClick();
-            VndbContentViewModel.Instance.Cleanup();
+            VndbContentViewModel.Cleanup();
         }
 
 

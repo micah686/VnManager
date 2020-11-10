@@ -72,14 +72,14 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
 
 
 
-        private ExeTypeEnum _exeType;
-        public ExeTypeEnum ExeType
+        private ExeType _exeType;
+        public ExeType ExeType
         {
             get => _exeType;
             set
             {
                 SetAndNotify(ref _exeType, value);
-                IsNotExeCollection = _exeType != ExeTypeEnum.Collection;
+                IsNotExeCollection = _exeType != ExeType.Collection;
             }
         }
 
@@ -300,7 +300,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             bool result = await ValidateAsync();
             if (result == true)
             {
-                await SetGameDataEntry();
+                await SetGameDataEntryAsync();
 
                 IsLockDown = false;
                 parent.CanChangeSource = true;
@@ -311,13 +311,13 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             parent.CanChangeSource = true;
         }
 
-        private async Task SetGameDataEntry()
+        private async Task SetGameDataEntryAsync()
         {
             var gameEntry = new AddItemDbModel
             {
                 SourceType = AddGameSourceType.Vndb,
                 ExeType = ExeType,
-                IsCollectionEnabled = ExeType == ExeTypeEnum.Collection,
+                IsCollectionEnabled = ExeType == ExeType.Collection,
                 ExeCollection = null,
                 GameId = VnId,
                 ExePath = ExePath,
@@ -326,7 +326,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
                 IsArgumentsEnabled = IsArgsChecked,
                 ExeArguments = ExeArguments
             };
-            await MetadataCommon.SetGameEntryDataAsync(gameEntry);
+            await MetadataCommon.SaveGameEntryDataAsync(gameEntry);
         }
         
 
@@ -355,7 +355,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             ExePath = String.Empty;
             IconPath = String.Empty;
             ExeArguments= String.Empty;
-            ExeType = ExeTypeEnum.Normal;
+            ExeType = ExeType.Normal;
             IsIconChecked = false;
             IsArgsChecked = false;
         }
@@ -459,7 +459,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             }
         }
 
-        private static bool IsNotDuplicateVndbExe(string exePath, ExeTypeEnum exeType)
+        private static bool IsNotDuplicateVndbExe(string exePath, ExeType exeType)
         {
             //if type is normal and game id in db or exe in db
             try
@@ -471,17 +471,17 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
                     var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString()).Query().ToEnumerable();
                     switch (exeType)
                     {
-                        case ExeTypeEnum.Normal:
+                        case ExeType.Normal:
                         {
                             var count = dbUserData.Count(x => x.ExePath == exePath);
                             return count <= 0;
                         }
-                        case ExeTypeEnum.Launcher:
+                        case ExeType.Launcher:
                         {
                             var count = dbUserData.Count(x => x.ExePath == exePath);
                             return count <= 0;
                         }
-                        case ExeTypeEnum.Collection:
+                        case ExeType.Collection:
                             return true;
                         default:
                             throw new ArgumentOutOfRangeException($"Unknown Enum Source");
@@ -495,7 +495,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             }
         }
 
-        private static bool IsNotDuplicateId(int id, ExeTypeEnum exeType)
+        private static bool IsNotDuplicateId(int id, ExeType exeType)
         {
             try
             {
@@ -507,17 +507,17 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
                         .Where(x => x.SourceType == AddGameSourceType.Vndb).ToEnumerable();
                     switch (exeType)
                     {
-                        case ExeTypeEnum.Normal:
+                        case ExeType.Normal:
                         {
                             var count = dbUserData.Count(x => x.GameId == id);
                             return count <= 0;
                         }
-                        case ExeTypeEnum.Collection:
+                        case ExeType.Collection:
                         {
                             var count = dbUserData.Count(x => x.GameId == id);
                             return count <= 0;
                         }
-                        case ExeTypeEnum.Launcher:
+                        case ExeType.Launcher:
                             return true;
                         default:
                             throw new ArgumentOutOfRangeException($"Unknown Enum Source");

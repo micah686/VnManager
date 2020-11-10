@@ -52,7 +52,6 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
                 return;
             }
 
-            if(CharacterNameSearch.Length <1) return;
             List<string> validCharacters = _allCharacterNamesCollection.Where(characterName => characterName.ToUpperInvariant().Contains(CharacterNameSearch.ToUpperInvariant())).ToList();
             CharacterNamesCollection.Clear();
             CharacterNamesCollection.AddRange(validCharacters);
@@ -75,7 +74,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
         public static void CloseClick()
         {
             RootViewModel.Instance.ActivateMainClick();
-            VndbContentViewModel.Instance.Cleanup();
+            VndbContentViewModel.Cleanup();
         }
 
     }

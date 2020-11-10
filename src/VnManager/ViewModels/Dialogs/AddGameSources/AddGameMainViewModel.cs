@@ -51,5 +51,5 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
         }
     }
     public enum AddGameSourceType { NotSet, NoSource, Vndb }
-    public enum ExeTypeEnum { Normal, Launcher, Collection }
+    public enum ExeType { Normal, Launcher, Collection }
 }

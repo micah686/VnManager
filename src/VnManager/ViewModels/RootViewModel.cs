@@ -29,7 +29,7 @@ namespace VnManager.ViewModels
 
         public static RootViewModel Instance { get; private set; }
 
-        public string WindowTitle => FormatWindowTitle();
+        public static string WindowTitle => FormatWindowTitle();
 
         #region SettingsPressed
         private bool _isSettingsPressed;

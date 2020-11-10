@@ -126,18 +126,18 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             bool result = await ValidateAsync();
             if (result == true)
             {
-                await SetGameDataEntry();
+                await SetGameDataEntryAsync();
                 var parent = (AddGameMainViewModel)Parent;
                 parent.RequestClose(true);
             }
         }
 
-        private async Task SetGameDataEntry()
+        private async Task SetGameDataEntryAsync()
         {
             var gameEntry = new AddItemDbModel
             {
                 SourceType = AddGameSourceType.NoSource,
-                ExeType = ExeTypeEnum.Normal,
+                ExeType = ExeType.Normal,
                 IsCollectionEnabled = false,
                 ExeCollection = null,
                 GameId = 0,
@@ -147,7 +147,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
                 IsArgumentsEnabled = IsArgsChecked,
                 ExeArguments = ExeArguments
             };
-            await MetadataCommon.SetGameEntryDataAsync(gameEntry);
+            await MetadataCommon.SaveGameEntryDataAsync(gameEntry);
         }
 
         public void Cancel()

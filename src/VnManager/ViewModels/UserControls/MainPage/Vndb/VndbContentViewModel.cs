@@ -90,7 +90,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
         /// Cleanup Vndb views when pressing the close button
         /// Sets ContentViewModel Instance to null
         /// </summary>
-        internal void Cleanup()
+        internal static void Cleanup()
         {
             Instance = null;
             

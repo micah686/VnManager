@@ -99,7 +99,7 @@ namespace VnManager.ViewModels.UserControls
                 var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString());
                 var entry = new UserDataGames();
                 entry.SourceType = AddGameSourceType.Vndb;
-                entry.ExeType = ExeTypeEnum.Launcher;
+                entry.ExeType = ExeType.Launcher;
                 entry.Id = Guid.NewGuid();
                 entry.GameId = new Random().Next();
                 entry.LastPlayed = DateTime.UtcNow;

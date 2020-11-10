@@ -10,7 +10,7 @@ namespace VnManager.Models
     public class AddItemDbModel
     {
         public AddGameSourceType SourceType { get; set; }
-        public ExeTypeEnum ExeType { get; set; }
+        public ExeType ExeType { get; set; }
         public bool IsCollectionEnabled { get; set; }
         public  List<MultiExeGamePaths> ExeCollection { get; set; }
         public int GameId { get; set; }

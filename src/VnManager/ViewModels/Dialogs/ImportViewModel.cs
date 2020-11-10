@@ -305,46 +305,42 @@ namespace VnManager.ViewModels.Dialogs
 
                 foreach (var strId in gameIds)
                 {
-                    if (_didCancelImport) break;
-                    BlockClosing = true;
-                    CurrentProgressMsg = $"{App.ResMan.GetString("ImportDbProg1")}";
-                    var id = (uint)strId;
-                    var visualNovel = await getData.GetVisualNovelAsync(client, id);
-                    var releases = await getData.GetReleasesAsync(client, id, ro);
-                    uint[] producerIds = releases.SelectMany(x => x.Producers.Select(y => y.Id)).Distinct().ToArray();
-                    var producers = await getData.GetProducersAsync(client, producerIds, ro);
-                    var characters = await getData.GetCharactersAsync(client, id, ro);
-                    uint[] staffIds = visualNovel.Staff.Select(x => x.StaffId).Distinct().ToArray();
-                    var staff = await getData.GetStaffAsync(client, staffIds, ro);
+                    while (_didCancelImport == false)
+                    {
+                        BlockClosing = true;
+                        CurrentProgressMsg = $"{App.ResMan.GetString("ImportDbProg1")}";
+                        var id = (uint)strId;
+                        var visualNovel = await getData.GetVisualNovelAsync(client, id);
+                        var releases = await getData.GetReleasesAsync(client, id, ro);
+                        uint[] producerIds = releases.SelectMany(x => x.Producers.Select(y => y.Id)).Distinct().ToArray();
+                        var producers = await getData.GetProducersAsync(client, producerIds, ro);
+                        var characters = await getData.GetCharactersAsync(client, id, ro);
+                        uint[] staffIds = visualNovel.Staff.Select(x => x.StaffId).Distinct().ToArray();
+                        var staff = await getData.GetStaffAsync(client, staffIds, ro);
 
-                    CurrentProgressMsg = $"{App.ResMan.GetString("ImportDbProg2")}";
-                    SaveVnDataToDb.SaveVnInfo(visualNovel);
-                    SaveVnDataToDb.SaveVnCharacters(characters, id);
-                    SaveVnDataToDb.SaveVnReleases(releases);
-                    SaveVnDataToDb.SaveProducers(producers);
-                    SaveVnDataToDb.SaveStaff(staff, (int)id);
+                        CurrentProgressMsg = $"{App.ResMan.GetString("ImportDbProg2")}";
+                        SaveVnDataToDb.SaveVnInfo(visualNovel);
+                        SaveVnDataToDb.SaveVnCharacters(characters, id);
+                        SaveVnDataToDb.SaveVnReleases(releases);
+                        SaveVnDataToDb.SaveProducers(producers);
+                        SaveVnDataToDb.SaveStaff(staff, (int)id);
 
-                    CurrentProgressMsg = $"{App.ResMan.GetString("ImportDbProg3")}";
-                    await DownloadVndbContent.DownloadCoverImageAsync(id);
-                    await DownloadVndbContent.DownloadCharacterImagesAsync(id);
-                    CurrentProgressMsg = $"{App.ResMan.GetString("ImportDbProg4")}";
-                    await DownloadVndbContent.DownloadScreenshotsAsync(id);
+                        CurrentProgressMsg = $"{App.ResMan.GetString("ImportDbProg3")}";
+                        await DownloadVndbContent.DownloadCoverImageAsync(id);
+                        await DownloadVndbContent.DownloadCharacterImagesAsync(id);
+                        CurrentProgressMsg = $"{App.ResMan.GetString("ImportDbProg4")}";
+                        await DownloadVndbContent.DownloadScreenshotsAsync(id);
 
 
-                    TotalProgress += totalIncrement;
-                    count = count + 1;
-                    TotalProgressMsg = $"{App.ResMan.GetString("TotalProgressColon")} {count}/ {gameIds.Count}";
-                    BlockClosing = false;
+                        TotalProgress += totalIncrement;
+                        count = count + 1;
+                        TotalProgressMsg = $"{App.ResMan.GetString("TotalProgressColon")} {count}/ {gameIds.Count}";
+                        BlockClosing = false;
+                    }
+
                 }
 
-                if (_didCancelImport)
-                {
-                    ImportMessage = $"{App.ResMan.GetString("ImportDbCancel")}";
-                }
-                else
-                {
-                    ImportMessage = $"{App.ResMan.GetString("ImportComplete")}. \n {App.ResMan.GetString("CanCloseWindow")}";
-                }
+                ImportMessage = _didCancelImport ? $"{App.ResMan.GetString("ImportDbCancel")}" : $"{App.ResMan.GetString("ImportComplete")}. \n {App.ResMan.GetString("CanCloseWindow")}";
 
                 CurrentProgressMsg = $"{ App.ResMan.GetString("Done")}";
                 IsImportProcessing = false;

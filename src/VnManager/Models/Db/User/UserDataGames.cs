@@ -23,7 +23,7 @@ namespace VnManager.Models.Db.User
         public Stringable<int> GameId { get; set; }
         public string GameName { get; set; }
         public AddGameSourceType SourceType { get; set; }
-        public ExeTypeEnum ExeType { get; set; }
+        public ExeType ExeType { get; set; }
         public DateTime LastPlayed { get; set; }
         public TimeSpan PlayTime { get; set; }
         public string ExePath { get; set; }
