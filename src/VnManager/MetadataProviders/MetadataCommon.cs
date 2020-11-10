@@ -69,7 +69,7 @@ namespace VnManager.MetadataProviders
             App.StatusBar.IsDatabaseProcessing = false;
         }
 
-        public static async Task SetGameEntryDataAsync(AddItemDbModel gameEntry)
+        public static async Task SaveGameEntryDataAsync(AddItemDbModel gameEntry)
         {
             var addItemDbModel = gameEntry;
             if(addItemDbModel == null) return;
