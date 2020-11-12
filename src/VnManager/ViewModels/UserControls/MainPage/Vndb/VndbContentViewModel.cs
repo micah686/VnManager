@@ -10,7 +10,7 @@ using VnManager.Models.Db.User;
 
 namespace VnManager.ViewModels.UserControls.MainPage.Vndb
 {
-    public class VndbContentViewModel: Conductor<Screen>
+    public class VndbContentViewModel: Conductor<IScreen>.Collection.OneActive
     {
         #region UserGuid
         private Guid _userDataId;
@@ -25,8 +25,9 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
                 }
             }
         }
-       
+
         #endregion
+        public int SelectedTabId { get; set; }
         public static VndbContentViewModel Instance { get; internal set; }
         private readonly IContainer _container;
         internal int VnId;
@@ -36,11 +37,17 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
         {
             _container = container;
             //LoadContent();
+            var vInfo = new VndbInfoViewModel() {DisplayName = App.ResMan.GetString("Main")};
+            var vChar = new VndbCharactersViewModel() { DisplayName = App.ResMan.GetString("Characters") };
+            var vScreen = new VndbScreensViewModel() { DisplayName = App.ResMan.GetString("Screenshots") };
+
+            Items.Add(vInfo);
+            Items.Add(vChar);
+            Items.Add(vScreen);
         }
 
         protected override void OnViewLoaded()
         {
-            ActivateVnInfo();
             Instance ??= this;
         }
 
@@ -64,28 +71,6 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             }
         }
 
-
-
-
-        internal void ActivateVnScreenshots()
-        {
-            var vm = _container.Get<VndbScreensViewModel>();
-            ActivateItem(vm);
-        }
-
-        internal void ActivateVnCharacters()
-        {
-            var vm = _container.Get<VndbCharactersViewModel>();
-            ActivateItem(vm);
-        }
-
-        internal void ActivateVnInfo()
-        {
-            var vm = _container.Get<VndbInfoViewModel>();
-            ActivateItem(vm);
-        }
-
-        
         /// <summary>
         /// Cleanup Vndb views when pressing the close button
         /// Sets ContentViewModel Instance to null
@@ -94,6 +79,12 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
         {
             Instance = null;
             
+        }
+
+        public static void CloseClick()
+        {
+            RootViewModel.Instance.ActivateMainClick();
+            Cleanup();
         }
     }
 

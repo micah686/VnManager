@@ -189,6 +189,9 @@
   <data name="Categories" xml:space="preserve">
     <value>Categories</value>
   </data>
+  <data name="Characters" xml:space="preserve">
+    <value>Characters</value>
+  </data>
   <data name="Collection" xml:space="preserve">
     <value>Collection</value>
   </data>
@@ -366,6 +369,9 @@
   <data name="LightTheme" xml:space="preserve">
     <value>Light Theme</value>
   </data>
+  <data name="Main" xml:space="preserve">
+    <value>Main</value>
+  </data>
   <data name="Major" xml:space="preserve">
     <value>Major</value>
   </data>
@@ -434,6 +440,9 @@
   </data>
   <data name="SaveNsfwImagesInDatabase" xml:space="preserve">
     <value>Save Nsfw Images in Database</value>
+  </data>
+  <data name="Screenshots" xml:space="preserve">
+    <value>Screenshots</value>
   </data>
   <data name="SearchCategory" xml:space="preserve">
     <value>Search Category</value>

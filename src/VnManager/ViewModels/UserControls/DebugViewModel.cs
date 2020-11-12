@@ -156,7 +156,6 @@ namespace VnManager.ViewModels.UserControls
         {
             App.StatusBar.InfoText = "foo";
             App.StatusBar.StatusString = "foo2";
-            VndbInfoViewModel.PrepRepairVndbData();
         }
 
         public void ExportImport()

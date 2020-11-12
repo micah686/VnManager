@@ -16,151 +16,118 @@
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance vm:VndbInfoViewModel}"
              d:DesignHeight="950" d:DesignWidth="800">
-    <ScrollViewer VerticalScrollBarVisibility="Auto" adonisExtensions:ScrollViewerExtension.VerticalScrollBarExpansionMode="NeverExpand">
-        <Grid>
-            <Grid x:Name="OuterBlurContainer">
-                <Grid x:Name="InnerBlurContainer">
-                    <Image Stretch="UniformToFill" Source="{Binding BackgroundImage, Mode=OneWay}" RenderOptions.BitmapScalingMode="Fant"
-                           Height="{Binding ElementName=InfoUserControl, Path=Height, Mode=TwoWay}" 
-                           Width="{Binding ElementName=InfoUserControl, Path=Width, Mode=TwoWay}"/>
-                </Grid>
-            </Grid>
+    <Grid>
 
-            <controls:BlurryUserControl Height="{Binding ElementName=InfoUserControl, Path=Height, Mode=TwoWay}" 
-                                        Width="{Binding ElementName=InfoUserControl, Path=Width, Mode=TwoWay}"
-                                        Background="Transparent"
-                                        Panel.ZIndex="100"
-                                        BlurContainer="{Binding ElementName=OuterBlurContainer}"
-                                        BlurRadius="40"
-                                        Magnification="0.25">
-                <Grid>
-
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="8*"/>
-                        <ColumnDefinition Width="2*"/>
-                    </Grid.ColumnDefinitions>
-
-                    <Grid Grid.Row="0" Grid.Column="1" ZIndex="1">
-                        <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Width="32" Height="32"  Margin="0,5,20,0" Background="#01FFFFFF" MouseLeftButtonDown="{s:Action CloseClick}">
-                            <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.WindowClose}" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Black" BorderThickness="0">
-                                <iconPacks:PackIconMaterial.Effect>
-                                    <DropShadowEffect Color="Crimson" ShadowDepth="0" BlurRadius="7"/>
-                                </iconPacks:PackIconMaterial.Effect>
-                            </iconPacks:PackIconMaterial>
-                        </Grid>
-                    </Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="8*"/>
+            <ColumnDefinition Width="2*"/>
+        </Grid.ColumnDefinitions>
 
 
-                    <Grid Grid.Row="1" Grid.Column="0" Margin="10,100,10,0" >
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
-                        <Label Grid.Row="0" Content="{Binding Title, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="24" FontWeight="DemiBold"
+        <Grid Grid.Row="0" Grid.Column="0" Margin="10,10,10,0" >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Label Grid.Row="0" Content="{Binding Title, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="24" FontWeight="DemiBold"
                        Margin="30,0,0,0"/>
 
-                        <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" Margin="5">
-                            <Button Width="150" Height="50" Content="Play" Background="LimeGreen"/>
+            <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" Margin="5">
+                <Button Width="150" Height="50" Content="Play" Background="LimeGreen"/>
 
-                            <StackPanel Margin="25,0,0,0">
-                                <Label Content="Last Played" FontSize="16" FontWeight="Bold"/>
-                                <Label Content="{Binding LastPlayed}"/>
-                            </StackPanel>
+                <StackPanel Margin="25,0,0,0">
+                    <Label Content="Last Played" FontSize="16" FontWeight="Bold"/>
+                    <Label Content="{Binding LastPlayed}"/>
+                </StackPanel>
 
-                            <Grid Margin="25,0,0,0" VerticalAlignment="Center">
-                                <iconPacks:Material Kind="ProgressClock" Height="28" Width="28"/>
-                            </Grid>
-                            <StackPanel Margin="5,0,0,0">
-                                <Label Content="PlayTime" FontSize="16" FontWeight="Bold"/>
-                                <Label Content="{Binding PlayTime}"/>
-                            </StackPanel>
-
-                        </StackPanel>
-
-                        <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal" Margin="15">
-                            <Label Content="Vndb"/>
-                            <Label Content="Store Page" Margin="15,0,0,0"/>
-                            <Label Content="Wikipedia" Margin="15,0,0,0"/>
-                            <Label Content="Encubed" Margin="15,0,0,0"/>
-                            <Label Content="Renai" Margin="15,0,0,0"/>
-                        </StackPanel>
-
-                        <StackPanel Grid.Row="3" Grid.Column="0" Orientation="Horizontal" Margin="0,5,0,0">
-                            <Button Content="Characters" Margin="15,0,0,0" Command="{s:Action ShowCharacters}"/>
-                            <Button Content="Screens" Margin="15,0,0,0" Command="{s:Action ShowScreenshots}"/>
-                        </StackPanel>
-
-                    </Grid>
-
-                    <Grid Grid.Row="1" Grid.Column="1"  Grid.RowSpan="2" Margin="15,65,15,0">
-                        <Border BorderThickness="3" BorderBrush="Black">
-                            <Image  MaxWidth="256" MaxHeight="400"  RenderOptions.BitmapScalingMode="Fant" Source="{Binding CoverImage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                        </Border>
-
-                    </Grid>
-
-                    <Grid Grid.Row="2" Grid.Column="0" >
-                        <TextBlock ext:TextBlockInLineBinding.Inlines="{Binding DescriptionInLine}" Foreground="DimGray" FontWeight="DemiBold" TextWrapping="Wrap"/>
-                    </Grid>
-
-                    <Grid Grid.Row="3" Grid.Column="0">
-                        <DataGrid AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False" CanUserResizeColumns="False" CanUserResizeRows="False" IsReadOnly="True"
-                                  ItemsSource="{Binding VnRelations}">
-                            <DataGrid.Columns>
-                                <DataGridTextColumn Header="Title"  Binding="{Binding RelTitle}"/>
-                                <DataGridTextColumn Header="Relation" Binding="{Binding RelRelation}"/>
-                            </DataGrid.Columns>
-                        </DataGrid>
-                    </Grid>
-
-                    <StackPanel Grid.Row="3" Grid.Column="1"  Margin="15,10,0,0">
-                        <Label Content="{Binding MainTitle}"/>
-                        <Label Margin="0,0,0,0" Content="{Binding JpnTitle}"/>
-                        <TextBlock Margin="0,5,0,0" Text="{Binding Aliases}" TextWrapping="Wrap"/>
-                        <TextBlock Text="{Binding ReleasedDate}"/>
-                        <TextBlock Text="{Binding VnLength}"/>
-                        <TextBlock Text="Popularity:99.99"/>
-                        <TextBlock Text="Rating:9"/>
-                        <ListBox ItemsSource="{Binding LanguageCollection}" IsEnabled="False" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-                            <ListBox.ItemContainerStyle>
-                                <Style TargetType="ListBoxItem">
-                                    <Setter Property="Padding" Value="0"/>
-                                </Style>
-                            </ListBox.ItemContainerStyle>
-                            <ListBox.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <StackPanel Orientation="Horizontal"/>
-                                </ItemsPanelTemplate>
-                            </ListBox.ItemsPanel>
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <Image Source="{Binding}" Stretch="UniformToFill"/>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-                        <Label Content="Platforms: Listbox"></Label>
-                        <Label Content="Producer:Key"/>
-                        
-
-                    </StackPanel>
-
-
-                    <!--End Content -->
+                <Grid Margin="25,0,0,0" VerticalAlignment="Center">
+                    <iconPacks:Material Kind="ProgressClock" Height="28" Width="28"/>
                 </Grid>
+                <StackPanel Margin="5,0,0,0">
+                    <Label Content="PlayTime" FontSize="16" FontWeight="Bold"/>
+                    <Label Content="{Binding PlayTime}"/>
+                </StackPanel>
 
-            </controls:BlurryUserControl>
+            </StackPanel>
+
+            <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal" Margin="15">
+                <Label Content="Vndb"/>
+                <Label Content="Store Page" Margin="15,0,0,0"/>
+                <Label Content="Wikipedia" Margin="15,0,0,0"/>
+                <Label Content="Encubed" Margin="15,0,0,0"/>
+                <Label Content="Renai" Margin="15,0,0,0"/>
+            </StackPanel>
+
+            <StackPanel Grid.Row="3" Grid.Column="0" Orientation="Horizontal" Margin="0,5,0,0">
+                <Button Content="Characters" Margin="15,0,0,0" Command="{s:Action ShowCharacters}"/>
+                <Button Content="Screens" Margin="15,0,0,0" Command="{s:Action ShowScreenshots}"/>
+            </StackPanel>
 
         </Grid>
 
-    </ScrollViewer>
+        <Grid Grid.Row="1" Grid.Column="1"  Grid.RowSpan="2" Margin="15,65,15,0">
+            <Border BorderThickness="3" BorderBrush="Black">
+                <Image  MaxWidth="256" MaxHeight="400"  RenderOptions.BitmapScalingMode="Fant" Source="{Binding CoverImage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            </Border>
+
+        </Grid>
+
+        <Grid Grid.Row="2" Grid.Column="0" >
+            <TextBlock ext:TextBlockInLineBinding.Inlines="{Binding DescriptionInLine}" Foreground="DimGray" FontWeight="DemiBold" TextWrapping="Wrap"/>
+        </Grid>
+
+        <Grid Grid.Row="3" Grid.Column="0">
+            <DataGrid AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False" CanUserResizeColumns="False" CanUserResizeRows="False" IsReadOnly="True"
+                                  ItemsSource="{Binding VnRelations}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Title"  Binding="{Binding RelTitle}"/>
+                    <DataGridTextColumn Header="Relation" Binding="{Binding RelRelation}"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+
+        <StackPanel Grid.Row="3" Grid.Column="1"  Margin="15,10,0,0">
+            <Label Content="{Binding MainTitle}"/>
+            <Label Margin="0,0,0,0" Content="{Binding JpnTitle}"/>
+            <TextBlock Margin="0,5,0,0" Text="{Binding Aliases}" TextWrapping="Wrap"/>
+            <TextBlock Text="{Binding ReleasedDate}"/>
+            <TextBlock Text="{Binding VnLength}"/>
+            <TextBlock Text="Popularity:99.99"/>
+            <TextBlock Text="Rating:9"/>
+            <ListBox ItemsSource="{Binding LanguageCollection}" IsEnabled="False" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="Padding" Value="0"/>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Image Source="{Binding}" Stretch="UniformToFill"/>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <Label Content="Platforms: Listbox"></Label>
+            <Label Content="Producer:Key"/>
+
+
+        </StackPanel>
+
+
+        <!--End Content -->
+    </Grid>
 </UserControl>

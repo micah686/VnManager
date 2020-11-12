@@ -20,18 +20,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
 {
     public class VndbInfoViewModel : Screen
     {
-        public Guid UserDataId { get; private set; }
-        internal void SetUserDataId(Guid guid)
-        {
-            UserDataId = guid;
-        }
-
-        private int _vnId;
-
-
-
         #region Binding Properties
-        public BitmapSource BackgroundImage { get; set; }
         public BitmapSource CoverImage { get; set; }
         public string Title { get; set; }
         public string MainTitle { get; set; }
@@ -56,57 +45,21 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
 
         #endregion
 
-
         protected override void OnViewLoaded()
         {
-            _vnId = VndbContentViewModel.Instance.VnId;
-            GetGameId();
-            LoadImage();
             LoadMainData();
             LoadUserData();
             LoadRelations();
         }
 
-
-        private void GetGameId()
-        {
-            var cred = CredentialManager.GetCredentials(App.CredDb);
-            if (cred == null || cred.UserName.Length < 1) return;
-            using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
-            var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString()).Query()
-                .Where(x => x.Id == UserDataId).FirstOrDefault();
-            if (dbUserData != null)
-            {
-                _vnId = dbUserData.GameId;
-                VndbContentViewModel.Instance.VnId = dbUserData.GameId;
-            }
-        }
-
-        private void LoadImage()
-        {
-            try
-            {
-                var filePath = $@"{App.AssetDirPath}\sources\vndb\images\screenshots\4\8369.jpg";
-                var uri = new Uri(filePath);
-                BitmapSource bs = new BitmapImage(uri);
-                BackgroundImage = bs;
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine(e);
-                //throw;
-            }
-
-        }
-
         private void LoadMainData()
         {
-            if (_vnId == 0) return;
+            if (VndbContentViewModel.Instance.VnId == 0) return;
             var cred = CredentialManager.GetCredentials(App.CredDb);
             if (cred == null || cred.UserName.Length < 1) return;
             using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
             {
-                var vnInfoEntry = db.GetCollection<VnInfo>(DbVnInfo.VnInfo.ToString()).Query().Where(x => x.VnId == _vnId).FirstOrDefault();
+                var vnInfoEntry = db.GetCollection<VnInfo>(DbVnInfo.VnInfo.ToString()).Query().Where(x => x.VnId == VndbContentViewModel.Instance.VnId).FirstOrDefault();
                 Title = vnInfoEntry.Title;
                 MainTitle = $"Title: {vnInfoEntry.Title}";
                 JpnTitle = $"Original Title: {vnInfoEntry.Original}";
@@ -126,21 +79,20 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
 
         private void LoadRelations()
         {
-            if (_vnId == 0) return;
+            if (VndbContentViewModel.Instance.VnId == 0) return;
             var cred = CredentialManager.GetCredentials(App.CredDb);
             if (cred == null || cred.UserName.Length < 1) return;
             using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
             {
                 var vnRelations = db.GetCollection<VnInfoRelations>(DbVnInfo.VnInfo_Relations.ToString()).Query()
-                    .Where(x => x.VnId == _vnId && x.Official.ToUpper(CultureInfo.InvariantCulture) == "YES").ToList();
+                    .Where(x => x.VnId == VndbContentViewModel.Instance.VnId && x.Official.ToUpper(CultureInfo.InvariantCulture) == "YES").ToList();
                 foreach (var relation in vnRelations)
                 {
-                    var entry = new VnRelationsBinding {RelTitle = relation.Title, RelRelation = relation.Relation};
+                    var entry = new VnRelationsBinding { RelTitle = relation.Title, RelRelation = relation.Relation };
                     VnRelations.Add(entry);
                 }
             }
         }
-
 
         private void LoadUserData()
         {
@@ -148,12 +100,11 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             if (cred == null || cred.UserName.Length < 1) return;
             using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
             var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString()).Query()
-                .Where(x => x.Id == UserDataId).FirstOrDefault();
+                .Where(x => x.Id == VndbContentViewModel.Instance.UserDataId).FirstOrDefault();
             if (dbUserData != null)
             {
                 LastPlayed = TimeDateChanger.GetHumanDate(dbUserData.LastPlayed);
                 PlayTime = TimeDateChanger.GetHumanTime(dbUserData.PlayTime);
-                _vnId = dbUserData.GameId;
             }
         }
 
@@ -174,44 +125,6 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
                 .ToList();
         }
 
-
-        /// <summary>
-        /// Reset Vndb Data completely (clear out all images, re-download them all
-        /// Then get updated information from the API, overwriting old info
-        /// </summary>
-        public static void PrepRepairVndbData()
-        {
-            RepairImages();
-        }
-
-        private static void RepairImages()
-        {
-            string screenshotPath = $@"{App.AssetDirPath}\sources\vndb\images\screenshots\{VndbContentViewModel.Instance.VnId}";
-            foreach (var file in Directory.GetFiles(screenshotPath, null, SearchOption.AllDirectories))
-            {
-                File.Delete(file);
-            }
-            //TODO:finish this method
-        }
-
-        
-        public static void ShowCharacters()
-        {
-            var vm = VndbContentViewModel.Instance;
-            vm.ActivateVnCharacters();
-        }
-
-        public static void ShowScreenshots()
-        {
-            var vm = VndbContentViewModel.Instance;
-            vm.ActivateVnScreenshots();
-        }
-
-        public static void CloseClick()
-        {
-            RootViewModel.Instance.ActivateMainClick();
-            VndbContentViewModel.Cleanup();
-        }
 
         public class VnRelationsBinding
         {

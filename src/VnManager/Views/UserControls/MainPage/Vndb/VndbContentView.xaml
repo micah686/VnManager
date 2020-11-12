@@ -7,8 +7,32 @@
              xmlns:s="https://github.com/canton7/Stylet"
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             xmlns:vm="clr-namespace:VnManager.ViewModels.UserControls.MainPage.Vndb"
+             xmlns:adonisUi="clr-namespace:AdonisUI;assembly=AdonisUI"
+             d:DesignHeight="450" d:DesignWidth="800"
+             d:DataContext="{d:DesignInstance vm:VndbContentViewModel}">
     <Grid>
-        <ContentControl s:View.Model="{Binding ActiveItem}"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" x:Name="TopBar" Orientation="Horizontal" VerticalAlignment="Center" Margin="10,0,0,5">
+            <Grid MouseLeftButtonUp="{s:Action CloseClick}" Height="18" Width="18" Background="Transparent">
+                <iconPacks:PackIconMaterial Kind="ArrowLeft" Foreground="{DynamicResource {x:Static adonisUi:Brushes.ForegroundBrush}}" Height="18" Width="18">
+                    <iconPacks:PackIconMaterial.Effect>
+                        <DropShadowEffect Color="Black" ShadowDepth="0" BlurRadius="7"/>
+                    </iconPacks:PackIconMaterial.Effect>
+                </iconPacks:PackIconMaterial>
+            </Grid>
+        </StackPanel>
+
+        <TabControl Grid.Row="1" ItemsSource="{Binding Items}" SelectedItem="{Binding ActiveItem}" DisplayMemberPath="DisplayName">
+            <TabControl.ContentTemplate>
+                <DataTemplate>
+                    <ContentControl s:View.Model="{Binding}" IsTabStop="False"/>
+                </DataTemplate>
+            </TabControl.ContentTemplate>
+        </TabControl>
     </Grid>
 </UserControl>

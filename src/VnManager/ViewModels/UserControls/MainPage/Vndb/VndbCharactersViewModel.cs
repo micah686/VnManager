@@ -15,18 +15,13 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
 {
     public class VndbCharactersViewModel: Screen
     {
-        private IReadOnlyCollection<string> _allCharacterNamesCollection= new List<string>();
+        private IReadOnlyCollection<string> _allCharacterNamesCollection = new List<string>();
         public BindableCollection<string> CharacterNamesCollection { get; private set; } = new BindableCollection<string>();
         public string CharacterNameSearch { get; set; }
-        public string TestBnd { get; set; }
-
         protected override void OnViewLoaded()
         {
             PopulateCharacterList();
-
-            TestBnd = "untouched";
         }
-
 
         private void PopulateCharacterList()
         {
@@ -43,7 +38,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
 
         public void SearchCharacters()
         {
-            if(CharacterNameSearch.Length < 1 && CharacterNamesCollection.Equals(_allCharacterNamesCollection)) return;
+            if (CharacterNameSearch.Length < 1 && CharacterNamesCollection.Equals(_allCharacterNamesCollection)) return;
 
             if (CharacterNameSearch.Length < 1)
             {
@@ -56,26 +51,5 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             CharacterNamesCollection.Clear();
             CharacterNamesCollection.AddRange(validCharacters);
         }
-
-
-
-        public static void ShowInfo()
-        {
-            var vm = VndbContentViewModel.Instance;
-            vm.ActivateVnInfo();
-        }
-
-        public static void ShowScreens()
-        {
-            var vm = VndbContentViewModel.Instance;
-            vm.ActivateVnScreenshots();
-        }
-
-        public static void CloseClick()
-        {
-            RootViewModel.Instance.ActivateMainClick();
-            VndbContentViewModel.Cleanup();
-        }
-
     }
 }

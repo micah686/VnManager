@@ -277,6 +277,15 @@ namespace VnManager.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Characters.
+        /// </summary>
+        public static string Characters {
+            get {
+                return ResourceManager.GetString("Characters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Collection.
         /// </summary>
         public static string Collection {
@@ -808,6 +817,15 @@ namespace VnManager.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Main.
+        /// </summary>
+        public static string Main {
+            get {
+                return ResourceManager.GetString("Main", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Major.
         /// </summary>
         public static string Major {
@@ -1011,6 +1029,15 @@ namespace VnManager.Strings {
         public static string SaveNsfwImagesInDatabase {
             get {
                 return ResourceManager.GetString("SaveNsfwImagesInDatabase", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Screenshots.
+        /// </summary>
+        public static string Screenshots {
+            get {
+                return ResourceManager.GetString("Screenshots", resourceCulture);
             }
         }
         

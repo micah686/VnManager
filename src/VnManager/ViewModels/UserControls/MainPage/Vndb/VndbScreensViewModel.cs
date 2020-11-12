@@ -19,7 +19,7 @@ using VnManager.Models.Db.Vndb.Main;
 
 namespace VnManager.ViewModels.UserControls.MainPage.Vndb
 {
-    public class VndbScreensViewModel:Screen
+    public class VndbScreensViewModel : Screen
     {
         #region SelectedScreenIndex
         private int _selectedScreenIndex = -1;
@@ -38,36 +38,29 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
         }
         #endregion
 
+        public double ThumbWidthPlusOne { get; set; }
         public BindingImage MainImage { get; set; }
-        
-        public BindableCollection<BindingImage> ScreenshotCollection { get; set; }= new BindableCollection<BindingImage>();
 
-        private List<BindingImage> _scrList= new List<BindingImage>();
+        public BindableCollection<BindingImage> ScreenshotCollection { get; set; } = new BindableCollection<BindingImage>();
+
+        private List<BindingImage> _scrList = new List<BindingImage>();
 
         protected override void OnViewLoaded()
         {
+            if(_scrList.Count >0) return;
             _scrList = LoadScreenshotList();
             BindScreenshotCollection();
         }
 
-        public static void ShowInfo()
+        private double GetThumbWidth()
         {
-            var vm = VndbContentViewModel.Instance;
-            vm.ActivateVnInfo();
+            if (SelectedScreenIndex == 0) return 0;
+            else
+            {
+                var width = ScreenshotCollection[SelectedScreenIndex].Image.Width;
+                return width;
+            }
         }
-
-        public static void ShowCharacters()
-        {
-            var vm = VndbContentViewModel.Instance;
-            vm.ActivateVnCharacters();
-        }
-
-        public static void CloseClick()
-        {
-            RootViewModel.Instance.ActivateMainClick();
-            VndbContentViewModel.Cleanup();
-        }
-
 
         private static List<BindingImage> LoadScreenshotList()
         {
@@ -76,7 +69,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
             var dbUserData = db.GetCollection<VnInfoScreens>(DbVnInfo.VnInfo_Screens.ToString()).Query()
                 .Where(x => x.VnId == VndbContentViewModel.Instance.VnId).ToEnumerable();
-            var scrList = dbUserData.Select(item => new BindingImage {ImageLink = item.ImageLink, Rating = item.ImageRating}).ToList();
+            var scrList = dbUserData.Select(item => new BindingImage { ImageLink = item.ImageLink, Rating = item.ImageRating }).ToList();
             return scrList;
         }
 
@@ -87,6 +80,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             {
                 List<BindingImage> screenshotList = _scrList;
                 if (screenshotList.Count <= 0) return;
+                if(SelectedScreenIndex <0)return;
                 string path = $@"{App.AssetDirPath}\sources\vndb\images\screenshots\{VndbContentViewModel.Instance.VnId}\{Path.GetFileName(screenshotList[SelectedScreenIndex].ImageLink)}";
                 var rating = NsfwHelper.TrueIsNsfw(screenshotList[SelectedScreenIndex].Rating);
                 if (rating == true && File.Exists($"{path}.aes"))
@@ -107,13 +101,13 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
                 App.Logger.Error(e, "Failed to load large screenshot");
                 throw;
             }
-            
+
         }
 
         private void BindScreenshotCollection()
         {
             List<BindingImage> screenshotList = _scrList;
-            List<BindingImage>toDelete = new List<BindingImage>();
+            List<BindingImage> toDelete = new List<BindingImage>();
             foreach (var item in screenshotList)
             {
                 BitmapSource image;
@@ -129,7 +123,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
                     image = ImageHelper.CreateBitmapFromStream(imgStream);
                     ScreenshotCollection.Add(new BindingImage { Image = image, IsNsfw = NsfwHelper.UserIsNsfw(item.Rating) });
                 }
-                else if(rating == false && File.Exists(thumbPath) && File.Exists(imagePath))
+                else if (rating == false && File.Exists(thumbPath) && File.Exists(imagePath))
                 {
                     image = ImageHelper.CreateBitmapFromPath(thumbPath);
                     ScreenshotCollection.Add(new BindingImage { Image = image, IsNsfw = false });
@@ -147,7 +141,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             }
         }
 
-        
+
 
     }
 }
