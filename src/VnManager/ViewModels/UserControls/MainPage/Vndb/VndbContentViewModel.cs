@@ -29,17 +29,17 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
         #endregion
         public int SelectedTabId { get; set; }
         public static VndbContentViewModel Instance { get; internal set; }
-        private readonly IContainer _container;
+        
         internal int VnId;
 
 
-        public VndbContentViewModel(IContainer container)
+        public VndbContentViewModel()
         {
-            _container = container;
+            
             //LoadContent();
-            var vInfo = new VndbInfoViewModel() {DisplayName = App.ResMan.GetString("Main")};
-            var vChar = new VndbCharactersViewModel() { DisplayName = App.ResMan.GetString("Characters") };
-            var vScreen = new VndbScreensViewModel() { DisplayName = App.ResMan.GetString("Screenshots") };
+            var vInfo = new VndbInfoViewModel {DisplayName = App.ResMan.GetString("Main")};
+            var vChar = new VndbCharactersViewModel { DisplayName = App.ResMan.GetString("Characters") };
+            var vScreen = new VndbScreensViewModel { DisplayName = App.ResMan.GetString("Screenshots") };
 
             Items.Add(vInfo);
             Items.Add(vChar);

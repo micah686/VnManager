@@ -52,16 +52,6 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             BindScreenshotCollection();
         }
 
-        private double GetThumbWidth()
-        {
-            if (SelectedScreenIndex == 0) return 0;
-            else
-            {
-                var width = ScreenshotCollection[SelectedScreenIndex].Image.Width;
-                return width;
-            }
-        }
-
         private static List<BindingImage> LoadScreenshotList()
         {
             var cred = CredentialManager.GetCredentials(App.CredDb);
