@@ -165,7 +165,7 @@ namespace VnManager.Helpers
         
 
 
-        public struct UrlMatch: IEquatable<UrlMatch>
+        private struct UrlMatch: IEquatable<UrlMatch>
         {
             public int Offset;
             public string Text;
@@ -190,7 +190,7 @@ namespace VnManager.Helpers
         /// <param name="startOffset"></param>
         /// <param name="urlMatch"></param>
         /// <returns></returns>
-        public static bool TryGetMatch(string mine, int startOffset, out UrlMatch urlMatch)
+        private static bool TryGetMatch(string mine, int startOffset, out UrlMatch urlMatch)
         {
             //matches the https://... with a lookahead to '⁞', not capturing it
             //then capture everything after the ⁞, not including it
@@ -222,9 +222,8 @@ namespace VnManager.Helpers
         {
             List<string> dupeList= new List<string>();
             string modifiedText = message;
-            UrlMatch urlMatch;
             int cur = 0;
-            while (TryGetMatch(modifiedText, cur, out urlMatch))
+            while (TryGetMatch(modifiedText, cur, out var urlMatch))
             {
                 string before = modifiedText.Substring(cur, urlMatch.Offset - cur);
                 if (before.Length > 0)
