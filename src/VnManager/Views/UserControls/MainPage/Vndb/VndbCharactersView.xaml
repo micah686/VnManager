@@ -30,11 +30,36 @@
             <TextBox Grid.Row="0" adonisExtensions:WatermarkExtension.Watermark="{x:Static res:Resources.SearchCharacter}" Text="{Binding CharacterNameSearch, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                      TextChanged="{s:Action SearchCharacters}"/>
             <ListBox Grid.Row="1" ItemsSource="{Binding CharacterNamesCollection, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" 
-                     Margin="0,5,0,5" adonisExtensions:ScrollViewerExtension.VerticalScrollBarExpansionMode="NeverExpand"/>
+                     SelectedIndex="{Binding SelectedCharacterIndex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectionChanged="{s:Action CharacterSelectionChanged}"
+                     Margin="0,5,0,5" adonisExtensions:ScrollViewerExtension.VerticalScrollBarExpansionMode="NeverExpand">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Value}" />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
         </Grid>
 
         <Grid Grid.Column="1" x:Name="CharacterContent">
-            
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="250"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0" >
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding Name}"/>
+                        <iconPacks:PackIconMaterial Kind="{Binding GenderIcon}" Foreground="{Binding GenderColorBrush}"
+                                                    Width="18" Height="18" Margin="10,0,0,0"/>
+                    </StackPanel>
+                    
+                    
+                    
+                </StackPanel>
+
+            </Grid>
+
+            <Grid Grid.Column="1" Width="300"></Grid>
         </Grid>
     </Grid>
 </UserControl>
