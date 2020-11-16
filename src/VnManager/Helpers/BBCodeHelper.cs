@@ -15,6 +15,11 @@ namespace VnManager.Helpers
     {
         private const char SplitChar = '\x205E'; //this is a unicode 4 vertical dots(⁞) that can be used as a splitter
         private static readonly TimeSpan RegexTimeout = new TimeSpan(0,0,0,0,500);
+        /// <summary>
+        /// Takes a BBCode string and converts it into a formats it into a usable way
+        /// </summary>
+        /// <param name="text">String of BBCode</param>
+        /// <returns>List of InLines. This needs to be bound using the Textblock Inline Binding Extension</returns>
         public static List<Inline> Helper(string text)
         {
             string modifiedText = text;
@@ -46,7 +51,7 @@ namespace VnManager.Helpers
             {
                 List<string> spoilerList = new List<string>();
                 string rawText = text;
-                Regex regex = new Regex(@"\[spoiler\](.*)\[\/spoiler\]");
+                Regex regex = new Regex(@"\[spoiler\](.*)\[\/spoiler\]", RegexOptions.IgnoreCase);
                 foreach (Match match in regex.Matches(text))
                 {
                     rawText = rawText.Replace(match.Groups[0].ToString(), match.Groups[1].ToString());
@@ -108,7 +113,7 @@ namespace VnManager.Helpers
         /// </summary>
         /// <param name="text"></param>
         /// <returns></returns>
-        public static string StripUnneededBbCode(string text)
+        private static string StripUnneededBbCode(string text)
         {
             //Regex has nested capturing groups!!
             //0th block is full string [raw]sample[/raw]
@@ -195,7 +200,7 @@ namespace VnManager.Helpers
             //matches the https://... with a lookahead to '⁞', not capturing it
             //then capture everything after the ⁞, not including it
             //finally, capture the ⁞
-            var regex = new Regex(@"http[s]?://[^\\s](.+?(?=\⁞))(.+?(?=\⁞))\⁞", RegexOptions.None, RegexTimeout);
+            var regex = new Regex(@"http[s]?://(.+?(?=\⁞))(.+?(?=\⁞))\⁞", RegexOptions.None, RegexTimeout);
             var matches = regex.Matches(mine, startOffset);
             if (matches.Count > 0 && matches[0].Success)
             {
@@ -218,7 +223,7 @@ namespace VnManager.Helpers
         /// <param name="message"></param>
         /// <param name="collection"></param>
         /// <returns></returns>
-        public static List<Inline> Format(string message, InlineCollection collection)
+        private static List<Inline> Format(string message, InlineCollection collection)
         {
             List<string> dupeList= new List<string>();
             string modifiedText = message;

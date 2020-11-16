@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -11,8 +12,10 @@ using AdysTech.CredentialManager;
 using LiteDB;
 using MahApps.Metro.IconPacks;
 using Stylet;
+using VnManager.Helpers;
 using VnManager.Models.Db;
 using VnManager.Models.Db.Vndb.Character;
+using VnManager.Models.Db.Vndb.TagTrait;
 
 
 namespace VnManager.ViewModels.UserControls.MainPage.Vndb
@@ -27,10 +30,19 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
         private bool _finishedLoad = false;
 
         #region CharacterData
+        public BitmapSource CharacterImage { get; set; }
         public string Name { get; set; }
         public string OriginalName { get; set; }
         public string BloodType { get; set; }
         public string Birthday { get; set; }
+        public string Height { get; set; }
+        public string Weight { get; set; }
+        public string BustWaistHips { get; set; }
+
+        public List<Inline> Description { get; set; }
+        
+
+
         #endregion
 
         public PackIconMaterialKind GenderIcon { get; set; }
@@ -95,13 +107,54 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             {
                 var charInfo = db.GetCollection<VnCharacterInfo>(DbVnCharacter.VnCharacter.ToString()).Query()
                     .Where(x => x.CharacterId == _characterId).FirstOrDefault();
+                var imagePath = $@"{App.AssetDirPath}\sources\vndb\images\characters\{VndbContentViewModel.Instance.VnId}\{Path.GetFileName(charInfo.ImageLink)}";
+                CharacterImage = ImageHelper.CreateBitmapFromPath(imagePath);
+
                 Name = charInfo.Name;
-                OriginalName = charInfo.Original;
+                OriginalName = charInfo.Original ?? string.Empty;
+
                 SetGenderIcon(charInfo.Gender);
-                BloodType = charInfo.BloodType;
-                Birthday = charInfo.Birthday;
+                Birthday = charInfo.Birthday ?? string.Empty;
                 
 
+                if (!string.IsNullOrEmpty(charInfo.BloodType))
+                {
+                    BloodType = $"Blood Type: {charInfo.BloodType}";
+                }
+
+                if (!charInfo.Height.Equals(0))
+                {
+                    Height = $"Height: {charInfo.Height}";
+                }
+
+                if (!charInfo.Weight.Equals(0))
+                {
+                    Weight = $"Weight: {charInfo.Weight}";
+                }
+
+                SetBustWidthHeight(charInfo);
+
+                Description = BBCodeHelper.Helper(charInfo.Description);
+            }
+            //GetTraits();
+        }
+
+        private void SetBustWidthHeight(VnCharacterInfo info)
+        {
+            var header = "Bust-Waist-Hips:";
+            
+            string bust = info.Bust == null || info.Bust == 0 ? "??" : info.Bust.ToString();
+            string waist = info.Waist == null || info.Waist == 0 ? "??" : info.Waist.ToString();
+            string hips = info.Hip == null || info.Hip == 0 ? "??" : info.Hip.ToString();
+
+            if (bust.Equals("??") && waist.Equals("??") && hips.Equals("??"))
+            {
+                BustWaistHips = String.Empty;
+            }
+            else
+            {
+                var value = $"{header} {bust}-{waist}-{hips}";
+                BustWaistHips = value;
             }
         }
 
@@ -121,7 +174,53 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
                     GenderIcon = PackIconMaterialKind.GenderMaleFemale;
                     GenderColorBrush = (SolidColorBrush)(new BrushConverter().ConvertFrom("#8A40D5"));
                     break;
+                default:
+                    GenderIcon = PackIconMaterialKind.None;
+                    break;
             }
+        }
+
+        private void GetTraits()
+        {
+            List<VnCharacterTraits> traitList= new List<VnCharacterTraits>();
+            List<VnTraitData> traitDump = new List<VnTraitData>();
+
+            var cred = CredentialManager.GetCredentials(App.CredDb);
+            if (cred == null || cred.UserName.Length < 1) return;
+            using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
+            {
+                traitList = db.GetCollection<VnCharacterTraits>(DbVnCharacter.VnCharacter_Traits.ToString()).Query().ToList();
+                traitDump = db.GetCollection<VnTraitData>(DbVnDump.VnDump_TraitData.ToString()).Query().ToList();
+            }
+
+            foreach (var trait in traitList)
+            {
+                TraitInfo traitInfo;
+                GetParentTrait(trait.TraitId, traitDump);
+            }
+        }
+
+
+        private void GetParentTrait(uint traitId, List<VnTraitData> traitDump)
+        {
+            var traitData = traitDump.FirstOrDefault(x => x.TraitId == traitId);
+            
+            
+            if (traitData != null)
+            {
+                if (traitData.Parents.Length > 0)
+                {
+                    
+                }
+            }
+        }
+
+        private struct TraitInfo
+        {
+            private int TraitId;
+            private string TraitName;
+            private int ParentTraitId;
+            private string ParentTraitName;
         }
         
     }
