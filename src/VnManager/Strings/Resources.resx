@@ -177,6 +177,9 @@
   <data name="BrowseIcon" xml:space="preserve">
     <value>Browse Icon</value>
   </data>
+  <data name="BustWaistHips" xml:space="preserve">
+    <value>Bust-Waist-Hips:</value>
+  </data>
   <data name="Cancel" xml:space="preserve">
     <value>Cancel</value>
   </data>

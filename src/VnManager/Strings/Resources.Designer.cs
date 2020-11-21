@@ -241,6 +241,15 @@ namespace VnManager.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Bust-Waist-Hips:.
+        /// </summary>
+        public static string BustWaistHips {
+            get {
+                return ResourceManager.GetString("BustWaistHips", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cancel.
         /// </summary>
         public static string Cancel {

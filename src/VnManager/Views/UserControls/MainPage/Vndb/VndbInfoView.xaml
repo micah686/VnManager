@@ -18,7 +18,7 @@
              d:DesignHeight="950" d:DesignWidth="800">
     <Grid>
 
-        <Grid.RowDefinitions>
+        <!--<Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -125,7 +125,7 @@
             <Label Content="Producer:Key"/>
 
 
-        </StackPanel>
+        </StackPanel>-->
 
 
         <!--End Content -->

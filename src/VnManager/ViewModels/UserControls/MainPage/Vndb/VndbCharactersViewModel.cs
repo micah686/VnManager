@@ -136,12 +136,12 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
 
                 Description = BBCodeHelper.Helper(charInfo.Description);
             }
-            //GetTraits();
+            GetTraits();
         }
 
         private void SetBustWidthHeight(VnCharacterInfo info)
         {
-            var header = "Bust-Waist-Hips:";
+            var header = App.ResMan.GetString("BustWaistHips");
             
             string bust = info.Bust == null || info.Bust == 0 ? "??" : info.Bust.ToString();
             string waist = info.Waist == null || info.Waist == 0 ? "??" : info.Waist.ToString();
@@ -189,38 +189,42 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             if (cred == null || cred.UserName.Length < 1) return;
             using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
             {
-                traitList = db.GetCollection<VnCharacterTraits>(DbVnCharacter.VnCharacter_Traits.ToString()).Query().ToList();
+                traitList = db.GetCollection<VnCharacterTraits>(DbVnCharacter.VnCharacter_Traits.ToString()).Query()
+                    .Where(x => x.SpoilerLevel <= App.UserSettings.SettingsVndb.Spoiler).ToList();
                 traitDump = db.GetCollection<VnTraitData>(DbVnDump.VnDump_TraitData.ToString()).Query().ToList();
             }
 
+            var foo = traitDump.Where(x => x.Parents.Length > 2).ToList();
+            List<TraitInfo> traitInfoList = new List<TraitInfo>();
             foreach (var trait in traitList)
             {
-                TraitInfo traitInfo;
-                GetParentTrait(trait.TraitId, traitDump);
+                var traitName = traitDump.FirstOrDefault(x => x.TraitId == trait.TraitId)?.Name;
+                var parent = GetParentTrait(trait.TraitId, traitDump);
+                if (parent == traitName)
+                {
+                    parent = null;
+                }
+                traitInfoList.Add(new TraitInfo {TraitId = trait.TraitId, TraitName = traitName, ParentTraitName = parent});
             }
         }
 
 
-        private void GetParentTrait(uint traitId, List<VnTraitData> traitDump)
+        private string GetParentTrait(uint traitId, List<VnTraitData> traitDump)
         {
             var traitData = traitDump.FirstOrDefault(x => x.TraitId == traitId);
-            
-            
-            if (traitData != null)
+
+            while (traitData != null && traitData.Parents.Length > 0)
             {
-                if (traitData.Parents.Length > 0)
-                {
-                    
-                }
+                traitData = traitDump.FirstOrDefault(x => x.TraitId == traitData.Parents.Last());
             }
+            return traitData?.Name;
         }
 
         private struct TraitInfo
         {
-            private int TraitId;
-            private string TraitName;
-            private int ParentTraitId;
-            private string ParentTraitName;
+            public uint TraitId;
+            public string TraitName;
+            public string ParentTraitName;
         }
         
     }
