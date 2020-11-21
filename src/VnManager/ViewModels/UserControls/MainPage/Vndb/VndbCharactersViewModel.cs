@@ -41,7 +41,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
 
         public List<Inline> Description { get; set; }
         
-
+        public BindableCollection<TraitBinding> TraitCollection { get; set; } = new BindableCollection<TraitBinding>();
 
         #endregion
 
@@ -182,20 +182,20 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
 
         private void GetTraits()
         {
-            List<VnCharacterTraits> traitList= new List<VnCharacterTraits>();
-            List<VnTraitData> traitDump = new List<VnTraitData>();
+            List<VnCharacterTraits> traitList;
+            List<VnTraitData> traitDump;
 
             var cred = CredentialManager.GetCredentials(App.CredDb);
             if (cred == null || cred.UserName.Length < 1) return;
             using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
             {
                 traitList = db.GetCollection<VnCharacterTraits>(DbVnCharacter.VnCharacter_Traits.ToString()).Query()
-                    .Where(x => x.SpoilerLevel <= App.UserSettings.SettingsVndb.Spoiler).ToList();
+                    .Where(x => x.CharacterId == _characterId && x.SpoilerLevel <= App.UserSettings.SettingsVndb.Spoiler).ToList();
                 traitDump = db.GetCollection<VnTraitData>(DbVnDump.VnDump_TraitData.ToString()).Query().ToList();
             }
 
-            var foo = traitDump.Where(x => x.Parents.Length > 2).ToList();
-            List<TraitInfo> traitInfoList = new List<TraitInfo>();
+            
+            List<(string Parent, string Child)> traitInfoList = new List<(string Parent, string Child)>();
             foreach (var trait in traitList)
             {
                 var traitName = traitDump.FirstOrDefault(x => x.TraitId == trait.TraitId)?.Name;
@@ -204,8 +204,14 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
                 {
                     parent = null;
                 }
-                traitInfoList.Add(new TraitInfo {TraitId = trait.TraitId, TraitName = traitName, ParentTraitName = parent});
+                traitInfoList.Add((parent,traitName));
             }
+
+            var groupedTraits = traitInfoList.GroupBy(x => x.Parent).ToList();
+            //creates a List<string> from the children of the named tuple. Then adds the parent and children list to the TraitBinding list
+            List<TraitBinding> bindingTraits = (from item in groupedTraits let childList = item.Select(x => x.Child).ToList() 
+                select new TraitBinding() {Parent = item.Key, Children = childList }).ToList();
+            TraitCollection.AddRange(bindingTraits);
         }
 
 
@@ -220,12 +226,12 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             return traitData?.Name;
         }
 
-        private struct TraitInfo
-        {
-            public uint TraitId;
-            public string TraitName;
-            public string ParentTraitName;
-        }
-        
+
+    }
+
+    public class TraitBinding
+    {
+        public string Parent { get; set; }
+        public List<string> Children { get; set; }
     }
 }

@@ -334,9 +334,10 @@ namespace VnManager.MetadataProviders.Vndb
 
             if (vnCharacter.Traits.Count <= 0) return vnCharacterTraitsList;
             var prevVnCharacterTraits = dbCharTraits.Query().Where(x => x.CharacterId == vnCharacter.Id);
-            var entry = prevVnCharacterTraits.FirstOrDefault() ?? new VnCharacterTraits();
+            
             foreach (var traits in vnCharacter.Traits)
             {
+                var entry = prevVnCharacterTraits.FirstOrDefault() ?? new VnCharacterTraits();
                 entry.CharacterId = vnCharacter.Id;
                 entry.TraitId = traits.Id;
                 entry.SpoilerLevel = traits.SpoilerLevel;
@@ -353,9 +354,10 @@ namespace VnManager.MetadataProviders.Vndb
             if (vnCharacter.VisualNovels.Count > 0)
             {
                 var prevVnCharacterVns = dbCharVns.Query().Where(x => x.CharacterId == vnCharacter.Id);
-                var entry = prevVnCharacterVns.FirstOrDefault() ?? new VnCharacterVns();
+                
                 foreach (var vn in vnCharacter.VisualNovels)
                 {
+                    var entry = prevVnCharacterVns.FirstOrDefault() ?? new VnCharacterVns();
                     entry.CharacterId = vnCharacter.Id;
                     entry.VnId = vn.Id;
                     entry.ReleaseId = vn.ReleaseId;
@@ -374,10 +376,10 @@ namespace VnManager.MetadataProviders.Vndb
             if (vnCharacter.VoiceActorMetadata.Count > 0)
             {
                 var prevVnCharacterVoices = dbCharVoices.Query().Where(x => x.CharacterId == vnCharacter.Id);
-                var entry = prevVnCharacterVoices.FirstOrDefault() ?? new VnCharacterVoiced();
-
+                
                 foreach (var voice in vnCharacter.VoiceActorMetadata)
                 {
+                    var entry = prevVnCharacterVoices.FirstOrDefault() ?? new VnCharacterVoiced();
                     entry.CharacterId = (int)vnCharacter.Id;
                     entry.StaffId = voice.StaffId;
                     entry.StaffAliasId = voice.AliasId;
@@ -396,10 +398,10 @@ namespace VnManager.MetadataProviders.Vndb
             if (vnCharacter.CharacterInstances.Count > 0)
             {
                 var prevVnCharacterInstances = dbCharInstances.Query().Where(x => x.CharacterId == vnCharacter.Id);
-                var entry = prevVnCharacterInstances.FirstOrDefault() ?? new VnCharacterInstances();
-
+                
                 foreach (var instance in vnCharacter.CharacterInstances)
                 {
+                    var entry = prevVnCharacterInstances.FirstOrDefault() ?? new VnCharacterInstances();
                     entry.CharacterId = (int)vnCharacter.Id;
                     entry.Name = instance.Name;
                     entry.Original = instance.Kanji;
@@ -670,9 +672,10 @@ namespace VnManager.MetadataProviders.Vndb
         private static List<VnStaffAliases> FormatVnStaffAliases(Staff vnStaff, ILiteQueryableResult<VnStaffAliases> prevVnStaffAliases)
         {
             List<VnStaffAliases> vnStaffAliasesList = new List<VnStaffAliases>();
-            var vnAliases = prevVnStaffAliases.FirstOrDefault() ?? new VnStaffAliases();
+            
             foreach (var alias in vnStaff.Aliases)
             {
+                var vnAliases = prevVnStaffAliases.FirstOrDefault() ?? new VnStaffAliases();
                 vnAliases.StaffId = (int?)vnStaff.Id;
                 vnAliases.AliasId = (int)alias.Id;
                 vnAliases.Name = alias.Name;
@@ -684,9 +687,10 @@ namespace VnManager.MetadataProviders.Vndb
         private static List<VnStaffVns> FormatStaffVns(Staff vnStaff, int vnid, ILiteQueryableResult<VnStaffVns> prevVnStaffVns)
         {
             List<VnStaffVns> vnStaffVnList = new List<VnStaffVns>();
-            var staffVns = prevVnStaffVns.FirstOrDefault() ?? new VnStaffVns();
+            
             foreach (var vn in vnStaff.Vns)
             {
+                var staffVns = prevVnStaffVns.FirstOrDefault() ?? new VnStaffVns();
                 staffVns.VnId = vnid;
                 staffVns.StaffId = (int?)vnStaff.Id;
                 staffVns.AliasId = (int)vn.AliasId;
