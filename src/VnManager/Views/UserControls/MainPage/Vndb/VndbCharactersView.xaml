@@ -41,9 +41,9 @@
             </ListBox>
         </Grid>
 
-        <Grid Grid.Column="1"  x:Name="CharacterContent">
+        <Grid Grid.Column="1"  x:Name="CharacterContent" >
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="250"/>
+                <ColumnDefinition Width="250" MaxWidth="250"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
@@ -68,12 +68,39 @@
 
             </Grid>
 
-            <Grid Grid.Column="1" Grid.Row="0" Width="300">
+            <Grid Grid.Column="1" Grid.Row="0" Width="300" HorizontalAlignment="Left">
                 <StackPanel>
                     <TextBlock Text="{Binding BloodType}"/>
                     <TextBlock Text="{Binding Height}"/>
                     <TextBlock Text="{Binding Weight}"/>
                     <TextBlock Text="{Binding BustWaistHips}"/>
+                    <ItemsControl ItemsSource="{Binding TraitCollection}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="70"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="{Binding Parent}" Margin="0,5,0,0"/>
+                                    <ListBox Grid.Column="1" ItemsSource="{Binding Children}" HorizontalContentAlignment="Stretch"
+                                             adonisExtensions:ScrollViewerExtension.HorizontalScrollBarExpansionMode="NeverExpand" Margin="10,0,0,0">
+                                        <ListBox.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <StackPanel Orientation="Horizontal"/>
+                                            </ItemsPanelTemplate>
+                                        </ListBox.ItemsPanel>
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding}"/>
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                    </ListBox>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
                 </StackPanel>
             </Grid>
 
@@ -83,9 +110,7 @@
                     <TextBlock extensions:TextBlockInLineBinding.Inlines="{Binding Description}" 
                                FontWeight="DemiBold" TextWrapping="Wrap" />
                 </ScrollViewer>
-                
-                <!--<TextBlock extensions:TextBlockInLineBinding.Inlines="{Binding Description}" 
-                               Foreground="DimGray" FontWeight="DemiBold"/> -->
+
             </Grid>
 
         <!-- End main character content -->

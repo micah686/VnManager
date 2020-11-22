@@ -182,6 +182,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
 
         private void GetTraits()
         {
+            TraitCollection.Clear();
             List<VnCharacterTraits> traitList;
             List<VnTraitData> traitDump;
 
