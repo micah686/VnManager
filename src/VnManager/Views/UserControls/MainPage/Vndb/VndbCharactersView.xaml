@@ -53,7 +53,7 @@
             <Grid Grid.Column="0" Grid.Row="0">
                 <StackPanel>
                     <Image HorizontalAlignment="Left" MaxWidth="200" MaxHeight="300"  RenderOptions.BitmapScalingMode="Fant"
-                           Source="{Binding CharacterImage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                           Source="{Binding CharacterImage, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
 
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="{Binding Name}"/>
