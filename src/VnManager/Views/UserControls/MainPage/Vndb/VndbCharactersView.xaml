@@ -105,7 +105,7 @@
             </Grid>
 
             <Grid Grid.Column="0" Grid.Row="1" ColumnSpan="2"
-                  Width="{Binding ActualWidth, ElementName=CharacterContent}">
+                  MaxWidth="{Binding ActualWidth, ElementName=CharacterContent}">
                 <ScrollViewer VerticalScrollBarVisibility="Visible">
                     <TextBlock extensions:TextBlockInLineBinding.Inlines="{Binding Description}" 
                                FontWeight="DemiBold" TextWrapping="Wrap" />
