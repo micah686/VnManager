@@ -44,7 +44,7 @@
         <Grid Grid.Column="1"  x:Name="CharacterContent" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="250" MaxWidth="250"/>
-                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
@@ -68,8 +68,8 @@
 
             </Grid>
 
-            <Grid Grid.Column="1" Grid.Row="0" Width="300" HorizontalAlignment="Left">
-                <StackPanel>
+            <Grid Grid.Column="1" Grid.Row="0"  HorizontalAlignment="Left">
+                <StackPanel MaxWidth="{Binding ActualWidth, Mode=OneWay, ElementName=CharacterContent}">
                     <TextBlock Text="{Binding BloodType}"/>
                     <TextBlock Text="{Binding Height}"/>
                     <TextBlock Text="{Binding Weight}"/>
