@@ -93,6 +93,20 @@
           "System.IO.Abstractions": "12.1.9"
         }
       },
+      "VndbSharp": {
+        "type": "Direct",
+        "requested": "[1.1.0, )",
+        "resolved": "1.1.0",
+        "contentHash": "K8DA/dVN6qxZfFkZgaUe24ebin9y2xt4BkLYcD7IVhDtez8fGvOGvm3M9od1IdaKeqxR8BRgPaiBrtHWZT4PhQ==",
+        "dependencies": {
+          "NETStandard.Library": "1.6.1",
+          "Newtonsoft.Json": "10.0.3",
+          "System.Net.Http": "4.3.2",
+          "System.Net.Security": "4.3.0",
+          "System.Reflection.TypeExtensions": "4.3.0",
+          "System.Runtime.InteropServices": "4.3.0"
+        }
+      },
       "AdonisUI": {
         "type": "Transitive",
         "resolved": "1.16.0",
@@ -1285,17 +1299,6 @@
           "Microsoft.CSharp": "4.7.0",
           "System.Data.DataSetExtensions": "4.5.0",
           "System.Management": "4.7.0"
-        }
-      },
-      "vndbsharp": {
-        "type": "Project",
-        "dependencies": {
-          "NETStandard.Library": "1.6.1",
-          "Newtonsoft.Json": "10.0.3",
-          "System.Net.Http": "4.3.2",
-          "System.Net.Security": "4.3.0",
-          "System.Reflection.TypeExtensions": "4.3.0",
-          "System.Runtime.InteropServices": "4.3.0"
         }
       }
     }
