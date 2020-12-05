@@ -10,9 +10,9 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
 {
     public class VndbContentViewModel: Conductor<Screen>.Collection.OneActive
     {
-        public static Guid UserDataId { get; set; }
+        internal static Guid UserDataId { get; private set; }
 
-        internal static int VnId;
+        internal static int VnId { get; private set; }
 
         public VndbContentViewModel()
         {
