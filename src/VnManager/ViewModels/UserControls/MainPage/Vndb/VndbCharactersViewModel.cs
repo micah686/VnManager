@@ -48,21 +48,26 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
         public PackIconMaterialKind GenderIcon { get; set; }
         public Brush GenderColorBrush { get; set; }
 
-
         protected override void OnViewLoaded()
         {
+            if(CharacterNamesCollection.Count >0)return;
             PopulateCharacterList();
-            
+
+            if (CharacterNamesCollection.Count > 0)
+            {
+                SelectedCharacterIndex = 0;
+            }
         }
 
         private void PopulateCharacterList()
         {
+            CharacterNamesCollection.Clear();
             var cred = CredentialManager.GetCredentials(App.CredDb);
             if (cred == null || cred.UserName.Length < 1) return;
             using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
             {
                 var dbCharacterData = db.GetCollection<VnCharacterInfo>(DbVnCharacter.VnCharacter.ToString()).Query()
-                    .Where(x => x.VnId == VndbContentViewModel.Instance.VnId).ToArray();
+                    .Where(x => x.VnId == VndbContentViewModel.VnId).ToArray();
                 List<KeyValuePair<int, string>> list = dbCharacterData.Select(x => new KeyValuePair<int, string>((int) x.CharacterId, x.Name))
                     .ToList();
                 CharacterNamesCollection.AddRange(list);
@@ -70,6 +75,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
                 SelectedCharacterIndex = -1;
                 _finishedLoad = true;
             }
+
         }
 
         public void SearchCharacters()
@@ -107,7 +113,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             {
                 var charInfo = db.GetCollection<VnCharacterInfo>(DbVnCharacter.VnCharacter.ToString()).Query()
                     .Where(x => x.CharacterId == _characterId).FirstOrDefault();
-                var imagePath = $@"{App.AssetDirPath}\sources\vndb\images\characters\{VndbContentViewModel.Instance.VnId}\{Path.GetFileName(charInfo.ImageLink)}";
+                var imagePath = $@"{App.AssetDirPath}\sources\vndb\images\characters\{VndbContentViewModel.VnId}\{Path.GetFileName(charInfo.ImageLink)}";
                 CharacterImage = ImageHelper.CreateBitmapFromPath(imagePath);
 
                 Name = charInfo.Name;

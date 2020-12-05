@@ -32,7 +32,7 @@ namespace VnManager.ViewModels.Controls
         {
 
             var vm = _container.Get<VndbContentViewModel>();
-            vm.SetUserDataId(UserDataId);
+            vm.SetGameId(UserDataId);
             RootViewModel.Instance.ActivateItem(vm);
 
         }

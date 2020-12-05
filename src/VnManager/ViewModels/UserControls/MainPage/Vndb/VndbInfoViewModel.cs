@@ -54,12 +54,12 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
 
         private void LoadMainData()
         {
-            if (VndbContentViewModel.Instance.VnId == 0) return;
+            if (VndbContentViewModel.VnId == 0) return;
             var cred = CredentialManager.GetCredentials(App.CredDb);
             if (cred == null || cred.UserName.Length < 1) return;
             using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
             {
-                var vnInfoEntry = db.GetCollection<VnInfo>(DbVnInfo.VnInfo.ToString()).Query().Where(x => x.VnId == VndbContentViewModel.Instance.VnId).FirstOrDefault();
+                var vnInfoEntry = db.GetCollection<VnInfo>(DbVnInfo.VnInfo.ToString()).Query().Where(x => x.VnId == VndbContentViewModel.VnId).FirstOrDefault();
                 Title = vnInfoEntry.Title;
                 MainTitle = $"Title: {vnInfoEntry.Title}";
                 JpnTitle = $"Original Title: {vnInfoEntry.Original}";
@@ -79,13 +79,13 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
 
         private void LoadRelations()
         {
-            if (VndbContentViewModel.Instance.VnId == 0) return;
+            if (VndbContentViewModel.VnId == 0) return;
             var cred = CredentialManager.GetCredentials(App.CredDb);
             if (cred == null || cred.UserName.Length < 1) return;
             using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
             {
                 var vnRelations = db.GetCollection<VnInfoRelations>(DbVnInfo.VnInfo_Relations.ToString()).Query()
-                    .Where(x => x.VnId == VndbContentViewModel.Instance.VnId && x.Official.ToUpper(CultureInfo.InvariantCulture) == "YES").ToList();
+                    .Where(x => x.VnId == VndbContentViewModel.VnId && x.Official.ToUpper(CultureInfo.InvariantCulture) == "YES").ToList();
                 foreach (var relation in vnRelations)
                 {
                     var entry = new VnRelationsBinding { RelTitle = relation.Title, RelRelation = relation.Relation };
@@ -100,7 +100,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             if (cred == null || cred.UserName.Length < 1) return;
             using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
             var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString()).Query()
-                .Where(x => x.Id == VndbContentViewModel.Instance.UserDataId).FirstOrDefault();
+                .Where(x => x.Id == VndbContentViewModel.UserDataId).FirstOrDefault();
             if (dbUserData != null)
             {
                 LastPlayed = TimeDateChanger.GetHumanDate(dbUserData.LastPlayed);
