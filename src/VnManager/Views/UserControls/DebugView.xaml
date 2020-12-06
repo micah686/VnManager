@@ -22,16 +22,7 @@
         </StackPanel>
 
         <StackPanel Grid.Row="1" HorizontalAlignment="Left">
-            <Button Content="WriteLogFile" Command="{s:Action WriteLog}"/>
             <Button Content="CauseCrash" Command="{s:Action CauseException}"/>
-            <Button Content="TestVndbGet" Command="{s:Action TestVndbGet}"/>
-            <Button Content="TestStrings" Command="{s:Action TestStrings}"/>
-            <Button Content="AddUserData" Command="{s:Action AddUserData}"/>
-            <Button Content="Create Secure" Command="{s:Action CreateSecure}"/>
-            <Button Content="Test Password Entry" Command="{s:Action TestPasswordEntry}"/>
-            <Button Content="Test Statusbar" Command="{s:Action TestStatusBar}"/>
-            <Button Content="Test Encryption" Command="{s:Action TestEncryption}"/>
-            <Button Content="Export/Import" Command="{s:Action ExportImport}"/>
             <Image Source="{Binding TestImg, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="32" Height="32"></Image>
         </StackPanel>
 
