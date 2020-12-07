@@ -63,7 +63,7 @@ namespace VnManager.ViewModels.UserControls.MainPage
                             card.LastPlayedString = $"Last Played: {TimeDateChanger.GetHumanDate(entry.LastPlayed)}";
                             card.TotalTimeString = $"Play Time: {TimeDateChanger.GetHumanTime(entry.PlayTime)}";
                             card.UserDataId = entry.Id;
-                            card.IsNsfwDisabled = NsfwHelper.UserIsNsfw(game.ImageRating);
+                            card.ShouldDisplayNsfwContent = !NsfwHelper.UserIsNsfw(game.ImageRating);
                         }
                         else
                         {
@@ -77,7 +77,7 @@ namespace VnManager.ViewModels.UserControls.MainPage
                             card.LastPlayedString = $"Last Played: {TimeDateChanger.GetHumanDate(entry.LastPlayed)}";
                             card.TotalTimeString = $"Play Time: {TimeDateChanger.GetHumanTime(entry.PlayTime)}";
                             card.UserDataId = entry.Id;
-                            card.IsNsfwDisabled = NsfwHelper.UserIsNsfw(game.ImageRating);
+                            card.ShouldDisplayNsfwContent = !NsfwHelper.UserIsNsfw(game.ImageRating);
                         }
                         GameCollection.Add(card);
                     }

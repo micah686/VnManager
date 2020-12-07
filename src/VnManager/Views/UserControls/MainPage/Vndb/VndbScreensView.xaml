@@ -30,23 +30,7 @@
 
 
             <Grid x:Name="MainImg" Grid.Row="0" Grid.Column="0" Margin="15">
-                <Image Source="{Binding MainImage.Image, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
-                <Grid x:Name="NsfwImage" Visibility="{Binding MainImage.IsNsfw, Converter={StaticResource BoolToVisibilityConverter}}">
-                    <Grid x:Name="OuterBlurContainer">
-                        <Grid x:Name="InnerBlurContainer">
-                            <Image Stretch="UniformToFill" Source="{Binding MainImage.Image, Mode=OneWay}" RenderOptions.BitmapScalingMode="Fant"
-                               Height="{Binding ElementName=ScreenUserControl, Path=Height, Mode=TwoWay}" 
-                               Width="{Binding ElementName=ScreenUserControl, Path=Width, Mode=TwoWay}"/>
-                        </Grid>
-                    </Grid>
-                    <controls:BlurryUserControl Height="{Binding ElementName=ScreenUserControl, Path=Height, Mode=TwoWay}" 
-                                            Width="{Binding ElementName=ScreenUserControl, Path=Width, Mode=TwoWay}"
-                                            Background="Transparent"
-                                            Panel.ZIndex="100"
-                                            BlurContainer="{Binding ElementName=OuterBlurContainer}"
-                                            BlurRadius="80"
-                                            Magnification="0.95"/>
-                </Grid>
+                <Image Source="{Binding MainImage.Image, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" RenderOptions.BitmapScalingMode="Fant" Stretch="UniformToFill"/>
 
             </Grid>
 
@@ -61,23 +45,7 @@
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <Grid >
-                                <Image  Source="{Binding Image}" />
-                                <Grid x:Name="NsfwImage" Visibility="{Binding IsNsfw, Converter={StaticResource BoolToVisibilityConverter}}">
-                                    <Grid x:Name="OuterBlurContainer">
-                                        <Grid x:Name="InnerBlurContainer">
-                                            <Image Stretch="UniformToFill" Source="{Binding Image, Mode=OneWay}" RenderOptions.BitmapScalingMode="Fant"
-                                                   Height="{Binding ElementName=ScreenUserControl, Path=Height, Mode=TwoWay}" 
-                                                   Width="{Binding ElementName=ScreenUserControl, Path=Width, Mode=TwoWay}"/>
-                                        </Grid>
-                                    </Grid>
-                                    <controls:BlurryUserControl Height="{Binding ElementName=ScreenUserControl, Path=Height, Mode=TwoWay}" 
-                                                                Width="{Binding ElementName=ScreenUserControl, Path=Width, Mode=TwoWay}"
-                                                                Background="Transparent"
-                                                                Panel.ZIndex="100"
-                                                                BlurContainer="{Binding ElementName=OuterBlurContainer}"
-                                                                BlurRadius="15"
-                                                                Magnification="0.55"/>
-                                </Grid>
+                                <Image  Source="{Binding Image}" RenderOptions.BitmapScalingMode="Fant" Stretch="UniformToFill"/>
                             </Grid>
                         </DataTemplate>
                     </ListBox.ItemTemplate>

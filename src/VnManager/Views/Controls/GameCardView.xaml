@@ -61,20 +61,7 @@
                             <RowDefinition Height="50" />
                         </Grid.RowDefinitions>
                         <Grid Grid.Row="0" x:Name="ImageContainer"  MinHeight="170" Margin="5">
-                            <Image Grid.Row="0" Source="{Binding CoverImage.Image}" />
-                            <Grid x:Name="NsfwImage" Grid.Row="0" Visibility="{Binding CoverImage.IsNsfw, Converter={StaticResource BoolToVisibilityConverter}}">
-                                <Grid x:Name="OuterBlurContainer">
-                                    <Grid x:Name="InnerBlurContainer">
-                                        <Image Stretch="UniformToFill" Source="{Binding CoverImage.Image, Mode=OneWay}" RenderOptions.BitmapScalingMode="Fant"
-                                               Height="{Binding ElementName=ImageContainer, Path=Height, Mode=TwoWay}" 
-                                               Width="{Binding ElementName=ImageContainer, Path=Width, Mode=TwoWay}"/>
-                                    </Grid>
-                                </Grid>
-                                <controls:BlurryUserControl Background="Transparent" Panel.ZIndex="100" BlurRadius="20" Magnification="0.45"
-                                          BlurContainer="{Binding ElementName=OuterBlurContainer}" 
-                                          Height="{Binding ElementName=ImageContainer, Path=Height, Mode=TwoWay}" 
-                                          Width="{Binding ElementName=ImageContainer, Path=Width, Mode=TwoWay}"/>
-                            </Grid>
+                            <Image Grid.Row="0" Source="{Binding CoverImage.Image}" RenderOptions.BitmapScalingMode="Fant" Stretch="UniformToFill"/>
                         </Grid>
 
                         <!-- Grid Row 1 is for elements that show up on hovering over -->

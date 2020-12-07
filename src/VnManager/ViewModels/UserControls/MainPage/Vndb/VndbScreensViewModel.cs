@@ -75,17 +75,26 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
                 if(SelectedScreenIndex <0)return;
                 string path = $@"{App.AssetDirPath}\sources\vndb\images\screenshots\{VndbContentViewModel.VnId}\{Path.GetFileName(screenshotList[SelectedScreenIndex].ImageLink)}";
                 var rating = NsfwHelper.TrueIsNsfw(screenshotList[SelectedScreenIndex].Rating);
+                var userIsNsfw = NsfwHelper.UserIsNsfw(screenshotList[SelectedScreenIndex].Rating);
+                BitmapSource imgSource;
                 if (rating == true && File.Exists($"{path}.aes"))
                 {
                     var imgBytes = File.ReadAllBytes($"{path}.aes");
                     var imgStream = Secure.DecStreamToStream(new MemoryStream(imgBytes));
-                    var imgNsfw = ImageHelper.CreateBitmapFromStream(imgStream);
-                    MainImage = new BindingImage { Image = imgNsfw, IsNsfw = NsfwHelper.UserIsNsfw(screenshotList[SelectedScreenIndex].Rating) };
+                    imgSource = ImageHelper.CreateBitmapFromStream(imgStream);
                 }
                 else
                 {
-                    var img = ImageHelper.CreateBitmapFromPath(path);
-                    MainImage = new BindingImage { Image = img, IsNsfw = false };
+                    imgSource = ImageHelper.CreateBitmapFromPath(path);
+                }
+
+                if (userIsNsfw)
+                {
+                    MainImage = new BindingImage { Image = ImageHelper.BlurImage(imgSource,20), IsNsfw = true };
+                }
+                else
+                {
+                    MainImage = new BindingImage { Image = imgSource, IsNsfw = false };
                 }
             }
             catch (Exception e)
@@ -113,11 +122,20 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
                     var imgBytes = File.ReadAllBytes($"{thumbPath}.aes");
                     var imgStream = Secure.DecStreamToStream(new MemoryStream(imgBytes));
                     image = ImageHelper.CreateBitmapFromStream(imgStream);
+
+                    if (NsfwHelper.UserIsNsfw(item.Rating))
+                    {
+                        image = ImageHelper.BlurImage(image, 10);
+                    }
                     ScreenshotCollection.Add(new BindingImage { Image = image, IsNsfw = NsfwHelper.UserIsNsfw(item.Rating) });
                 }
                 else if (rating == false && File.Exists(thumbPath) && File.Exists(imagePath))
                 {
                     image = ImageHelper.CreateBitmapFromPath(thumbPath);
+                    if (NsfwHelper.UserIsNsfw(item.Rating))
+                    {
+                        image = ImageHelper.BlurImage(image, 10);
+                    }
                     ScreenshotCollection.Add(new BindingImage { Image = image, IsNsfw = false });
                 }
                 else

@@ -324,6 +324,14 @@ namespace VnManager.Helpers
             return bitmapSource;
         }
 
+
+        public static BitmapSource BlurImage(BitmapSource bs, int radialWeight)
+        {
+            var bi = GetBitmap(bs);
+            var blurImg = new GaussianBlur(bi).Process(radialWeight);
+            var blurBitmapSource = GetBitmapSource(blurImg);
+            return blurBitmapSource;
+        }
     }
 
     /// <summary>

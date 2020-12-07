@@ -17,12 +17,33 @@ namespace VnManager.ViewModels.Controls
         public GameCardViewModel(IContainer container)
         {
             _container = container;
+
         }
-        public BindingImage CoverImage { get; set; }
+        #region CoverImage
+        private BindingImage _coverImage;
+        public BindingImage CoverImage
+        {
+            get => _coverImage;
+            set
+            {
+                if (value.IsNsfw == false | ShouldDisplayNsfwContent)
+                {
+                    _coverImage = value;
+                    SetAndNotify(ref _coverImage, value);
+                }
+                else
+                {
+                    value.Image = ImageHelper.BlurImage(value.Image, 10);
+                    SetAndNotify(ref _coverImage, value);
+
+                }
+            }
+        }
+        #endregion
         public string LastPlayedString { get; set; }
         public string TotalTimeString { get; set; }
         public string Title { get; set; }
-        public bool IsNsfwDisabled { get; set; }
+        public bool ShouldDisplayNsfwContent { get; set; }
         public bool IsMouseOver { get; set; } = false;
 
 

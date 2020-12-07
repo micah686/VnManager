@@ -22,7 +22,7 @@ namespace VnManager.Helpers
 
         /// <summary>
         /// Checks if the specified rating should be marked NSFW
-        /// If either the Sexual or Violence ratings is above the max set by the user, it will be marked NSFW
+        /// If either the Sexual or Violence ratings is above the max set by the user, it will be marked NSFW(returns true)
         /// </summary>
         /// <param name="rating">ImageRating to be checked for NSFW</param>
         /// <returns></returns>
