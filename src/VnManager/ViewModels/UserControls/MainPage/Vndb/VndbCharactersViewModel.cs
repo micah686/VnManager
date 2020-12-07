@@ -217,12 +217,12 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             var groupedTraits = traitInfoList.GroupBy(x => x.Parent).ToList();
             //creates a List<string> from the children of the named tuple. Then adds the parent and children list to the TraitBinding list
             List<TraitBinding> bindingTraits = (from item in groupedTraits let childList = item.Select(x => x.Child).ToList() 
-                select new TraitBinding() {Parent = item.Key, Children = childList }).ToList();
+                select new TraitBinding {Parent = item.Key, Children = childList }).ToList();
             TraitCollection.AddRange(bindingTraits);
         }
 
 
-        private string GetParentTrait(uint traitId, List<VnTraitData> traitDump)
+        private static string GetParentTrait(uint traitId, List<VnTraitData> traitDump)
         {
             var traitData = traitDump.FirstOrDefault(x => x.TraitId == traitId);
 

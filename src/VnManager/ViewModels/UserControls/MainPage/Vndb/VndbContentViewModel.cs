@@ -26,7 +26,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
         }
 
         
-        internal void SetGameId(Guid guid)
+        internal static void SetGameId(Guid guid)
         {
             UserDataId = guid;
             var cred = CredentialManager.GetCredentials(App.CredDb);

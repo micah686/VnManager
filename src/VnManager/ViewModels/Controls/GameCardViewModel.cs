@@ -26,7 +26,7 @@ namespace VnManager.ViewModels.Controls
             get => _coverImage;
             set
             {
-                if (value.IsNsfw == false | ShouldDisplayNsfwContent)
+                if (value.IsNsfw == false || ShouldDisplayNsfwContent)
                 {
                     _coverImage = value;
                     SetAndNotify(ref _coverImage, value);
@@ -53,7 +53,7 @@ namespace VnManager.ViewModels.Controls
         {
 
             var vm = _container.Get<VndbContentViewModel>();
-            vm.SetGameId(UserDataId);
+            VndbContentViewModel.SetGameId(UserDataId);
             RootViewModel.Instance.ActivateItem(vm);
 
         }

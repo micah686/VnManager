@@ -111,38 +111,39 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             List<BindingImage> toDelete = new List<BindingImage>();
             foreach (var item in screenshotList)
             {
-                BitmapSource image;
+                BitmapSource image= new BitmapImage();
                 if (screenshotList.Count < 1) return;
                 string thumbPath = $@"{App.AssetDirPath}\sources\vndb\images\screenshots\{VndbContentViewModel.VnId}\thumbs\{Path.GetFileName(item.ImageLink)}";
                 string imagePath = $@"{App.AssetDirPath}\sources\vndb\images\screenshots\{VndbContentViewModel.VnId}\{Path.GetFileName(item.ImageLink)}";
 
                 bool rating = NsfwHelper.TrueIsNsfw(item.Rating);
+                var userIsNsfw = NsfwHelper.UserIsNsfw(item.Rating);
+                bool deleteItem = false;
                 if (rating && File.Exists($"{thumbPath}.aes") && File.Exists($"{imagePath}.aes"))
                 {
                     var imgBytes = File.ReadAllBytes($"{thumbPath}.aes");
                     var imgStream = Secure.DecStreamToStream(new MemoryStream(imgBytes));
                     image = ImageHelper.CreateBitmapFromStream(imgStream);
-
-                    if (NsfwHelper.UserIsNsfw(item.Rating))
-                    {
-                        image = ImageHelper.BlurImage(image, 10);
-                    }
-                    ScreenshotCollection.Add(new BindingImage { Image = image, IsNsfw = NsfwHelper.UserIsNsfw(item.Rating) });
                 }
                 else if (rating == false && File.Exists(thumbPath) && File.Exists(imagePath))
                 {
                     image = ImageHelper.CreateBitmapFromPath(thumbPath);
-                    if (NsfwHelper.UserIsNsfw(item.Rating))
-                    {
-                        image = ImageHelper.BlurImage(image, 10);
-                    }
-                    ScreenshotCollection.Add(new BindingImage { Image = image, IsNsfw = false });
                 }
                 else
                 {
                     toDelete.Add(item);
-
+                    deleteItem = true;
                 }
+
+                if (userIsNsfw && deleteItem == false)
+                {
+                    ScreenshotCollection.Add(new BindingImage { Image = ImageHelper.BlurImage(image, 5), IsNsfw = true });
+                }
+                else if(userIsNsfw == false && deleteItem == false)
+                {
+                    ScreenshotCollection.Add(new BindingImage { Image = image, IsNsfw = false });
+                }
+
             }
 
             foreach (var delete in toDelete)
