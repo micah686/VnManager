@@ -10,6 +10,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Interop;
 using System.Windows.Media.Imaging;
 using VnManager.MetadataProviders.Vndb;
 using System.Windows.Media;
@@ -268,6 +269,59 @@ namespace VnManager.Helpers
                 return false;
             }
             
+        }
+
+        /// <summary>
+        /// Converts a BitmapSource into a Bitmap
+        /// Used from: https://gist.github.com/nashby/916300
+        /// </summary>
+        /// <param name="source">BitmapSource of an image</param>
+        /// <returns></returns>
+        public static Bitmap GetBitmap(BitmapSource source)
+        {
+            Bitmap bmp = new Bitmap
+            (
+                source.PixelWidth,
+                source.PixelHeight,
+                System.Drawing.Imaging.PixelFormat.Format32bppPArgb
+            );
+
+            BitmapData data = bmp.LockBits
+            (
+                new System.Drawing.Rectangle(System.Drawing.Point.Empty, bmp.Size),
+                ImageLockMode.WriteOnly,
+                System.Drawing.Imaging.PixelFormat.Format32bppPArgb
+            );
+
+            source.CopyPixels
+            (
+                Int32Rect.Empty,
+                data.Scan0,
+                data.Height * data.Stride,
+                data.Stride
+            );
+
+            bmp.UnlockBits(data);
+
+            return bmp;
+        }
+        /// <summary>
+        /// Converts a Bitmap to BitmapSource
+        /// Used from: https://gist.github.com/nashby/916300
+        /// </summary>
+        /// <param name="bitmap">Bitmap of an Image</param>
+        /// <returns></returns>
+        public static BitmapSource GetBitmapSource(Bitmap bitmap)
+        {
+            BitmapSource bitmapSource = Imaging.CreateBitmapSourceFromHBitmap
+            (
+                bitmap.GetHbitmap(),
+                IntPtr.Zero,
+                Int32Rect.Empty,
+                BitmapSizeOptions.FromEmptyOptions()
+            );
+
+            return bitmapSource;
         }
 
     }
