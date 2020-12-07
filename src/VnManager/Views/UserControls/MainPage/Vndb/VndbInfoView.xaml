@@ -11,7 +11,6 @@
              xmlns:adonisExtensions="clr-namespace:AdonisUI.Extensions;assembly=AdonisUI"
              xmlns:adonisUi="clr-namespace:AdonisUI;assembly=AdonisUI"
              xmlns:vm="clr-namespace:VnManager.ViewModels.UserControls.MainPage.Vndb"
-             xmlns:controls="clr-namespace:BlurryControls.Controls;assembly=BlurryControls"
              xmlns:ext="clr-namespace:VnManager.Extensions"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance vm:VndbInfoViewModel}"

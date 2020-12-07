@@ -8,7 +8,6 @@
              xmlns:s="https://github.com/canton7/Stylet"
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:uc="clr-namespace:VnManager.ViewModels.UserControls.MainPage.Vndb"
-             xmlns:controls="clr-namespace:BlurryControls.Controls;assembly=BlurryControls"
              xmlns:adonisUi="clr-namespace:AdonisUI;assembly=AdonisUI"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
