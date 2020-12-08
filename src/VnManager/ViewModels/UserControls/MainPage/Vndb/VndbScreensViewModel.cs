@@ -47,14 +47,15 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
 
         protected override void OnViewLoaded()
         {
-            if(_finishedLoad == true)return;
-            if(_scrList.Count >0) return;
+            if (_finishedLoad == true) return;
+            if (_scrList.Count > 0) return;
             _scrList = LoadScreenshotList();
             BindScreenshotCollection();
             _finishedLoad = true;
+            if (ScreenshotCollection.Count > 0) SelectedScreenIndex = 0;
         }
 
-        private  List<BindingImage> LoadScreenshotList()
+        private List<BindingImage> LoadScreenshotList()
         {
             var cred = CredentialManager.GetCredentials(App.CredDb);
             if (cred == null || cred.UserName.Length < 1) return new List<BindingImage>();
@@ -72,29 +73,21 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             {
                 List<BindingImage> screenshotList = _scrList;
                 if (screenshotList.Count <= 0) return;
-                if(SelectedScreenIndex <0)return;
+                if (SelectedScreenIndex < 0) return;
                 string path = $@"{App.AssetDirPath}\sources\vndb\images\screenshots\{VndbContentViewModel.VnId}\{Path.GetFileName(screenshotList[SelectedScreenIndex].ImageLink)}";
                 var rating = NsfwHelper.TrueIsNsfw(screenshotList[SelectedScreenIndex].Rating);
                 var userIsNsfw = NsfwHelper.UserIsNsfw(screenshotList[SelectedScreenIndex].Rating);
-                BitmapSource imgSource;
                 if (rating == true && File.Exists($"{path}.aes"))
                 {
                     var imgBytes = File.ReadAllBytes($"{path}.aes");
                     var imgStream = Secure.DecStreamToStream(new MemoryStream(imgBytes));
-                    imgSource = ImageHelper.CreateBitmapFromStream(imgStream);
+                    var imgNsfw = ImageHelper.CreateBitmapFromStream(imgStream);
+                    MainImage = CreateBlurBindingImage(imgNsfw, userIsNsfw, 20);
                 }
                 else
                 {
-                    imgSource = ImageHelper.CreateBitmapFromPath(path);
-                }
-
-                if (userIsNsfw)
-                {
-                    MainImage = new BindingImage { Image = ImageHelper.BlurImage(imgSource,20), IsNsfw = true };
-                }
-                else
-                {
-                    MainImage = new BindingImage { Image = imgSource, IsNsfw = false };
+                    var img = ImageHelper.CreateBitmapFromPath(path);
+                    MainImage = CreateBlurBindingImage(img, userIsNsfw, 20);
                 }
             }
             catch (Exception e)
@@ -111,39 +104,30 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             List<BindingImage> toDelete = new List<BindingImage>();
             foreach (var item in screenshotList)
             {
-                BitmapSource image= new BitmapImage();
+                BitmapSource image;
                 if (screenshotList.Count < 1) return;
                 string thumbPath = $@"{App.AssetDirPath}\sources\vndb\images\screenshots\{VndbContentViewModel.VnId}\thumbs\{Path.GetFileName(item.ImageLink)}";
                 string imagePath = $@"{App.AssetDirPath}\sources\vndb\images\screenshots\{VndbContentViewModel.VnId}\{Path.GetFileName(item.ImageLink)}";
 
                 bool rating = NsfwHelper.TrueIsNsfw(item.Rating);
-                var userIsNsfw = NsfwHelper.UserIsNsfw(item.Rating);
-                bool deleteItem = false;
+                bool userIsNsfw = NsfwHelper.UserIsNsfw(item.Rating);
                 if (rating && File.Exists($"{thumbPath}.aes") && File.Exists($"{imagePath}.aes"))
                 {
                     var imgBytes = File.ReadAllBytes($"{thumbPath}.aes");
                     var imgStream = Secure.DecStreamToStream(new MemoryStream(imgBytes));
                     image = ImageHelper.CreateBitmapFromStream(imgStream);
+                    ScreenshotCollection.Add(CreateBlurBindingImage(image, userIsNsfw,10));
                 }
                 else if (rating == false && File.Exists(thumbPath) && File.Exists(imagePath))
                 {
                     image = ImageHelper.CreateBitmapFromPath(thumbPath);
+                    ScreenshotCollection.Add(CreateBlurBindingImage(image, userIsNsfw, 10));
                 }
                 else
                 {
                     toDelete.Add(item);
-                    deleteItem = true;
-                }
 
-                if (userIsNsfw && deleteItem == false)
-                {
-                    ScreenshotCollection.Add(new BindingImage { Image = ImageHelper.BlurImage(image, 5), IsNsfw = true });
                 }
-                else if(userIsNsfw == false && deleteItem == false)
-                {
-                    ScreenshotCollection.Add(new BindingImage { Image = image, IsNsfw = false });
-                }
-
             }
 
             foreach (var delete in toDelete)
@@ -152,7 +136,18 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             }
         }
 
-
+        private BindingImage CreateBlurBindingImage(BitmapSource image, bool isNsfw, int blurRadius)
+        {
+            if (isNsfw == false)
+            {
+                return new BindingImage { Image = image, IsNsfw = true };
+            }
+            else
+            {
+                var blurImage = ImageHelper.BlurImage(image, blurRadius);
+                return new BindingImage { Image = blurImage, IsNsfw = true };
+            }
+        }
 
     }
 }
