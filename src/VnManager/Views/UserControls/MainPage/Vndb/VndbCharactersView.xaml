@@ -47,19 +47,19 @@
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <Grid Grid.Column="0" Grid.Row="0">
                 <StackPanel>
                     <Image HorizontalAlignment="Left" MaxWidth="200" MaxHeight="300"  RenderOptions.BitmapScalingMode="Fant"
                            Source="{Binding CharacterImage, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
 
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{Binding Name}"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                        <TextBlock Text="{Binding Name}" FontSize="18" FontWeight="DemiBold"/>
                         <iconPacks:PackIconMaterial Kind="{Binding GenderIcon}" Foreground="{Binding GenderColorBrush}"
-                                                    Width="18" Height="18" Margin="10,0,0,0"/>
+                                                    Width="18" Height="18" Margin="10,4,0,0"/>
                     </StackPanel>
-                    <TextBlock Text="{Binding Birthday}"></TextBlock>
+                    <TextBlock Text="{Binding Birthday.Item1}" Visibility="{Binding Birthday.Item2}"></TextBlock>
                     <TextBlock Text="PlaceHolder AGE"></TextBlock>
 
 
@@ -69,16 +69,16 @@
 
             <Grid Grid.Column="1" Grid.Row="0"  HorizontalAlignment="Left">
                 <StackPanel MaxWidth="{Binding ActualWidth, Mode=OneWay, ElementName=CharacterContent}">
-                    <TextBlock Text="{Binding BloodType}"/>
-                    <TextBlock Text="{Binding Height}"/>
-                    <TextBlock Text="{Binding Weight}"/>
-                    <TextBlock Text="{Binding BustWaistHips}"/>
+                    <TextBlock Text="{Binding BloodType.Item1}" Visibility="{Binding BloodType.Item2}"/>
+                    <TextBlock Text="{Binding Height.Item1}" Visibility="{Binding Height.Item2}"/>
+                    <TextBlock Text="{Binding Weight.Item1}" Visibility="{Binding Weight.Item2}"/>
+                    <TextBlock Text="{Binding BustWaistHips.Item1}" Visibility="{Binding BustWaistHips.Item2}"/>
                     <ItemsControl ItemsSource="{Binding TraitCollection}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Grid>
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="70"/>
+                                        <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
                                     <TextBlock Grid.Column="0" Text="{Binding Parent}" Margin="0,5,0,0"/>

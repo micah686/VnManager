@@ -22,22 +22,27 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
 {
     public class VndbCharactersViewModel: Screen
     {
+        #region CharacterListProperties
         private IReadOnlyCollection<KeyValuePair<int, string>> _allCharacterNamesCollection;
-        public BindableCollection<KeyValuePair<int, string>> CharacterNamesCollection { get; private set; }= new BindableCollection<KeyValuePair<int, string>>();
+        public BindableCollection<KeyValuePair<int, string>> CharacterNamesCollection { get; private set; } = new BindableCollection<KeyValuePair<int, string>>();
         public string CharacterNameSearch { get; set; }
+        private bool _finishedLoad = false;
+        #endregion
+
+
         public int SelectedCharacterIndex { get; set; }
         private int _characterId = -1;
-        private bool _finishedLoad = false;
+        
 
         #region CharacterData
         public BitmapSource CharacterImage { get; set; }
         public string Name { get; set; }
-        public string OriginalName { get; set; }
-        public string BloodType { get; set; }
-        public string Birthday { get; set; }
-        public string Height { get; set; }
-        public string Weight { get; set; }
-        public string BustWaistHips { get; set; }
+        public Tuple<string, Visibility> OriginalName { get; set; }
+        public Tuple<string, Visibility> BloodType { get; set; } 
+        public Tuple<string, Visibility> Birthday { get; set; }
+        public Tuple<string, Visibility> Height { get; set; }
+        public Tuple<string, Visibility> Weight { get; set; }
+        public Tuple<string, Visibility> BustWaistHips { get; set; }
 
         public List<Inline> Description { get; set; }
         
@@ -57,8 +62,10 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             {
                 SelectedCharacterIndex = 0;
             }
+            SetupDefaultVisProps();
         }
 
+        #region CharacterListMethods
         private void PopulateCharacterList()
         {
             CharacterNamesCollection.Clear();
@@ -68,7 +75,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             {
                 var dbCharacterData = db.GetCollection<VnCharacterInfo>(DbVnCharacter.VnCharacter.ToString()).Query()
                     .Where(x => x.VnId == VndbContentViewModel.VnId).ToArray();
-                List<KeyValuePair<int, string>> list = dbCharacterData.Select(x => new KeyValuePair<int, string>((int) x.CharacterId, x.Name))
+                List<KeyValuePair<int, string>> list = dbCharacterData.Select(x => new KeyValuePair<int, string>((int)x.CharacterId, x.Name))
                     .ToList();
                 CharacterNamesCollection.AddRange(list);
                 _allCharacterNamesCollection = list;
@@ -97,13 +104,27 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
 
         public void CharacterSelectionChanged()
         {
-            if(!_finishedLoad)return;
+            if (!_finishedLoad) return;
             if (SelectedCharacterIndex != -1)
             {
                 _characterId = CharacterNamesCollection[SelectedCharacterIndex].Key;
             }
             UpdateCharacterData();
         }
+        #endregion
+
+        private void SetupDefaultVisProps()
+        {
+            var defTuple = new Tuple<string, Visibility>(string.Empty, Visibility.Collapsed);
+            OriginalName = defTuple;
+            Birthday = defTuple;
+            BloodType = defTuple;
+            Height = defTuple;
+            Weight = defTuple;
+            BustWaistHips = defTuple;
+        }
+
+
 
         private void UpdateCharacterData()
         {
@@ -116,26 +137,35 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
                 var imagePath = $@"{App.AssetDirPath}\sources\vndb\images\characters\{VndbContentViewModel.VnId}\{Path.GetFileName(charInfo.ImageLink)}";
                 CharacterImage = ImageHelper.CreateBitmapFromPath(imagePath);
 
+                SetupDefaultVisProps();
+
+
                 Name = charInfo.Name;
-                OriginalName = charInfo.Original ?? string.Empty;
+                if (!string.IsNullOrEmpty(charInfo.Original))
+                {
+                    OriginalName = new Tuple<string, Visibility>(charInfo.Original, Visibility.Visible);
+                }
 
                 SetGenderIcon(charInfo.Gender);
-                Birthday = charInfo.Birthday ?? string.Empty;
-                
+
+                if (!string.IsNullOrEmpty(charInfo.Birthday))
+                {
+                    Birthday = new Tuple<string, Visibility>(charInfo.Birthday, Visibility.Visible);
+                }
 
                 if (!string.IsNullOrEmpty(charInfo.BloodType))
                 {
-                    BloodType = $"Blood Type: {charInfo.BloodType}";
+                    BloodType = new Tuple<string, Visibility>($"Blood Type: {charInfo.BloodType}", Visibility.Visible);
                 }
 
                 if (!charInfo.Height.Equals(0))
                 {
-                    Height = $"Height: {charInfo.Height}";
+                    Height = new Tuple<string, Visibility>($"Height: {charInfo.Height}", Visibility.Visible);
                 }
 
                 if (!charInfo.Weight.Equals(0))
                 {
-                    Weight = $"Weight: {charInfo.Weight}";
+                    Weight = new Tuple<string, Visibility>($"Weight: {charInfo.Weight}", Visibility.Visible);
                 }
 
                 SetBustWidthHeight(charInfo);
@@ -153,14 +183,12 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             string waist = info.Waist == null || info.Waist == 0 ? "??" : info.Waist.ToString();
             string hips = info.Hip == null || info.Hip == 0 ? "??" : info.Hip.ToString();
 
-            if (bust.Equals("??") && waist.Equals("??") && hips.Equals("??"))
-            {
-                BustWaistHips = String.Empty;
-            }
-            else
+            var isAllValid = !bust.Equals("??") && !waist.Equals("??") && !hips.Equals("??");
+
+            if (isAllValid)
             {
                 var value = $"{header} {bust}-{waist}-{hips}";
-                BustWaistHips = value;
+                BustWaistHips = new Tuple<string, Visibility>(value, Visibility.Visible);
             }
         }
 
@@ -233,6 +261,11 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             return traitData?.Name;
         }
 
+
+        //private static Tuple<string, Visibility> GetStringVis(string input)
+        //{
+
+        //}
 
     }
 
