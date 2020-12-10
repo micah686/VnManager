@@ -139,14 +139,12 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
 
                 SetupDefaultVisProps();
 
-
                 Name = charInfo.Name;
+                SetGenderIcon(charInfo.Gender);
                 if (!string.IsNullOrEmpty(charInfo.Original))
                 {
                     OriginalName = new Tuple<string, Visibility>(charInfo.Original, Visibility.Visible);
                 }
-
-                SetGenderIcon(charInfo.Gender);
 
                 if (!string.IsNullOrEmpty(charInfo.Birthday))
                 {

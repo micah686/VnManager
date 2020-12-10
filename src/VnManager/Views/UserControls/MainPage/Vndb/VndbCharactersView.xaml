@@ -73,6 +73,9 @@
                     <TextBlock Text="{Binding Height.Item1}" Visibility="{Binding Height.Item2}"/>
                     <TextBlock Text="{Binding Weight.Item1}" Visibility="{Binding Weight.Item2}"/>
                     <TextBlock Text="{Binding BustWaistHips.Item1}" Visibility="{Binding BustWaistHips.Item2}"/>
+
+
+
                     <ItemsControl ItemsSource="{Binding TraitCollection}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
@@ -81,24 +84,27 @@
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="{Binding Parent}" Margin="0,5,0,0"/>
-                                    <ListBox Grid.Column="1" ItemsSource="{Binding Children}" HorizontalContentAlignment="Stretch"
-                                             adonisExtensions:ScrollViewerExtension.HorizontalScrollBarExpansionMode="NeverExpand" Margin="10,0,0,0">
-                                        <ListBox.ItemsPanel>
-                                            <ItemsPanelTemplate>
-                                                <StackPanel Orientation="Horizontal"/>
-                                            </ItemsPanelTemplate>
-                                        </ListBox.ItemsPanel>
-                                        <ListBox.ItemTemplate>
-                                            <DataTemplate>
-                                                <TextBlock Text="{Binding}"/>
-                                            </DataTemplate>
-                                        </ListBox.ItemTemplate>
-                                    </ListBox>
+                                    <TextBlock x:Name="txtParentTrait" Grid.Column="0" Text="{Binding Parent}" Margin="0,5,0,0"/>
+                                    <ScrollViewer Grid.Column="1" adonisExtensions:ScrollViewerExtension.HorizontalScrollBarExpansionMode="NeverExpand" HorizontalScrollBarVisibility="Visible">
+                                        <ItemsControl ItemsSource="{Binding Children}" HorizontalContentAlignment="Stretch"
+                                                       Margin="10,0,0,0" >
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <StackPanel Orientation="Horizontal"></StackPanel>
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding}" Margin="0,0,10,0"/>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </ScrollViewer>
                                 </Grid>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
+
 
                 </StackPanel>
             </Grid>
