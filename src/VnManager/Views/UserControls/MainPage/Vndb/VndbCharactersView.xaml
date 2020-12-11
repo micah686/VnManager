@@ -76,19 +76,19 @@
 
 
 
-                    <ItemsControl ItemsSource="{Binding TraitCollection}">
+                    <ItemsControl ItemsSource="{Binding TraitCollection}" AlternationCount="2">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Grid>
+                                <Grid x:Name="FooBar">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="{Binding Parent}" Margin="0,5,0,0"/>
+                                    <TextBlock Grid.Column="0" Text="{Binding Parent}" />
                                     <ScrollViewer Grid.Column="1" adonisExtensions:ScrollViewerExtension.HorizontalScrollBarExpansionMode="NeverExpand" HorizontalScrollBarVisibility="Visible" 
                                                    Margin="{Binding ParentMargin}" >
                                         <ItemsControl ItemsSource="{Binding Children}" HorizontalContentAlignment="Stretch"
-                                                      Margin="10,0,0,0" >
+                                                      Margin="10,-4,0,0" >
                                             <ItemsControl.ItemsPanel>
                                                 <ItemsPanelTemplate>
                                                     <StackPanel Orientation="Horizontal"></StackPanel>
@@ -103,6 +103,14 @@
                                     </ScrollViewer>
 
                                 </Grid>
+                                <DataTemplate.Triggers>
+                                    <Trigger Property="ItemsControl.AlternationIndex" Value="0">
+                                        <Setter Property="Background" Value="Transparent" TargetName="FooBar"/>
+                                    </Trigger>
+                                    <Trigger Property="ItemsControl.AlternationIndex" Value="1">
+                                        <Setter Property="Background" Value="{DynamicResource {x:Static adonisUi:Brushes.Layer0BackgroundBrush}}" TargetName="FooBar"/>
+                                    </Trigger>
+                                </DataTemplate.Triggers>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
