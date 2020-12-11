@@ -84,10 +84,11 @@
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock x:Name="txtParentTrait" Grid.Column="0" Text="{Binding Parent}" Margin="0,5,0,0"/>
-                                    <ScrollViewer Grid.Column="1" adonisExtensions:ScrollViewerExtension.HorizontalScrollBarExpansionMode="NeverExpand" HorizontalScrollBarVisibility="Visible">
+                                    <TextBlock Grid.Column="0" Text="{Binding Parent}" Margin="0,5,0,0"/>
+                                    <ScrollViewer Grid.Column="1" adonisExtensions:ScrollViewerExtension.HorizontalScrollBarExpansionMode="NeverExpand" HorizontalScrollBarVisibility="Visible" 
+                                                   Margin="{Binding ParentMargin}" >
                                         <ItemsControl ItemsSource="{Binding Children}" HorizontalContentAlignment="Stretch"
-                                                       Margin="10,0,0,0" >
+                                                      Margin="10,0,0,0" >
                                             <ItemsControl.ItemsPanel>
                                                 <ItemsPanelTemplate>
                                                     <StackPanel Orientation="Horizontal"></StackPanel>
@@ -100,6 +101,7 @@
                                             </ItemsControl.ItemTemplate>
                                         </ItemsControl>
                                     </ScrollViewer>
+
                                 </Grid>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>

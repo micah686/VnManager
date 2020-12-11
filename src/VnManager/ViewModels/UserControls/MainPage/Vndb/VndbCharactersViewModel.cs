@@ -32,7 +32,6 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
 
         public int SelectedCharacterIndex { get; set; }
         private int _characterId = -1;
-        
 
         #region CharacterData
         public BitmapSource CharacterImage { get; set; }
@@ -171,6 +170,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
                 Description = BBCodeHelper.Helper(charInfo.Description);
             }
             GetTraits();
+            SetParentTraitMargin();
         }
 
         private void SetBustWidthHeight(VnCharacterInfo info)
@@ -245,6 +245,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             List<TraitBinding> bindingTraits = (from item in groupedTraits let childList = item.Select(x => x.Child).ToList() 
                 select new TraitBinding {Parent = item.Key, Children = childList }).ToList();
             TraitCollection.AddRange(bindingTraits);
+            SetParentTraitMargin();
         }
 
 
@@ -260,10 +261,30 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
         }
 
 
-        //private static Tuple<string, Visibility> GetStringVis(string input)
-        //{
+        private void SetParentTraitMargin()
+        {
+            var currentTraits = TraitCollection;
 
-        //}
+            var parents = currentTraits.Select(x => x.Parent);
+            var stringSizes = parents.Select(MeasureStringSize.GetMaxStringWidth).ToList();
+            var largestSize = stringSizes.OrderByDescending(x => x).FirstOrDefault();
+            var padding = 30;
+            var maxValue = largestSize + padding;
+
+            foreach (var traitBinding in TraitCollection)
+            {
+                var parentSize = MeasureStringSize.GetMaxStringWidth(traitBinding.Parent);
+                if (parentSize < maxValue)
+                {
+                    var difference = maxValue - parentSize;
+                    traitBinding.ParentMargin = new Thickness(difference,0,0,0);
+                }
+
+            }
+
+            TraitCollection = currentTraits;
+            
+        }
 
     }
 
@@ -271,5 +292,6 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
     {
         public string Parent { get; set; }
         public List<string> Children { get; set; }
+        public Thickness ParentMargin { get; set; }
     }
 }
