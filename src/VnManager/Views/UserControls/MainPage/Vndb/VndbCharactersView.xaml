@@ -84,7 +84,7 @@
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="{Binding Parent}" />
+                                    <TextBlock Grid.Column="0" Text="{Binding Parent}" Margin="5,0,0,0"/>
                                     <ScrollViewer Grid.Column="1" adonisExtensions:ScrollViewerExtension.HorizontalScrollBarExpansionMode="NeverExpand" HorizontalScrollBarVisibility="Visible" 
                                                    Margin="{Binding ParentMargin}" >
                                         <ItemsControl ItemsSource="{Binding Children}" HorizontalContentAlignment="Stretch"
@@ -105,7 +105,7 @@
                                 </Grid>
                                 <DataTemplate.Triggers>
                                     <Trigger Property="ItemsControl.AlternationIndex" Value="0">
-                                        <Setter Property="Background" Value="Transparent" TargetName="FooBar"/>
+                                        <Setter Property="Background" Value="{DynamicResource {x:Static adonisUi:Brushes.Layer2BackgroundBrush}}" TargetName="FooBar"/>
                                     </Trigger>
                                     <Trigger Property="ItemsControl.AlternationIndex" Value="1">
                                         <Setter Property="Background" Value="{DynamicResource {x:Static adonisUi:Brushes.Layer0BackgroundBrush}}" TargetName="FooBar"/>
