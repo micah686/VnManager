@@ -69,11 +69,12 @@
 
             <Grid Grid.Column="1" Grid.Row="0"  HorizontalAlignment="Left">
                 <StackPanel MaxWidth="{Binding ActualWidth, Mode=OneWay, ElementName=CharacterContent}">
-                    <TextBlock Text="{Binding BloodType.Item1}" Visibility="{Binding BloodType.Item2}"/>
-                    <TextBlock Text="{Binding Height.Item1}" Visibility="{Binding Height.Item2}"/>
-                    <TextBlock Text="{Binding Weight.Item1}" Visibility="{Binding Weight.Item2}"/>
-                    <TextBlock Text="{Binding BustWaistHips.Item1}" Visibility="{Binding BustWaistHips.Item2}"/>
+                    <TextBlock Text="{Binding BloodType.Item1}" Margin="0,0,0,5" Visibility="{Binding BloodType.Item2}"/>
+                    <TextBlock Text="{Binding Height.Item1}" Margin="0,0,0,5" Visibility="{Binding Height.Item2}"/>
+                    <TextBlock Text="{Binding Weight.Item1}" Margin="0,0,0,5" Visibility="{Binding Weight.Item2}"/>
+                    <TextBlock Text="{Binding BustWaistHips.Item1}" Margin="0,0,0,5" Visibility="{Binding BustWaistHips.Item2}"/>
 
+                    <Label Content="Traits" Margin="0,10,0,5"></Label>
 
 
                     <ItemsControl ItemsSource="{Binding TraitCollection}" AlternationCount="2">

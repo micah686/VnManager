@@ -244,6 +244,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             //creates a List<string> from the children of the named tuple. Then adds the parent and children list to the TraitBinding list
             List<TraitBinding> bindingTraits = (from item in groupedTraits let childList = item.Select(x => x.Child).ToList() 
                 select new TraitBinding {Parent = item.Key, Children = childList }).ToList();
+            bindingTraits = bindingTraits.OrderBy(x => x.Parent).ToList();
             TraitCollection.AddRange(bindingTraits);
             SetParentTraitMargin();
         }
