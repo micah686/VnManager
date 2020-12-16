@@ -60,7 +60,6 @@
                                                     Width="18" Height="18" Margin="10,4,0,0"/>
                     </StackPanel>
                     <TextBlock Text="{Binding Birthday.Item1}" Visibility="{Binding Birthday.Item2}"></TextBlock>
-                    <TextBlock Text="PlaceHolder AGE"></TextBlock>
 
 
                 </StackPanel>

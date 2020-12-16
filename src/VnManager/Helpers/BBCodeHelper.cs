@@ -14,6 +14,8 @@ namespace VnManager.Helpers
     public static class BBCodeHelper
     {
         private const char SplitChar = '\x205E'; //this is a unicode 4 vertical dots(⁞) that can be used as a splitter
+        private const char StartChar = '\x25C4';
+        private const char EndChar = '\x25BA';
         private static readonly TimeSpan RegexTimeout = new TimeSpan(0,0,0,0,500);
         /// <summary>
         /// Takes a BBCode string and converts it into a formats it into a usable way
@@ -28,12 +30,8 @@ namespace VnManager.Helpers
             modifiedText = ReplaceVndbLocalUrls(modifiedText);
             modifiedText = StripUnneededBbCode(modifiedText);
             modifiedText = ReplaceUrls(modifiedText);
-
-
             
-
-            var p = new Paragraph();
-            var inlineList = Format(modifiedText, p.Inlines);
+            var inlineList = FormatUrlsInLine(modifiedText);
 
 
             return inlineList;
@@ -157,7 +155,7 @@ namespace VnManager.Helpers
                     var originalStr = match.Groups[0].Value;
                     var url = match.Groups[2].Value;
                     var displayName = match.Groups[4].Value;
-                    var newUrlAndName = url + SplitChar + displayName + SplitChar;
+                    var newUrlAndName = StartChar + url + SplitChar + displayName + EndChar;
                     modifiedText = modifiedText.Replace(originalStr, newUrlAndName, false, CultureInfo.InvariantCulture);
                 }
             }
@@ -166,19 +164,48 @@ namespace VnManager.Helpers
         }
 
 
-        
-        
-
-
-        private struct UrlMatch: IEquatable<UrlMatch>
+        /// <summary>
+        /// Takes a string, and creates an inline list out of it, creating hyperlinks
+        /// adapted from https://stackoverflow.com/a/27742886
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        private static List<Inline> FormatUrlsInLine(string input)
         {
-            public int Offset;
-            public string Text;
+            List<Inline> inlineList = new List<Inline>();
+            var rgx = new Regex(@"(\◄.+?\►)", RegexOptions.IgnoreCase);
+            var str = rgx.Split(input);
+            for (int i = 0; i < str.Length; i++)
+                if (i % 2 == 0)
+                    inlineList.Add(new Run { Text = str[i] });
+                else
+                {
+                    var newText = str[i];
+                    newText = newText.Replace($"{StartChar}", string.Empty);
+                    newText = newText.Replace($"{EndChar}", string.Empty);
+                    var split = newText.Split(SplitChar);
+                    SplitUrl splitUrl = new SplitUrl { Url = split[0], Label = split[1] };
+                    var run = new Run(splitUrl.Label);
+                    Hyperlink link = new Hyperlink(run);
 
-            public bool Equals(UrlMatch other) =>
-                (Offset, Text) == (other.Offset, other.Text);
+
+                    var isValid = Uri.IsWellFormedUriString(splitUrl.Url, UriKind.Absolute);
+                    if (isValid)
+                    {
+                        link.NavigateUri = new Uri(splitUrl.Url);
+                        link.RequestNavigate += Hyperlink_RequestNavigate;
+                        inlineList.Add(link);
+                    }
+                    else
+                    {
+                        inlineList.Add(run);
+                    }
+
+
+                }
+            return inlineList;
         }
-
+        
         internal struct SplitUrl: IEquatable<SplitUrl>
         {
             internal string Url;
@@ -187,145 +214,7 @@ namespace VnManager.Helpers
                 (Url, Label) == (other.Url, other.Label);
         }
 
-        /// <summary>
-        /// Tries to get a match to a valid url
-        /// https://github.com/pointgaming/point-gaming-desktop/blob/f9bc16a69d66cab39e23a3ce3a05d06a3888071c/PointGaming/Chat/ChatCommon.cs
-        /// </summary>
-        /// <param name="mine"></param>
-        /// <param name="startOffset"></param>
-        /// <param name="urlMatch"></param>
-        /// <returns></returns>
-        private static bool TryGetMatch(string mine, int startOffset, out UrlMatch urlMatch)
-        {
-            //matches the https://... with a lookahead to '⁞', not capturing it
-            //then capture everything after the ⁞, not including it
-            //finally, capture the ⁞
-            var regex = new Regex(@"http[s]?://(.+?(?=\⁞))(.+?(?=\⁞))\⁞", RegexOptions.None, RegexTimeout);
-            var matches = regex.Matches(mine, startOffset);
-            if (matches.Count > 0 && matches[0].Success)
-            {
-                var result = matches[0].Value;
-                if (result.EndsWith(".") || result.EndsWith("?") || result.EndsWith("!"))
-                    result = result.Substring(0, result.Length - 1);
-                urlMatch = new UrlMatch { Offset = matches[0].Index, Text = result };
-                return true;
-            }
-
-
-            urlMatch = new UrlMatch();
-            return false;
-        }
-
-
-        /// <summary>
-        /// Create hyperlinks out of urls, and add each of the inlines to a list
-        /// </summary>
-        /// <param name="message"></param>
-        /// <param name="collection"></param>
-        /// <returns></returns>
-        private static List<Inline> Format(string message, InlineCollection collection)
-        {
-            List<string> dupeList= new List<string>();
-            string modifiedText = message;
-            int cur = 0;
-            while (TryGetMatch(modifiedText, cur, out var urlMatch))
-            {
-                string before = modifiedText.Substring(cur, urlMatch.Offset - cur);
-                if (before.Length > 0)
-                {
-                    DupeCheck(before, ref dupeList, ref collection);
-                }
-                
-                var split = urlMatch.Text.Split(SplitChar);
-                
-                SplitUrl splitUrl= new SplitUrl {Url = split[0], Label = split[1]};
-                modifiedText = modifiedText.Replace(urlMatch.Text, splitUrl.Label, false, CultureInfo.InvariantCulture);
-                
-                var matchRun = new Run(splitUrl.Label);
-                try
-                {
-                    Hyperlink link = new Hyperlink(matchRun);
-                    var isValid = Uri.IsWellFormedUriString(splitUrl.Url, UriKind.Absolute);
-                    if (isValid)
-                    {
-                        link.NavigateUri = new Uri(splitUrl.Url);
-                        link.RequestNavigate += Hyperlink_RequestNavigate;
-                        collection.Add(link);
-                    }
-                    else
-                    {
-                        collection.Add(matchRun);
-                    }
-                    
-                }
-                catch
-                {
-                    collection.Add(matchRun);
-                }
-
-                cur = urlMatch.Offset + splitUrl.Label.Length;
-                string ending = modifiedText.Substring(cur);
-                if (ending.Length > 0)
-                {
-                    ending = LookAheadHttp(ending);
-                    collection.Add(new Run(ending));
-                    dupeList.Add(ending);
-                }
-                    
-            }
-
-            if (collection.Count < 1)
-            {
-                collection.Add(modifiedText);
-            }
-
-            return collection.ToList();
-        }
-
-        /// <summary>
-        /// Checks to see if the word that we want to add was already added, and if so, skip adding it
-        /// </summary>
-        /// <param name="before">text preparing to add</param>
-        /// <param name="dupeList">Reference of List of duplicate entries</param>
-        /// <param name="collection">Inline collection</param>
-        private static void DupeCheck(string before, ref List<string> dupeList, ref InlineCollection collection)
-        {
-            dupeList.Add(before);
-            if (dupeList.Count == 2)
-            {
-                string entry1 = string.Concat(dupeList[0].Where(c => !char.IsWhiteSpace(c))).ToUpperInvariant();
-                string entry2 = string.Concat(dupeList[0].Where(c => !char.IsWhiteSpace(c))).ToUpperInvariant();
-                if (!entry1.Equals(entry2))
-                {
-                    collection.Add(new Run(before));
-                }
-                
-            }
-            else
-            {
-                collection.Add(new Run(before));
-            }
-            dupeList.Clear();
-        }
-
-        /// <summary>
-        /// Grabs the the text BEFORE the https://....
-        /// </summary>
-        /// <param name="text"></param>
-        /// <returns></returns>
-        private static string LookAheadHttp(string text)
-        {
-            string outputText = text;
-            //captures everything forward UNTIL the first http://..., but not including the http://...
-            var regex = new Regex("(.+?(?=http[s]?://[^\\s]*))", RegexOptions.None, RegexTimeout);
-            var match = regex.Match(text);
-            if (match.Success)
-            {
-                outputText = match.Groups[0].Value;
-            }
-            return outputText;
-        }
-
+        
         /// <summary>
         /// Method that adds the code to actually navigate to the link that was specified
         /// </summary>
