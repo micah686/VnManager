@@ -12,10 +12,12 @@ using AdysTech.CredentialManager;
 using LiteDB;
 using MahApps.Metro.IconPacks;
 using Stylet;
+using VndbSharp.Models.Common;
 using VnManager.Helpers;
 using VnManager.Models.Db;
 using VnManager.Models.Db.Vndb.Character;
 using VnManager.Models.Db.Vndb.TagTrait;
+using VnManager.Models.Settings;
 
 
 namespace VnManager.ViewModels.UserControls.MainPage.Vndb
@@ -147,7 +149,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
 
                 if (!string.IsNullOrEmpty(charInfo.Birthday))
                 {
-                    Birthday = new Tuple<string, Visibility>(charInfo.Birthday, Visibility.Visible);
+                    Birthday = new Tuple<string, Visibility>($"Birthday: {charInfo.Birthday}", Visibility.Visible);
                 }
 
                 if (!string.IsNullOrEmpty(charInfo.BloodType))
@@ -227,7 +229,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
                 traitDump = db.GetCollection<VnTraitData>(DbVnDump.VnDump_TraitData.ToString()).Query().ToList();
             }
 
-            
+
             List<(string Parent, string Child)> traitInfoList = new List<(string Parent, string Child)>();
             foreach (var trait in traitList)
             {
@@ -245,6 +247,10 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             List<TraitBinding> bindingTraits = (from item in groupedTraits let childList = item.Select(x => x.Child).ToList() 
                 select new TraitBinding {Parent = item.Key, Children = childList }).ToList();
             bindingTraits = bindingTraits.OrderBy(x => x.Parent).ToList();
+
+            bindingTraits.RemoveAll(x =>
+                x.Parent.Contains("Sexual") && App.UserSettings.MaxSexualRating < SexualRating.Explicit);
+            
             TraitCollection.AddRange(bindingTraits);
             SetParentTraitMargin();
         }

@@ -61,7 +61,7 @@ namespace VnManager.ViewModels.UserControls
                         MaxSexualIndex = 1;
                         break;
                     case SexualRating.Explicit:
-                        MaxSexualIndex = 1;
+                        MaxSexualIndex = 2;
                         break;
                     default:
                         MaxSexualIndex = 0;

@@ -41,92 +41,90 @@
         </Grid>
 
         <Grid Grid.Column="1"  x:Name="CharacterContent" >
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="250" MaxWidth="250"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="80*"/>
+                <RowDefinition Height="20*"/>
             </Grid.RowDefinitions>
-            <Grid Grid.Column="0" Grid.Row="0">
-                <StackPanel>
-                    <Image HorizontalAlignment="Left" MaxWidth="200" MaxHeight="300"  RenderOptions.BitmapScalingMode="Fant"
-                           Source="{Binding CharacterImage, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
 
-                    <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                        <TextBlock Text="{Binding Name}" FontSize="18" FontWeight="DemiBold"/>
-                        <iconPacks:PackIconMaterial Kind="{Binding GenderIcon}" Foreground="{Binding GenderColorBrush}"
-                                                    Width="18" Height="18" Margin="10,4,0,0"/>
+            <ScrollViewer Grid.Row="0" adonisExtensions:ScrollViewerExtension.VerticalScrollBarExpansionMode="NeverExpand">
+                <Grid x:Name="CharacterTopContent">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="250" />
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0">
+                        <Image HorizontalAlignment="Left" MaxWidth="200" MaxHeight="300"  RenderOptions.BitmapScalingMode="Fant"
+                               Source="{Binding CharacterImage, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                        <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                            <TextBlock Text="{Binding Name}" FontSize="18" FontWeight="DemiBold"/>
+                            <iconPacks:PackIconMaterial Kind="{Binding GenderIcon}" Foreground="{Binding GenderColorBrush}"
+                                                        Width="18" Height="18" Margin="10,4,0,0"/>
+                        </StackPanel>
+                        <TextBlock Text="{Binding Birthday.Item1}" Visibility="{Binding Birthday.Item2}"/>
                     </StackPanel>
-                    <TextBlock Text="{Binding Birthday.Item1}" Visibility="{Binding Birthday.Item2}"></TextBlock>
+
+                    <StackPanel Grid.Column="1" HorizontalAlignment="Left" MaxWidth="{Binding ActualWidth, Mode=OneWay, ElementName=CharacterContent}">
+                        <TextBlock Text="{Binding BloodType.Item1}" Margin="0,0,0,5" Visibility="{Binding BloodType.Item2}"/>
+                        <TextBlock Text="{Binding Height.Item1}" Margin="0,0,0,5" Visibility="{Binding Height.Item2}"/>
+                        <TextBlock Text="{Binding Weight.Item1}" Margin="0,0,0,5" Visibility="{Binding Weight.Item2}"/>
+                        <TextBlock Text="{Binding BustWaistHips.Item1}" Margin="0,0,0,5" Visibility="{Binding BustWaistHips.Item2}"/>
+
+                        <Label Content="Traits" Margin="0,10,0,5"></Label>
 
 
-                </StackPanel>
-
-            </Grid>
-
-            <Grid Grid.Column="1" Grid.Row="0"  HorizontalAlignment="Left">
-                <StackPanel MaxWidth="{Binding ActualWidth, Mode=OneWay, ElementName=CharacterContent}">
-                    <TextBlock Text="{Binding BloodType.Item1}" Margin="0,0,0,5" Visibility="{Binding BloodType.Item2}"/>
-                    <TextBlock Text="{Binding Height.Item1}" Margin="0,0,0,5" Visibility="{Binding Height.Item2}"/>
-                    <TextBlock Text="{Binding Weight.Item1}" Margin="0,0,0,5" Visibility="{Binding Weight.Item2}"/>
-                    <TextBlock Text="{Binding BustWaistHips.Item1}" Margin="0,0,0,5" Visibility="{Binding BustWaistHips.Item2}"/>
-
-                    <Label Content="Traits" Margin="0,10,0,5"></Label>
-
-
-                    <ItemsControl ItemsSource="{Binding TraitCollection}" AlternationCount="2">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Grid x:Name="FooBar">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="{Binding Parent}" Margin="5,0,0,0"/>
-                                    <ScrollViewer Grid.Column="1" adonisExtensions:ScrollViewerExtension.HorizontalScrollBarExpansionMode="NeverExpand" HorizontalScrollBarVisibility="Visible" 
+                        <ItemsControl ItemsSource="{Binding TraitCollection}" AlternationCount="2" Margin="0,0,20,0">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid x:Name="FooBar">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="{Binding Parent}" Margin="5,0,0,0"/>
+                                        <ScrollViewer Grid.Column="1" adonisExtensions:ScrollViewerExtension.HorizontalScrollBarExpansionMode="NeverExpand" HorizontalScrollBarVisibility="Visible" 
                                                    Margin="{Binding ParentMargin}" >
-                                        <ItemsControl ItemsSource="{Binding Children}" HorizontalContentAlignment="Stretch"
+                                            <ItemsControl ItemsSource="{Binding Children}" HorizontalContentAlignment="Stretch"
                                                       Margin="10,-4,0,0" >
-                                            <ItemsControl.ItemsPanel>
-                                                <ItemsPanelTemplate>
-                                                    <StackPanel Orientation="Horizontal"></StackPanel>
-                                                </ItemsPanelTemplate>
-                                            </ItemsControl.ItemsPanel>
-                                            <ItemsControl.ItemTemplate>
-                                                <DataTemplate>
-                                                    <TextBlock Text="{Binding}" Margin="0,0,10,0"/>
-                                                </DataTemplate>
-                                            </ItemsControl.ItemTemplate>
-                                        </ItemsControl>
-                                    </ScrollViewer>
+                                                <ItemsControl.ItemsPanel>
+                                                    <ItemsPanelTemplate>
+                                                        <StackPanel Orientation="Horizontal"></StackPanel>
+                                                    </ItemsPanelTemplate>
+                                                </ItemsControl.ItemsPanel>
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <TextBlock Text="{Binding}" Margin="0,0,10,0"/>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </ScrollViewer>
 
-                                </Grid>
-                                <DataTemplate.Triggers>
-                                    <Trigger Property="ItemsControl.AlternationIndex" Value="0">
-                                        <Setter Property="Background" Value="{DynamicResource {x:Static adonisUi:Brushes.Layer2BackgroundBrush}}" TargetName="FooBar"/>
-                                    </Trigger>
-                                    <Trigger Property="ItemsControl.AlternationIndex" Value="1">
-                                        <Setter Property="Background" Value="{DynamicResource {x:Static adonisUi:Brushes.Layer0BackgroundBrush}}" TargetName="FooBar"/>
-                                    </Trigger>
-                                </DataTemplate.Triggers>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
+                                    </Grid>
+                                    <DataTemplate.Triggers>
+                                        <Trigger Property="ItemsControl.AlternationIndex" Value="0">
+                                            <Setter Property="Background" Value="{DynamicResource {x:Static adonisUi:Brushes.Layer2BackgroundBrush}}" TargetName="FooBar"/>
+                                        </Trigger>
+                                        <Trigger Property="ItemsControl.AlternationIndex" Value="1">
+                                            <Setter Property="Background" Value="{DynamicResource {x:Static adonisUi:Brushes.Layer0BackgroundBrush}}" TargetName="FooBar"/>
+                                        </Trigger>
+                                    </DataTemplate.Triggers>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
 
 
-                </StackPanel>
-            </Grid>
+                    </StackPanel>
 
-            <Grid Grid.Column="0" Grid.Row="1" ColumnSpan="2"
-                  MaxWidth="{Binding ActualWidth, ElementName=CharacterContent}">
-                <ScrollViewer VerticalScrollBarVisibility="Visible">
-                    <TextBlock extensions:TextBlockInLineBinding.Inlines="{Binding Description}" 
-                               FontWeight="DemiBold" TextWrapping="Wrap" />
-                </ScrollViewer>
+                </Grid>
+            </ScrollViewer>
+            
+            <ScrollViewer x:Name="CharacterDescription" Grid.Row="1" adonisExtensions:ScrollViewerExtension.VerticalScrollBarExpansionMode="NeverExpand" Margin="0,10,0,0">
+                <TextBlock extensions:TextBlockInLineBinding.Inlines="{Binding Description}" 
+                           FontWeight="DemiBold" TextWrapping="Wrap" />
+            </ScrollViewer>
 
-            </Grid>
+            
 
         <!-- End main character content -->
         </Grid>
