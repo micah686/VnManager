@@ -225,7 +225,9 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
             {
                 traitList = db.GetCollection<VnCharacterTraits>(DbVnCharacter.VnCharacter_Traits.ToString()).Query()
-                    .Where(x => x.CharacterId == _characterId && x.SpoilerLevel <= App.UserSettings.SettingsVndb.Spoiler).ToList();
+                    .Where(x => x.CharacterId == _characterId).ToList();
+                traitList = traitList.OrderByDescending(x => x.SpoilerLevel).ToList();
+                traitList = traitList.Where(t => t.SpoilerLevel <= App.UserSettings.SettingsVndb.Spoiler).ToList();
                 traitDump = db.GetCollection<VnTraitData>(DbVnDump.VnDump_TraitData.ToString()).Query().ToList();
             }
 
