@@ -38,6 +38,8 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
         #region CharacterData
         public BitmapSource CharacterImage { get; set; }
         public string Name { get; set; }
+        
+        public string TraitHeaderText { get; set; }
         public Tuple<string, Visibility> OriginalName { get; set; }
         public Tuple<string, Visibility> BloodType { get; set; } 
         public Tuple<string, Visibility> Birthday { get; set; }
@@ -149,22 +151,22 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
 
                 if (!string.IsNullOrEmpty(charInfo.Birthday))
                 {
-                    Birthday = new Tuple<string, Visibility>($"Birthday: {charInfo.Birthday}", Visibility.Visible);
+                    Birthday = new Tuple<string, Visibility>($"{App.ResMan.GetString("BirthdayColon")} {charInfo.Birthday}", Visibility.Visible);
                 }
 
                 if (!string.IsNullOrEmpty(charInfo.BloodType))
                 {
-                    BloodType = new Tuple<string, Visibility>($"Blood Type: {charInfo.BloodType}", Visibility.Visible);
+                    BloodType = new Tuple<string, Visibility>($"{App.ResMan.GetString("BloodTypeColon")} {charInfo.BloodType}", Visibility.Visible);
                 }
 
                 if (!charInfo.Height.Equals(0))
                 {
-                    Height = new Tuple<string, Visibility>($"Height: {charInfo.Height}", Visibility.Visible);
+                    Height = new Tuple<string, Visibility>($"{App.ResMan.GetString("HeightColon")} {charInfo.Height}", Visibility.Visible);
                 }
 
                 if (!charInfo.Weight.Equals(0))
                 {
-                    Weight = new Tuple<string, Visibility>($"Weight: {charInfo.Weight}", Visibility.Visible);
+                    Weight = new Tuple<string, Visibility>($"{App.ResMan.GetString("WeightColon")} {charInfo.Weight}", Visibility.Visible);
                 }
 
                 SetBustWidthHeight(charInfo);
@@ -292,7 +294,11 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             }
 
             TraitCollection = currentTraits;
-            
+
+            if (TraitCollection.Count > 1)
+            {
+                TraitHeaderText = App.ResMan.GetString("Traits");
+            }
         }
 
     }

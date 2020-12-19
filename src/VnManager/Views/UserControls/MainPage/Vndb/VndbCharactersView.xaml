@@ -42,8 +42,8 @@
 
         <Grid Grid.Column="1"  x:Name="CharacterContent" >
             <Grid.RowDefinitions>
-                <RowDefinition Height="80*"/>
-                <RowDefinition Height="20*"/>
+                <RowDefinition Height="70*"/>
+                <RowDefinition Height="30*"/>
             </Grid.RowDefinitions>
 
             <ScrollViewer Grid.Row="0" adonisExtensions:ScrollViewerExtension.VerticalScrollBarExpansionMode="NeverExpand">
@@ -62,17 +62,15 @@
                             <iconPacks:PackIconMaterial Kind="{Binding GenderIcon}" Foreground="{Binding GenderColorBrush}"
                                                         Width="18" Height="18" Margin="10,4,0,0"/>
                         </StackPanel>
-                        <TextBlock Text="{Binding Birthday.Item1}" Visibility="{Binding Birthday.Item2}"/>
-                    </StackPanel>
-
-                    <StackPanel Grid.Column="1" HorizontalAlignment="Left" MaxWidth="{Binding ActualWidth, Mode=OneWay, ElementName=CharacterContent}">
+                        <TextBlock Text="{Binding Birthday.Item1}" Margin="0,0,0,5" Visibility="{Binding Birthday.Item2}"/>
                         <TextBlock Text="{Binding BloodType.Item1}" Margin="0,0,0,5" Visibility="{Binding BloodType.Item2}"/>
                         <TextBlock Text="{Binding Height.Item1}" Margin="0,0,0,5" Visibility="{Binding Height.Item2}"/>
                         <TextBlock Text="{Binding Weight.Item1}" Margin="0,0,0,5" Visibility="{Binding Weight.Item2}"/>
                         <TextBlock Text="{Binding BustWaistHips.Item1}" Margin="0,0,0,5" Visibility="{Binding BustWaistHips.Item2}"/>
+                    </StackPanel>
 
-                        <Label Content="Traits" Margin="0,10,0,5"></Label>
-
+                    <StackPanel Grid.Column="1" HorizontalAlignment="Left" MaxWidth="{Binding ActualWidth, Mode=OneWay, ElementName=CharacterContent}">
+                        <Label Content="{Binding TraitHeaderText}" Margin="2,10,0,5"></Label>
 
                         <ItemsControl ItemsSource="{Binding TraitCollection}" AlternationCount="2" Margin="0,0,20,0">
                             <ItemsControl.ItemTemplate>

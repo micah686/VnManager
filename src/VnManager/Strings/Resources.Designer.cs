@@ -178,6 +178,24 @@ namespace VnManager.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Birthday:.
+        /// </summary>
+        public static string BirthdayColon {
+            get {
+                return ResourceManager.GetString("BirthdayColon", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to BloodType:.
+        /// </summary>
+        public static string BloodTypeColon {
+            get {
+                return ResourceManager.GetString("BloodTypeColon", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Browse.
         /// </summary>
         public static string Browse {
@@ -642,6 +660,15 @@ namespace VnManager.Strings {
         public static string Games {
             get {
                 return ResourceManager.GetString("Games", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Height:.
+        /// </summary>
+        public static string HeightColon {
+            get {
+                return ResourceManager.GetString("HeightColon", resourceCulture);
             }
         }
         
@@ -1159,6 +1186,15 @@ namespace VnManager.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Traits.
+        /// </summary>
+        public static string Traits {
+            get {
+                return ResourceManager.GetString("Traits", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to An unkown exception has occured.
         /// </summary>
         public static string UnknownException {
@@ -1461,6 +1497,15 @@ namespace VnManager.Strings {
         public static string VnName {
             get {
                 return ResourceManager.GetString("VnName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Weight:.
+        /// </summary>
+        public static string WeightColon {
+            get {
+                return ResourceManager.GetString("WeightColon", resourceCulture);
             }
         }
         

@@ -156,6 +156,12 @@
   <data name="AskImportDb" xml:space="preserve">
     <value>Would you like to import previously saved data?</value>
   </data>
+  <data name="BirthdayColon" xml:space="preserve">
+    <value>Birthday:</value>
+  </data>
+  <data name="BloodTypeColon" xml:space="preserve">
+    <value>BloodType:</value>
+  </data>
   <data name="Browse" xml:space="preserve">
     <value>Browse</value>
   </data>
@@ -311,6 +317,9 @@
   </data>
   <data name="Games" xml:space="preserve">
     <value>Games</value>
+  </data>
+  <data name="HeightColon" xml:space="preserve">
+    <value>Height:</value>
   </data>
   <data name="Icon" xml:space="preserve">
     <value>Icon:</value>
@@ -483,6 +492,9 @@
   <data name="TotalProgressColon" xml:space="preserve">
     <value>Total Progress:</value>
   </data>
+  <data name="Traits" xml:space="preserve">
+    <value>Traits</value>
+  </data>
   <data name="UnknownException" xml:space="preserve">
     <value>An unkown exception has occured</value>
   </data>
@@ -584,6 +596,9 @@
   </data>
   <data name="VnName" xml:space="preserve">
     <value>Vn Name:</value>
+  </data>
+  <data name="WeightColon" xml:space="preserve">
+    <value>Weight:</value>
   </data>
   <data name="Working" xml:space="preserve">
     <value>Working</value>
