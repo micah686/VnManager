@@ -279,7 +279,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             var parents = currentTraits.Select(x => x.Parent);
             var stringSizes = parents.Select(MeasureStringSize.GetMaxStringWidth).ToList();
             var largestSize = stringSizes.OrderByDescending(x => x).FirstOrDefault();
-            var padding = 30;
+            const int padding = 30;
             var maxValue = largestSize + padding;
 
             foreach (var traitBinding in TraitCollection)
