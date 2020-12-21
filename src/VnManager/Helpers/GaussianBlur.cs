@@ -58,22 +58,17 @@ namespace VnManager.Helpers
             var dest = new int[_width * _height];
 
             Parallel.Invoke(
-                () => gaussBlur_4(_alpha, newAlpha, radial),
-                () => gaussBlur_4(_red, newRed, radial),
-                () => gaussBlur_4(_green, newGreen, radial),
-                () => gaussBlur_4(_blue, newBlue, radial));
+                () => GaussBlur_4(_alpha, newAlpha, radial),
+                () => GaussBlur_4(_red, newRed, radial),
+                () => GaussBlur_4(_green, newGreen, radial),
+                () => GaussBlur_4(_blue, newBlue, radial));
 
             Parallel.For(0, dest.Length, _pOptions, i =>
             {
-                if (newAlpha[i] > 255) newAlpha[i] = 255;
-                if (newRed[i] > 255) newRed[i] = 255;
-                if (newGreen[i] > 255) newGreen[i] = 255;
-                if (newBlue[i] > 255) newBlue[i] = 255;
-
-                if (newAlpha[i] < 0) newAlpha[i] = 0;
-                if (newRed[i] < 0) newRed[i] = 0;
-                if (newGreen[i] < 0) newGreen[i] = 0;
-                if (newBlue[i] < 0) newBlue[i] = 0;
+                CheckForMinMax(ref newAlpha[i], 0,255);
+                CheckForMinMax(ref newRed[i], 0, 255);
+                CheckForMinMax(ref newGreen[i], 0, 255);
+                CheckForMinMax(ref newBlue[i], 0, 255);
 
                 dest[i] = (int)((uint)(newAlpha[i] << 24) | (uint)(newRed[i] << 16) | (uint)(newGreen[i] << 8) | (uint)newBlue[i]);
             });
@@ -86,15 +81,15 @@ namespace VnManager.Helpers
             return image;
         }
 
-        private void gaussBlur_4(int[] source, int[] dest, int r)
+        private void GaussBlur_4(int[] source, int[] dest, int r)
         {
-            var bxs = boxesForGauss(r, 3);
-            boxBlur_4(source, dest, _width, _height, (bxs[0] - 1) / 2);
-            boxBlur_4(dest, source, _width, _height, (bxs[1] - 1) / 2);
-            boxBlur_4(source, dest, _width, _height, (bxs[2] - 1) / 2);
+            var bxs = BoxesForGauss(r, 3);
+            BoxBlur_4(source, dest, _width, _height, (bxs[0] - 1) / 2);
+            BoxBlur_4(dest, source, _width, _height, (bxs[1] - 1) / 2);
+            BoxBlur_4(source, dest, _width, _height, (bxs[2] - 1) / 2);
         }
 
-        private int[] boxesForGauss(int sigma, int n)
+        private static int[] BoxesForGauss(int sigma, int n)
         {
             var wIdeal = Math.Sqrt((12 * sigma * sigma / n) + 1);
             var wl = (int)Math.Floor(wIdeal);
@@ -109,14 +104,14 @@ namespace VnManager.Helpers
             return sizes.ToArray();
         }
 
-        private void boxBlur_4(int[] source, int[] dest, int w, int h, int r)
+        private void BoxBlur_4(int[] source, int[] dest, int w, int h, int r)
         {
             for (var i = 0; i < source.Length; i++) dest[i] = source[i];
-            boxBlurH_4(dest, source, w, h, r);
-            boxBlurT_4(source, dest, w, h, r);
+            BoxBlurH_4(dest, source, w, h, r);
+            BoxBlurT_4(source, dest, w, h, r);
         }
 
-        private void boxBlurH_4(int[] source, int[] dest, int w, int h, int r)
+        private void BoxBlurH_4(int[] source, int[] dest, int w, int h, int r)
         {
             var iar = (double)1 / (r + r + 1);
             Parallel.For(0, h, _pOptions, i =>
@@ -146,7 +141,7 @@ namespace VnManager.Helpers
             });
         }
 
-        private void boxBlurT_4(int[] source, int[] dest, int w, int h, int r)
+        private void BoxBlurT_4(int[] source, int[] dest, int w, int h, int r)
         {
             var iar = (double)1 / (r + r + 1);
             Parallel.For(0, w, _pOptions, i =>
@@ -181,6 +176,23 @@ namespace VnManager.Helpers
                     ti += w;
                 }
             });
+        }
+
+
+        private static void CheckForMinMax(ref int value, int min, int max)
+        {
+            if (value < min)
+            {
+                value = min;
+            }
+            else if(value > max)
+            {
+                value = max;
+            }
+            else
+            {
+                //do nothing
+            }
         }
     }
 }
