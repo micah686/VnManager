@@ -125,17 +125,21 @@ namespace VnManager.Helpers
                 for (var j = 0; j < r; j++) val += source[ti + j];
                 for (var j = 0; j <= r; j++)
                 {
-                    val += source[ri++] - fv;
+                    val += source[ri] - fv;
+                    ri++;
                     dest[ti++] = (int)Math.Round(val * iar);
                 }
                 for (var j = r + 1; j < w - r; j++)
                 {
-                    val += source[ri++] - dest[li++];
+                    val += source[ri] - dest[li];
+                    ri++;
+                    li++;
                     dest[ti++] = (int)Math.Round(val * iar);
                 }
                 for (var j = w - r; j < w; j++)
                 {
-                    val += lv - source[li++];
+                    val += lv - source[li];
+                    li++;
                     dest[ti++] = (int)Math.Round(val * iar);
                 }
             });
