@@ -10,6 +10,7 @@ using Stylet;
 
 namespace VnManager.ViewModels.Controls
 {
+    // Used a copy from https://github.com/canton7/Stylet/blob/ffb218d666294b4677615d5ed96876dc04adff8e/Stylet/MessageBoxViewModel.cs as base
     public class CustomMsgBoxViewModel : Screen, IMessageBoxViewModel
     {
         /// <summary>
@@ -83,6 +84,20 @@ namespace VnManager.ViewModels.Controls
             DefaultTextAlignment = TextAlignment.Left;
         }
 
+
+        #region PrivateProperties
+        private string _messageBoxText = null;
+        private string _caption = null;
+        private MessageBoxButton _buttons = MessageBoxButton.OK;
+        private MessageBoxImage _icon = MessageBoxImage.None;
+        private MessageBoxResult _defaultResult = MessageBoxResult.None;
+        private MessageBoxResult _cancelResult = MessageBoxResult.None;
+        private IDictionary<MessageBoxResult, string> _buttonLabels = null;
+        private FlowDirection? _flowDirection = null;
+        private TextAlignment? _textAlignment = null;
+
+        private BindableCollection<LabelledValue<MessageBoxResult>> _buttonList = null;
+        #endregion
         /// <summary>
         /// Setup the MessageBoxViewModel with the information it needs
         /// </summary>
@@ -95,62 +110,68 @@ namespace VnManager.ViewModels.Controls
         /// <param name="buttonLabels">A dictionary specifying the button labels, if desirable</param>
         /// <param name="flowDirection">The <see cref="System.Windows.FlowDirection"/> to use, overrides the <see cref="MessageBoxViewModel.DefaultFlowDirection"/></param>
         /// <param name="textAlignment">The <see cref="System.Windows.TextAlignment"/> to use, overrides the <see cref="MessageBoxViewModel.DefaultTextAlignment"/></param>
-        public void Setup(
-            string messageBoxText,
-            string caption = null,
-            MessageBoxButton buttons = MessageBoxButton.OK,
-            MessageBoxImage icon = MessageBoxImage.None,
-            MessageBoxResult defaultResult = MessageBoxResult.None,
-            MessageBoxResult cancelResult = MessageBoxResult.None,
-            IDictionary<MessageBoxResult, string> buttonLabels = null,
-            FlowDirection? flowDirection = null,
-            TextAlignment? textAlignment = null)
+        public void Setup(string messageBoxText, string caption = null, MessageBoxButton buttons = MessageBoxButton.OK, MessageBoxImage icon = MessageBoxImage.None,
+            MessageBoxResult defaultResult = MessageBoxResult.None, MessageBoxResult cancelResult = MessageBoxResult.None, IDictionary<MessageBoxResult, string> buttonLabels = null,
+            FlowDirection? flowDirection = null, TextAlignment? textAlignment = null)
         {
-            this.Text = messageBoxText;
-            this.DisplayName = caption;
-            this.Icon = icon;
+            _messageBoxText = messageBoxText;
+            _caption = caption;
+            _buttons = buttons;
+            _icon = icon;
+            _defaultResult = defaultResult;
+            _cancelResult = cancelResult;
+            _buttonLabels = buttonLabels;
+            _flowDirection = flowDirection;
+            _textAlignment = textAlignment;
+            
+            Configure();
+        }
 
-            var buttonList = new BindableCollection<LabelledValue<MessageBoxResult>>();
-            this.ButtonList = buttonList;
-            foreach (var val in ButtonToResults[buttons])
+        private void Configure()
+        {
+            this.Text = _messageBoxText;
+            this.DisplayName = _caption;
+            this.Icon = _icon;
+
+            _buttonList = new BindableCollection<LabelledValue<MessageBoxResult>>();
+            this.ButtonList = _buttonList;
+            foreach (var val in ButtonToResults[_buttons])
             {
-                string label;
-                if (buttonLabels == null || !buttonLabels.TryGetValue(val, out label))
+                if (_buttonLabels == null || !_buttonLabels.TryGetValue(val, out var label))
                     label = ButtonLabels[val];
 
                 var lbv = new LabelledValue<MessageBoxResult>(label, val);
-                buttonList.Add(lbv);
-                if (val == defaultResult)
+                _buttonList.Add(lbv);
+                if (val == _defaultResult)
                     this.DefaultButton = lbv;
-                else if (val == cancelResult)
+                else if (val == _cancelResult)
                     this.CancelButton = lbv;
                 else
                     this.DefaultButton = lbv;
             }
             // If they didn't specify a button which we showed, then pick a default, if we can
-            SetButtons(defaultResult, cancelResult, buttonList);
-
-            this.FlowDirection = flowDirection ?? DefaultFlowDirection;
-            this.TextAlignment = textAlignment ?? DefaultTextAlignment;
+            SetButtons();
+            
+            this.FlowDirection = _flowDirection ?? DefaultFlowDirection;
+            this.TextAlignment = _textAlignment ?? DefaultTextAlignment;
         }
 
-        private void SetButtons(MessageBoxResult defaultResult, MessageBoxResult cancelResult,
-            BindableCollection<LabelledValue<MessageBoxResult>> buttonList)
+
+        private void SetButtons()
         {
             if (this.DefaultButton == null)
             {
-                if (defaultResult == MessageBoxResult.None && this.ButtonList.Any())
-                    this.DefaultButton = buttonList[0];
+                if (_defaultResult == MessageBoxResult.None && this.ButtonList.Any())
+                    this.DefaultButton = _buttonList[0];
                 else
                     throw new ArgumentException("DefaultButton set to a button which doesn't appear in Buttons");
             }
-            if (this.CancelButton == null)
-            {
-                if (cancelResult == MessageBoxResult.None && this.ButtonList.Any())
-                    this.CancelButton = buttonList.Last();
-                else
-                    throw new ArgumentException("CancelButton set to a button which doesn't appear in Buttons");
-            }
+
+            if (this.CancelButton != null) return;
+            if (_cancelResult == MessageBoxResult.None && this.ButtonList.Any())
+                this.CancelButton = _buttonList.Last();
+            else
+                throw new ArgumentException("CancelButton set to a button which doesn't appear in Buttons");
         }
 
         /// <summary>
@@ -176,10 +197,7 @@ namespace VnManager.ViewModels.Controls
         /// <summary>
         /// Gets a value indicating whether the Text contains many lines
         /// </summary>
-        public virtual bool TextIsMultiline
-        {
-            get { return this.Text.Contains("\n"); }
-        }
+        public virtual bool TextIsMultiline => this.Text.Contains("\n");
 
         /// <summary>
         /// Gets or sets the icon which the user specified
@@ -189,10 +207,7 @@ namespace VnManager.ViewModels.Controls
         /// <summary>
         /// Gets or the icon which is shown next to the text in the View
         /// </summary>
-        public virtual Icon ImageIcon
-        {
-            get { return IconMapping[this.Icon]; }
-        }
+        public virtual Icon ImageIcon => IconMapping[this.Icon];
 
         /// <summary>
         /// Gets or sets which way the document should flow
@@ -215,10 +230,8 @@ namespace VnManager.ViewModels.Controls
         protected override void OnViewLoaded()
         {
             // There might not be a sound, or it might be null
-            SystemSound sound;
-            SoundMapping.TryGetValue(this.Icon, out sound);
-            if (sound != null)
-                sound.Play();
+            SoundMapping.TryGetValue(this.Icon, out var sound);
+            sound?.Play();
         }
 
         /// <summary>
