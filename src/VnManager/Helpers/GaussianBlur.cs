@@ -104,11 +104,11 @@ namespace VnManager.Helpers
             return sizes.ToArray();
         }
 
-        private void BoxBlur_4(int[] source, int[] dest, int w, int h, int r)
+        private void BoxBlur_4(int[] input, int[] output, int w, int h, int r)
         {
-            for (var i = 0; i < source.Length; i++) dest[i] = source[i];
-            BoxBlurH_4(dest, source, w, h, r);
-            BoxBlurT_4(source, dest, w, h, r);
+            for (var i = 0; i < input.Length; i++) output[i] = input[i];
+            BoxBlurH_4(output, input, w, h, r);
+            BoxBlurT_4(input, output, w, h, r);
         }
 
         private void BoxBlurH_4(int[] source, int[] dest, int w, int h, int r)
