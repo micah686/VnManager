@@ -385,6 +385,15 @@ namespace VnManager.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Database is OK.
+        /// </summary>
+        public static string DbOk {
+            get {
+                return ResourceManager.GetString("DbOk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to THIS PAGE SHOULD ONLY BE ABLE TO BE ACCESSED IF YOU ARE DEBUGGING THE PROGRAM FROM VISUAL STUDIO.
         /// </summary>
         public static string DebugPageWarning1 {

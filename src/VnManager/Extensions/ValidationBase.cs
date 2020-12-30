@@ -10,7 +10,7 @@ namespace VnManager.Extensions
     /// Abstract method for implementing validation on a model
     /// This is used to get validation working on a DataTable
     /// </summary>
-    public abstract class ValidationBase: INotifyDataErrorInfo
+    public class ValidationBase: INotifyDataErrorInfo
     {
         private readonly Dictionary<string, List<string>> _errors = new Dictionary<string, List<string>>();
 
@@ -66,7 +66,7 @@ namespace VnManager.Extensions
         /// <summary>
         /// Occurs when the validation errors have changed for a property or the entire model.
         /// </summary>
-        public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged = delegate { return; };
+        public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged = delegate { };
 
         /// <summary>
         /// Gets the validation errors for a property of the entire model.
@@ -75,14 +75,14 @@ namespace VnManager.Extensions
         /// <returns></returns>
         public IEnumerable GetErrors(string propertyName)
         {
-            if (String.IsNullOrEmpty(propertyName) ||
+            if (string.IsNullOrEmpty(propertyName) ||
                !_errors.ContainsKey(propertyName)) return Enumerable.Empty<string>();
             return _errors[propertyName];
         }
 
         IEnumerable INotifyDataErrorInfo.GetErrors(string propertyName)
         {
-            if (String.IsNullOrEmpty(propertyName) ||
+            if (string.IsNullOrEmpty(propertyName) ||
                 !_errors.ContainsKey(propertyName)) return Enumerable.Empty<string>();
             return _errors[propertyName];
         }

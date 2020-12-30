@@ -377,7 +377,7 @@ namespace VnManager.ViewModels.Windows
                 {
                     //test if the database can be opened
                 }
-                return String.Empty;
+                return App.ResMan.GetString("DbOk");
             }
             catch (IOException)
             {

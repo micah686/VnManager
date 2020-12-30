@@ -1,39 +1,11 @@
 ﻿using Stylet;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
-using System.IO;
 using System.Runtime.InteropServices;
-using System.Text;
-using LiteDB;
-using VndbSharp.Models.Common;
-using VnManager.Converters;
-using VnManager.MetadataProviders.Vndb;
-using VnManager.Models.Db.Vndb.Main;
-using System.Linq;
-using System.Net;
-using System.Reflection;
-using System.Reflection.PortableExecutable;
-using System.Resources;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Media.Imaging;
-using AdysTech.CredentialManager;
 using StyletIoC;
-using VndbSharp;
-using VndbSharp.Models.Dumps;
 using VnManager.Helpers;
-using VnManager.Models.Db;
-using VnManager.Models.Db.User;
-using VnManager.Models.Db.Vndb.TagTrait;
 using VnManager.ViewModels.Dialogs;
-using VnManager.ViewModels.Dialogs.AddGameSources;
-using VnManager.ViewModels.UserControls.MainPage.Vndb;
-using VnManager.ViewModels.Windows;
 
 
 namespace VnManager.ViewModels.UserControls
@@ -67,6 +39,8 @@ namespace VnManager.ViewModels.UserControls
             _container = container;
             _windowManager = windowManager;
             _testImg = ImageHelper.CreateEmptyBitmapImage();
+            var foo = _container.Get<ImportViewModel>();
+            _windowManager.ShowWindow(foo);
         }
 
         

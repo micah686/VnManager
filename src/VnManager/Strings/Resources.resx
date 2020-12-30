@@ -225,6 +225,9 @@
   <data name="DbIsLockedProc" xml:space="preserve">
     <value>Database is locked by another process</value>
   </data>
+  <data name="DbOk" xml:space="preserve">
+    <value>Database is OK</value>
+  </data>
   <data name="DebugPageWarning1" xml:space="preserve">
     <value>THIS PAGE SHOULD ONLY BE ABLE TO BE ACCESSED IF YOU ARE DEBUGGING THE PROGRAM FROM VISUAL STUDIO</value>
   </data>
