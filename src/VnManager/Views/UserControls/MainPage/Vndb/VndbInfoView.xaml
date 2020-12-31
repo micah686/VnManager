@@ -8,7 +8,7 @@
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:res="clr-namespace:VnManager.Strings"
              xmlns:s="https://github.com/canton7/Stylet"
-             xmlns:adonisExtensions="clr-namespace:AdonisUI.Extensions;assembly=AdonisUI"
+             xmlns:adExt="clr-namespace:AdonisUI.Extensions;assembly=AdonisUI"
              xmlns:adonisUi="clr-namespace:AdonisUI;assembly=AdonisUI"
              xmlns:vm="clr-namespace:VnManager.ViewModels.UserControls.MainPage.Vndb"
              xmlns:ext="clr-namespace:VnManager.Extensions"
@@ -16,33 +16,25 @@
              d:DataContext="{d:DesignInstance vm:VndbInfoViewModel}"
              d:DesignHeight="950" d:DesignWidth="800">
     <Grid>
-
-        <!--<Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="8*"/>
-            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="*" MinWidth="300"/>
+            <ColumnDefinition Width="250"/>
         </Grid.ColumnDefinitions>
 
-
-        <Grid Grid.Row="0" Grid.Column="0" Margin="10,10,10,0" >
+        <Grid x:Name="LeftContent" Grid.Column="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="250"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <Label Grid.Row="0" Content="{Binding Title, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="24" FontWeight="DemiBold"
-                       Margin="30,0,0,0"/>
+                   Margin="7,20,0,0"/>
 
             <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" Margin="5">
-                <Button Width="150" Height="50" Content="Play" Background="LimeGreen"/>
+                <Button Width="150" Height="50" Content="Play" Background="ForestGreen" adExt:CursorSpotlightExtension.BorderBrush="Lime" adExt:CursorSpotlightExtension.BackgroundBrush="ForestGreen"/>
 
                 <StackPanel Margin="25,0,0,0">
                     <Label Content="Last Played" FontSize="16" FontWeight="Bold"/>
@@ -67,19 +59,53 @@
                 <Label Content="Renai" Margin="15,0,0,0"/>
             </StackPanel>
 
-            <StackPanel Grid.Row="3" Grid.Column="0" Orientation="Horizontal" Margin="0,5,0,0">
-                <Button Content="Characters" Margin="15,0,0,0" Command="{s:Action ShowCharacters}"/>
-                <Button Content="Screens" Margin="15,0,0,0" Command="{s:Action ShowScreenshots}"/>
-            </StackPanel>
-
+            <ScrollViewer Grid.Row="3" Margin="7" adExt:ScrollViewerExtension.VerticalScrollBarExpansionMode="NeverExpand">
+                <TextBlock ext:TextBlockInLineBinding.Inlines="{Binding DescriptionInLine}"/>
+            </ScrollViewer>
+            
         </Grid>
 
-        <Grid Grid.Row="1" Grid.Column="1"  Grid.RowSpan="2" Margin="15,65,15,0">
-            <Border BorderThickness="3" BorderBrush="Black">
-                <Image  MaxWidth="256" MaxHeight="400"  RenderOptions.BitmapScalingMode="Fant" Source="{Binding CoverImage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-            </Border>
+        <Grid x:Name="RightContent" Grid.Column="1" Background="Red">
+            
+            <DockPanel>
+                <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,10">
+                    <Border BorderThickness="3" BorderBrush="Black">
+                        <Image HorizontalAlignment="Left" MaxWidth="200" MaxHeight="300"  RenderOptions.BitmapScalingMode="Fant" Source="{Binding CoverImage, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
+                    </Border>
+                </StackPanel>
+                <Label DockPanel.Dock="Top" Content="{Binding MainTitle}"/>
+                <Label DockPanel.Dock="Top" Content="{Binding JpnTitle}"/>
+                <TextBlock DockPanel.Dock="Top" Margin="0,5,0,0" Text="{Binding Aliases}" TextWrapping="Wrap"/>
+                <TextBlock DockPanel.Dock="Top" Text="{Binding ReleasedDate}"/>
+                <TextBlock DockPanel.Dock="Top" Text="{Binding VnLength}"/>
+                <TextBlock DockPanel.Dock="Top" Text="Popularity:99.99"/>
+                <TextBlock DockPanel.Dock="Top" Text="Rating:9"/>
+                
 
+
+            </DockPanel>
         </Grid>
+        <!--End Content -->
+    </Grid>
+    <!--<Grid>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="8*"/>
+            <ColumnDefinition Width="2*"/>
+        </Grid.ColumnDefinitions>
+
+
+        
+
+        
 
         <Grid Grid.Row="2" Grid.Column="0" >
             <TextBlock ext:TextBlockInLineBinding.Inlines="{Binding DescriptionInLine}" Foreground="DimGray" FontWeight="DemiBold" TextWrapping="Wrap"/>
@@ -95,13 +121,7 @@
             </DataGrid>
         </Grid>
 
-        <StackPanel Grid.Row="3" Grid.Column="1"  Margin="15,10,0,0">
-            <Label Content="{Binding MainTitle}"/>
-            <Label Margin="0,0,0,0" Content="{Binding JpnTitle}"/>
-            <TextBlock Margin="0,5,0,0" Text="{Binding Aliases}" TextWrapping="Wrap"/>
-            <TextBlock Text="{Binding ReleasedDate}"/>
-            <TextBlock Text="{Binding VnLength}"/>
-            <TextBlock Text="Popularity:99.99"/>
+        <StackPanel Grid.Row="3" Grid.Column="1"  Margin="15,10,0,0">            
             <TextBlock Text="Rating:9"/>
             <ListBox ItemsSource="{Binding LanguageCollection}" IsEnabled="False" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                 <ListBox.ItemContainerStyle>
@@ -124,9 +144,9 @@
             <Label Content="Producer:Key"/>
 
 
-        </StackPanel>-->
+        </StackPanel>
 
 
-        <!--End Content -->
-    </Grid>
+        --><!--End Content --><!--
+    </Grid>-->
 </UserControl>
