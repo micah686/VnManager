@@ -26,7 +26,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="250"/>
+                <RowDefinition Height="350"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
@@ -52,17 +52,49 @@
             </StackPanel>
 
             <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal" Margin="15">
-                <Label Content="Vndb"/>
+                <Label Content="Vndb" Foreground="{Binding ZZZ}"/>
                 <Label Content="Store Page" Margin="15,0,0,0"/>
                 <Label Content="Wikipedia" Margin="15,0,0,0"/>
                 <Label Content="Encubed" Margin="15,0,0,0"/>
                 <Label Content="Renai" Margin="15,0,0,0"/>
+                <Label Content="testing" Foreground="{Binding ZZZ}" Background="{Binding ZZZ}"></Label>
             </StackPanel>
 
-            <ScrollViewer Grid.Row="3" Margin="7" adExt:ScrollViewerExtension.VerticalScrollBarExpansionMode="NeverExpand">
+            <!--<ScrollViewer Grid.Row="3" Margin="7" adExt:ScrollViewerExtension.VerticalScrollBarExpansionMode="NeverExpand">
                 <TextBlock ext:TextBlockInLineBinding.Inlines="{Binding DescriptionInLine}"/>
-            </ScrollViewer>
-            
+            </ScrollViewer>-->
+
+            <ItemsControl Grid.Row="4" ItemsSource="{Binding TagBinding}" Margin="0,0,20,0">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Grid x:Name="FooBar">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="{Binding Parent}" Margin="5,0,0,0"/>
+                            <ScrollViewer Grid.Column="1" adExt:ScrollViewerExtension.HorizontalScrollBarExpansionMode="NeverExpand" HorizontalScrollBarVisibility="Visible" 
+                                                   Margin="{Binding ParentMargin}" >
+                                <ItemsControl ItemsSource="{Binding Children}" HorizontalContentAlignment="Stretch"
+                                                      Margin="10,-4,0,0" >
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Orientation="Horizontal"></StackPanel>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Item1}" Margin="0,0,10,0" Foreground="{Binding Item2}"/>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </ScrollViewer>
+
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
         </Grid>
 
         <Grid x:Name="RightContent" Grid.Column="1" Background="Red">
