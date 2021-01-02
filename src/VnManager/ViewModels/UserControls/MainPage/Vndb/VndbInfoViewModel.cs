@@ -123,82 +123,33 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
                 
             }
 
+            var tagBindingList = new List<TagTraitBinding>();
+
             var tagsWithParent = GetParentTags(tagList, tagDump).ToList();
+            tagsWithParent.RemoveAll(x => x.Parent.Contains("Sexual") && App.UserSettings.MaxSexualRating < SexualRating.Explicit);
 
             var noSpoilerTags = tagsWithParent.Where(x => x.Spoiler == SpoilerLevel.None).ToList();
             var minorSpoilerTags = tagsWithParent.Where(x => x.Spoiler == SpoilerLevel.Minor).ToList();
             var majorSpoilerTags = tagsWithParent.Where(x => x.Spoiler == SpoilerLevel.Major).ToList();
 
-            var tagBindingList = new List<TagTraitBinding>();
+            var sexualTags = tagsWithParent.Where(x => x.Parent.Contains("Sexual")).ToList();
 
 
-            
+            var tempList = (from tag in noSpoilerTags let colorText = Colors.WhiteSmoke.ToString() select (tag.Parent, tag.Child, colorText)).ToList();
+            tempList.AddRange(from tag in minorSpoilerTags let colorText = Colors.Gold.ToString() select (tag.Parent, tag.Child, colorText));
+            tempList.AddRange(from tag in majorSpoilerTags let colorText = Colors.OrangeRed.ToString() select (tag.Parent, tag.Child, colorText));
+            tempList.AddRange(from tag in sexualTags let colorText = Colors.HotPink.ToString() select (tag.Parent, tag.Child, colorText));
 
-            var tempList = new List<(string parent, string child, string colorName)>();
-            foreach (var tag in noSpoilerTags)
+
+            foreach (var group in tempList.GroupBy(x => x.Parent))
             {
-                var colorText = Colors.WhiteSmoke.ToString();
-                tempList.Add((tag.Parent, tag.Child, colorText));
-            }
-
-            foreach (var tag in minorSpoilerTags)
-            {
-                var colorText = Colors.Gold.ToString();
-                tempList.Add((tag.Parent, tag.Child, colorText));
-            }
-
-            foreach (var tag in majorSpoilerTags)
-            {
-                var colorText = Colors.OrangeRed.ToString();
-                tempList.Add((tag.Parent, tag.Child, colorText));
-            }
-
-            var sexualList = tempList.Where(x => x.parent.Contains("Sexual")).ToList();
-
-            foreach (var tag in sexualList)
-            {
-                var colorText = Colors.HotPink.ToString();
-                tempList.Add((tag.parent, tag.child, colorText));
-            }
-
-            tempList.RemoveAll(x =>
-                x.parent.Contains("Sexual") && App.UserSettings.MaxSexualRating < SexualRating.Explicit);
-
-            var foo = tempList.GroupBy(x => x.parent).ToList();
-            foreach (var tag in foo)
-            {
-                var tpl = new List<Tuple<string,string>>();
-                foreach (var valueTuple in tag)
-                {
-                    tpl.Add(new Tuple<string, string>(valueTuple.child, valueTuple.colorName));
-                }
-
-                var ttb = new TagTraitBinding() {Parent = tag.Key, Children = tpl};
+                var tuple = group.Select(tag => new Tuple<string, string>(tag.Child, tag.colorText)).ToList();
+                var ttb = new TagTraitBinding() { Parent = group.Key, Children = tuple };
                 tagBindingList.Add(ttb);
             }
             
             TagBinding.AddRange(tagBindingList);
             
-
-            //var all = f1.Concat(f2).Concat(f3).ToList();
-            //all = all.OrderBy(x => x.Parent).ToList();
-            //all.RemoveAll(x => x.Parent.Contains("Sexual") && App.UserSettings.MaxSexualRating < SexualRating.Explicit);
-
-            //List<(string Parent, string Child)> tagInfoList = new List<(string Parent, string Child)>();
-            //foreach (var tag in tagList)
-            //{
-            //    var tagName = tagDump.FirstOrDefault(x => x.TagId == tag.TagId)?.Name;
-            //    var parent = GetParentTag(tag.TagId, tagDump);
-            //    if (parent == tagName)
-            //    {
-            //        parent = null;
-            //    }
-            //    tagInfoList.Add((parent, tagName));
-            //}
-
-            //var groupedTags = tagInfoList.GroupBy(x => x.Parent).ToList();
-
-
         }
         
         private static List<(string Parent, string Child, SpoilerLevel Spoiler)> GetParentTags(List<VnInfoTags> tagList, List<VnTagData> tagDump)
@@ -207,6 +158,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             foreach (var tag in tagList)
             {
                 var tagName = tagDump.FirstOrDefault(x => x.TagId == tag.TagId)?.Name;
+                if(string.IsNullOrEmpty(tagName))continue;
                 var tagData = tagDump.FirstOrDefault(x => x.TagId == tag.TagId);
                 while (tagData != null && tagData.Parents.Length > 0)
                 {
@@ -219,7 +171,6 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
                 }
                 tagInfoList.Add((parentTag, tagName, tag.Spoiler));
             }
-
             return tagInfoList;
         }
         
