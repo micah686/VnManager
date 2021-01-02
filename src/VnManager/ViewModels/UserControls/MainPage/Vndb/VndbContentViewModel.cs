@@ -50,13 +50,5 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
         }
     }
 
-    public class TagTraitBinding
-    {
-        public string Parent { get; set; }
-        /// <summary>
-        /// Tuple is NameOfChild, NameOfColor
-        /// </summary>
-        public List<Tuple<string, string>> Children { get; set; }
-        public Thickness ParentMargin { get; set; }
-    }
+    
 }

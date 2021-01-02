@@ -52,48 +52,60 @@
             </StackPanel>
 
             <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal" Margin="15">
-                <Label Content="Vndb" Foreground="{Binding ZZZ}"/>
+                <Label Content="Vndb"/>
                 <Label Content="Store Page" Margin="15,0,0,0"/>
                 <Label Content="Wikipedia" Margin="15,0,0,0"/>
                 <Label Content="Encubed" Margin="15,0,0,0"/>
                 <Label Content="Renai" Margin="15,0,0,0"/>
-                <Label Content="testing" Foreground="{Binding ZZZ}" Background="{Binding ZZZ}"></Label>
             </StackPanel>
 
-            <!--<ScrollViewer Grid.Row="3" Margin="7" adExt:ScrollViewerExtension.VerticalScrollBarExpansionMode="NeverExpand">
+            <ScrollViewer Grid.Row="3" Margin="7" adExt:ScrollViewerExtension.VerticalScrollBarExpansionMode="NeverExpand">
                 <TextBlock ext:TextBlockInLineBinding.Inlines="{Binding DescriptionInLine}"/>
-            </ScrollViewer>-->
+            </ScrollViewer>
 
-            <ItemsControl Grid.Row="4" ItemsSource="{Binding TagBinding}" Margin="0,0,20,0">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Grid x:Name="FooBar">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="{Binding Parent}" Margin="5,0,0,0"/>
-                            <ScrollViewer Grid.Column="1" adExt:ScrollViewerExtension.HorizontalScrollBarExpansionMode="NeverExpand" HorizontalScrollBarVisibility="Visible" 
-                                                   Margin="{Binding ParentMargin}" >
-                                <ItemsControl ItemsSource="{Binding Children}" HorizontalContentAlignment="Stretch"
-                                                      Margin="10,-4,0,0" >
-                                    <ItemsControl.ItemsPanel>
-                                        <ItemsPanelTemplate>
-                                            <StackPanel Orientation="Horizontal"></StackPanel>
-                                        </ItemsPanelTemplate>
-                                    </ItemsControl.ItemsPanel>
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Text="{Binding Item1}" Margin="0,0,10,0" Foreground="{Binding Item2}"/>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                            </ScrollViewer>
+            <Grid Grid.Row="4">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Label Grid.Row="0" Content="Tags" Margin="2,10,0,5"></Label>
+                <ItemsControl Grid.Row="1" ItemsSource="{Binding TagCollection}" AlternationCount="2" Margin="0,0,20,0">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid x:Name="TagGrid">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="125"/>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="{Binding Parent}" Margin="5,0,5,0" />
+                                <ScrollViewer Grid.Column="1" adExt:ScrollViewerExtension.HorizontalScrollBarExpansionMode="NeverExpand" HorizontalScrollBarVisibility="Auto">
+                                    <ItemsControl ItemsSource="{Binding Children}" HorizontalContentAlignment="Stretch" Margin="0,-4,0,5">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <StackPanel Orientation="Horizontal"/>
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Item1}" Foreground="{Binding Item2}" Margin="0,0,12,0"></TextBlock>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </ScrollViewer>
+                            </Grid>
+                            <DataTemplate.Triggers>
+                                <Trigger Property="ItemsControl.AlternationIndex" Value="0">
+                                    <Setter Property="Background" Value="{DynamicResource {x:Static adonisUi:Brushes.Layer2BackgroundBrush}}" TargetName="TagGrid"/>
+                                </Trigger>
+                                <Trigger Property="ItemsControl.AlternationIndex" Value="1">
+                                    <Setter Property="Background" Value="{DynamicResource {x:Static adonisUi:Brushes.Layer0BackgroundBrush}}" TargetName="TagGrid"/>
+                                </Trigger>
+                            </DataTemplate.Triggers>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
 
-                        </Grid>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
+                </ItemsControl>
+            </Grid>
 
         </Grid>
 

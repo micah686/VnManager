@@ -7,7 +7,7 @@
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:res="clr-namespace:VnManager.Strings"
              xmlns:s="https://github.com/canton7/Stylet"
-             xmlns:adonisExtensions="clr-namespace:AdonisUI.Extensions;assembly=AdonisUI"
+             xmlns:adExt="clr-namespace:AdonisUI.Extensions;assembly=AdonisUI"
              xmlns:adonisUi="clr-namespace:AdonisUI;assembly=AdonisUI"
              xmlns:vm="clr-namespace:VnManager.ViewModels.UserControls.MainPage.Vndb"
              xmlns:extensions="clr-namespace:VnManager.Extensions"
@@ -27,11 +27,11 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="5"/>
             </Grid.RowDefinitions>
-            <TextBox Grid.Row="0" adonisExtensions:WatermarkExtension.Watermark="{x:Static res:Resources.SearchCharacter}" Text="{Binding CharacterNameSearch, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+            <TextBox Grid.Row="0" adExt:WatermarkExtension.Watermark="{x:Static res:Resources.SearchCharacter}" Text="{Binding CharacterNameSearch, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                      TextChanged="{s:Action SearchCharacters}"/>
             <ListBox Grid.Row="1" ItemsSource="{Binding CharacterNamesCollection, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" 
                      SelectedIndex="{Binding SelectedCharacterIndex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectionChanged="{s:Action CharacterSelectionChanged}"
-                     Margin="0,5,0,5" adonisExtensions:ScrollViewerExtension.VerticalScrollBarExpansionMode="NeverExpand">
+                     Margin="0,5,0,5" adExt:ScrollViewerExtension.VerticalScrollBarExpansionMode="NeverExpand">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <TextBlock Text="{Binding Value}" />
@@ -46,7 +46,7 @@
                 <RowDefinition Height="30*"/>
             </Grid.RowDefinitions>
 
-            <ScrollViewer Grid.Row="0" adonisExtensions:ScrollViewerExtension.VerticalScrollBarExpansionMode="NeverExpand">
+            <ScrollViewer Grid.Row="0" adExt:ScrollViewerExtension.VerticalScrollBarExpansionMode="NeverExpand">
                 <Grid x:Name="CharacterTopContent">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="250" />
@@ -69,55 +69,54 @@
                         <TextBlock Text="{Binding BustWaistHips.Item1}" Margin="0,0,0,5" Visibility="{Binding BustWaistHips.Item2}"/>
                     </StackPanel>
 
-                    <StackPanel Grid.Column="1" HorizontalAlignment="Left" MaxWidth="{Binding ActualWidth, Mode=OneWay, ElementName=CharacterContent}">
-                        <Label Content="{Binding TraitHeaderText}" Margin="2,10,0,5"></Label>
-
-                        <ItemsControl ItemsSource="{Binding TraitCollection}" AlternationCount="2" Margin="0,0,20,0">
+                    <Grid Grid.Column="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Label Grid.Row="0" Content="{Binding TraitHeaderText}" Margin="2,10,0,5"></Label>
+                        <ItemsControl Grid.Row="1" ItemsSource="{Binding TraitCollection}" AlternationCount="2" Margin="0,0,20,0">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <Grid x:Name="FooBar">
+                                    <Grid x:Name="TagGrid">
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="125"/>
+                                            <ColumnDefinition Width="*"></ColumnDefinition>
                                         </Grid.ColumnDefinitions>
-                                        <TextBlock Grid.Column="0" Text="{Binding Parent}" Margin="5,0,0,0"/>
-                                        <ScrollViewer Grid.Column="1" adonisExtensions:ScrollViewerExtension.HorizontalScrollBarExpansionMode="NeverExpand" HorizontalScrollBarVisibility="Visible" 
-                                                   Margin="{Binding ParentMargin}" >
-                                            <ItemsControl ItemsSource="{Binding Children}" HorizontalContentAlignment="Stretch"
-                                                      Margin="10,-4,0,0" >
+                                        <TextBlock Grid.Column="0" Text="{Binding Parent}" Margin="5,0,5,0" />
+                                        <ScrollViewer Grid.Column="1" adExt:ScrollViewerExtension.HorizontalScrollBarExpansionMode="NeverExpand" HorizontalScrollBarVisibility="Auto">
+                                            <ItemsControl ItemsSource="{Binding Children}" HorizontalContentAlignment="Stretch" Margin="0,-4,0,5">
                                                 <ItemsControl.ItemsPanel>
                                                     <ItemsPanelTemplate>
-                                                        <StackPanel Orientation="Horizontal"></StackPanel>
+                                                        <StackPanel Orientation="Horizontal"/>
                                                     </ItemsPanelTemplate>
                                                 </ItemsControl.ItemsPanel>
                                                 <ItemsControl.ItemTemplate>
                                                     <DataTemplate>
-                                                        <TextBlock Text="{Binding}" Margin="0,0,10,0"/>
+                                                        <TextBlock Text="{Binding Item1}" Foreground="{Binding Item2}" Margin="0,0,12,0"></TextBlock>
                                                     </DataTemplate>
                                                 </ItemsControl.ItemTemplate>
                                             </ItemsControl>
                                         </ScrollViewer>
-
                                     </Grid>
                                     <DataTemplate.Triggers>
                                         <Trigger Property="ItemsControl.AlternationIndex" Value="0">
-                                            <Setter Property="Background" Value="{DynamicResource {x:Static adonisUi:Brushes.Layer2BackgroundBrush}}" TargetName="FooBar"/>
+                                            <Setter Property="Background" Value="{DynamicResource {x:Static adonisUi:Brushes.Layer2BackgroundBrush}}" TargetName="TagGrid"/>
                                         </Trigger>
                                         <Trigger Property="ItemsControl.AlternationIndex" Value="1">
-                                            <Setter Property="Background" Value="{DynamicResource {x:Static adonisUi:Brushes.Layer0BackgroundBrush}}" TargetName="FooBar"/>
+                                            <Setter Property="Background" Value="{DynamicResource {x:Static adonisUi:Brushes.Layer0BackgroundBrush}}" TargetName="TagGrid"/>
                                         </Trigger>
                                     </DataTemplate.Triggers>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
+
                         </ItemsControl>
-
-
-                    </StackPanel>
+                    </Grid>
 
                 </Grid>
             </ScrollViewer>
             
-            <ScrollViewer x:Name="CharacterDescription" Grid.Row="1" adonisExtensions:ScrollViewerExtension.VerticalScrollBarExpansionMode="NeverExpand" Margin="0,10,0,0">
+            <ScrollViewer x:Name="CharacterDescription" Grid.Row="1" adExt:ScrollViewerExtension.VerticalScrollBarExpansionMode="NeverExpand" Margin="0,10,0,0">
                 <TextBlock extensions:TextBlockInLineBinding.Inlines="{Binding Description}" 
                            FontWeight="DemiBold" TextWrapping="Wrap" />
             </ScrollViewer>

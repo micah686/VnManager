@@ -14,6 +14,7 @@ using MahApps.Metro.IconPacks;
 using Stylet;
 using VndbSharp.Models.Common;
 using VnManager.Helpers;
+using VnManager.Helpers.Vndb;
 using VnManager.Models.Db;
 using VnManager.Models.Db.Vndb.Character;
 using VnManager.Models.Db.Vndb.TagTrait;
@@ -49,7 +50,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
 
         public List<Inline> Description { get; set; }
         
-        public BindableCollection<TraitBinding> TraitCollection { get; set; } = new BindableCollection<TraitBinding>();
+        public BindableCollection<TagTraitBinding> TraitCollection { get; set; } = new BindableCollection<TagTraitBinding>();
 
         #endregion
 
@@ -173,8 +174,9 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
 
                 Description = BBCodeHelper.Helper(charInfo.Description);
             }
-            GetTraits();
-            SetParentTraitMargin();
+
+            TraitCollection.Clear();
+            TraitCollection.AddRange(VndbTagTraitHelper.GetTraits(_characterId));
         }
 
         private void SetBustWidthHeight(VnCharacterInfo info)
@@ -213,91 +215,6 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
                 default:
                     GenderIcon = PackIconMaterialKind.None;
                     break;
-            }
-        }
-
-        private void GetTraits()
-        {
-            TraitCollection.Clear();
-            List<VnCharacterTraits> traitList;
-            List<VnTraitData> traitDump;
-
-            var cred = CredentialManager.GetCredentials(App.CredDb);
-            if (cred == null || cred.UserName.Length < 1) return;
-            using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
-            {
-                traitList = db.GetCollection<VnCharacterTraits>(DbVnCharacter.VnCharacter_Traits.ToString()).Query()
-                    .Where(x => x.CharacterId == _characterId).ToList();
-                traitList = traitList.OrderByDescending(x => x.SpoilerLevel).ToList();
-                traitList = traitList.Where(t => t.SpoilerLevel <= App.UserSettings.SettingsVndb.Spoiler).ToList();
-                traitDump = db.GetCollection<VnTraitData>(DbVnDump.VnDump_TraitData.ToString()).Query().ToList();
-            }
-
-
-            List<(string Parent, string Child)> traitInfoList = new List<(string Parent, string Child)>();
-            foreach (var trait in traitList)
-            {
-                var traitName = traitDump.FirstOrDefault(x => x.TraitId == trait.TraitId)?.Name;
-                var parent = GetParentTrait(trait.TraitId, traitDump);
-                if (parent == traitName)
-                {
-                    parent = null;
-                }
-                traitInfoList.Add((parent,traitName));
-            }
-
-            var groupedTraits = traitInfoList.GroupBy(x => x.Parent).ToList();
-            //creates a List<string> from the children of the named tuple. Then adds the parent and children list to the TraitBinding list
-            List<TraitBinding> bindingTraits = (from item in groupedTraits let childList = item.Select(x => x.Child).ToList() 
-                select new TraitBinding {Parent = item.Key, Children = childList }).ToList();
-            bindingTraits = bindingTraits.OrderBy(x => x.Parent).ToList();
-
-            bindingTraits.RemoveAll(x =>
-                x.Parent.Contains("Sexual") && App.UserSettings.MaxSexualRating < SexualRating.Explicit);
-            
-            TraitCollection.AddRange(bindingTraits);
-            SetParentTraitMargin();
-        }
-
-
-        private static string GetParentTrait(uint traitId, List<VnTraitData> traitDump)
-        {
-            var traitData = traitDump.FirstOrDefault(x => x.TraitId == traitId);
-
-            while (traitData != null && traitData.Parents.Length > 0)
-            {
-                traitData = traitDump.FirstOrDefault(x => x.TraitId == traitData.Parents.Last());
-            }
-            return traitData?.Name;
-        }
-
-
-        private void SetParentTraitMargin()
-        {
-            var currentTraits = TraitCollection;
-
-            var parents = currentTraits.Select(x => x.Parent);
-            var stringSizes = parents.Select(MeasureStringSize.GetMaxStringWidth).ToList();
-            var largestSize = stringSizes.OrderByDescending(x => x).FirstOrDefault();
-            const int padding = 30;
-            var maxValue = largestSize + padding;
-
-            foreach (var traitBinding in TraitCollection)
-            {
-                var parentSize = MeasureStringSize.GetMaxStringWidth(traitBinding.Parent);
-                if (parentSize < maxValue)
-                {
-                    var difference = maxValue - parentSize;
-                    traitBinding.ParentMargin = new Thickness(difference,0,0,0);
-                }
-
-            }
-
-            TraitCollection = currentTraits;
-
-            if (TraitCollection.Count > 1)
-            {
-                TraitHeaderText = App.ResMan.GetString("Traits");
             }
         }
 

@@ -15,6 +15,7 @@ using MahApps.Metro.IconPacks;
 using Stylet;
 using VndbSharp.Models.Common;
 using VnManager.Helpers;
+using VnManager.Helpers.Vndb;
 using VnManager.Models.Db.User;
 using VnManager.Models.Db.Vndb.Main;
 using VnManager.Models.Db;
@@ -39,10 +40,8 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
         public string Popularity { get; set; }
         public string Rating { get; set; }
         public BindableCollection<BitmapSource> LanguageCollection { get; set; } = new BindableCollection<BitmapSource>();
-        public BindableCollection<TagTraitBinding> TagBinding { get; set; } = new BindableCollection<TagTraitBinding>();
+        public BindableCollection<TagTraitBinding> TagCollection { get; set; } = new BindableCollection<TagTraitBinding>();
 
-        public Brush ZZZ { get; set; }
-        
         public List<Inline> DescriptionInLine { get; set; }
 
         public string LastPlayed { get; set; }
@@ -61,7 +60,9 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             LoadMainData();
             LoadUserData();
             LoadRelations();
-            GetTags();
+            //GetTags();
+
+            TagCollection.AddRange(VndbTagTraitHelper.GetTags(VndbContentViewModel.VnId));
         }
 
         private void LoadMainData()
@@ -102,79 +103,6 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
                 PlayTime = TimeDateChanger.GetHumanTime(dbUserData.PlayTime);
             }
         }
-
-
-        private void GetTags()
-        {
-            List<VnInfoTags> tagList;
-            List<VnTagData> tagDump;
-
-            var cred = CredentialManager.GetCredentials(App.CredDb);
-            if (cred == null || cred.UserName.Length < 1) return;
-            using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
-            {
-                
-                tagList = db.GetCollection<VnInfoTags>(DbVnInfo.VnInfo_Tags.ToString()).Query()
-                    .Where(x => x.VnId == VndbContentViewModel.VnId).ToList();
-                tagDump = db.GetCollection<VnTagData>(DbVnDump.VnDump_TagData.ToString()).Query().ToList();
-
-                tagList = tagList.Where(t => t.Spoiler <= App.UserSettings.SettingsVndb.Spoiler).ToList();
-                tagList = tagList.OrderByDescending(x => x.Spoiler).ToList();
-                
-            }
-
-            var tagBindingList = new List<TagTraitBinding>();
-
-            var tagsWithParent = GetParentTags(tagList, tagDump).ToList();
-            tagsWithParent.RemoveAll(x => x.Parent.Contains("Sexual") && App.UserSettings.MaxSexualRating < SexualRating.Explicit);
-
-            var noSpoilerTags = tagsWithParent.Where(x => x.Spoiler == SpoilerLevel.None).ToList();
-            var minorSpoilerTags = tagsWithParent.Where(x => x.Spoiler == SpoilerLevel.Minor).ToList();
-            var majorSpoilerTags = tagsWithParent.Where(x => x.Spoiler == SpoilerLevel.Major).ToList();
-
-            var sexualTags = tagsWithParent.Where(x => x.Parent.Contains("Sexual")).ToList();
-
-
-            var tempList = (from tag in noSpoilerTags let colorText = Colors.WhiteSmoke.ToString() select (tag.Parent, tag.Child, colorText)).ToList();
-            tempList.AddRange(from tag in minorSpoilerTags let colorText = Colors.Gold.ToString() select (tag.Parent, tag.Child, colorText));
-            tempList.AddRange(from tag in majorSpoilerTags let colorText = Colors.OrangeRed.ToString() select (tag.Parent, tag.Child, colorText));
-            tempList.AddRange(from tag in sexualTags let colorText = Colors.HotPink.ToString() select (tag.Parent, tag.Child, colorText));
-
-
-            foreach (var group in tempList.GroupBy(x => x.Parent))
-            {
-                var tuple = group.Select(tag => new Tuple<string, string>(tag.Child, tag.colorText)).ToList();
-                var ttb = new TagTraitBinding() { Parent = group.Key, Children = tuple };
-                tagBindingList.Add(ttb);
-            }
-            
-            TagBinding.AddRange(tagBindingList);
-            
-        }
-        
-        private static List<(string Parent, string Child, SpoilerLevel Spoiler)> GetParentTags(List<VnInfoTags> tagList, List<VnTagData> tagDump)
-        {
-            List<(string Parent, string Child, SpoilerLevel Spoiler)> tagInfoList = new List<(string Parent, string Child, SpoilerLevel Spoiler)>();
-            foreach (var tag in tagList)
-            {
-                var tagName = tagDump.FirstOrDefault(x => x.TagId == tag.TagId)?.Name;
-                if(string.IsNullOrEmpty(tagName))continue;
-                var tagData = tagDump.FirstOrDefault(x => x.TagId == tag.TagId);
-                while (tagData != null && tagData.Parents.Length > 0)
-                {
-                    tagData = tagDump.FirstOrDefault(x => x.TagId == tagData.Parents.Last());
-                }
-                var parentTag = tagData?.Name;
-                if (parentTag == tagName)
-                {
-                    parentTag = null;
-                }
-                tagInfoList.Add((parentTag, tagName, tag.Spoiler));
-            }
-            return tagInfoList;
-        }
-        
-        
         
         private void LoadRelations()
         {
