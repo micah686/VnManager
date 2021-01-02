@@ -42,8 +42,8 @@
 
         <Grid Grid.Column="1"  x:Name="CharacterContent" >
             <Grid.RowDefinitions>
-                <RowDefinition Height="70*"/>
-                <RowDefinition Height="30*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
             <ScrollViewer Grid.Row="0" adExt:ScrollViewerExtension.VerticalScrollBarExpansionMode="NeverExpand">
@@ -74,7 +74,7 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
-                        <Label Grid.Row="0" Content="{Binding TraitHeaderText}" Margin="2,10,0,5"></Label>
+                        <Label Grid.Row="0" Content="{x:Static res:Resources.Traits}" Margin="2,10,0,5" Visibility="{Binding TraitHeaderVisibility}"></Label>
                         <ItemsControl Grid.Row="1" ItemsSource="{Binding TraitCollection}" AlternationCount="2" Margin="0,0,20,0">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
@@ -83,9 +83,9 @@
                                             <ColumnDefinition Width="125"/>
                                             <ColumnDefinition Width="*"></ColumnDefinition>
                                         </Grid.ColumnDefinitions>
-                                        <TextBlock Grid.Column="0" Text="{Binding Parent}" Margin="5,0,5,0" />
+                                        <TextBlock Grid.Column="0" Text="{Binding Parent}" Margin="5,3,5,0" />
                                         <ScrollViewer Grid.Column="1" adExt:ScrollViewerExtension.HorizontalScrollBarExpansionMode="NeverExpand" HorizontalScrollBarVisibility="Auto">
-                                            <ItemsControl ItemsSource="{Binding Children}" HorizontalContentAlignment="Stretch" Margin="0,-4,0,5">
+                                            <ItemsControl ItemsSource="{Binding Children}" HorizontalContentAlignment="Stretch" Margin="0,0,0,5">
                                                 <ItemsControl.ItemsPanel>
                                                     <ItemsPanelTemplate>
                                                         <StackPanel Orientation="Horizontal"/>

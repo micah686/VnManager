@@ -40,7 +40,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
         public BitmapSource CharacterImage { get; set; }
         public string Name { get; set; }
         
-        public string TraitHeaderText { get; set; }
+        public Visibility TraitHeaderVisibility { get; set; }
         public Tuple<string, Visibility> OriginalName { get; set; }
         public Tuple<string, Visibility> BloodType { get; set; } 
         public Tuple<string, Visibility> Birthday { get; set; }
@@ -175,10 +175,16 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
                 Description = BBCodeHelper.Helper(charInfo.Description);
             }
 
-            TraitCollection.Clear();
-            TraitCollection.AddRange(VndbTagTraitHelper.GetTraits(_characterId));
+            UpdateTraits();
         }
 
+        private void UpdateTraits()
+        {
+            TraitCollection.Clear();
+            TraitCollection.AddRange(VndbTagTraitHelper.GetTraits(_characterId));
+            TraitHeaderVisibility = TraitCollection.Count < 1 ? Visibility.Collapsed : Visibility.Visible;
+        }
+        
         private void SetBustWidthHeight(VnCharacterInfo info)
         {
             var header = App.ResMan.GetString("BustWaistHips");
@@ -218,12 +224,5 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             }
         }
 
-    }
-
-    public class TraitBinding
-    {
-        public string Parent { get; set; }
-        public List<string> Children { get; set; }
-        public Thickness ParentMargin { get; set; }
     }
 }

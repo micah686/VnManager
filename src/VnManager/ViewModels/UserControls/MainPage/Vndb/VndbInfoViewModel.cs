@@ -6,6 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -41,6 +42,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
         public string Rating { get; set; }
         public BindableCollection<BitmapSource> LanguageCollection { get; set; } = new BindableCollection<BitmapSource>();
         public BindableCollection<TagTraitBinding> TagCollection { get; set; } = new BindableCollection<TagTraitBinding>();
+        public Visibility TagHeaderVisibility { get; set; }
 
         public List<Inline> DescriptionInLine { get; set; }
 
@@ -60,9 +62,10 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             LoadMainData();
             LoadUserData();
             LoadRelations();
-            //GetTags();
 
+            TagCollection.Clear();
             TagCollection.AddRange(VndbTagTraitHelper.GetTags(VndbContentViewModel.VnId));
+            TagHeaderVisibility = TagCollection.Count < 1 ? Visibility.Collapsed : Visibility.Visible;
         }
 
         private void LoadMainData()
