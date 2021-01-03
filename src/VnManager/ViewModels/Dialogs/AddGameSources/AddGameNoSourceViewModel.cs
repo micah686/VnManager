@@ -129,6 +129,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
                 await SetGameDataEntryAsync();
                 var parent = (AddGameMainViewModel)Parent;
                 parent.RequestClose(true);
+                RootViewModel.Instance.ActivateMainClick();
             }
         }
 

@@ -305,6 +305,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
                 IsLockDown = false;
                 parent.CanChangeSource = true;
                 parent.RequestClose(true);
+                RootViewModel.Instance.ActivateMainClick();
             }
 
             IsLockDown = false;
