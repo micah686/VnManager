@@ -26,16 +26,14 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Label Grid.Row="0" Content="{Binding Title, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="24" FontWeight="DemiBold"
                    Margin="7,20,0,0"/>
 
             <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" Margin="5">
                 <Button Width="150" Height="50" Content="Play" Background="ForestGreen" adExt:CursorSpotlightExtension.BorderBrush="Lime" adExt:CursorSpotlightExtension.BackgroundBrush="ForestGreen"
-                        adExt:RippleExtension.BackgroundBrush="Lime" adExt:RippleExtension.BorderBrush="LawnGreen"/>
+                        adExt:RippleExtension.BackgroundBrush="Lime" adExt:RippleExtension.BorderBrush="LawnGreen" adExt:RippleExtension.ForegroundBrush="Black"/>
 
                 <StackPanel Margin="25,0,0,0">
                     <Label Content="Last Played" FontSize="16" FontWeight="Bold"/>
@@ -60,60 +58,65 @@
                     <Label Content="Encubed" Margin="15,0,0,0"/>
                     <Label Content="Renai" Margin="15,0,0,0"/>
                 </StackPanel>
-                <StackPanel Orientation="Horizontal">
+                <StackPanel Orientation="Horizontal" Margin="15,0,15,5" >
                     <Separator  Width="{Binding ActualWidth, Mode=OneWay, ElementName=LeftContent}"></Separator>
                 </StackPanel>
             </StackPanel>
             
 
             <ScrollViewer Grid.Row="3" Margin="7" adExt:ScrollViewerExtension.VerticalScrollBarExpansionMode="NeverExpand">
-                
-                <TextBlock ext:TextBlockInLineBinding.Inlines="{Binding DescriptionInLine}" TextWrapping="Wrap"/>
+                <DockPanel>
+                    <Label DockPanel.Dock="Top" Content="{x:Static res:Resources.Summary}" Margin="2,0,0,5"></Label>
+                    <TextBlock DockPanel.Dock="Top" ext:TextBlockInLineBinding.Inlines="{Binding DescriptionInLine}" TextWrapping="Wrap"/>
+
+                    <Grid DockPanel.Dock="Top" x:Name="TagContent">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Label Grid.Row="0" Content="{x:Static res:Resources.Tags}" Margin="2,10,0,5" Visibility="{Binding TagHeaderVisibility}"></Label>
+                        <ItemsControl Grid.Row="1" ItemsSource="{Binding TagCollection}" AlternationCount="2" Margin="0,0,20,0">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid x:Name="TagGrid">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="125"/>
+                                            <ColumnDefinition Width="*"></ColumnDefinition>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="{Binding Parent}" Margin="5,3,5,0" />
+                                        <ScrollViewer Grid.Column="1" adExt:ScrollViewerExtension.HorizontalScrollBarExpansionMode="NeverExpand" HorizontalScrollBarVisibility="Auto">
+                                            <ItemsControl ItemsSource="{Binding Children}" HorizontalContentAlignment="Stretch" Margin="0,0,0,5">
+                                                <ItemsControl.ItemsPanel>
+                                                    <ItemsPanelTemplate>
+                                                        <StackPanel Orientation="Horizontal"/>
+                                                    </ItemsPanelTemplate>
+                                                </ItemsControl.ItemsPanel>
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <TextBlock Text="{Binding Item1}" Foreground="{Binding Item2}" Margin="0,0,12,0"></TextBlock>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </ScrollViewer>
+                                    </Grid>
+                                    <DataTemplate.Triggers>
+                                        <Trigger Property="ItemsControl.AlternationIndex" Value="0">
+                                            <Setter Property="Background" Value="{DynamicResource {x:Static adonisUi:Brushes.Layer2BackgroundBrush}}" TargetName="TagGrid"/>
+                                        </Trigger>
+                                        <Trigger Property="ItemsControl.AlternationIndex" Value="1">
+                                            <Setter Property="Background" Value="{DynamicResource {x:Static adonisUi:Brushes.Layer0BackgroundBrush}}" TargetName="TagGrid"/>
+                                        </Trigger>
+                                    </DataTemplate.Triggers>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+
+                        </ItemsControl>
+                    </Grid>
+
+                </DockPanel>
             </ScrollViewer>
 
-            <Grid Grid.Row="4" x:Name="TagContent">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-                <Label Grid.Row="0" Content="{x:Static res:Resources.Tags}" Margin="2,10,0,5" Visibility="{Binding TagHeaderVisibility}"></Label>
-                <ItemsControl Grid.Row="1" ItemsSource="{Binding TagCollection}" AlternationCount="2" Margin="0,0,20,0">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Grid x:Name="TagGrid">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="125"/>
-                                    <ColumnDefinition Width="*"></ColumnDefinition>
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0" Text="{Binding Parent}" Margin="5,3,5,0" />
-                                <ScrollViewer Grid.Column="1" adExt:ScrollViewerExtension.HorizontalScrollBarExpansionMode="NeverExpand" HorizontalScrollBarVisibility="Auto">
-                                    <ItemsControl ItemsSource="{Binding Children}" HorizontalContentAlignment="Stretch" Margin="0,0,0,5">
-                                        <ItemsControl.ItemsPanel>
-                                            <ItemsPanelTemplate>
-                                                <StackPanel Orientation="Horizontal"/>
-                                            </ItemsPanelTemplate>
-                                        </ItemsControl.ItemsPanel>
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
-                                                <TextBlock Text="{Binding Item1}" Foreground="{Binding Item2}" Margin="0,0,12,0"></TextBlock>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-                                </ScrollViewer>
-                            </Grid>
-                            <DataTemplate.Triggers>
-                                <Trigger Property="ItemsControl.AlternationIndex" Value="0">
-                                    <Setter Property="Background" Value="{DynamicResource {x:Static adonisUi:Brushes.Layer2BackgroundBrush}}" TargetName="TagGrid"/>
-                                </Trigger>
-                                <Trigger Property="ItemsControl.AlternationIndex" Value="1">
-                                    <Setter Property="Background" Value="{DynamicResource {x:Static adonisUi:Brushes.Layer0BackgroundBrush}}" TargetName="TagGrid"/>
-                                </Trigger>
-                            </DataTemplate.Triggers>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-
-                </ItemsControl>
-            </Grid>
+            
 
         </Grid>
 
@@ -157,28 +160,6 @@
         <!--End Content -->
     </Grid>
     <!--<Grid>
-
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="8*"/>
-            <ColumnDefinition Width="2*"/>
-        </Grid.ColumnDefinitions>
-
-
-        
-
-        
-
-        <Grid Grid.Row="2" Grid.Column="0" >
-            <TextBlock ext:TextBlockInLineBinding.Inlines="{Binding DescriptionInLine}" Foreground="DimGray" FontWeight="DemiBold" TextWrapping="Wrap"/>
-        </Grid>
 
         <Grid Grid.Row="3" Grid.Column="0">
             <DataGrid AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False" CanUserResizeColumns="False" CanUserResizeRows="False" IsReadOnly="True"
