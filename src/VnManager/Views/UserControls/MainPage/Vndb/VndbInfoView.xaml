@@ -34,7 +34,8 @@
                    Margin="7,20,0,0"/>
 
             <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" Margin="5">
-                <Button Width="150" Height="50" Content="Play" Background="ForestGreen" adExt:CursorSpotlightExtension.BorderBrush="Lime" adExt:CursorSpotlightExtension.BackgroundBrush="ForestGreen"/>
+                <Button Width="150" Height="50" Content="Play" Background="ForestGreen" adExt:CursorSpotlightExtension.BorderBrush="Lime" adExt:CursorSpotlightExtension.BackgroundBrush="ForestGreen"
+                        adExt:RippleExtension.BackgroundBrush="Lime" adExt:RippleExtension.BorderBrush="LawnGreen"/>
 
                 <StackPanel Margin="25,0,0,0">
                     <Label Content="Last Played" FontSize="16" FontWeight="Bold"/>
@@ -125,13 +126,30 @@
                     </Border>
                 </StackPanel>
                 <Label DockPanel.Dock="Top" Content="{Binding MainTitle}"/>
-                <Label DockPanel.Dock="Top" Content="{Binding JpnTitle}"/>
                 <TextBlock DockPanel.Dock="Top" Margin="0,5,0,0" Text="{Binding Aliases}" TextWrapping="Wrap"/>
                 <TextBlock DockPanel.Dock="Top" Text="{Binding ReleasedDate}"/>
                 <TextBlock DockPanel.Dock="Top" Text="{Binding VnLength}"/>
+
+                <ListBox DockPanel.Dock="Top" ItemsSource="{Binding LanguageCollection}" IsEnabled="False" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="Padding" Value="0"/>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel DockPanel.Dock="Right"/>
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Image Source="{Binding}" Stretch="UniformToFill" MaxWidth="24" MaxHeight="24"/>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
                 <TextBlock DockPanel.Dock="Top" Text="Popularity:99.99"/>
                 <TextBlock DockPanel.Dock="Top" Text="Rating:9"/>
-                
 
 
             </DockPanel>
@@ -170,32 +188,7 @@
                     <DataGridTextColumn Header="Relation" Binding="{Binding RelRelation}"/>
                 </DataGrid.Columns>
             </DataGrid>
-        </Grid>
-
-        <StackPanel Grid.Row="3" Grid.Column="1"  Margin="15,10,0,0">            
-            <TextBlock Text="Rating:9"/>
-            <ListBox ItemsSource="{Binding LanguageCollection}" IsEnabled="False" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-                <ListBox.ItemContainerStyle>
-                    <Style TargetType="ListBoxItem">
-                        <Setter Property="Padding" Value="0"/>
-                    </Style>
-                </ListBox.ItemContainerStyle>
-                <ListBox.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <StackPanel Orientation="Horizontal"/>
-                    </ItemsPanelTemplate>
-                </ListBox.ItemsPanel>
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <Image Source="{Binding}" Stretch="UniformToFill"/>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
-            <Label Content="Platforms: Listbox"></Label>
-            <Label Content="Producer:Key"/>
-
-
-        </StackPanel>
+        </Grid>        
 
 
         --><!--End Content --><!--

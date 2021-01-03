@@ -34,7 +34,6 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
         public BitmapSource CoverImage { get; set; }
         public string Title { get; set; }
         public string MainTitle { get; set; }
-        public string JpnTitle { get; set; }
         public string Aliases { get; set; }
         public string ReleasedDate { get; set; }
         public string VnLength { get; set; }
@@ -78,8 +77,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
                 var vnInfoEntry = db.GetCollection<VnInfo>(DbVnInfo.VnInfo.ToString()).Query().Where(x => x.VnId == VndbContentViewModel.VnId).FirstOrDefault();
                 Title = vnInfoEntry.Title;
                 MainTitle = $"Title: {vnInfoEntry.Title}";
-                JpnTitle = $"Original Title: {vnInfoEntry.Original}";
-                Aliases = $"Aliases: {vnInfoEntry.Aliases}";
+                Aliases = $"Aliases: {vnInfoEntry.Aliases.Replace(",", ", ")}";
                 ReleasedDate = $"Released: {TimeDateChanger.GetHumanDate(DateTime.Parse(vnInfoEntry.Released, CultureInfo.InvariantCulture))}";
                 VnLength = $"Length: {vnInfoEntry.Length}";
                 Popularity = vnInfoEntry.Popularity.ToString();//make a UI use this double?
