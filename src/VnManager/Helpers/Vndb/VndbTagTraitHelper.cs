@@ -47,18 +47,20 @@ namespace VnManager.Helpers.Vndb
             var minorSpoilerTags = tagsWithParent.Where(x => x.Spoiler == SpoilerLevel.Minor).ToList();
             var majorSpoilerTags = tagsWithParent.Where(x => x.Spoiler == SpoilerLevel.Major).ToList();
 
-            var sexualTags = tagsWithParent.Where(x => x.Parent.Contains(_sexualString)).ToList();
+            var sexualTags = tagsWithParent.Where(x => x.Parent.Contains(_sexualString) && x.Spoiler < SpoilerLevel.Major).ToList();
 
 
             var tempList = (from tag in noSpoilerTags let colorText = Colors.WhiteSmoke.ToString(CultureInfo.InvariantCulture) select (tag.Parent, tag.Child, colorText)).ToList();
             tempList.AddRange(from tag in minorSpoilerTags let colorText = Colors.Gold.ToString(CultureInfo.InvariantCulture) select (tag.Parent, tag.Child, colorText));
             tempList.AddRange(from tag in majorSpoilerTags let colorText = Colors.Red.ToString(CultureInfo.InvariantCulture) select (tag.Parent, tag.Child, colorText));
+
+            tempList = tempList.Except(tempList.Where(p => sexualTags.Any(c => c.Child == p.Child))).ToList();
             tempList.AddRange(from tag in sexualTags let colorText = Colors.HotPink.ToString(CultureInfo.InvariantCulture) select (tag.Parent, tag.Child, colorText));
 
 
             var tagBindingList = (from @group in tempList.GroupBy(x => x.Parent)
-                                  let tuple = @group.Select(tag => new Tuple<string, string>(tag.Child, tag.colorText)).ToList()
-                                  select new TagTraitBinding { Parent = @group.Key, Children = tuple }).ToList();
+                let tuple = @group.Select(tag => new Tuple<string, string>(tag.Child, tag.colorText)).ToList()
+                select new TagTraitBinding {Parent = @group.Key, Children = tuple}).OrderBy(x => x.Parent).ToList();
             return tagBindingList;
         }
 
@@ -111,18 +113,20 @@ namespace VnManager.Helpers.Vndb
             var minorSpoilerTraits = traitsWithParent.Where(x => x.Spoiler == SpoilerLevel.Minor).ToList();
             var majorSpoilerTraits = traitsWithParent.Where(x => x.Spoiler == SpoilerLevel.Major).ToList();
 
-            var sexualTraits = traitsWithParent.Where(x => x.Parent.Contains(_sexualString)).ToList();
+            var sexualTraits = traitsWithParent.Where(x => x.Parent.Contains(_sexualString) && x.Spoiler < SpoilerLevel.Major).ToList();
 
 
             var tempList = (from trait in noSpoilerTraits let colorText = Colors.WhiteSmoke.ToString(CultureInfo.InvariantCulture) select (trait.Parent, trait.Child, colorText)).ToList();
             tempList.AddRange(from trait in minorSpoilerTraits let colorText = Colors.Gold.ToString(CultureInfo.InvariantCulture) select (trait.Parent, trait.Child, colorText));
             tempList.AddRange(from trait in majorSpoilerTraits let colorText = Colors.Crimson.ToString(CultureInfo.InvariantCulture) select (trait.Parent, trait.Child, colorText));
+
+            tempList = tempList.Except(tempList.Where(p => sexualTraits.Any(c => c.Child == p.Child))).ToList();
             tempList.AddRange(from trait in sexualTraits let colorText = Colors.HotPink.ToString(CultureInfo.InvariantCulture) select (trait.Parent, trait.Child, colorText));
 
 
             var traitBindingList = (from @group in tempList.GroupBy(x => x.Parent)
-                                  let tuple = @group.Select(trait => new Tuple<string, string>(trait.Child, trait.colorText)).ToList()
-                                  select new TagTraitBinding { Parent = @group.Key, Children = tuple }).ToList();
+                let tuple = @group.Select(trait => new Tuple<string, string>(trait.Child, trait.colorText)).ToList()
+                select new TagTraitBinding {Parent = @group.Key, Children = tuple}).OrderBy(x => x.Parent).ToList();
             return traitBindingList;
         }
         
