@@ -34,4 +34,5 @@ This application is still under heavy development.
 
 If you want to clone this project, make sure that you clone the submodules too, otherwise it won't compile.
 
-
+#### Analytics
+Please be aware that metrics data be uploaded to a remote server in order to help find issues. 
