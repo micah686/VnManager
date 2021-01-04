@@ -138,6 +138,9 @@
   <data name="AddGameNormalTooltip" xml:space="preserve">
     <value>A single executable associated with a single ID</value>
   </data>
+  <data name="AliasesColon" xml:space="preserve">
+    <value>Aliases:</value>
+  </data>
   <data name="AppExit" xml:space="preserve">
     <value>The application will now exit</value>
   </data>
@@ -381,6 +384,9 @@
   <data name="Launcher" xml:space="preserve">
     <value>Launcher</value>
   </data>
+  <data name="LengthColon" xml:space="preserve">
+    <value>Length:</value>
+  </data>
   <data name="LightTheme" xml:space="preserve">
     <value>Light Theme</value>
   </data>
@@ -438,8 +444,17 @@
   <data name="PlayTime" xml:space="preserve">
     <value>PlayTime</value>
   </data>
+  <data name="PopularityColon" xml:space="preserve">
+    <value>Popularity:</value>
+  </data>
+  <data name="RatingColon" xml:space="preserve">
+    <value>Rating:</value>
+  </data>
   <data name="Ready" xml:space="preserve">
     <value>Ready</value>
+  </data>
+  <data name="ReleasedDateColon" xml:space="preserve">
+    <value>Released Date:</value>
   </data>
   <data name="Remove" xml:space="preserve">
     <value>Remove</value>
@@ -495,7 +510,7 @@
   <data name="Tags" xml:space="preserve">
     <value>Tags</value>
   </data>
-  <data name="Title" xml:space="preserve">
+  <data name="TitleColon" xml:space="preserve">
     <value>Title:</value>
   </data>
   <data name="TotalProgressColon" xml:space="preserve">

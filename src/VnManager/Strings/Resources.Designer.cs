@@ -124,6 +124,15 @@ namespace VnManager.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Aliases:.
+        /// </summary>
+        public static string AliasesColon {
+            get {
+                return ResourceManager.GetString("AliasesColon", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The application will now exit.
         /// </summary>
         public static string AppExit {
@@ -853,6 +862,15 @@ namespace VnManager.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Length:.
+        /// </summary>
+        public static string LengthColon {
+            get {
+                return ResourceManager.GetString("LengthColon", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Light Theme.
         /// </summary>
         public static string LightTheme {
@@ -1024,11 +1042,38 @@ namespace VnManager.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Popularity:.
+        /// </summary>
+        public static string PopularityColon {
+            get {
+                return ResourceManager.GetString("PopularityColon", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rating:.
+        /// </summary>
+        public static string RatingColon {
+            get {
+                return ResourceManager.GetString("RatingColon", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ready.
         /// </summary>
         public static string Ready {
             get {
                 return ResourceManager.GetString("Ready", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Released Date:.
+        /// </summary>
+        public static string ReleasedDateColon {
+            get {
+                return ResourceManager.GetString("ReleasedDateColon", resourceCulture);
             }
         }
         
@@ -1197,9 +1242,9 @@ namespace VnManager.Strings {
         /// <summary>
         ///   Looks up a localized string similar to Title:.
         /// </summary>
-        public static string Title {
+        public static string TitleColon {
             get {
-                return ResourceManager.GetString("Title", resourceCulture);
+                return ResourceManager.GetString("TitleColon", resourceCulture);
             }
         }
         

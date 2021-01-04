@@ -62,6 +62,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             LoadUserData();
             LoadRelations();
 
+            
             TagCollection.Clear();
             TagCollection.AddRange(VndbTagTraitHelper.GetTags(VndbContentViewModel.VnId));
             TagHeaderVisibility = TagCollection.Count < 1 ? Visibility.Collapsed : Visibility.Visible;
@@ -76,10 +77,10 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             {
                 var vnInfoEntry = db.GetCollection<VnInfo>(DbVnInfo.VnInfo.ToString()).Query().Where(x => x.VnId == VndbContentViewModel.VnId).FirstOrDefault();
                 Title = vnInfoEntry.Title;
-                MainTitle = $"Title: {vnInfoEntry.Title}";
-                Aliases = $"Aliases: {vnInfoEntry.Aliases.Replace(",", ", ")}";
-                ReleasedDate = $"Released: {TimeDateChanger.GetHumanDate(DateTime.Parse(vnInfoEntry.Released, CultureInfo.InvariantCulture))}";
-                VnLength = $"Length: {vnInfoEntry.Length}";
+                MainTitle = vnInfoEntry.Title;
+                Aliases = vnInfoEntry.Aliases;
+                ReleasedDate = TimeDateChanger.GetHumanDate(DateTime.Parse(vnInfoEntry.Released, CultureInfo.InvariantCulture));
+                VnLength = vnInfoEntry.Length;
                 Popularity = vnInfoEntry.Popularity.ToString();//make a UI use this double?
                 Rating = vnInfoEntry.Rating.ToString(CultureInfo.InvariantCulture);
                 LoadLanguages(ref vnInfoEntry);
@@ -126,6 +127,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
 
         private void LoadLanguages(ref VnInfo vnInfoEntry)
         {
+            LanguageCollection.Clear();
             foreach (var language in GetLanguages(vnInfoEntry.Languages))
             {
                 LanguageCollection.Add(new BitmapImage(new Uri(language)));
