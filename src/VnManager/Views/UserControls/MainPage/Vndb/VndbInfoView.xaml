@@ -66,7 +66,7 @@
 
             <ScrollViewer Grid.Row="3" Margin="7" adExt:ScrollViewerExtension.VerticalScrollBarExpansionMode="NeverExpand">
                 <DockPanel>
-                    <Label DockPanel.Dock="Top" Content="{x:Static res:Resources.Summary}" Margin="2,0,0,5"></Label>
+                    <Label DockPanel.Dock="Top" Content="{x:Static res:Resources.Summary}" Margin="2,0,0,5" Visibility="{Binding SummaryHeaderVisibility}"/>
                     <TextBlock DockPanel.Dock="Top" ext:TextBlockInLineBinding.Inlines="{Binding DescriptionInLine}" TextWrapping="Wrap"/>
 
                     <Grid DockPanel.Dock="Top" x:Name="TagContent">
@@ -112,6 +112,21 @@
 
                         </ItemsControl>
                     </Grid>
+
+                    <Label DockPanel.Dock="Top" Content="{x:Static res:Resources.Relations}" Visibility="{Binding RelationHeaderVisibility}" Margin="0,25,0,0"/>
+                    <DataGrid DockPanel.Dock="Top" ItemsSource="{Binding VnRelations}" Margin="0,5,0,0"
+                              IsHitTestVisible="False" AutoGenerateColumns="False" CanUserAddRows="False">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Binding="{Binding RelTitle}" Header="{x:Static res:Resources.Title}" Width="*"/>
+                            <DataGridTextColumn Binding="{Binding RelRelation}" Header="{x:Static res:Resources.Relation}" Width="*"/>
+                        </DataGrid.Columns>
+
+                        <DataGrid.ColumnHeaderStyle>
+                            <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
+                                <Setter Property="FontWeight" Value="Bold" />
+                            </Style>
+                        </DataGrid.ColumnHeaderStyle>
+                    </DataGrid>
 
                 </DockPanel>
             </ScrollViewer>
@@ -178,61 +193,7 @@
                 </ListBox>
             </StackPanel>
 
-
-
-
-            
-            <!--<DockPanel>
-                <StackPanel DockPanel.Dock="Top" Orientation="Horizontal"  Margin="0,10,0,10">
-                    <Border BorderThickness="3" BorderBrush="Black">
-                        <Image HorizontalAlignment="Left" MaxWidth="200" MaxHeight="300"  RenderOptions.BitmapScalingMode="Fant" Source="{Binding CoverImage, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
-                    </Border>
-                </StackPanel>
-                <Label DockPanel.Dock="Top" Content="{Binding MainTitle}"/>
-                --><!--<TextBlock DockPanel.Dock="Top" Margin="0,5,0,0" Text="{Binding Aliases}" TextWrapping="Wrap"/>--><!--
-                <TextBlock DockPanel.Dock="Top" TextWrapping="Wrap" Text="{Binding Aliases}" MaxWidth="{Binding ActualWidth, Mode=OneWay, ElementName=RightContent}" />
-                <TextBlock DockPanel.Dock="Top" Text="{Binding ReleasedDate}"/>
-                <TextBlock DockPanel.Dock="Top" Text="{Binding VnLength}"/>
-
-                <ListBox DockPanel.Dock="Top" ItemsSource="{Binding LanguageCollection}" IsEnabled="False" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-                    <ListBox.ItemContainerStyle>
-                        <Style TargetType="ListBoxItem">
-                            <Setter Property="Padding" Value="0"/>
-                        </Style>
-                    </ListBox.ItemContainerStyle>
-                    <ListBox.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <WrapPanel DockPanel.Dock="Right"/>
-                        </ItemsPanelTemplate>
-                    </ListBox.ItemsPanel>
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <Image Source="{Binding}" Stretch="UniformToFill" MaxWidth="24" MaxHeight="24"/>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-
-                <TextBlock DockPanel.Dock="Top" Text="Popularity:99.99"/>
-                <TextBlock DockPanel.Dock="Top" Text="Rating:9"/>
-
-
-            </DockPanel>-->
         </Grid>
         <!--End Content -->
     </Grid>
-    <!--<Grid>
-
-        <Grid Grid.Row="3" Grid.Column="0">
-            <DataGrid AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False" CanUserResizeColumns="False" CanUserResizeRows="False" IsReadOnly="True"
-                                  ItemsSource="{Binding VnRelations}">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Title"  Binding="{Binding RelTitle}"/>
-                    <DataGridTextColumn Header="Relation" Binding="{Binding RelRelation}"/>
-                </DataGrid.Columns>
-            </DataGrid>
-        </Grid>        
-
-
-        --><!--End Content --><!--
-    </Grid>-->
 </UserControl>

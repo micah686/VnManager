@@ -41,7 +41,9 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
         public string Rating { get; set; }
         public BindableCollection<BitmapSource> LanguageCollection { get; set; } = new BindableCollection<BitmapSource>();
         public BindableCollection<TagTraitBinding> TagCollection { get; set; } = new BindableCollection<TagTraitBinding>();
+        public Visibility SummaryHeaderVisibility { get; set; }
         public Visibility TagHeaderVisibility { get; set; }
+        public Visibility RelationHeaderVisibility { get; set; }
 
         public List<Inline> DescriptionInLine { get; set; }
 
@@ -65,7 +67,9 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             
             TagCollection.Clear();
             TagCollection.AddRange(VndbTagTraitHelper.GetTags(VndbContentViewModel.VnId));
+            SummaryHeaderVisibility = DescriptionInLine.Count < 1 ? Visibility.Collapsed : Visibility.Visible;
             TagHeaderVisibility = TagCollection.Count < 1 ? Visibility.Collapsed : Visibility.Visible;
+            RelationHeaderVisibility = VnRelations.Count < 1 ? Visibility.Collapsed : Visibility.Visible;
         }
 
         private void LoadMainData()

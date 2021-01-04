@@ -1069,6 +1069,24 @@ namespace VnManager.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Relation.
+        /// </summary>
+        public static string Relation {
+            get {
+                return ResourceManager.GetString("Relation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Relations.
+        /// </summary>
+        public static string Relations {
+            get {
+                return ResourceManager.GetString("Relations", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Released Date:.
         /// </summary>
         public static string ReleasedDateColon {
@@ -1236,6 +1254,15 @@ namespace VnManager.Strings {
         public static string Tags {
             get {
                 return ResourceManager.GetString("Tags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Title.
+        /// </summary>
+        public static string Title {
+            get {
+                return ResourceManager.GetString("Title", resourceCulture);
             }
         }
         
