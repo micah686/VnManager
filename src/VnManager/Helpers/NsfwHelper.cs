@@ -3,21 +3,22 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using VndbSharp.Models.Common;
+using VnManager.Models.Settings;
 
 namespace VnManager.Helpers
 {
     public static class NsfwHelper
     {
         /// <summary>
-        /// Returns the "True" Nsfw value, so if either of the ratings are above Safe/Tame
+        /// Returns the "Raw" rating Nsfw value, so if either of the ratings are above Safe/Tame
         /// This ignores the ratings that the user sets
         /// </summary>
         /// <param name="rating">ImageRating to be checked for NSFW</param>
         /// <returns></returns>
-        public static bool TrueIsNsfw(ImageRating rating)
+        public static bool RawRatingIsNsfw(ImageRating rating)
         {
             if (rating == null) return false;
-            return rating.SexualAvg > 0 || rating.ViolenceAvg > 0;
+            return rating.SexualAvg >= 1 || rating.ViolenceAvg >= 1;
         }
 
         /// <summary>
@@ -31,12 +32,15 @@ namespace VnManager.Helpers
             if (rating == null) return false;
             var isSexualNsfwValid = false;
             var isViolenceNsfwValid = false;
-            if (rating.SexualAvg != null && rating.SexualAvg > Convert.ToDouble(App.UserSettings.MaxSexualRating, CultureInfo.InvariantCulture))
+            
+            if (rating.SexualAvg != null && rating.SexualAvg >= Convert.ToDouble(SexualRating.Suggestive, CultureInfo.InvariantCulture) &&
+                rating.SexualAvg > Convert.ToDouble(App.UserSettings.MaxSexualRating, CultureInfo.InvariantCulture))
             {
                 isSexualNsfwValid = true;
             }
 
-            if (rating.ViolenceAvg != null && rating.ViolenceAvg > Convert.ToDouble(App.UserSettings.MaxViolenceRating, CultureInfo.InvariantCulture))
+            if (rating.ViolenceAvg != null && rating.ViolenceAvg >= Convert.ToDouble(ViolenceRating.Violent, CultureInfo.InvariantCulture) 
+                                           && rating.ViolenceAvg > Convert.ToDouble(App.UserSettings.MaxViolenceRating, CultureInfo.InvariantCulture))
             {
                 isViolenceNsfwValid = true;
             }

@@ -75,7 +75,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
                 if (screenshotList.Count <= 0) return;
                 if (SelectedScreenIndex < 0) return;
                 string path = $@"{App.AssetDirPath}\sources\vndb\images\screenshots\{VndbContentViewModel.VnId}\{Path.GetFileName(screenshotList[SelectedScreenIndex].ImageLink)}";
-                var rating = NsfwHelper.TrueIsNsfw(screenshotList[SelectedScreenIndex].Rating);
+                var rating = NsfwHelper.RawRatingIsNsfw(screenshotList[SelectedScreenIndex].Rating);
                 var userIsNsfw = NsfwHelper.UserIsNsfw(screenshotList[SelectedScreenIndex].Rating);
                 if (rating == true && File.Exists($"{path}.aes"))
                 {
@@ -109,7 +109,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
                 string thumbPath = $@"{App.AssetDirPath}\sources\vndb\images\screenshots\{VndbContentViewModel.VnId}\thumbs\{Path.GetFileName(item.ImageLink)}";
                 string imagePath = $@"{App.AssetDirPath}\sources\vndb\images\screenshots\{VndbContentViewModel.VnId}\{Path.GetFileName(item.ImageLink)}";
 
-                bool rating = NsfwHelper.TrueIsNsfw(item.Rating);
+                bool rating = NsfwHelper.RawRatingIsNsfw(item.Rating);
                 bool userIsNsfw = NsfwHelper.UserIsNsfw(item.Rating);
                 if (rating && File.Exists($"{thumbPath}.aes") && File.Exists($"{imagePath}.aes"))
                 {

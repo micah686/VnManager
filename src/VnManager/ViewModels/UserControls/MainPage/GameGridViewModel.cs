@@ -48,7 +48,7 @@ namespace VnManager.ViewModels.UserControls.MainPage
                         if(game== null)continue;
                         var coverPath = $@"{App.AssetDirPath}\sources\vndb\images\cover\{Path.GetFileName(game.ImageLink)}";
 
-                        var rating = NsfwHelper.TrueIsNsfw(game.ImageRating);
+                        var rating = NsfwHelper.RawRatingIsNsfw(game.ImageRating);
 
                         var card = new GameCardViewModel(_container);
                         if (rating == true && File.Exists($"{coverPath}.aes"))
@@ -56,7 +56,7 @@ namespace VnManager.ViewModels.UserControls.MainPage
                             var imgBytes = File.ReadAllBytes($"{coverPath}.aes");
                             var imgStream = Secure.DecStreamToStream(new MemoryStream(imgBytes));
                             var imgNsfw = ImageHelper.CreateBitmapFromStream(imgStream);
-                            var bi = new BindingImage { Image = imgNsfw, IsNsfw = NsfwHelper.TrueIsNsfw(game.ImageRating) };
+                            var bi = new BindingImage { Image = imgNsfw, IsNsfw = NsfwHelper.RawRatingIsNsfw(game.ImageRating) };
 
                             card.CoverImage = bi;
                             card.Title = game.Title;

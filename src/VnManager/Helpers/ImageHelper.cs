@@ -156,7 +156,7 @@ namespace VnManager.Helpers
                         var imageStream = new MemoryStream(await client.DownloadDataTaskAsync(uri));
                         var thumbImg = GetThumbnailImage(imageStream,0);
                         if (thumbImg == null) continue;
-                        if (NsfwHelper.TrueIsNsfw(screen.Rating))
+                        if (NsfwHelper.RawRatingIsNsfw(screen.Rating))
                         {
 
                             Secure.EncStream(imageStream, imagePath);
