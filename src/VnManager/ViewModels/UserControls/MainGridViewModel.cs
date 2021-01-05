@@ -11,7 +11,6 @@ namespace VnManager.ViewModels.UserControls
     public class MainGridViewModel: Conductor<Screen>
     {
 
-        public TopInfoBarViewModel TopInfoBarPage { get; set; }
         public LastPlayedViewModel LastPlayedPage { get; set; }
         public CategoryListViewModel CategoryListPage { get; set; }
         public AddGameButtonViewModel AddGamePage { get; set; }
@@ -24,8 +23,6 @@ namespace VnManager.ViewModels.UserControls
             Instance = this;
             var _container = container;
             
-
-            TopInfoBarPage = _container.Get<TopInfoBarViewModel>();           
             LastPlayedPage = _container.Get<LastPlayedViewModel>();
             CategoryListPage = _container.Get<CategoryListViewModel>();
             AddGamePage = _container.Get<AddGameButtonViewModel>();

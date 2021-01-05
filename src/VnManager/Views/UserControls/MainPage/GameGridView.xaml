@@ -11,7 +11,7 @@
              d:DataContext="{d:DesignInstance vm:GameGridViewModel}"
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
-        <ResourceDictionary Source="../../../Style/Listbox/NoHighlight.xaml"/>
+        <ResourceDictionary Source="../../../Styles/Listbox/NoHighlight.xaml"/>
     </UserControl.Resources>
     <ListBox ItemsSource="{Binding GameCollection, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ItemContainerStyle="{DynamicResource NoHighlightItem}" ScrollViewer.VerticalScrollBarVisibility="Auto">
         <ListBox.ItemsPanel>

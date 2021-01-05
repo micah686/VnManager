@@ -17,10 +17,7 @@
     <Grid>
         <!--<Button Content="Button" HorizontalAlignment="Left" Margin="223,189,0,0" VerticalAlignment="Top" Height="51" Width="92" Command="{s:Action Click}"/>-->
         <DockPanel LastChildFill="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-            <Grid DockPanel.Dock="Top">
-                <ContentControl s:View.Model="{Binding TopInfoBarPage}" MinHeight="30"/>
-            </Grid>
-
+            
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" MinWidth="147"/>
