@@ -49,12 +49,25 @@ namespace VnManager.ViewModels.Controls
 
         public Guid UserDataId { get; set; }
 
+        /// <summary>
+        /// Brings up the main page of the game
+        /// <see cref="MouseClick"/>
+        /// </summary>
         public void MouseClick()
         {
-
+            //TODO: Update this so it's global
             var vm = _container.Get<VndbContentViewModel>();
             VndbContentViewModel.SetGameId(UserDataId);
             RootViewModel.Instance.ActivateItem(vm);
+
+        }
+
+        /// <summary>
+        /// Button for modifying settings of the game
+        /// <see cref="SettingsClick"/>
+        /// </summary>
+        public void SettingsClick()
+        {
 
         }
     }

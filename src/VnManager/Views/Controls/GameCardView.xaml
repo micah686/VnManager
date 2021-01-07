@@ -8,6 +8,7 @@
              xmlns:vm="clr-namespace:VnManager.ViewModels.Controls"
              xmlns:adonisUi="clr-namespace:AdonisUI;assembly=AdonisUI"
              xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:ext="clr-namespace:VnManager.Extensions"
              mc:Ignorable="d" d:DesignWidth="130" d:DesignHeight="250"
               MaxWidth="140" MaxHeight="270"
@@ -56,19 +57,29 @@
                         
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*" />
-                            <RowDefinition Height="Auto" />
                             <RowDefinition Height="50" />
                         </Grid.RowDefinitions>
                         <Grid Grid.Row="0" x:Name="ImageContainer"  MinHeight="170" Margin="5">
+
                             <Image Grid.Row="0" Source="{Binding CoverImage.Image}" RenderOptions.BitmapScalingMode="Fant" Stretch="UniformToFill"/>
+                            
                         </Grid>
 
-                        <!-- Grid Row 1 is for elements that show up on hovering over -->
+                        <Border Grid.Row="1" Name="TitleMask" Background="{DynamicResource {x:Static adonisUi:Brushes.Layer2HighlightBrush}}" CornerRadius="0,0,4,4" Width="{Binding ElementName=CardContentHost, Path=ActualWidth}">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <TextBlock Grid.Row="0" Text="{Binding Title}" ToolTip="{Binding Title}" TextWrapping="WrapWithOverflow" TextTrimming="CharacterEllipsis" FontSize="12" FontWeight="Medium"
+                                           Margin="0,3,0,0" HorizontalAlignment="Center" Foreground="{DynamicResource {x:Static adonisUi:Brushes.ForegroundBrush}}"/>
+                                <Button Grid.Row="1" Width="32" Click="{s:Action SettingsClick}">
+                                    <iconPacks:PackIconMaterial Kind="Tune" Foreground="WhiteSmoke" />
+                                </Button>
+                                
+                            </Grid>
+                            
 
-
-                        <Border Grid.Row="2" Name="TitleMask" Background="{DynamicResource {x:Static adonisUi:Brushes.Layer2HighlightBrush}}" CornerRadius="0,0,4,4" Width="{Binding ElementName=CardContentHost, Path=ActualWidth}">
-                            <TextBlock Text="{Binding Title}" ToolTip="{Binding Title}" TextWrapping="WrapWithOverflow" TextTrimming="CharacterEllipsis" FontSize="12" FontWeight="Medium"
-                                       Margin="0,3,0,0" HorizontalAlignment="Center" Foreground="{DynamicResource {x:Static adonisUi:Brushes.ForegroundBrush}}"/>
                         </Border>
                     </Grid>
 
