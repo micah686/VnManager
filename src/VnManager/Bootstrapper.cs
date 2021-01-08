@@ -9,6 +9,8 @@ using VnManager.Converters;
 using VnManager.Utilities;
 using VnManager.ViewModels;
 using MvvmDialogs;
+using Sentry;
+using Sentry.Protocol;
 using VnManager.Helpers;
 using VnManager.ViewModels.Dialogs.AddGameSources;
 using VnManager.ViewModels.UserControls;
@@ -27,6 +29,7 @@ namespace VnManager
             Initializers.Startup.SetDirectories();
             Initializers.Startup.DeleteOldLogs();
             Initializers.Startup.DeleteOldBackupDatabase();
+            Initializers.Startup.SentrySetup();
             LogManager.UpdateLoggerDirectory();
             App.StartupLockout = true; //lock any App SetOnce settings from being set again
         }
@@ -69,6 +72,8 @@ namespace VnManager
             //always want a verbose log if the program crashes
             LogManager.SetLogLevel(LogLevel.Verbose);
             App.Logger.Fatal(e.Exception, "Program Crashed!");
+            SentrySdk.CaptureException(e.Exception);
+            SentrySdk.CaptureMessage("Program Crashed", SentryLevel.Fatal);
             AdonisUI.Controls.MessageBox.Show($"Program Crashed!", "Program Crashed!", AdonisUI.Controls.MessageBoxButton.OK, AdonisUI.Controls.MessageBoxImage.Error);
             // Called on Application.DispatcherUnhandledException
         }

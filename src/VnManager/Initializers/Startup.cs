@@ -5,12 +5,15 @@ using VnManager.Utilities;
 using VnManager.Helpers;
 using System.Globalization;
 using System.Linq;
+using System.Security.Cryptography;
 using LiteDB;
+using Sentry;
 
 namespace VnManager.Initializers
 {
     public static class Startup
     {
+        private const string sentryDSN = "https://820e9443ed4e4555900f0037710dd0e3@o499434.ingest.sentry.io/5577936";
         private static readonly IFileSystem fs = new FileSystem();
         
         /// <summary>
@@ -107,6 +110,25 @@ namespace VnManager.Initializers
                     File.Delete(name);
                 }
             }
+        }
+
+        internal static void SentrySetup()
+        {
+            var so = new SentryOptions()
+            {
+                Dsn = new Dsn(sentryDSN),
+                Debug = true,
+                Environment = $@"VnManager-{App.VersionString}",
+                AttachStacktrace = true
+            };
+            SentrySdk.Init(so);
+#if DEBUG
+            SentrySdk.ConfigureScope(scope=> scope.SetTag("version-type", "Debug"));
+#else
+            SentrySdk.ConfigureScope(scope=> scope.SetTag("version-type", "Normal"));//maybe add a version for release, nightly,...?
+#endif
+
+
         }
 
     }
