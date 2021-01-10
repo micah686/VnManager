@@ -309,6 +309,9 @@
   <data name="ExportData" xml:space="preserve">
     <value>Export Data</value>
   </data>
+  <data name="FilePath" xml:space="preserve">
+    <value>FilePath</value>
+  </data>
   <data name="FirstSetupPassNoChange" xml:space="preserve">
     <value>The password cannot be changed once it has been set!</value>
   </data>
@@ -407,6 +410,9 @@
   </data>
   <data name="Minor" xml:space="preserve">
     <value>Minor</value>
+  </data>
+  <data name="Modify" xml:space="preserve">
+    <value>Modify</value>
   </data>
   <data name="Name" xml:space="preserve">
     <value>Name</value>

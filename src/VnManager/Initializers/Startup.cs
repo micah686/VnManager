@@ -14,6 +14,7 @@ namespace VnManager.Initializers
     public static class Startup
     {
         private const string sentryDSN = "https://820e9443ed4e4555900f0037710dd0e3@o499434.ingest.sentry.io/5577936";
+        private const string noTrackSentryDSN = "https://00000000@000000.ingest.localhost.lan/000000";
         private static readonly IFileSystem fs = new FileSystem();
         
         /// <summary>
@@ -121,6 +122,10 @@ namespace VnManager.Initializers
                 Environment = $@"VnManager-{App.VersionString}",
                 AttachStacktrace = true
             };
+            if (File.Exists(@$"{App.ConfigDirPath}\METRICS_OPT_OUT"))
+            {
+                so.Dsn = new Dsn(noTrackSentryDSN);
+            }
             SentrySdk.Init(so);
 #if DEBUG
             SentrySdk.ConfigureScope(scope=> scope.SetTag("version-type", "Debug"));

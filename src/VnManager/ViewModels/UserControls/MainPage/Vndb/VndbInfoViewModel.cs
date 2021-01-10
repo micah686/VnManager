@@ -102,7 +102,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             if (cred == null || cred.UserName.Length < 1) return;
             using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
             var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString()).Query()
-                .Where(x => x.Id == VndbContentViewModel.UserDataId).FirstOrDefault();
+                .Where(x => x.Id == VndbContentViewModel.SelectedGame.Id).FirstOrDefault();
             if (dbUserData != null)
             {
                 LastPlayed = TimeDateChanger.GetHumanDate(dbUserData.LastPlayed);

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
@@ -23,66 +24,79 @@ namespace VnManager.ViewModels.UserControls.MainPage
     {
         public BindableCollection<GameCardViewModel> GameCollection { get; set; } = new BindableCollection<GameCardViewModel>();
 
+        private readonly IWindowManager _windowManager;
         private readonly IContainer _container;
-        public GameGridViewModel(IContainer container)
+        public GameGridViewModel(IContainer container, IWindowManager windowManager)
         {
             _container = container;
-            GetVndbGames();
+            _windowManager = windowManager;
+            GetGameData();
         }
 
 
-        public void GetVndbGames()
+        private void GetGameData()
         {
+            List<UserDataGames> dbUserData = new List<UserDataGames>();
+            List<VnInfo> dbVnInfo = new List<VnInfo>();
             var cred = CredentialManager.GetCredentials(App.CredDb);
             if (cred == null || cred.UserName.Length < 1) return;
             using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
             {
-                var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString()).Query().ToEnumerable();
-                var dbVnInfo = db.GetCollection<VnInfo>(DbVnInfo.VnInfo.ToString()).Query().ToArray();
+                dbUserData.AddRange(db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString()).Query().ToList());
+                dbVnInfo.AddRange(db.GetCollection<VnInfo>(DbVnInfo.VnInfo.ToString()).Query().ToList());
+            }
 
-                foreach (var entry in dbUserData)
+            var userDataGamesEnumerable = dbUserData.ToArray();
+            var vndbData = userDataGamesEnumerable.Where(x => x.SourceType == AddGameSourceType.Vndb).ToArray();
+            var noSourceData = userDataGamesEnumerable.Where(x => x.SourceType == AddGameSourceType.NoSource).ToArray();
+            if (noSourceData.Length > 1)
+            {
+                throw new NotImplementedException("Need to create noSource");
+            }
+            GetVndbData(vndbData, dbVnInfo.ToArray());
+        }
+
+
+        private void GetVndbData(UserDataGames[] userDataArray, VnInfo[] vndbInfo)
+        {
+            foreach (var entry in userDataArray)
+            {
+                var game = vndbInfo.FirstOrDefault(x => x.VnId == entry.GameId);
+                if(game == null)continue;
+                var coverPath = $@"{App.AssetDirPath}\sources\vndb\images\cover\{Path.GetFileName(game.ImageLink)}";
+
+                var rating = NsfwHelper.RawRatingIsNsfw(game.ImageRating);
+
+                var card = new GameCardViewModel(_container, _windowManager);
+                if (rating == true && File.Exists($"{coverPath}.aes"))
                 {
-                    if (entry.SourceType == AddGameSourceType.Vndb)
-                    {
-                        var game = dbVnInfo.FirstOrDefault(x => x.VnId == entry.GameId);
-                        if(game== null)continue;
-                        var coverPath = $@"{App.AssetDirPath}\sources\vndb\images\cover\{Path.GetFileName(game.ImageLink)}";
+                    var imgBytes = File.ReadAllBytes($"{coverPath}.aes");
+                    var imgStream = Secure.DecStreamToStream(new MemoryStream(imgBytes));
+                    var imgNsfw = ImageHelper.CreateBitmapFromStream(imgStream);
+                    var bi = new BindingImage { Image = imgNsfw, IsNsfw = NsfwHelper.RawRatingIsNsfw(game.ImageRating) };
 
-                        var rating = NsfwHelper.RawRatingIsNsfw(game.ImageRating);
-
-                        var card = new GameCardViewModel(_container);
-                        if (rating == true && File.Exists($"{coverPath}.aes"))
-                        {
-                            var imgBytes = File.ReadAllBytes($"{coverPath}.aes");
-                            var imgStream = Secure.DecStreamToStream(new MemoryStream(imgBytes));
-                            var imgNsfw = ImageHelper.CreateBitmapFromStream(imgStream);
-                            var bi = new BindingImage { Image = imgNsfw, IsNsfw = NsfwHelper.RawRatingIsNsfw(game.ImageRating) };
-
-                            card.CoverImage = bi;
-                            card.Title = game.Title;
-                            card.LastPlayedString = $"Last Played: {TimeDateChanger.GetHumanDate(entry.LastPlayed)}";
-                            card.TotalTimeString = $"Play Time: {TimeDateChanger.GetHumanTime(entry.PlayTime)}";
-                            card.UserDataId = entry.Id;
-                            card.ShouldDisplayNsfwContent = !NsfwHelper.UserIsNsfw(game.ImageRating);
-                        }
-                        else
-                        {
-                            var bi = new BindingImage
-                            {
-                                Image = ImageHelper.CreateBitmapFromPath(coverPath),
-                                IsNsfw = false
-                            };
-                            card.CoverImage = bi;
-                            card.Title = game.Title;
-                            card.LastPlayedString = $"Last Played: {TimeDateChanger.GetHumanDate(entry.LastPlayed)}";
-                            card.TotalTimeString = $"Play Time: {TimeDateChanger.GetHumanTime(entry.PlayTime)}";
-                            card.UserDataId = entry.Id;
-                            card.ShouldDisplayNsfwContent = !NsfwHelper.UserIsNsfw(game.ImageRating);
-                        }
-                        GameCollection.Add(card);
-                    }
+                    card.CoverImage = bi;
+                    card.Title = game.Title;
+                    card.LastPlayedString = $"{App.ResMan.GetString("LastPlayed")}: {TimeDateChanger.GetHumanDate(entry.LastPlayed)}";
+                    card.TotalTimeString = $"{App.ResMan.GetString("PlayTime")}: {TimeDateChanger.GetHumanTime(entry.PlayTime)}";
+                    card.UserDataId = entry.Id;
+                    card.ShouldDisplayNsfwContent = !NsfwHelper.UserIsNsfw(game.ImageRating);
                 }
-
+                else
+                {
+                    var bi = new BindingImage
+                    {
+                        Image = ImageHelper.CreateBitmapFromPath(coverPath),
+                        IsNsfw = false
+                    };
+                    card.CoverImage = bi;
+                    card.Title = game.Title;
+                    card.LastPlayedString = $"Last Played: {TimeDateChanger.GetHumanDate(entry.LastPlayed)}";
+                    card.TotalTimeString = $"Play Time: {TimeDateChanger.GetHumanTime(entry.PlayTime)}";
+                    card.UserDataId = entry.Id;
+                    card.ShouldDisplayNsfwContent = !NsfwHelper.UserIsNsfw(game.ImageRating);
+                }
+                GameCollection.Add(card);
             }
         }
     }

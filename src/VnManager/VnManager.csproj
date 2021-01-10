@@ -55,8 +55,6 @@
   <ItemGroup>
     <Folder Include="Resources\flags\" />
     <Folder Include="Resources\placeholders\" />
-    <Folder Include="ViewModels\Dialogs\ModifyGame\" />
-    <Folder Include="Views\Dialogs\ModifyGame\" />
   </ItemGroup>
 
   <ItemGroup>

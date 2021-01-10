@@ -637,6 +637,15 @@ namespace VnManager.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to FilePath.
+        /// </summary>
+        public static string FilePath {
+            get {
+                return ResourceManager.GetString("FilePath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The password cannot be changed once it has been set!.
         /// </summary>
         public static string FirstSetupPassNoChange {
@@ -930,6 +939,15 @@ namespace VnManager.Strings {
         public static string Minor {
             get {
                 return ResourceManager.GetString("Minor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Modify.
+        /// </summary>
+        public static string Modify {
+            get {
+                return ResourceManager.GetString("Modify", resourceCulture);
             }
         }
         

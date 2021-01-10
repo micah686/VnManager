@@ -2,9 +2,14 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Windows.Media.Imaging;
+using AdysTech.CredentialManager;
+using LiteDB;
 using Stylet;
 using StyletIoC;
 using VnManager.Helpers;
+using VnManager.Models.Db;
+using VnManager.Models.Db.User;
+using VnManager.ViewModels.Dialogs.ModifyGame;
 using VnManager.ViewModels.UserControls.MainPage.Vndb;
 
 //using VnManager.ViewModels.UserControls.MainPage;
@@ -13,11 +18,14 @@ namespace VnManager.ViewModels.Controls
 {
     public class GameCardViewModel: Screen
     {
+        private UserDataGames _selectedGame;
+        
         private readonly IContainer _container;
-        public GameCardViewModel(IContainer container)
+        private readonly IWindowManager _windowManager;
+        public GameCardViewModel(IContainer container, IWindowManager windowManager)
         {
             _container = container;
-
+            _windowManager = windowManager;
         }
         #region CoverImage
         private BindingImage _coverImage;
@@ -48,6 +56,7 @@ namespace VnManager.ViewModels.Controls
 
 
         public Guid UserDataId { get; set; }
+        
 
         /// <summary>
         /// Brings up the main page of the game
@@ -55,9 +64,10 @@ namespace VnManager.ViewModels.Controls
         /// </summary>
         public void MouseClick()
         {
+            SetGameEntry();
             //TODO: Update this so it's global
             var vm = _container.Get<VndbContentViewModel>();
-            VndbContentViewModel.SetGameId(UserDataId);
+            VndbContentViewModel.SetSelectedGame(_selectedGame);
             RootViewModel.Instance.ActivateItem(vm);
 
         }
@@ -68,7 +78,24 @@ namespace VnManager.ViewModels.Controls
         /// </summary>
         public void SettingsClick()
         {
+            SetGameEntry();
+            var vm = _container.Get<ModifyGameHostViewModel>();
+            ModifyGameHostViewModel.SetSelectedGame(_selectedGame);
+            _windowManager.ShowDialog(vm);
 
+        }
+
+        private void SetGameEntry()
+        {
+            var cred = CredentialManager.GetCredentials(App.CredDb);
+            if (cred == null || cred.UserName.Length < 1) return;
+            using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
+            var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString()).Query()
+                .Where(x => x.Id == UserDataId).FirstOrDefault();
+            if (dbUserData != null)
+            {
+                _selectedGame = dbUserData;
+            }
         }
     }
 }

@@ -13,9 +13,10 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
 {
     public class VndbContentViewModel: Conductor<Screen>.Collection.OneActive
     {
-        internal static Guid UserDataId { get; private set; }
 
         internal static int VnId { get; private set; }
+
+        internal static UserDataGames SelectedGame { get; private set; }
 
         public VndbContentViewModel()
         {
@@ -28,25 +29,18 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             Items.Add(vScreen);
         }
 
-        
-        internal static void SetGameId(Guid guid)
+
+        internal static void SetSelectedGame(UserDataGames game)
         {
-            UserDataId = guid;
-            var cred = CredentialManager.GetCredentials(App.CredDb);
-            if (cred == null || cred.UserName.Length < 1) return;
-            using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
-            var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString()).Query()
-                .Where(x => x.Id == UserDataId).FirstOrDefault();
-            if (dbUserData != null)
-            {
-                VnId = dbUserData.GameId;
-            }
+            SelectedGame = game;
+            VnId = SelectedGame.GameId;
         }
+        
 
         public static void CloseClick()
         {
             RootViewModel.Instance.ActivateMainClick();
-            UserDataId = Guid.Parse("00000000-0000-0000-0000-000000000000");
+            SelectedGame = new UserDataGames();
         }
     }
 
