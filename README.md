@@ -36,3 +36,5 @@ If you want to clone this project, make sure that you clone the submodules too, 
 
 #### Analytics
 Please be aware that metrics data be uploaded to a remote server in order to help find issues. 
+
+If you wish to opt out of data collection, please create a file named: `METRICS_OPT_OUT` in `%APPDATA\VnManager` or in the root of the `Data` folder
