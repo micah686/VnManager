@@ -4,9 +4,75 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:VnManager.Views.Dialogs.ModifyGame"
+             xmlns:adonisUi="clr-namespace:AdonisUI;assembly=AdonisUI"
+             xmlns:adExt="clr-namespace:AdonisUI.Extensions;assembly=AdonisUI"
+             xmlns:md="https://github.com/fantasticfiasco/mvvm-dialogs"
+             xmlns:res="clr-namespace:VnManager.Strings"
+             xmlns:vm="clr-namespace:VnManager.ViewModels.Dialogs.ModifyGame"
+             xmlns:s="https://github.com/canton7/Stylet"
+             md:DialogServiceViews.IsRegistered="True"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DataContext="{d:DesignInstance vm:ModifyGamePathViewModel}"
+             d:DesignHeight="400" d:DesignWidth="500">
     <Grid>
-            
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="45"/>
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Label Grid.Row="0" Content="Modify Game Paths and Arguments" HorizontalAlignment="Center" Margin="0,0,0,15"/>
+
+                <StackPanel Grid.Row="1" Orientation="Horizontal">
+                    <TextBlock Text="{x:Static res:Resources.PathColon}"/>
+                    <TextBox Width="300" IsReadOnly="True" IsReadOnlyCaretVisible="True" Margin="5,0,0,0" Text="{Binding ExePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <Button Content="{x:Static res:Resources.Browse}" Margin="5,0,0,0" Command="{s:Action BrowseExe}"/>
+                </StackPanel>
+
+                <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,20,0,0">
+                    <TextBlock Text="{x:Static res:Resources.IconColon}"/>
+                    <TextBox Width="300" IsReadOnly="True" IsReadOnlyCaretVisible="True" Margin="5,0,0,0" Text="{Binding IconPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <Button Content="{x:Static res:Resources.Browse}" Margin="5,0,0,0" Command="{s:Action BrowseIcon}"/>
+                </StackPanel>
+
+                <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,20,0,0">
+                    <TextBlock Text="{x:Static res:Resources.ArgsColon}"/>
+                    <TextBox Width="350" MaxLength="300" Margin="5,0,0,0" Text="{Binding Arguments, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                </StackPanel>
+
+                <Grid x:Name="NoSourceGrid" Grid.Row="4" Visibility="{Binding NoSourceVisibility}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,20,0,0">
+                        <TextBlock Text="{x:Static res:Resources.TitleColon}"/>
+                        <TextBox Width="350" MaxLength="300" Margin="5,0,0,0" Text="{Binding Title, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    </StackPanel>
+                    <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,20,0,0">
+                        <TextBlock Text="{x:Static res:Resources.CoverImage}" Margin="0,2,0,0"/>
+                        <TextBox Width="300" IsReadOnly="True" IsReadOnlyCaretVisible="True" Margin="5,0,0,0" Text="{Binding CoverPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        <Button Content="{x:Static res:Resources.Browse}" Margin="5,0,0,0" Command="{s:Action BrowseCover}"></Button>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+
+            <Button Grid.Row="1" Width="100" Height="35" Content="{x:Static res:Resources.Update}" Style="{DynamicResource {x:Static adonisUi:Styles.AccentButton}}" Command="{s:Action Update}"/>
+        </Grid>
+        
+        
+
+        
+
     </Grid>
 </UserControl>

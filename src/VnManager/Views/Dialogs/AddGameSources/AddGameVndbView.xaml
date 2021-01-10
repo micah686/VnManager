@@ -133,7 +133,7 @@
                         </Style.Triggers>
                     </Style>
                 </StackPanel.Style>
-                <TextBlock Text="{x:Static res:Resources.Path}" Width="40"/>
+                <TextBlock Text="{x:Static res:Resources.PathColon}" Width="40"/>
                 <TextBox Grid.Column="1"  Width="300" IsReadOnly="True" IsReadOnlyCaretVisible="True" Text="{Binding ExePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                 <Button Grid.Column="2" Content="{x:Static res:Resources.Browse}" Margin="5,0,0,0" Command="{s:Action BrowseExe}"/>
             </StackPanel>
@@ -169,7 +169,7 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="{x:Static res:Resources.Icon}" Width="60" Margin="0,3,0,0"/>
+            <TextBlock Text="{x:Static res:Resources.IconColon}" Width="60" Margin="0,3,0,0"/>
             <TextBox Grid.Column="1"  Width="300" IsReadOnly="True" IsReadOnlyCaretVisible="True" Text="{Binding IconPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
             <Button Grid.Column="2" Content="{x:Static res:Resources.Browse}" Margin="5,0,0,0" Command="{s:Action BrowseIcon}" />
         </Grid>

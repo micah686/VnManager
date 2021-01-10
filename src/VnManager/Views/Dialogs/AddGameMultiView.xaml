@@ -82,7 +82,7 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                    <TextBlock Text="{x:Static res:Resources.Path}" Width="40"/>
+                    <TextBlock Text="{x:Static res:Resources.PathColon}" Width="40"/>
                 <TextBox Grid.Column="1" x:Name="txtExePath"  Width="300" IsReadOnly="True" IsReadOnlyCaretVisible="True"  Text="{Binding ExePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                     <Button Grid.Column="2" Content="{x:Static res:Resources.Browse}" Margin="5,0,0,0" Command="{s:Action BrowseExePath}"/>
             </Grid>
@@ -103,7 +103,7 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                    <TextBlock Text="{x:Static res:Resources.Icon}" Width="40"/>
+                    <TextBlock Text="{x:Static res:Resources.IconColon}" Width="40"/>
                     <TextBox Grid.Column="1" x:Name="txtIconPath"  Width="300" IsReadOnly="True" IsReadOnlyCaretVisible="True" Text="{Binding IconPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                     <Button Grid.Column="2" Content="{x:Static res:Resources.Browse}" Margin="5,0,0,0" Command="{s:Action BrowseIconPath}"/>
             </Grid>

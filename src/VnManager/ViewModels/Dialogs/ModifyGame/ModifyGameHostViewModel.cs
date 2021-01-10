@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 using AdysTech.CredentialManager;
 using LiteDB;
+using MvvmDialogs;
 using Stylet;
+using StyletIoC;
 using VnManager.Models.Db;
 using VnManager.Models.Db.User;
 using VnManager.Models.Db.Vndb.Main;
@@ -16,10 +18,17 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
         internal static UserDataGames SelectedGame { get; private set; }
         public static string Title { get; set; }
 
-        public ModifyGameHostViewModel()
+        public ModifyGameHostViewModel(IContainer container)
         {
-            var gamePath = new ModifyGamePathViewModel {DisplayName = App.ResMan.GetString("FilePath")};
+            var gamePath = container.Get<ModifyGamePathViewModel>();
             Items.Add(gamePath);
+            ActivateItem(gamePath);
+            
+        }
+
+        public sealed override void ActivateItem(Screen item)
+        {
+            base.ActivateItem(item);
         }
 
 

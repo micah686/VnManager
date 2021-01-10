@@ -691,6 +691,24 @@ namespace VnManager.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Game Updated.
+        /// </summary>
+        public static string GameUpdated {
+            get {
+                return ResourceManager.GetString("GameUpdated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Game has been updated.
+        /// </summary>
+        public static string GameUpdatedMsg {
+            get {
+                return ResourceManager.GetString("GameUpdatedMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Height:.
         /// </summary>
         public static string HeightColon {
@@ -702,9 +720,9 @@ namespace VnManager.Strings {
         /// <summary>
         ///   Looks up a localized string similar to Icon:.
         /// </summary>
-        public static string Icon {
+        public static string IconColon {
             get {
-                return ResourceManager.GetString("Icon", resourceCulture);
+                return ResourceManager.GetString("IconColon", resourceCulture);
             }
         }
         
@@ -1044,9 +1062,9 @@ namespace VnManager.Strings {
         /// <summary>
         ///   Looks up a localized string similar to Path:.
         /// </summary>
-        public static string Path {
+        public static string PathColon {
             get {
-                return ResourceManager.GetString("Path", resourceCulture);
+                return ResourceManager.GetString("PathColon", resourceCulture);
             }
         }
         
@@ -1326,6 +1344,24 @@ namespace VnManager.Strings {
         public static string UnlockDbTitle {
             get {
                 return ResourceManager.GetString("UnlockDbTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update.
+        /// </summary>
+        public static string Update {
+            get {
+                return ResourceManager.GetString("Update", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update Paths.
+        /// </summary>
+        public static string UpdatePaths {
+            get {
+                return ResourceManager.GetString("UpdatePaths", resourceCulture);
             }
         }
         
