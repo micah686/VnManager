@@ -18,3 +18,6 @@
 - Add toast when starting/stopping game
 - Add recent games to quicklaunch bar
 - minimize to taskbar when game is launched
+
+
+- add "All" to UserData category when importing or adding a new game. 
