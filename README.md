@@ -4,7 +4,7 @@ A program to keep track of your visual novels
 | | Active Integrations |
 | --- | --- |
 **Build Status** | ![Main CI](https://github.com/micah686/VnManager/workflows/Main%20CI/badge.svg)
-**Quality Gate (SonarCloud)** | [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=micah686_VnManager&metric=alert_status)](https://sonarcloud.io/dashboard?id=micah686_VnManager)
+**Quality Gate (SonarCloud-Strict)** | [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=micah686_VnManager&metric=alert_status)](https://sonarcloud.io/dashboard?id=micah686_VnManager)
 **Code Smells** | [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=micah686_VnManager&metric=code_smells)](https://sonarcloud.io/dashboard?id=micah686_VnManager)
 **Maintainability** | [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=micah686_VnManager&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=micah686_VnManager)
 **Reliability** | [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=micah686_VnManager&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=micah686_VnManager)

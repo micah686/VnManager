@@ -29,7 +29,7 @@ namespace VnManager.ViewModels.UserControls
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                App.Logger.Error(e, "An Error happened in CategoryListViewModel");
                 throw;
             }
             
