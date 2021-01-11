@@ -72,6 +72,7 @@ namespace VnManager.Models.Db
     /// </summary>
     internal enum DbUserData
     {
-        UserData_Games
+        UserData_Games,
+        UserData_Categories
     }
 }

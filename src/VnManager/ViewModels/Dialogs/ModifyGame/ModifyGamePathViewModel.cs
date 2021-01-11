@@ -31,12 +31,10 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
         private readonly OpenFileDialogSettings _defaultOpenFileDialogSettings;
         private readonly IWindowManager _windowManager;
         private readonly IDialogService _dialogService;
-        private readonly IContainer _container;
 
-        public ModifyGamePathViewModel(IContainer container, IWindowManager windowManager, IDialogService dialogService, IModelValidator<ModifyGamePathViewModel> validator): base(validator)
+        public ModifyGamePathViewModel(IWindowManager windowManager, IDialogService dialogService, IModelValidator<ModifyGamePathViewModel> validator): base(validator)
         {
             DisplayName = App.ResMan.GetString("UpdatePaths");
-            _container = container;
             _windowManager = windowManager;
             _dialogService = dialogService;
             _defaultOpenFileDialogSettings = new OpenFileDialogSettings
@@ -118,7 +116,7 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
             }
         }
 
-        public async Task Update()
+        public async Task UpdateAsync()
         {
             bool result = await ValidateAsync();
             if (result)

@@ -67,7 +67,7 @@
                 </Grid>
             </Grid>
 
-            <Button Grid.Row="1" Width="100" Height="35" Content="{x:Static res:Resources.Update}" Style="{DynamicResource {x:Static adonisUi:Styles.AccentButton}}" Command="{s:Action Update}"/>
+            <Button Grid.Row="1" Width="100" Height="35" Content="{x:Static res:Resources.Update}" Style="{DynamicResource {x:Static adonisUi:Styles.AccentButton}}" Command="{s:Action UpdateAsync}"/>
         </Grid>
         
         

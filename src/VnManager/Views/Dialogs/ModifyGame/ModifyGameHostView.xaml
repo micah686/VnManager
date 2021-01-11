@@ -10,7 +10,7 @@
                        mc:Ignorable="d"
                        d:DataContext="{d:DesignInstance vm:ModifyGameHostViewModel}"
                        Height="410" Width="500" ResizeMode="NoResize" ShowInTaskbar="False"
-                       Title="{Binding Title, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                       Title="{Binding WindowTitle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
     <Grid>
         <TabControl ItemsSource="{Binding Items}" SelectedItem="{Binding ActiveItem}" DisplayMemberPath="DisplayName">
             <TabControl.ContentTemplate>

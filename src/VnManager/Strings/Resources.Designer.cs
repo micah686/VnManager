@@ -70,6 +70,24 @@ namespace VnManager.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add Category.
+        /// </summary>
+        public static string AddCategory {
+            get {
+                return ResourceManager.GetString("AddCategory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add Category to.
+        /// </summary>
+        public static string AddCategoryTo {
+            get {
+                return ResourceManager.GetString("AddCategoryTo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add Game.
         /// </summary>
         public static string AddGame {
@@ -120,6 +138,15 @@ namespace VnManager.Strings {
         public static string AddGameNormalTooltip {
             get {
                 return ResourceManager.GetString("AddGameNormalTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add/Remove Categories.
+        /// </summary>
+        public static string AddRemoveCategories {
+            get {
+                return ResourceManager.GetString("AddRemoveCategories", resourceCulture);
             }
         }
         
@@ -331,6 +358,24 @@ namespace VnManager.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Delete Category?.
+        /// </summary>
+        public static string ConfirmDeleteCategory {
+            get {
+                return ResourceManager.GetString("ConfirmDeleteCategory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to delete this Category across all games?.
+        /// </summary>
+        public static string ConfirmDeleteCategoryMsg {
+            get {
+                return ResourceManager.GetString("ConfirmDeleteCategoryMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Confirm Password:.
         /// </summary>
         public static string ConfirmPassword {
@@ -345,6 +390,33 @@ namespace VnManager.Strings {
         public static string CoverImage {
             get {
                 return ResourceManager.GetString("CoverImage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create Category.
+        /// </summary>
+        public static string CreateCategory {
+            get {
+                return ResourceManager.GetString("CreateCategory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Created Category.
+        /// </summary>
+        public static string CreatedCategory {
+            get {
+                return ResourceManager.GetString("CreatedCategory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create a Global Category.
+        /// </summary>
+        public static string CreateGlobalCategory {
+            get {
+                return ResourceManager.GetString("CreateGlobalCategory", resourceCulture);
             }
         }
         
@@ -430,6 +502,15 @@ namespace VnManager.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Delete Category.
+        /// </summary>
+        public static string DeleteCategory {
+            get {
+                return ResourceManager.GetString("DeleteCategory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Delete ALL user data?.
         /// </summary>
         public static string DeleteEverythingTitle {
@@ -444,6 +525,15 @@ namespace VnManager.Strings {
         public static string DeleteEverythingWarning {
             get {
                 return ResourceManager.GetString("DeleteEverythingWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete a Global Category.
+        /// </summary>
+        public static string DeleteGlobalCategory {
+            get {
+                return ResourceManager.GetString("DeleteGlobalCategory", resourceCulture);
             }
         }
         
@@ -705,6 +795,15 @@ namespace VnManager.Strings {
         public static string GameUpdatedMsg {
             get {
                 return ResourceManager.GetString("GameUpdatedMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Global.
+        /// </summary>
+        public static string Global {
+            get {
+                return ResourceManager.GetString("Global", resourceCulture);
             }
         }
         
@@ -1141,6 +1240,24 @@ namespace VnManager.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Remove Category.
+        /// </summary>
+        public static string RemoveCategory {
+            get {
+                return ResourceManager.GetString("RemoveCategory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove Category from.
+        /// </summary>
+        public static string RemoveCategoryFrom {
+            get {
+                return ResourceManager.GetString("RemoveCategoryFrom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Reset Application.
         /// </summary>
         public static string ResetApplication {
@@ -1402,6 +1519,24 @@ namespace VnManager.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Could not add Category because the max categories has been reached.
+        /// </summary>
+        public static string ValidationAboveMaxCategories {
+            get {
+                return ResourceManager.GetString("ValidationAboveMaxCategories", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Only alphanumeric characters or spaces are allowed.
+        /// </summary>
+        public static string ValidationAlphanumericSpace {
+            get {
+                return ResourceManager.GetString("ValidationAlphanumericSpace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Arguments cannot be empty.
         /// </summary>
         public static string ValidationArgumentsEmpty {
@@ -1470,6 +1605,15 @@ namespace VnManager.Strings {
         public static string ValidationBadSourceType {
             get {
                 return ResourceManager.GetString("ValidationBadSourceType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This category already exists.
+        /// </summary>
+        public static string ValidationCategoryAlreadyExists {
+            get {
+                return ResourceManager.GetString("ValidationCategoryAlreadyExists", resourceCulture);
             }
         }
         

@@ -29,7 +29,7 @@ namespace VnManager.Models.Db.User
         public string ExePath { get; set; }
         public string IconPath { get; set; }
         public string Arguments { get; set; }
-        public string[] Categories { get; set; }
+        public List<string> Categories { get; set; }
 
         /// <summary>
         /// CoverPath should ONLY be used for NoSource games

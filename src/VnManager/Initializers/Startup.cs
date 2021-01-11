@@ -6,8 +6,12 @@ using VnManager.Helpers;
 using System.Globalization;
 using System.Linq;
 using System.Security.Cryptography;
+using AdysTech.CredentialManager;
 using LiteDB;
 using Sentry;
+using VnManager.Models.Db;
+using VnManager.Models.Db.User;
+using VnManager.Models.Db.Vndb.Main;
 
 namespace VnManager.Initializers
 {
@@ -16,12 +20,23 @@ namespace VnManager.Initializers
         private const string sentryDSN = "https://820e9443ed4e4555900f0037710dd0e3@o499434.ingest.sentry.io/5577936";
         private const string noTrackSentryDSN = "https://00000000@000000.ingest.localhost.lan/000000";
         private static readonly IFileSystem fs = new FileSystem();
+
+
+        public static void StartupPrep()
+        {
+            SetDirectories();
+            CreateFolders();
+            DeleteOldLogs();
+            DeleteOldBackupDatabase();
+            SentrySetup();
+            SetupCategories();
+        }
         
         /// <summary>
         /// Set the default directories for the program to use (AppData)
         /// If debugging, the default directories will always be in the folder that the exe is located in
         /// </summary>
-        public static void SetDirectories()
+        private static void SetDirectories()
         {            
             bool canReadWrite = (CheckWriteAccess.CheckWrite(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData))
                                  && CheckWriteAccess.CheckWrite(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)));
@@ -67,7 +82,7 @@ namespace VnManager.Initializers
         /// <summary>
         /// This should delete any log files that are a month old or older
         /// </summary>
-        internal static void DeleteOldLogs()
+        private static void DeleteOldLogs()
         {
             //doesn't delete logs out of User Profile directory
             var minDate = (DateTime.Today - new TimeSpan(30, 0, 0, 0));
@@ -96,7 +111,7 @@ namespace VnManager.Initializers
         /// <summary>
         /// This will delete old database backups that are older than 14 days.
         /// </summary>
-        internal static void DeleteOldBackupDatabase()
+        private static void DeleteOldBackupDatabase()
         {
             //var dbDir = Path.Combine(App.ConfigDirPath, @"database\");
             var dbDir = Directory.EnumerateFiles(Path.Combine(App.ConfigDirPath, @"database\"), "Data_BACKUP_*.db",
@@ -113,9 +128,9 @@ namespace VnManager.Initializers
             }
         }
 
-        internal static void SentrySetup()
+        private static void SentrySetup()
         {
-            var so = new SentryOptions()
+            var so = new SentryOptions
             {
                 Dsn = new Dsn(sentryDSN),
                 Debug = true,
@@ -134,6 +149,17 @@ namespace VnManager.Initializers
 #endif
 
 
+        }
+
+        private static void SetupCategories()
+        {
+            var cred = CredentialManager.GetCredentials(App.CredDb);
+            if (cred == null || cred.UserName.Length < 1) return;
+            using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
+            var dbUserData = db.GetCollection<UserDataCategories>(DbUserData.UserData_Categories.ToString());
+            if (dbUserData.Query().Where(x => x.CategoryName == "All").FirstOrDefault() != null) return;
+            var entry = new UserDataCategories() {CategoryName = "All"};
+            dbUserData.Insert(entry);
         }
 
     }

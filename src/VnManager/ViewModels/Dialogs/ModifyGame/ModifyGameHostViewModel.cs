@@ -16,12 +16,16 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
     public class ModifyGameHostViewModel: Conductor<Screen>.Collection.OneActive
     {
         internal static UserDataGames SelectedGame { get; private set; }
-        public static string Title { get; set; }
+        public static string WindowTitle { get; set; }
+        public static string GameTitle { get; set; }
 
         public ModifyGameHostViewModel(IContainer container)
         {
             var gamePath = container.Get<ModifyGamePathViewModel>();
+            var gameCategories = container.Get<ModifyGameCategoriesViewModel>();
             Items.Add(gamePath);
+            Items.Add(gameCategories);
+            
             ActivateItem(gamePath);
             
         }
@@ -52,13 +56,15 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
                         .Where(x => x.VnId == SelectedGame.GameId.Value).FirstOrDefault();
                     if (dbUserData != null)
                     {
-                        Title = $"{App.ResMan.GetString("Modify")} {dbUserData.Title}";
+                        WindowTitle = $"{App.ResMan.GetString("Modify")} {dbUserData.Title}";
+                        GameTitle = dbUserData.Title;
                     }
 
                     break;
                 }
                 case AddGameSourceType.NoSource:
-                    Title = Title = $"{App.ResMan.GetString("Modify")} {SelectedGame.Title}";
+                    WindowTitle =  $"{App.ResMan.GetString("Modify")} {SelectedGame.Title}";
+                    GameTitle = SelectedGame.Title;
                     break;
                 default:
                     //do nothing

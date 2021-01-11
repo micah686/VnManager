@@ -120,6 +120,12 @@
   <data name="Add" xml:space="preserve">
     <value>Add</value>
   </data>
+  <data name="AddCategory" xml:space="preserve">
+    <value>Add Category</value>
+  </data>
+  <data name="AddCategoryTo" xml:space="preserve">
+    <value>Add Category to</value>
+  </data>
   <data name="AddGame" xml:space="preserve">
     <value>Add Game</value>
   </data>
@@ -137,6 +143,9 @@
   </data>
   <data name="AddGameNormalTooltip" xml:space="preserve">
     <value>A single executable associated with a single ID</value>
+  </data>
+  <data name="AddRemoveCategories" xml:space="preserve">
+    <value>Add/Remove Categories</value>
   </data>
   <data name="AliasesColon" xml:space="preserve">
     <value>Aliases:</value>
@@ -207,11 +216,26 @@
   <data name="Collection" xml:space="preserve">
     <value>Collection</value>
   </data>
+  <data name="ConfirmDeleteCategory" xml:space="preserve">
+    <value>Delete Category?</value>
+  </data>
+  <data name="ConfirmDeleteCategoryMsg" xml:space="preserve">
+    <value>Are you sure you want to delete this Category across all games?</value>
+  </data>
   <data name="ConfirmPassword" xml:space="preserve">
     <value>Confirm Password:</value>
   </data>
   <data name="CoverImage" xml:space="preserve">
     <value>Cover Image:</value>
+  </data>
+  <data name="CreateCategory" xml:space="preserve">
+    <value>Create Category</value>
+  </data>
+  <data name="CreatedCategory" xml:space="preserve">
+    <value>Created Category</value>
+  </data>
+  <data name="CreateGlobalCategory" xml:space="preserve">
+    <value>Create a Global Category</value>
   </data>
   <data name="CreatePassTitle" xml:space="preserve">
     <value>Set a password</value>
@@ -240,11 +264,17 @@
   <data name="DebugPageWarning3" xml:space="preserve">
     <value>IF YOU ARE NOT DEBUGGING, CREATE A TICKET ON GITHUB STATING: "Able to access Debug page while in Release"</value>
   </data>
+  <data name="DeleteCategory" xml:space="preserve">
+    <value>Delete Category</value>
+  </data>
   <data name="DeleteEverythingTitle" xml:space="preserve">
     <value>Delete ALL user data?</value>
   </data>
   <data name="DeleteEverythingWarning" xml:space="preserve">
     <value>THIS WILL DELETE ALL USER DATA! ARE YOU SURE YOU WANT TO CONTINUE?</value>
+  </data>
+  <data name="DeleteGlobalCategory" xml:space="preserve">
+    <value>Delete a Global Category</value>
   </data>
   <data name="DeleteRow" xml:space="preserve">
     <value>Delete Row</value>
@@ -332,6 +362,9 @@
   </data>
   <data name="GameUpdatedMsg" xml:space="preserve">
     <value>Game has been updated</value>
+  </data>
+  <data name="Global" xml:space="preserve">
+    <value>Global</value>
   </data>
   <data name="HeightColon" xml:space="preserve">
     <value>Height:</value>
@@ -477,6 +510,12 @@
   <data name="Remove" xml:space="preserve">
     <value>Remove</value>
   </data>
+  <data name="RemoveCategory" xml:space="preserve">
+    <value>Remove Category</value>
+  </data>
+  <data name="RemoveCategoryFrom" xml:space="preserve">
+    <value>Remove Category from</value>
+  </data>
   <data name="ResetApplication" xml:space="preserve">
     <value>Reset Application</value>
   </data>
@@ -564,6 +603,12 @@
   <data name="UserSettingsInvalid" xml:space="preserve">
     <value>User Setting config is invalid.</value>
   </data>
+  <data name="ValidationAboveMaxCategories" xml:space="preserve">
+    <value>Could not add Category because the max categories has been reached</value>
+  </data>
+  <data name="ValidationAlphanumericSpace" xml:space="preserve">
+    <value>Only alphanumeric characters or spaces are allowed</value>
+  </data>
   <data name="ValidationArgumentsEmpty" xml:space="preserve">
     <value>Arguments cannot be empty</value>
   </data>
@@ -587,6 +632,9 @@
   </data>
   <data name="ValidationBadSourceType" xml:space="preserve">
     <value>Not a valid Source Type</value>
+  </data>
+  <data name="ValidationCategoryAlreadyExists" xml:space="preserve">
+    <value>This category already exists</value>
   </data>
   <data name="ValidationExeNotValid" xml:space="preserve">
     <value>Not a valid Executable</value>
