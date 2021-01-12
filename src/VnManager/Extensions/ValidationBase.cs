@@ -55,7 +55,9 @@ namespace VnManager.Extensions
             var errors = _errors.Select(error => error.Key).ToList();
 
             foreach (var propertyName in errors)
+            {
                 ClearError(propertyName);
+            }
         }
 
         /// <summary>

@@ -75,7 +75,10 @@ namespace VnManager.MetadataProviders.Vndb
                 }
 
                 var directory = Path.Combine(App.AssetDirPath, @$"sources\vndb\images\characters\{vnId}");
-                if (!Directory.Exists(directory)) Directory.CreateDirectory(directory);
+                if (!Directory.Exists(directory))
+                {
+                    Directory.CreateDirectory(directory);
+                }
                 List<string> characterList = entries.Select(x => x.ImageLink).ToList();
                 using var client = new WebClient();
                 foreach (var character in characterList)

@@ -23,7 +23,8 @@ namespace VnManager.Helpers
 {
     public static class ImageHelper
     {
-
+        private const int MaxThumbnailSize = 80;
+        private const int MinStreamLength = 20;
         /// <summary>
         /// Creates a thumbnail image from a specified image stream
         /// </summary>
@@ -32,16 +33,16 @@ namespace VnManager.Helpers
         /// <returns></returns>
         public static Image GetThumbnailImage(Stream stream, int maxPixels)
         {
-            if (maxPixels < 80)
+            if (maxPixels < MaxThumbnailSize)
             {
-                maxPixels = 80;
+                maxPixels = MaxThumbnailSize;
             }
             //const int maxPixels = 150;
             if (stream == null)
             {
                 return null;
             }
-            if (stream.Length < 20)
+            if (stream.Length < MinStreamLength)
             {
                 return null; //memory streams for an image should be big, this should prevent streams with only a few bytes
             } 
@@ -116,7 +117,7 @@ namespace VnManager.Helpers
                 {
                     return CreateEmptyBitmapImage();
                 }
-                if (stream.Length > 20)
+                if (stream.Length > MinStreamLength)
                 {
                     var img = new BitmapImage();
                     img.BeginInit();

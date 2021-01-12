@@ -23,7 +23,9 @@ namespace VnManager.Helpers
     [DebuggerStepThrough]
     internal static class Secure
     {
-
+        private const int SaltBytes = 32;
+        private const int HashBytes = 20;
+        private const int MinStreamLength = 20;
         #region FileEncryption
         /// <summary>
         /// Creates a random salt that will be used to encrypt your file. This method is required on FileEncrypt.
@@ -33,10 +35,10 @@ namespace VnManager.Helpers
         public static byte[] GenerateRandomSalt()
         {
             byte[] data = new byte[32];
-
+            const int maxLoops = 10;
             using (RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider())
             {
-                for (int i = 0; i < 10; i++)
+                for (int i = 0; i < maxLoops; i++)
                 {
                     // Fill the whole array with secure random data 10 times(to make sure it's good and random)
                     rng.GetBytes(data);
@@ -54,6 +56,7 @@ namespace VnManager.Helpers
         [DebuggerHidden]
         private static byte[] Encrypt(byte[] input)
         {
+            const int fourBytes = 4;
             try
             {
                 //get encryption key and salt
@@ -73,8 +76,8 @@ namespace VnManager.Helpers
                 int encryptedDataLength = 4 + nonceSize + 4 + tagSize + cipherSize;
                 Span<byte> encryptedData = encryptedDataLength < 1024 ? stackalloc byte[encryptedDataLength] : new byte[encryptedDataLength].AsSpan();
                 // Copy parameters
-                BinaryPrimitives.WriteInt32LittleEndian(encryptedData.Slice(0, 4), nonceSize);
-                BinaryPrimitives.WriteInt32LittleEndian(encryptedData.Slice(4 + nonceSize, 4), tagSize);
+                BinaryPrimitives.WriteInt32LittleEndian(encryptedData.Slice(0, fourBytes), nonceSize);
+                BinaryPrimitives.WriteInt32LittleEndian(encryptedData.Slice(fourBytes + nonceSize, fourBytes), tagSize);
                 var nonce = encryptedData.Slice(4, nonceSize);
                 var tag = encryptedData.Slice(4 + nonceSize + 4, tagSize);
                 var cipherBytes = encryptedData.Slice(4 + nonceSize + 4 + tagSize, cipherSize);
@@ -149,12 +152,12 @@ namespace VnManager.Helpers
                     return;
                 }
                 byte[] bytes = File.ReadAllBytes(path);
-                if (bytes.Length < 20)
+                if (bytes.Length < MinStreamLength)
                 {
                     return; //don't encrypt files less than 20 bytes, as that indicates that the file might be bad
                 } 
                 byte[] encBytes = Encrypt(bytes);
-                if (encBytes == null || encBytes.Length < 20)
+                if (encBytes == null || encBytes.Length < MinStreamLength)
                 {
                     return;
                 }
@@ -178,12 +181,12 @@ namespace VnManager.Helpers
             {
                 string encImagePath = $"{path}.aes";
                 byte[] encBytes = File.ReadAllBytes(encImagePath);
-                if (encBytes.Length < 20)
+                if (encBytes.Length < MinStreamLength)
                 {
                     return; //don't decrypt files less than 20 bytes, as that indicates that the file might be bad
                 } 
                 byte[] bytes = Decrypt(encBytes);
-                if (bytes == null || bytes.Length < 20)
+                if (bytes == null || bytes.Length < MinStreamLength)
                 {
                     return;
                 }
@@ -207,12 +210,12 @@ namespace VnManager.Helpers
             try
             {
                 byte[] bytes = stream.ToArray();
-                if (bytes.Length < 20)
+                if (bytes.Length < MinStreamLength)
                 {
                     return; //don't encrypt streams less than 20 bytes, as that indicates that the file might be bad
                 } 
                 byte[] encBytes = Encrypt(bytes);
-                if (encBytes == null || encBytes.Length < 20)
+                if (encBytes == null || encBytes.Length < MinStreamLength)
                 {
                     return;
                 }
@@ -235,12 +238,12 @@ namespace VnManager.Helpers
             try
             {
                 byte[] encBytes = stream.ToArray();
-                if (encBytes.Length < 20)
+                if (encBytes.Length < MinStreamLength)
                 {
                     return null; //don't decrypt streams less than 20 bytes, as that indicates that the file might be bad
                 } 
                 byte[] bytes = Decrypt(encBytes);
-                if (bytes == null || bytes.Length < 20)
+                if (bytes == null || bytes.Length < MinStreamLength)
                 {
                     return null;
                 }
@@ -276,8 +279,8 @@ namespace VnManager.Helpers
 
                 byte[] hash = pbkdf2.GetBytes(20);
                 byte[] hashBytes = new byte[52];
-                Array.Copy(salt,0, hashBytes,0,32);//copy salt into hashBytes
-                Array.Copy(hash,0, hashBytes,32,20);//copy hash into hashBytes
+                Array.Copy(salt,0, hashBytes,0,SaltBytes);//copy salt into hashBytes
+                Array.Copy(hash,0, hashBytes,SaltBytes,HashBytes);//copy hash into hashBytes
 
                 string savedPasswordHash = Convert.ToBase64String(hashBytes);
                 string savedSalt = Convert.ToBase64String(salt);
@@ -316,9 +319,9 @@ namespace VnManager.Helpers
                 byte[] hash = pbkdf2.GetBytes(20);
 
                 int ok = 1;
-                for (int i = 0; i < 20; i++)
+                for (int i = 0; i < HashBytes; i++)
                 {
-                    if (hashBytes[i + 32] != hash[i])
+                    if (hashBytes[i + SaltBytes] != hash[i])
                     {
                         ok = 0;
                     }
@@ -348,7 +351,8 @@ namespace VnManager.Helpers
         [DebuggerHidden]
         public static string GenerateSecurePassword(int length, int numberOfNonAlphanumericCharacters)
         {
-            if (length < 1 || length > 128)
+            const int maxLength = 128;
+            if (length < 1 || length > maxLength)
             {
                 throw new ArgumentException(nameof(length));
             }
@@ -404,26 +408,30 @@ namespace VnManager.Helpers
         {
             var characterBuffer = new char[length];
 
+            const int maxNum = 10;
+            const int maxCapsAlpha = 36;
+            const int maxLowerAlpha = 62;
+            
             for (var iter = 0; iter < length; iter++)
             {
                 var i = byteBuffer[iter] % 87;
 
                 //Set the Char to the appropriate value
-                if (i < 10)
+                if (i < maxNum)
                 {
                     characterBuffer[iter] = (char)('0' + i);
                 }
-                else if (i < 36)
+                else if (i < maxCapsAlpha)
                 {
-                    characterBuffer[iter] = (char)('A' + i - 10);
+                    characterBuffer[iter] = (char)('A' + i - maxNum);
                 }
-                else if (i < 62)
+                else if (i < maxLowerAlpha)
                 {
-                    characterBuffer[iter] = (char)('a' + i - 36);
+                    characterBuffer[iter] = (char)('a' + i - maxCapsAlpha);
                 }
                 else
                 {
-                    characterBuffer[iter] = Punctuations[i - 62];
+                    characterBuffer[iter] = Punctuations[i - maxLowerAlpha];
                     count++;
                 }
             }

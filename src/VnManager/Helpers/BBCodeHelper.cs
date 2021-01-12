@@ -83,6 +83,7 @@ namespace VnManager.Helpers
         {
             try
             {
+                const int splitGroupCount = 4;
                 string rawText = text;
                 //match the local url bracket
                 Regex regex = new Regex(@"(\[\burl\b=\/[a-z][0-9]+\])");
@@ -93,7 +94,7 @@ namespace VnManager.Helpers
                             RegexOptions.Compiled | RegexOptions.IgnoreCase).Split(segment))
                         .Where(s => !string.IsNullOrWhiteSpace(s)).Distinct().ToList();
 
-                    if (splitUrl.Count != 4)
+                    if (splitUrl.Count != splitGroupCount)
                     {
                         continue;
                     }
@@ -181,12 +182,13 @@ namespace VnManager.Helpers
         /// <returns></returns>
         private static List<Inline> FormatUrlsInLine(string input)
         {
+            const int splitTextValue = 2;
             List<Inline> inlineList = new List<Inline>();
             var rgx = new Regex(@"(\◄.+?\►)", RegexOptions.IgnoreCase);
             var str = rgx.Split(input);
             for (int i = 0; i < str.Length; i++)
             {
-                if (i % 2 == 0)
+                if (i % splitTextValue == 0)
                 {
                     inlineList.Add(new Run {Text = str[i]});
                 }
