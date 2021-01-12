@@ -47,8 +47,14 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
 
         protected override void OnViewLoaded()
         {
-            if (_finishedLoad == true) return;
-            if (_scrList.Count > 0) return;
+            if (_finishedLoad == true)
+            {
+                return;
+            }
+            if (_scrList.Count > 0)
+            {
+                return;
+            }
             _scrList = LoadScreenshotList();
             BindScreenshotCollection();
             _finishedLoad = true;
@@ -58,7 +64,10 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
         private List<BindingImage> LoadScreenshotList()
         {
             var cred = CredentialManager.GetCredentials(App.CredDb);
-            if (cred == null || cred.UserName.Length < 1) return new List<BindingImage>();
+            if (cred == null || cred.UserName.Length < 1)
+            {
+                return new List<BindingImage>();
+            }
             using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
             var dbUserData = db.GetCollection<VnInfoScreens>(DbVnInfo.VnInfo_Screens.ToString()).Query()
                 .Where(x => x.VnId == VndbContentViewModel.VnId).ToEnumerable();
@@ -72,8 +81,14 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             try
             {
                 List<BindingImage> screenshotList = _scrList;
-                if (screenshotList.Count <= 0) return;
-                if (SelectedScreenIndex < 0) return;
+                if (screenshotList.Count <= 0)
+                {
+                    return;
+                }
+                if (SelectedScreenIndex < 0)
+                {
+                    return;
+                }
                 string path = $@"{App.AssetDirPath}\sources\vndb\images\screenshots\{VndbContentViewModel.VnId}\{Path.GetFileName(screenshotList[SelectedScreenIndex].ImageLink)}";
                 var rating = NsfwHelper.RawRatingIsNsfw(screenshotList[SelectedScreenIndex].Rating);
                 var userIsNsfw = NsfwHelper.UserIsNsfw(screenshotList[SelectedScreenIndex].Rating);
@@ -105,7 +120,10 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             foreach (var item in screenshotList)
             {
                 BitmapSource image;
-                if (screenshotList.Count < 1) return;
+                if (screenshotList.Count < 1)
+                {
+                    return;
+                }
                 string thumbPath = $@"{App.AssetDirPath}\sources\vndb\images\screenshots\{VndbContentViewModel.VnId}\thumbs\{Path.GetFileName(item.ImageLink)}";
                 string imagePath = $@"{App.AssetDirPath}\sources\vndb\images\screenshots\{VndbContentViewModel.VnId}\{Path.GetFileName(item.ImageLink)}";
 

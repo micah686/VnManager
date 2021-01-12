@@ -27,7 +27,10 @@ namespace VnManager.Helpers.Vndb
             List<VnTagData> tagDump;
 
             var cred = CredentialManager.GetCredentials(App.CredDb);
-            if (cred == null || cred.UserName.Length < 1) return new List<TagTraitBinding>();
+            if (cred == null || cred.UserName.Length < 1)
+            {
+                return new List<TagTraitBinding>();
+            }
             using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
             {
 
@@ -70,7 +73,10 @@ namespace VnManager.Helpers.Vndb
             foreach (var tag in tagList)
             {
                 var tagName = tagDump.FirstOrDefault(x => x.TagId == tag.TagId)?.Name;
-                if (string.IsNullOrEmpty(tagName)) continue;
+                if (string.IsNullOrEmpty(tagName))
+                {
+                    continue;
+                }
                 var tagData = tagDump.FirstOrDefault(x => x.TagId == tag.TagId);
                 while (tagData != null && tagData.Parents.Length > 0)
                 {
@@ -93,7 +99,10 @@ namespace VnManager.Helpers.Vndb
             List<VnTraitData> traitDump;
 
             var cred = CredentialManager.GetCredentials(App.CredDb);
-            if (cred == null || cred.UserName.Length < 1) return new List<TagTraitBinding>();
+            if (cred == null || cred.UserName.Length < 1)
+            {
+                return new List<TagTraitBinding>();
+            }
             using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
             {
 
@@ -136,7 +145,10 @@ namespace VnManager.Helpers.Vndb
             foreach (var trait in traitList)
             {
                 var traitName = traitDump.FirstOrDefault(x => x.TraitId == trait.TraitId)?.Name;
-                if (string.IsNullOrEmpty(traitName)) continue;
+                if (string.IsNullOrEmpty(traitName))
+                {
+                    continue;
+                }
                 var traitData = traitDump.FirstOrDefault(x => x.TraitId == trait.TraitId);
                 while (traitData != null && traitData.Parents.Length > 0)
                 {

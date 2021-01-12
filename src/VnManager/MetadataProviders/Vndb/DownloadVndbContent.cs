@@ -27,10 +27,16 @@ namespace VnManager.MetadataProviders.Vndb
             {
                 App.StatusBar.InfoText = App.ResMan.GetString("DownCoverImage");
                 var cred = CredentialManager.GetCredentials(App.CredDb);
-                if (cred == null || cred.UserName.Length < 1) return;
+                if (cred == null || cred.UserName.Length < 1)
+                {
+                    return;
+                }
                 using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
                 VnInfo entry = db.GetCollection<VnInfo>(DbVnInfo.VnInfo.ToString()).Query().Where(x => x.VnId == vnId).FirstOrDefault();
-                if (entry == null) return;
+                if (entry == null)
+                {
+                    return;
+                }
                 if (entry.ImageLink != null)
                 {
                     var uri = new Uri(entry.ImageLink);
@@ -55,7 +61,10 @@ namespace VnManager.MetadataProviders.Vndb
             {
                 App.StatusBar.InfoText = App.ResMan.GetString("DownCharImages");
                 var cred = CredentialManager.GetCredentials(App.CredDb);
-                if (cred == null || cred.UserName.Length < 1) return;
+                if (cred == null || cred.UserName.Length < 1)
+                {
+                    return;
+                }
                 using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
                 var entries = db.GetCollection<VnCharacterInfo>(DbVnCharacter.VnCharacter.ToString()).Query().Where(x => x.VnId == vnId)
                     .ToList();
@@ -95,7 +104,10 @@ namespace VnManager.MetadataProviders.Vndb
             {
                 App.StatusBar.InfoText = App.ResMan.GetString("DownScreenshots");
                 var cred = CredentialManager.GetCredentials(App.CredDb);
-                if (cred == null || cred.UserName.Length < 1) return;
+                if (cred == null || cred.UserName.Length < 1)
+                {
+                    return;
+                }
                 using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
                 {
                     var entries = db.GetCollection<VnInfoScreens>(DbVnInfo.VnInfo_Screens.ToString()).Query().Where(x => x.VnId == vnId)
@@ -134,7 +146,10 @@ namespace VnManager.MetadataProviders.Vndb
             try
             {
                 var cred = CredentialManager.GetCredentials(App.CredDb);
-                if (cred == null || cred.UserName.Length < 1) return;
+                if (cred == null || cred.UserName.Length < 1)
+                {
+                    return;
+                }
                 using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
                 {
                     App.StatusBar.IsWorking = true;
@@ -184,7 +199,10 @@ namespace VnManager.MetadataProviders.Vndb
             try
             {
                 var cred = CredentialManager.GetCredentials(App.CredDb);
-                if (cred == null || cred.UserName.Length < 1) return;
+                if (cred == null || cred.UserName.Length < 1)
+                {
+                    return;
+                }
                 using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
                 {
                     App.StatusBar.IsWorking = true;

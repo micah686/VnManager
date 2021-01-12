@@ -18,8 +18,11 @@ namespace VnManager.Converters
         {
             string month;
             string day = string.Empty;
-            if (birthday == null) 
+            if (birthday == null)
+            {
                 return string.Empty;
+            }
+                
             if (birthday.Month == null)
             {
                 month = string.Empty;

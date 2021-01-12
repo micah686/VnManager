@@ -122,7 +122,10 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
             if (result)
             {
                 var cred = CredentialManager.GetCredentials(App.CredDb);
-                if (cred == null || cred.UserName.Length < 1) return;
+                if (cred == null || cred.UserName.Length < 1)
+                {
+                    return;
+                }
                 using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
                 var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString());
                 var entry = dbUserData.Query().Where(x => x.Id == ModifyGameHostViewModel.SelectedGame.Id)

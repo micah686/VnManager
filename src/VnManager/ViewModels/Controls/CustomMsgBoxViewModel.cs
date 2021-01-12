@@ -138,16 +138,24 @@ namespace VnManager.ViewModels.Controls
             foreach (var val in ButtonToResults[_buttons])
             {
                 if (_buttonLabels == null || !_buttonLabels.TryGetValue(val, out var label))
+                {
                     label = ButtonLabels[val];
+                }
 
                 var lbv = new LabelledValue<MessageBoxResult>(label, val);
                 _buttonList.Add(lbv);
                 if (val == _defaultResult)
+                {
                     this.DefaultButton = lbv;
+                }
                 else if (val == _cancelResult)
+                {
                     this.CancelButton = lbv;
+                }
                 else
+                {
                     this.DefaultButton = lbv;
+                }
             }
             // If they didn't specify a button which we showed, then pick a default, if we can
             SetButtons();
@@ -162,16 +170,27 @@ namespace VnManager.ViewModels.Controls
             if (this.DefaultButton == null)
             {
                 if (_defaultResult == MessageBoxResult.None && this.ButtonList.Any())
+                {
                     this.DefaultButton = _buttonList[0];
+                }
                 else
+                {
                     throw new ArgumentException("DefaultButton set to a button which doesn't appear in Buttons");
+                }
             }
 
-            if (this.CancelButton != null) return;
+            if (this.CancelButton != null)
+            {
+                return;
+            }
             if (_cancelResult == MessageBoxResult.None && this.ButtonList.Any())
+            {
                 this.CancelButton = _buttonList.Last();
+            }
             else
+            {
                 throw new ArgumentException("CancelButton set to a button which doesn't appear in Buttons");
+            }
         }
 
         /// <summary>

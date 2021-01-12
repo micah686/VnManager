@@ -102,7 +102,9 @@ namespace VnManager.Helpers
         public override bool Equals(object obj)
         {
             if (!(obj is Stringable<T>))
+            {
                 return false;
+            }
             return base.Equals((Stringable<T>)obj);
         }
 
@@ -148,7 +150,9 @@ namespace VnManager.Helpers
         public StringableConverter(Type type)
         {
             if (!type.IsGenericType || type.GetGenericTypeDefinition() != typeof(Stringable<>) || type.GetGenericArguments().Length != 1)
+            {
                 throw new ArgumentException("Incompatible type", nameof(type));
+            }
 
             this.valueType = type;
 
@@ -177,10 +181,14 @@ namespace VnManager.Helpers
         public override object ConvertTo(ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value, Type destinationType)
         {
             if (value == null)
+            {
                 return String.Empty;
+            }
             // Common case = just call the overloaded ToString - no need for reflection
             if (destinationType == typeof(string))
+            {
                 return value.ToString();
+            }
             var valType = value.GetType();
             if (destinationType.IsAssignableFrom(this.valueType) && typeof(Stringable<>).IsAssignableFrom(valType))
             {

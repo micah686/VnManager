@@ -27,7 +27,9 @@ namespace VnManager.Extensions
         public void SetError(string propertyName, string errorMessage)
         {
             if (!_errors.ContainsKey(propertyName))
-                _errors.Add(propertyName, new List<string> { errorMessage });
+            {
+                _errors.Add(propertyName, new List<string> {errorMessage});
+            }
             RaiseErrorsChanged(propertyName);
         }
 
@@ -38,7 +40,9 @@ namespace VnManager.Extensions
         protected void ClearError(string propertyName)
         {
             if (_errors.ContainsKey(propertyName))
+            {
                 _errors.Remove(propertyName);
+            }
 
             RaiseErrorsChanged(propertyName);
         }
@@ -75,15 +79,19 @@ namespace VnManager.Extensions
         /// <returns></returns>
         public IEnumerable GetErrors(string propertyName)
         {
-            if (string.IsNullOrEmpty(propertyName) ||
-               !_errors.ContainsKey(propertyName)) return Enumerable.Empty<string>();
+            if (string.IsNullOrEmpty(propertyName) || !_errors.ContainsKey(propertyName))
+            {
+                return Enumerable.Empty<string>();
+            }
             return _errors[propertyName];
         }
 
         IEnumerable INotifyDataErrorInfo.GetErrors(string propertyName)
         {
-            if (string.IsNullOrEmpty(propertyName) ||
-                !_errors.ContainsKey(propertyName)) return Enumerable.Empty<string>();
+            if (string.IsNullOrEmpty(propertyName) || !_errors.ContainsKey(propertyName))
+            {
+                return Enumerable.Empty<string>();
+            }
             return _errors[propertyName];
         }
 

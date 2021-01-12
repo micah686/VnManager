@@ -124,7 +124,10 @@ namespace VnManager.ViewModels.Windows
                     var cred = new NetworkCredential(username, Password);
                     CredentialManager.SaveCredentials(App.CredDb, cred);
                     var validPasswords = await ValidateAsync();
-                    if(validPasswords != true) return;
+                    if(validPasswords != true)
+                    {
+                        return;
+                    }
                     using (_ = new LiteDatabase(
                         $"Filename={Path.Combine(App.ConfigDirPath, App.DbPath)};Password={cred.Password}"))
                     {
@@ -319,7 +322,10 @@ namespace VnManager.ViewModels.Windows
         private bool DoPasswordsMatch(SecureString securePass)
         {
             var cred = CredentialManager.GetCredentials(App.CredDb);
-            if (cred == null|| cred.UserName.Length <1) return false;
+            if (cred == null|| cred.UserName.Length <1)
+            {
+                return false;
+            }
             var split = cred.UserName.Split('|');
             var hashSalt = new  Secure.PassHash
             {
@@ -340,7 +346,10 @@ namespace VnManager.ViewModels.Windows
             try
             {
                 var cred = CredentialManager.GetCredentials(App.CredDb);
-                if (cred == null || cred.UserName.Length < 1) return false;
+                if (cred == null || cred.UserName.Length < 1)
+                {
+                    return false;
+                }
                 using (_ = new LiteDatabase($"Filename={Path.Combine(App.ConfigDirPath, App.DbPath)};Password={cred.Password}"))
                 {
                     //test if the database can be opened
@@ -372,7 +381,10 @@ namespace VnManager.ViewModels.Windows
             try
             {
                 var cred = CredentialManager.GetCredentials(App.CredDb);
-                if (cred == null || cred.UserName.Length < 1) return App.ResMan.GetString("PasswordNoEmpty");
+                if (cred == null || cred.UserName.Length < 1)
+                {
+                    return App.ResMan.GetString("PasswordNoEmpty");
+                }
                 using (_ = new LiteDatabase($"Filename={Path.Combine(App.ConfigDirPath, App.DbPath)};Password={cred.Password}"))
                 {
                     //test if the database can be opened

@@ -59,7 +59,10 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
 
         protected override void OnViewLoaded()
         {
-            if(CharacterNamesCollection.Count >0)return;
+            if(CharacterNamesCollection.Count >0)
+            {
+                return;
+            }
             PopulateCharacterList();
 
             if (CharacterNamesCollection.Count > 0)
@@ -74,7 +77,10 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
         {
             CharacterNamesCollection.Clear();
             var cred = CredentialManager.GetCredentials(App.CredDb);
-            if (cred == null || cred.UserName.Length < 1) return;
+            if (cred == null || cred.UserName.Length < 1)
+            {
+                return;
+            }
             using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
             {
                 var dbCharacterData = db.GetCollection<VnCharacterInfo>(DbVnCharacter.VnCharacter.ToString()).Query()
@@ -91,7 +97,10 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
 
         public void SearchCharacters()
         {
-            if (CharacterNameSearch.Length < 1 && CharacterNamesCollection.Equals(_allCharacterNamesCollection)) return;
+            if (CharacterNameSearch.Length < 1 && CharacterNamesCollection.Equals(_allCharacterNamesCollection))
+            {
+                return;
+            }
 
             if (CharacterNameSearch.Length < 1)
             {
@@ -108,7 +117,10 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
 
         public void CharacterSelectionChanged()
         {
-            if (!_finishedLoad) return;
+            if (!_finishedLoad)
+            {
+                return;
+            }
             if (SelectedCharacterIndex != -1)
             {
                 _characterId = CharacterNamesCollection[SelectedCharacterIndex].Key;
@@ -133,7 +145,10 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
         private void UpdateCharacterData()
         {
             var cred = CredentialManager.GetCredentials(App.CredDb);
-            if (cred == null || cred.UserName.Length < 1) return;
+            if (cred == null || cred.UserName.Length < 1)
+            {
+                return;
+            }
             using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
             {
                 var charInfo = db.GetCollection<VnCharacterInfo>(DbVnCharacter.VnCharacter.ToString()).Query()

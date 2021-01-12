@@ -166,7 +166,10 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
 
         public async Task SearchAsync()
         {
-            if(await PreSearchCheckAsync() == false) return;
+            if(await PreSearchCheckAsync() == false)
+            {
+                return;
+            }
 
             try
             {
@@ -181,7 +184,10 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
                     stopwatch.Start();
                     while (shouldContinue)
                     {
-                        if (stopwatch.Elapsed > maxTime) return;
+                        if (stopwatch.Elapsed > maxTime)
+                        {
+                            return;
+                        }
                         shouldContinue = false;
                         VnNameList = await client.GetVisualNovelAsync(VndbFilters.Search.Fuzzy(VnName));
                         if (VnNameList.Count < 1 && client.GetLastError() == null)
@@ -220,8 +226,14 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
 
         private async Task<bool> PreSearchCheckAsync()
         {
-            if (string.IsNullOrEmpty(VnName) || string.IsNullOrWhiteSpace(VnName)) return false;
-            if (VnName.Length < 2) return false;
+            if (string.IsNullOrEmpty(VnName) || string.IsNullOrWhiteSpace(VnName))
+            {
+                return false;
+            }
+            if (VnName.Length < 2)
+            {
+                return false;
+            }
             CanChangeVnName = false;
             IsResetNameButtonEnabled = false;
             IsResetNameButtonEnabled = false;
@@ -466,7 +478,10 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             try
             {
                 var cred = CredentialManager.GetCredentials(App.CredDb);
-                if (cred == null || cred.UserName.Length < 1) return false;
+                if (cred == null || cred.UserName.Length < 1)
+                {
+                    return false;
+                }
                 using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
                 {
                     var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString()).Query().ToEnumerable();
@@ -501,7 +516,10 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             try
             {
                 var cred = CredentialManager.GetCredentials(App.CredDb);
-                if (cred == null || cred.UserName.Length < 1) return false;
+                if (cred == null || cred.UserName.Length < 1)
+                {
+                    return false;
+                }
                 using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
                 {
                     var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString()).Query()
@@ -538,10 +556,19 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             {
                 if (instance.VnIdOrName == App.ResMan.GetString("Name"))
                 {
-                    if (instance.VnNameList == null) return false;
-                    if (instance.VnNameList.Count < 0) return false;
+                    if (instance.VnNameList == null)
+                    {
+                        return false;
+                    }
+                    if (instance.VnNameList.Count < 0)
+                    {
+                        return false;
+                    }
                     instance.VnId = (int)instance.VnNameList.Items[instance.DropDownIndex].Id;
-                    if (instance.VnId == 0) return false;
+                    if (instance.VnId == 0)
+                    {
+                        return false;
+                    }
                     return true;
                 }
                 return true;

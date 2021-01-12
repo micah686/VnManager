@@ -24,7 +24,10 @@ namespace VnManager.MetadataProviders
             App.StatusBar.StatusString = App.ResMan.GetString("WritingToDb");
             App.StatusBar.IsDatabaseProcessing = true;
             var cred = CredentialManager.GetCredentials(App.CredDb);
-            if (cred == null || cred.UserName.Length < 1) return;
+            if (cred == null || cred.UserName.Length < 1)
+            {
+                return;
+            }
             using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
             {
                 var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString());
@@ -72,7 +75,10 @@ namespace VnManager.MetadataProviders
         public static async Task SaveGameEntryDataAsync(AddItemDbModel gameEntry)
         {
             var addItemDbModel = gameEntry;
-            if(addItemDbModel == null) return;
+            if(addItemDbModel == null)
+            {
+                return;
+            }
             SaveUserData(gameEntry);
 
             if (addItemDbModel.SourceType == AddGameSourceType.Vndb)

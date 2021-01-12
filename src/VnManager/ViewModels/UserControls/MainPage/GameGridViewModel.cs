@@ -39,7 +39,10 @@ namespace VnManager.ViewModels.UserControls.MainPage
             List<UserDataGames> dbUserData = new List<UserDataGames>();
             List<VnInfo> dbVnInfo = new List<VnInfo>();
             var cred = CredentialManager.GetCredentials(App.CredDb);
-            if (cred == null || cred.UserName.Length < 1) return;
+            if (cred == null || cred.UserName.Length < 1)
+            {
+                return;
+            }
             using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
             {
                 dbUserData.AddRange(db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString()).Query().ToList());
@@ -62,7 +65,10 @@ namespace VnManager.ViewModels.UserControls.MainPage
             foreach (var entry in userDataArray)
             {
                 var game = vndbInfo.FirstOrDefault(x => x.VnId == entry.GameId);
-                if(game == null)continue;
+                if(game == null)
+                {
+                    continue;
+                }
                 var coverPath = $@"{App.AssetDirPath}\sources\vndb\images\cover\{Path.GetFileName(game.ImageLink)}";
 
                 var rating = NsfwHelper.RawRatingIsNsfw(game.ImageRating);

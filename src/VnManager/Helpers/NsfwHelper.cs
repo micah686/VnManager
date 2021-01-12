@@ -17,7 +17,10 @@ namespace VnManager.Helpers
         /// <returns></returns>
         public static bool RawRatingIsNsfw(ImageRating rating)
         {
-            if (rating == null) return false;
+            if (rating == null)
+            {
+                return false;
+            }
             return rating.SexualAvg >= 1 || rating.ViolenceAvg >= 1;
         }
 
@@ -29,7 +32,10 @@ namespace VnManager.Helpers
         /// <returns></returns>
         public static bool UserIsNsfw(ImageRating rating)
         {
-            if (rating == null) return false;
+            if (rating == null)
+            {
+                return false;
+            }
             var isSexualNsfwValid = false;
             var isViolenceNsfwValid = false;
             

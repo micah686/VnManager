@@ -86,7 +86,10 @@ namespace VnManager.Initializers
         {
             //doesn't delete logs out of User Profile directory
             var minDate = (DateTime.Today - new TimeSpan(30, 0, 0, 0));
-            if (!Directory.Exists(App.ConfigDirPath + @"\logs")) return;
+            if (!Directory.Exists(App.ConfigDirPath + @"\logs"))
+            {
+                return;
+            }
             foreach (var file in Directory.GetFiles(App.ConfigDirPath + @"\logs"))
             {
                 var name = Path.GetFileName(file);
@@ -94,8 +97,14 @@ namespace VnManager.Initializers
                 var subst = name.Substring(0, charLoc);
 
                 var didParse = DateTime.TryParseExact(subst.ToCharArray(), "dd-MM-yyyy".ToCharArray(), CultureInfo.InvariantCulture, DateTimeStyles.None, out var date);
-                if (didParse == false) continue;
-                if (date >= minDate) continue;
+                if (didParse == false)
+                {
+                    continue;
+                }
+                if (date >= minDate)
+                {
+                    continue;
+                }
                 try
                 {
                     File.Delete(file);
@@ -154,10 +163,16 @@ namespace VnManager.Initializers
         private static void SetupCategories()
         {
             var cred = CredentialManager.GetCredentials(App.CredDb);
-            if (cred == null || cred.UserName.Length < 1) return;
+            if (cred == null || cred.UserName.Length < 1)
+            {
+                return;
+            }
             using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
             var dbUserData = db.GetCollection<UserDataCategories>(DbUserData.UserData_Categories.ToString());
-            if (dbUserData.Query().Where(x => x.CategoryName == "All").FirstOrDefault() != null) return;
+            if (dbUserData.Query().Where(x => x.CategoryName == "All").FirstOrDefault() != null)
+            {
+                return;
+            }
             var entry = new UserDataCategories() {CategoryName = "All"};
             dbUserData.Insert(entry);
         }

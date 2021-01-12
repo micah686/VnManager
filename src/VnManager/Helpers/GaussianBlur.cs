@@ -93,20 +93,29 @@ namespace VnManager.Helpers
         {
             var wIdeal = Math.Sqrt((12 * sigma * sigma / n) + 1);
             var wl = (int)Math.Floor(wIdeal);
-            if (wl % 2 == 0) wl--;
+            if (wl % 2 == 0)
+            {
+                wl--;
+            }
             var wu = wl + 2;
 
             var mIdeal = (double)(12 * sigma * sigma - n * wl * wl - 4 * n * wl - 3 * n) / (-4 * wl - 4);
             var m = Math.Round(mIdeal);
 
             var sizes = new List<int>();
-            for (var i = 0; i < n; i++) sizes.Add(i < m ? wl : wu);
+            for (var i = 0; i < n; i++)
+            {
+                sizes.Add(i < m ? wl : wu);
+            }
             return sizes.ToArray();
         }
 
         private void BoxBlur_4(int[] input, int[] output, int w, int h, int r)
         {
-            for (var i = 0; i < input.Length; i++) output[i] = input[i];
+            for (var i = 0; i < input.Length; i++)
+            {
+                output[i] = input[i];
+            }
             BoxBlurH_4(output, input, w, h, r);
             BoxBlurT_4(input, output, w, h, r);
         }
@@ -122,7 +131,10 @@ namespace VnManager.Helpers
                 var fv = source[ti];
                 var lv = source[ti + w - 1];
                 var val = (r + 1) * fv;
-                for (var j = 0; j < r; j++) val += source[ti + j];
+                for (var j = 0; j < r; j++)
+                {
+                    val += source[ti + j];
+                }
                 for (var j = 0; j <= r; j++)
                 {
                     val += source[ri] - fv;
@@ -156,7 +168,10 @@ namespace VnManager.Helpers
                 var fv = source[ti];
                 var lv = source[ti + w * (h - 1)];
                 var val = (r + 1) * fv;
-                for (var j = 0; j < r; j++) val += source[ti + j * w];
+                for (var j = 0; j < r; j++)
+                {
+                    val += source[ti + j * w];
+                }
                 for (var j = 0; j <= r; j++)
                 {
                     val += source[ri] - fv;

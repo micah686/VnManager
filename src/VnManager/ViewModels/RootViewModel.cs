@@ -157,7 +157,10 @@ namespace VnManager.ViewModels
         /// </summary>
         private void CheckForImportDb()
         {
-            if (App.UserSettings.DidAskImportDb != false) return;
+            if (App.UserSettings.DidAskImportDb != false)
+            {
+                return;
+            }
             var result = _windowManager.ShowMessageBox(App.ResMan.GetString("AskImportDb"),
                 App.ResMan.GetString("ImportDataTitle"), MessageBoxButton.YesNo);
             if (result == MessageBoxResult.Yes)
@@ -233,9 +236,18 @@ namespace VnManager.ViewModels
         private static bool IsNormalStart()
         {
             var configFile = Path.Combine(App.ConfigDirPath, @"config\config.json");
-            if (!File.Exists(configFile)) return false;
-            if (!UserSettingsHelper.ValidateConfigFile()) return false;
-            if (CredentialManager.GetCredentials(App.CredDb) == null) return false;
+            if (!File.Exists(configFile))
+            {
+                return false;
+            }
+            if (!UserSettingsHelper.ValidateConfigFile())
+            {
+                return false;
+            }
+            if (CredentialManager.GetCredentials(App.CredDb) == null)
+            {
+                return false;
+            }
             App.UserSettings = UserSettingsHelper.ReadUserSettings();
             var useEncryption = App.UserSettings.RequirePasswordEntry;
             return !useEncryption;

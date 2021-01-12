@@ -25,7 +25,10 @@ namespace VnManager.Helpers
         public static List<Inline> Helper(string text)
         {
             string modifiedText = text;
-            if (string.IsNullOrEmpty(modifiedText)) return new List<Inline>();
+            if (string.IsNullOrEmpty(modifiedText))
+            {
+                return new List<Inline>();
+            }
             modifiedText = ReplaceSpoilers(text);
             modifiedText = ReplaceVndbLocalUrls(modifiedText);
             modifiedText = StripUnneededBbCode(modifiedText);
@@ -90,9 +93,15 @@ namespace VnManager.Helpers
                             RegexOptions.Compiled | RegexOptions.IgnoreCase).Split(segment))
                         .Where(s => !string.IsNullOrWhiteSpace(s)).Distinct().ToList();
 
-                    if (splitUrl.Count != 4) continue;
+                    if (splitUrl.Count != 4)
+                    {
+                        continue;
+                    }
                     //this should always be the case
-                    if (splitUrl[1] != "url=") continue;
+                    if (splitUrl[1] != "url=")
+                    {
+                        continue;
+                    }
                     splitUrl[1] = "url=http://vndb.org";
                     string merged = string.Join("", splitUrl);
                     rawText = rawText.Replace(segment, merged);
@@ -176,15 +185,18 @@ namespace VnManager.Helpers
             var rgx = new Regex(@"(\◄.+?\►)", RegexOptions.IgnoreCase);
             var str = rgx.Split(input);
             for (int i = 0; i < str.Length; i++)
+            {
                 if (i % 2 == 0)
-                    inlineList.Add(new Run { Text = str[i] });
+                {
+                    inlineList.Add(new Run {Text = str[i]});
+                }
                 else
                 {
                     var newText = str[i];
                     newText = newText.Replace($"{StartChar}", string.Empty);
                     newText = newText.Replace($"{EndChar}", string.Empty);
                     var split = newText.Split(SplitChar);
-                    SplitUrl splitUrl = new SplitUrl { Url = split[0], Label = split[1] };
+                    SplitUrl splitUrl = new SplitUrl {Url = split[0], Label = split[1]};
                     var run = new Run(splitUrl.Label);
                     Hyperlink link = new Hyperlink(run);
 
@@ -201,8 +213,8 @@ namespace VnManager.Helpers
                         inlineList.Add(run);
                     }
 
-
                 }
+            }
             return inlineList;
         }
         

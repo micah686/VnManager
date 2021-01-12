@@ -58,7 +58,10 @@ namespace VnManager.Helpers
             {
                 //get encryption key and salt
                 var cred = CredentialManager.GetCredentials(App.CredFile);
-                if (cred == null) return new byte[0];
+                if (cred == null)
+                {
+                    return new byte[0];
+                }
                 byte[] passwordBytes = Encoding.UTF8.GetBytes(cred.Password);
                 byte[] salt = Convert.FromBase64String(cred.UserName);
                 var key = new Rfc2898DeriveBytes(passwordBytes, salt, 20000).GetBytes(16);
@@ -100,7 +103,10 @@ namespace VnManager.Helpers
             try
             {
                 var cred = CredentialManager.GetCredentials(App.CredFile);
-                if (cred == null) return new byte[0];
+                if (cred == null)
+                {
+                    return new byte[0];
+                }
                 byte[] passwordBytes = Encoding.UTF8.GetBytes(cred.Password);
                 byte[] salt = Convert.FromBase64String(cred.UserName);
                 var key = new Rfc2898DeriveBytes(passwordBytes, salt, 20000).GetBytes(16);
@@ -138,11 +144,20 @@ namespace VnManager.Helpers
         {
             try
             {
-                if(!File.Exists(path))return;
+                if(!File.Exists(path))
+                {
+                    return;
+                }
                 byte[] bytes = File.ReadAllBytes(path);
-                if (bytes.Length < 20) return; //don't encrypt files less than 20 bytes, as that indicates that the file might be bad
+                if (bytes.Length < 20)
+                {
+                    return; //don't encrypt files less than 20 bytes, as that indicates that the file might be bad
+                } 
                 byte[] encBytes = Encrypt(bytes);
-                if (encBytes == null || encBytes.Length < 20) return;
+                if (encBytes == null || encBytes.Length < 20)
+                {
+                    return;
+                }
                 File.WriteAllBytes($"{path}.aes", encBytes);
                 File.Delete(path);
             }
@@ -163,9 +178,15 @@ namespace VnManager.Helpers
             {
                 string encImagePath = $"{path}.aes";
                 byte[] encBytes = File.ReadAllBytes(encImagePath);
-                if (encBytes.Length < 20) return; //don't decrypt files less than 20 bytes, as that indicates that the file might be bad
+                if (encBytes.Length < 20)
+                {
+                    return; //don't decrypt files less than 20 bytes, as that indicates that the file might be bad
+                } 
                 byte[] bytes = Decrypt(encBytes);
-                if (bytes == null || bytes.Length < 20) return; 
+                if (bytes == null || bytes.Length < 20)
+                {
+                    return;
+                }
                 File.WriteAllBytes(path, bytes);
                 File.Delete(encImagePath);
             }
@@ -186,9 +207,15 @@ namespace VnManager.Helpers
             try
             {
                 byte[] bytes = stream.ToArray();
-                if (bytes.Length < 20) return; //don't encrypt streams less than 20 bytes, as that indicates that the file might be bad
+                if (bytes.Length < 20)
+                {
+                    return; //don't encrypt streams less than 20 bytes, as that indicates that the file might be bad
+                } 
                 byte[] encBytes = Encrypt(bytes);
-                if (encBytes == null || encBytes.Length < 20) return;
+                if (encBytes == null || encBytes.Length < 20)
+                {
+                    return;
+                }
                 File.WriteAllBytes($"{path}.aes", encBytes);
                 File.Delete(path);
             }
@@ -208,9 +235,15 @@ namespace VnManager.Helpers
             try
             {
                 byte[] encBytes = stream.ToArray();
-                if (encBytes.Length < 20) return null; //don't decrypt streams less than 20 bytes, as that indicates that the file might be bad
+                if (encBytes.Length < 20)
+                {
+                    return null; //don't decrypt streams less than 20 bytes, as that indicates that the file might be bad
+                } 
                 byte[] bytes = Decrypt(encBytes);
-                if (bytes == null || bytes.Length < 20) return null;
+                if (bytes == null || bytes.Length < 20)
+                {
+                    return null;
+                }
                 var decStream = new MemoryStream(bytes);
                 return decStream;
             }
@@ -284,8 +317,12 @@ namespace VnManager.Helpers
 
                 int ok = 1;
                 for (int i = 0; i < 20; i++)
+                {
                     if (hashBytes[i + 32] != hash[i])
+                    {
                         ok = 0;
+                    }
+                }
 
                 return ok == 1;
             }

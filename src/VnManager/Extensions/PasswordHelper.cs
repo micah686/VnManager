@@ -72,7 +72,10 @@ namespace VnManager.Extensions
         private static void OnPasswordPropertyChanged(DependencyObject sender,
             DependencyPropertyChangedEventArgs e)
         {
-            if (!(sender is PasswordBox passwordBox)) return;
+            if (!(sender is PasswordBox passwordBox))
+            {
+                return;
+            }
             passwordBox.PasswordChanged -= PasswordChanged;
 
             if (!GetIsUpdating(passwordBox))
@@ -91,7 +94,9 @@ namespace VnManager.Extensions
             PasswordBox passwordBox = sender as PasswordBox;
 
             if (passwordBox == null)
+            {
                 return;
+            }
 
             if ((bool)e.OldValue)
             {
@@ -109,7 +114,10 @@ namespace VnManager.Extensions
         {
             PasswordBox passwordBox = sender as PasswordBox;
             SetIsUpdating(passwordBox, true);
-            if (passwordBox == null) return;
+            if (passwordBox == null)
+            {
+                return;
+            }
             SetPassword(passwordBox, passwordBox.Password);
             SetIsUpdating(passwordBox, false);
         }

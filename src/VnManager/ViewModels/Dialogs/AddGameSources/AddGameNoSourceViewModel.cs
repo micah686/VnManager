@@ -191,7 +191,10 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
         private static bool IsNotDuplicateExe(string exePath)
         {
             var cred = CredentialManager.GetCredentials(App.CredDb);
-            if (cred == null || cred.UserName.Length < 1) return false;
+            if (cred == null || cred.UserName.Length < 1)
+            {
+                return false;
+            }
             using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
             {
                 var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString()).Query()

@@ -104,7 +104,10 @@ namespace VnManager.MetadataProviders.Vndb
             stopwatch.Restart();
             while (true)
             {
-                if (stopwatch.Elapsed > maxTime) return null;
+                if (stopwatch.Elapsed > maxTime)
+                {
+                    return null;
+                }
                 VndbResponse<VisualNovel> visualNovels = await client.GetVisualNovelAsync(VndbFilters.Id.Equals(vnid), VndbFlags.FullVisualNovel);
 
 
@@ -154,7 +157,10 @@ namespace VnManager.MetadataProviders.Vndb
                         releaseList.AddRange(releases.Items);
                         releasesCount = releasesCount + releases.Count;
                         pageCount++;
-                        if (stopwatch.Elapsed > maxTime) return null;
+                        if (stopwatch.Elapsed > maxTime)
+                        {
+                            return null;
+                        }
                         break;
                     }
                 }
@@ -194,7 +200,10 @@ namespace VnManager.MetadataProviders.Vndb
                         characterList.AddRange(characters.Items);
                         characterCount = characterCount + characters.Count;
                         pageCount++;
-                        if (stopwatch.Elapsed > maxTime) return null;
+                        if (stopwatch.Elapsed > maxTime)
+                        {
+                            return null;
+                        }
                         break;
                     }
                 }
@@ -234,7 +243,10 @@ namespace VnManager.MetadataProviders.Vndb
                     producerList.AddRange(producers.Items);
                     producerCount = producerCount + producers.Count;
                     pageCount++;
-                    if (stopwatch.Elapsed > maxTime) return null;
+                    if (stopwatch.Elapsed > maxTime)
+                    {
+                        return null;
+                    }
                 }
                 
             }
@@ -271,7 +283,10 @@ namespace VnManager.MetadataProviders.Vndb
                         staffList.AddRange(staff.Items);
                         staffCount = staffCount + staff.Count;
                         pageCount++;
-                        if (stopwatch.Elapsed > maxTime) return null;
+                        if (stopwatch.Elapsed > maxTime)
+                        {
+                            return null;
+                        }
                         break;
                     }
                 }

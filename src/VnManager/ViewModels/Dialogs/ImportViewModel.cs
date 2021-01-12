@@ -212,7 +212,10 @@ namespace VnManager.ViewModels.Dialogs
                 var entryCount = UserDataGamesCollection.Count;
 
                 var cred = CredentialManager.GetCredentials(App.CredDb);
-                if (cred == null || cred.UserName.Length < 1) return;
+                if (cred == null || cred.UserName.Length < 1)
+                {
+                    return;
+                }
 
                 BlockClosing = true;
                 IsDataGridEnabled = true;
@@ -410,7 +413,10 @@ namespace VnManager.ViewModels.Dialogs
         private static bool IsNotDuplicateGuid(Guid id)
         {
             var cred = CredentialManager.GetCredentials(App.CredDb);
-            if (cred == null || cred.UserName.Length < 1) return false;
+            if (cred == null || cred.UserName.Length < 1)
+            {
+                return false;
+            }
             using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
             {
                 var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString()).Query().Select(x => x.Id).ToList();
@@ -428,7 +434,9 @@ namespace VnManager.ViewModels.Dialogs
         private static bool IsDefinedInEnum(Enum value, Type enumType)
         {
             if (value.GetType() != enumType)
+            {
                 return false;
+            }
 
             return Enum.IsDefined(enumType, value);
         }

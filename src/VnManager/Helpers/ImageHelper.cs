@@ -32,13 +32,25 @@ namespace VnManager.Helpers
         /// <returns></returns>
         public static Image GetThumbnailImage(Stream stream, int maxPixels)
         {
-            if (maxPixels < 80) maxPixels = 80;
+            if (maxPixels < 80)
+            {
+                maxPixels = 80;
+            }
             //const int maxPixels = 150;
-            if (stream == null) return null;
-            if (stream.Length < 20) return null; //memory streams for an image should be big, this should prevent streams with only a few bytes
+            if (stream == null)
+            {
+                return null;
+            }
+            if (stream.Length < 20)
+            {
+                return null; //memory streams for an image should be big, this should prevent streams with only a few bytes
+            } 
 
             Image originalImg = Image.FromStream(stream);
-            if (originalImg == null) return null;
+            if (originalImg == null)
+            {
+                return null;
+            }
             //get thumbnail size
             double originalWidth = originalImg.Width;
             double originalHeight = originalImg.Height;
@@ -100,7 +112,10 @@ namespace VnManager.Helpers
         {
             try
             {
-                if(stream== null) return CreateEmptyBitmapImage();
+                if(stream== null)
+                {
+                    return CreateEmptyBitmapImage();
+                }
                 if (stream.Length > 20)
                 {
                     var img = new BitmapImage();
@@ -135,7 +150,10 @@ namespace VnManager.Helpers
             try
             {
                 var images = imageList.ToArray();
-                if (!images.Any()) return;
+                if (!images.Any())
+                {
+                    return;
+                }
                 using (var client = new WebClient())
                 {
                     if (!Directory.Exists($@"{imageDirectory}\thumbs\"))
@@ -145,17 +163,26 @@ namespace VnManager.Helpers
                     
                     foreach (var screen in images)
                     {
-                        if (screen.ImageLink == null || string.IsNullOrEmpty(screen.ImageLink)) continue;
+                        if (screen.ImageLink == null || string.IsNullOrEmpty(screen.ImageLink))
+                        {
+                            continue;
+                        }
                         var uri = new Uri(screen.ImageLink);
                         var imagePath = $@"{imageDirectory}\{Path.GetFileName(screen.ImageLink)}";
                         var thumbPath = $@"{imageDirectory}\thumbs\{Path.GetFileName(screen.ImageLink)}";
 
-                        if(File.Exists(imagePath))continue;
+                        if(File.Exists(imagePath))
+                        {
+                            continue;
+                        }
 
                         
                         var imageStream = new MemoryStream(await client.DownloadDataTaskAsync(uri));
                         var thumbImg = GetThumbnailImage(imageStream,0);
-                        if (thumbImg == null) continue;
+                        if (thumbImg == null)
+                        {
+                            continue;
+                        }
                         if (NsfwHelper.RawRatingIsNsfw(screen.Rating))
                         {
 
@@ -196,14 +223,20 @@ namespace VnManager.Helpers
         {
             try
             {
-                if (string.IsNullOrEmpty(uri.AbsoluteUri)) return;
+                if (string.IsNullOrEmpty(uri.AbsoluteUri))
+                {
+                    return;
+                }
                 using var client = new WebClient();
                 if (isNsfw)
                 {
 
                     byte[] imageBytes = await client.DownloadDataTaskAsync(uri);
                     var memStream = new MemoryStream(imageBytes);
-                    if (memStream.Length < 1) return;
+                    if (memStream.Length < 1)
+                    {
+                        return;
+                    }
                     Secure.EncStream(memStream, path);
                     await memStream.DisposeAsync();
                 }
@@ -249,7 +282,9 @@ namespace VnManager.Helpers
             }
             Icon sysIcon = Icon.ExtractAssociatedIcon(path);
             if (sysIcon == null)
+            {
                 return CreateEmptyBitmapImage();
+            }
             BitmapSource bmpSrc = System.Windows.Interop.Imaging.CreateBitmapSourceFromHIcon(
                 sysIcon.Handle, System.Windows.Int32Rect.Empty,
                 BitmapSizeOptions.FromEmptyOptions());

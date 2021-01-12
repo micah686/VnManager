@@ -171,13 +171,18 @@ namespace VnManager.ViewModels.Dialogs
 
         public static bool ContainsIllegalCharacters(string format)
         {
-            if (format == null) return false;
+            if (format == null)
+            {
+                return false;
+            }
             string allowableLetters = $@"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890/\-_ !?;:'+={'"'}";
 
             foreach (char c in format)
             {
                 if (!allowableLetters.Contains(c))
+                {
                     return false;
+                }
             }
 
             return true;

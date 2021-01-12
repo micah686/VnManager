@@ -61,7 +61,10 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
         private void FillCategories()
         {
             var cred = CredentialManager.GetCredentials(App.CredDb);
-            if (cred == null || cred.UserName.Length < 1) return;
+            if (cred == null || cred.UserName.Length < 1)
+            {
+                return;
+            }
             using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
             var dbUserCategories = db.GetCollection<UserDataCategories>(DbUserData.UserData_Categories.ToString());
 
@@ -75,7 +78,10 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
             RemoveCategoriesCollection.Clear();
             DeleteCategoriesCollection.Clear();
 
-            if(ModifyGameHostViewModel.SelectedGame.Categories == null)return;
+            if(ModifyGameHostViewModel.SelectedGame.Categories == null)
+            {
+                return;
+            }
             
             FillAddCategory(categoriesExceptAll);
             FillRemoveCategory(categoriesExceptAll);
@@ -115,7 +121,10 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
         public void SaveAddCategory()
         {
             var cred = CredentialManager.GetCredentials(App.CredDb);
-            if (cred == null || cred.UserName.Length < 1) return;
+            if (cred == null || cred.UserName.Length < 1)
+            {
+                return;
+            }
             using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
             {
                 var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString());
@@ -167,7 +176,10 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
         public void SaveRemoveCategory()
         {
             var cred = CredentialManager.GetCredentials(App.CredDb);
-            if (cred == null || cred.UserName.Length < 1) return;
+            if (cred == null || cred.UserName.Length < 1)
+            {
+                return;
+            }
             using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
             {
                 var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString());
@@ -206,7 +218,10 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
             if (result)
             {
                 var cred = CredentialManager.GetCredentials(App.CredDb);
-                if (cred == null || cred.UserName.Length < 1) return;
+                if (cred == null || cred.UserName.Length < 1)
+                {
+                    return;
+                }
                 using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
                 {
                     var dbUserCategories = db.GetCollection<UserDataCategories>(DbUserData.UserData_Categories.ToString());
@@ -223,9 +238,15 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
         public void DeleteCategory()
         {
             var result = _windowManager.ShowMessageBox($"{App.ResMan.GetString("ConfirmDeleteCategoryMsg")} {NewCategoryValue}", App.ResMan.GetString("ConfirmDeleteCategory"), MessageBoxButton.YesNo);
-            if(result == MessageBoxResult.No)return;
+            if(result == MessageBoxResult.No)
+            {
+                return;
+            }
             var cred = CredentialManager.GetCredentials(App.CredDb);
-            if (cred == null || cred.UserName.Length < 1) return;
+            if (cred == null || cred.UserName.Length < 1)
+            {
+                return;
+            }
             using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
             {
                 var dbUserCategories = db.GetCollection<UserDataCategories>(DbUserData.UserData_Categories.ToString());
@@ -263,7 +284,10 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
 
         private bool IsValidName(string input)
         {
-            if (input == null || input == AllCategory) return false;
+            if (input == null || input == AllCategory)
+            {
+                return false;
+            }
             var validCharacters = input.All(x => char.IsLetterOrDigit(x) || char.IsWhiteSpace(x));
             var minimumLetters = input.Count(char.IsLetter);
             return validCharacters && minimumLetters > 2;
@@ -271,9 +295,15 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
 
         private bool IsNewCategory(string input)
         {
-            if (input == null || input == AllCategory) return false;
+            if (input == null || input == AllCategory)
+            {
+                return false;
+            }
             var cred = CredentialManager.GetCredentials(App.CredDb);
-            if (cred == null || cred.UserName.Length < 1) return false;
+            if (cred == null || cred.UserName.Length < 1)
+            {
+                return false;
+            }
             using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
             var userCategories = db.GetCollection<UserDataCategories>(DbUserData.UserData_Categories.ToString())
                 .Query().ToArray();
@@ -289,9 +319,15 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
 
         private bool IsNotMaxCategoriesCount(string input)
         {
-            if (input == null || input == AllCategory) return false;
+            if (input == null || input == AllCategory)
+            {
+                return false;
+            }
             var cred = CredentialManager.GetCredentials(App.CredDb);
-            if (cred == null || cred.UserName.Length < 1) return false;
+            if (cred == null || cred.UserName.Length < 1)
+            {
+                return false;
+            }
             using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
             var userCategories = db.GetCollection<UserDataCategories>(DbUserData.UserData_Categories.ToString()).Query()
                 .ToArray();

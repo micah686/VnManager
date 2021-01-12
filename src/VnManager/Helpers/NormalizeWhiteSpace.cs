@@ -14,7 +14,9 @@ namespace VnManager.Helpers
         public static string FixWhiteSpace(string input)
         {
             if (string.IsNullOrEmpty(input))
+            {
                 return string.Empty;
+            }
 
             int current = 0;
             char[] output = new char[input.Length];
@@ -24,9 +26,14 @@ namespace VnManager.Helpers
             {
                 if (char.IsWhiteSpace(c))
                 {
-                    if (skipped) continue;
+                    if (skipped)
+                    {
+                        continue;
+                    }
                     if (current > 0)
+                    {
                         output[current++] = ' ';
+                    }
 
                     skipped = true;
                 }

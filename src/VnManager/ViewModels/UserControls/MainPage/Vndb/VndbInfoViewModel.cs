@@ -74,9 +74,15 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
 
         private void LoadMainData()
         {
-            if (VndbContentViewModel.VnId == 0) return;
+            if (VndbContentViewModel.VnId == 0)
+            {
+                return;
+            }
             var cred = CredentialManager.GetCredentials(App.CredDb);
-            if (cred == null || cred.UserName.Length < 1) return;
+            if (cred == null || cred.UserName.Length < 1)
+            {
+                return;
+            }
             using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
             {
                 var vnInfoEntry = db.GetCollection<VnInfo>(DbVnInfo.VnInfo.ToString()).Query().Where(x => x.VnId == VndbContentViewModel.VnId).FirstOrDefault();
@@ -99,7 +105,10 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
         private void LoadUserData()
         {
             var cred = CredentialManager.GetCredentials(App.CredDb);
-            if (cred == null || cred.UserName.Length < 1) return;
+            if (cred == null || cred.UserName.Length < 1)
+            {
+                return;
+            }
             using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
             var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString()).Query()
                 .Where(x => x.Id == VndbContentViewModel.SelectedGame.Id).FirstOrDefault();
@@ -112,9 +121,15 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
         
         private void LoadRelations()
         {
-            if (VndbContentViewModel.VnId == 0) return;
+            if (VndbContentViewModel.VnId == 0)
+            {
+                return;
+            }
             var cred = CredentialManager.GetCredentials(App.CredDb);
-            if (cred == null || cred.UserName.Length < 1) return;
+            if (cred == null || cred.UserName.Length < 1)
+            {
+                return;
+            }
             using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
             {
                 var vnRelations = db.GetCollection<VnInfoRelations>(DbVnInfo.VnInfo_Relations.ToString()).Query()

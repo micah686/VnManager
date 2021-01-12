@@ -18,7 +18,10 @@ namespace VnManager.Helpers
         {
             try
             {
-                if (!File.Exists(filepath)) return false;
+                if (!File.Exists(filepath))
+                {
+                    return false;
+                }
                 byte[] twoBytes = new byte[2];
                 int bytesRead = 0;
                 using (FileStream fileStream = File.Open(filepath, FileMode.Open, FileAccess.Read, FileShare.Read))
@@ -26,7 +29,9 @@ namespace VnManager.Helpers
                     bytesRead = fileStream.Read(twoBytes, 0, 2);
                 }
                 if (bytesRead != 2)
+                {
                     return false;
+                }
                 switch (Encoding.UTF8.GetString(twoBytes))
                 {
                     case "MZ":
@@ -53,7 +58,10 @@ namespace VnManager.Helpers
         {
             try
             {
-                if (!File.Exists(path)) return false;
+                if (!File.Exists(path))
+                {
+                    return false;
+                }
                 string ext = Path.GetExtension(path).ToUpperInvariant() ?? string.Empty;
                 return ext.EndsWith(".EXE");
             }
@@ -73,7 +81,10 @@ namespace VnManager.Helpers
         {
             try
             {
-                if (!File.Exists(path)) return false;
+                if (!File.Exists(path))
+                {
+                    return false;
+                }
                 string ext = Path.GetExtension(path).ToUpperInvariant() ?? string.Empty;
                 return ext.EndsWith(".ICO") || ext.EndsWith(".EXE");
             }
@@ -88,7 +99,10 @@ namespace VnManager.Helpers
         {
             try
             {
-                if (!File.Exists(path)) return false;
+                if (!File.Exists(path))
+                {
+                    return false;
+                }
                 string ext = Path.GetExtension(path).ToUpperInvariant() ?? string.Empty;
                 return ext.EndsWith(".JPG") || ext.EndsWith(".PNG");
             }

@@ -50,7 +50,10 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
                 case AddGameSourceType.Vndb:
                 {
                     var cred = CredentialManager.GetCredentials(App.CredDb);
-                    if (cred == null || cred.UserName.Length < 1) return;
+                    if (cred == null || cred.UserName.Length < 1)
+                    {
+                        return;
+                    }
                     using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
                     var dbUserData = db.GetCollection<VnInfo>(DbVnInfo.VnInfo.ToString()).Query()
                         .Where(x => x.VnId == SelectedGame.GameId.Value).FirstOrDefault();

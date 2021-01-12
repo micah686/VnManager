@@ -20,7 +20,10 @@ namespace VnManager.Helpers.Vndb
         /// <param name="error">Vndb Error</param>
         public static void HandleErrors(IVndbError error)
         {
-            if(error == null) return;
+            if(error == null)
+            {
+                return;
+            }
             switch (error)
             {
                 case MissingError missing:
