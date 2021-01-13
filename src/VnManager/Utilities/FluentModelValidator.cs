@@ -42,7 +42,6 @@ namespace VnManager.Utilities
         /// <returns></returns>
         public async Task<IEnumerable<string>> ValidatePropertyAsync(string propertyName)
         {
-            //await this.validator.ValidateAsync(subject, delegate(ValidationStrategy<T> options) { options.IncludeProperties(propertyName); }, CancellationToken.None);
             var result = await this.validator.ValidateAsync(subject, delegate (ValidationStrategy<T> options) { options.IncludeProperties(propertyName); }, CancellationToken.None);
             if (result != null)
             {

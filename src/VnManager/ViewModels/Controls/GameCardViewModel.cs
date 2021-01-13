@@ -9,7 +9,6 @@ using VnManager.Models.Db.User;
 using VnManager.ViewModels.Dialogs.ModifyGame;
 using VnManager.ViewModels.UserControls.MainPage.Vndb;
 
-//using VnManager.ViewModels.UserControls.MainPage;
 
 namespace VnManager.ViewModels.Controls
 {

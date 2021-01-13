@@ -28,8 +28,6 @@ namespace VnManager.MetadataProviders.Vndb
         public static async Task SortVnInfoAsync(VisualNovel vn, ICollection<Release>rel,List<Producer> prod, ICollection<Character> character, List<Staff> staff, double currentProgress)
         {
 
-            //await DownloadCharacterImages(character, vn.Id);
-            
 
 
             SaveVnInfo(vn);

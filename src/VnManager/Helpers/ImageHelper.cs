@@ -32,7 +32,6 @@ namespace VnManager.Helpers
             {
                 maxPixels = MaxThumbnailSize;
             }
-            //const int maxPixels = 150;
             if (stream == null)
             {
                 return null;

@@ -7,7 +7,6 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
     public class AddGameMainViewModel: Conductor<Screen>
     {
         
-        //public AddGameSourceType SourceType { get; set; } = AddGameSourceType.Vndb;
 
         public int SelectedIndex { get; set; }
 

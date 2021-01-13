@@ -99,9 +99,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
                 if (_isIconChecked == false)
                 {
                     IconPath = string.Empty;
-                    //HideIconError = true;
                     ValidateAsync();
-                    //HideIconError = false;
                 }
             }
         }
@@ -117,9 +115,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
                 if (_isArgsChecked == false)
                 {
                     ExeArguments = string.Empty;
-                    //HideArgumentsError = true;
                     ValidateAsync();
-                    //HideArgumentsError = false;
                 }
             }
         }
@@ -229,7 +225,6 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             CanChangeVnName = false;
             IsResetNameButtonEnabled = false;
             IsResetNameButtonEnabled = false;
-            //await ValidateAsync();
             const int retryCount = 5;
             for (int i = 0; i < retryCount; i++)
             {

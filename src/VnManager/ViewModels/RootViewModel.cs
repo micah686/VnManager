@@ -104,16 +104,6 @@ namespace VnManager.ViewModels
 
             if (!IsNormalStart())
             {
-                ////remove any previous credentials
-                //string[] credStrings = new[] { App.CredDb, App.CredFile };
-                //foreach (var cred in credStrings)
-                //{
-                //    var value = CredentialManager.GetCredentials(cred);
-                //    if (value != null)
-                //    {
-                //        CredentialManager.RemoveCredentials(cred);
-                //    }
-                //}
                 App.UserSettings = UserSettingsHelper.ReadUserSettings();
                 var auth = _container.Get<SetEnterPasswordViewModel>();
                 var isAuth = _windowManager.ShowDialog(auth);

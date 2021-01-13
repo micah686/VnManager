@@ -119,7 +119,6 @@ namespace VnManager.Initializers
         /// </summary>
         private static void DeleteOldBackupDatabase()
         {
-            //var dbDir = Path.Combine(App.ConfigDirPath, @"database\");
             var dbDir = Directory.EnumerateFiles(Path.Combine(App.ConfigDirPath, @"database\"), "Data_BACKUP_*.db",
                 SearchOption.AllDirectories);
             var minDate = (DateTime.Today - new TimeSpan(14, 0, 0, 0));

@@ -166,7 +166,6 @@ namespace VnManager.ViewModels.Dialogs
             catch (Exception e)
             {
                 App.Logger.Warning(e, "Failed to remove row from import tool");
-                //throw;
             }
 
 

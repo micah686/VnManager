@@ -25,12 +25,16 @@ namespace VnManager
             App.StartupLockout = true; //lock any App SetOnce settings from being set again
         }
 
+        /// <summary>
+        /// Bind your own types. Concrete types are automatically self-bound.
+        /// builder.Bind<IMyInterface>().To<MyType>();
+        /// builder.Bind<IViewModelFactory>().ToAbstractFactory();
+        /// </summary>
+        /// <param name="builder"></param>
         protected override void ConfigureIoC(IStyletIoCBuilder builder)
         {
             base.ConfigureIoC(builder);
-            // Bind your own types. Concrete types are automatically self-bound.
-            //builder.Bind<IMyInterface>().To<MyType>();
-            //builder.Bind<IViewModelFactory>().ToAbstractFactory();
+
             
             builder.Bind(typeof(IModelValidator<>)).To(typeof(FluentModelValidator<>));
             builder.Bind(typeof(IValidator<>)).ToAllImplementations();
