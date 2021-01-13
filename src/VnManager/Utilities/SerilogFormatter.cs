@@ -18,6 +18,11 @@ namespace VnManager.Utilities
         /// <param name="output">The output string for the log file</param>
         public void Format(LogEvent logEvent, TextWriter output)
         {
+            if (logEvent == null || output == null)
+            {
+                return;
+            }
+            
             string dateStr = logEvent.Timestamp.Date.ToLongDateString();
             string timeStr = logEvent.Timestamp.DateTime.ToLongTimeString();
             if (LogManager.LogLevel == LogLevel.Normal)

@@ -30,6 +30,10 @@ namespace VnManager.ViewModels.Controls
             get => _coverImage;
             set
             {
+                if (value == null)
+                {
+                    return;
+                }
                 if (value.IsNsfw == false || ShouldDisplayNsfwContent)
                 {
                     _coverImage = value;
@@ -42,6 +46,7 @@ namespace VnManager.ViewModels.Controls
                     SetAndNotify(ref _coverImage, value);
 
                 }
+
             }
         }
         #endregion

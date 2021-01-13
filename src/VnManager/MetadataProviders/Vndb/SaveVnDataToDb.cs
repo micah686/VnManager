@@ -257,7 +257,7 @@ namespace VnManager.MetadataProviders.Vndb
         #region VnCharacters
         public static void SaveVnCharacters(ICollection<Character> characters, uint vnid)
         {
-            if (characters.Count < 1)
+            if (characters== null || characters.Count < 1)
             {
                 return;
             }
@@ -415,6 +415,10 @@ namespace VnManager.MetadataProviders.Vndb
         #region VnReleases
         public static void SaveVnReleases(ICollection<Release> vnReleases)
         {
+            if (vnReleases == null)
+            {
+                return;
+            }
             var cred = CredentialManager.GetCredentials(App.CredDb);
             if (cred == null || cred.UserName.Length < 1)
             {
@@ -542,6 +546,10 @@ namespace VnManager.MetadataProviders.Vndb
         #region VnProducers
         public static void SaveProducers(List<Producer> vnProducers)
         {
+            if (vnProducers == null)
+            {
+                return;
+            }
             var cred = CredentialManager.GetCredentials(App.CredDb);
             if (cred == null || cred.UserName.Length < 1)
             {
@@ -610,6 +618,10 @@ namespace VnManager.MetadataProviders.Vndb
         #region VnStaff
         public static void SaveStaff(List<Staff> vnStaffList, int vnid)
         {
+            if (vnStaffList == null)
+            {
+                return;
+            }
             var cred = CredentialManager.GetCredentials(App.CredDb);
             if (cred == null || cred.UserName.Length < 1)
             {

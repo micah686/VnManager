@@ -15,10 +15,12 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
         public static string WindowTitle { get; set; }
         public static string GameTitle { get; set; }
 
+        private readonly IContainer _container;
         public ModifyGameHostViewModel(IContainer container)
         {
-            var gamePath = container.Get<ModifyGamePathViewModel>();
-            var gameCategories = container.Get<ModifyGameCategoriesViewModel>();
+            _container = container;
+            var gamePath = _container.Get<ModifyGamePathViewModel>();
+            var gameCategories = _container.Get<ModifyGameCategoriesViewModel>();
             Items.Add(gamePath);
             Items.Add(gameCategories);
             

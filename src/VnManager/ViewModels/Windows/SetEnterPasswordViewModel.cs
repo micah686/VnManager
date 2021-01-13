@@ -205,10 +205,11 @@ namespace VnManager.ViewModels.Windows
         /// <returns></returns>
         public async Task UnlockPasswordKeyPressedAsync(KeyEventArgs e)
         {
-            if (e.Key == Key.Enter)
+            if (e != null && e.Key == Key.Enter)
             {
                 await UnlockPasswordClickAsync();
             }
+            
         }
 
         /// <summary>

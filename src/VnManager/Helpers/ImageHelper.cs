@@ -216,6 +216,10 @@ namespace VnManager.Helpers
         /// <returns></returns>
         public static async Task DownloadImageAsync(Uri uri, bool isNsfw, string path)
         {
+            if (uri == null)
+            {
+                return;
+            }
             try
             {
                 if (string.IsNullOrEmpty(uri.AbsoluteUri))
@@ -309,6 +313,10 @@ namespace VnManager.Helpers
         /// <returns></returns>
         public static Bitmap GetBitmap(BitmapSource source)
         {
+            if (source == null)
+            {
+                return new Bitmap(0,0);
+            }
             Bitmap bmp = new Bitmap
             (
                 source.PixelWidth,
@@ -343,6 +351,10 @@ namespace VnManager.Helpers
         /// <returns></returns>
         public static BitmapSource GetBitmapSource(Bitmap bitmap)
         {
+            if (bitmap == null)
+            {
+                return new BitmapImage();
+            }
             BitmapSource bitmapSource = Imaging.CreateBitmapSourceFromHBitmap
             (
                 bitmap.GetHbitmap(),
