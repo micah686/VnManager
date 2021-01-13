@@ -34,8 +34,9 @@ namespace VnManager.Utilities
         /// <returns></returns>
         private static ILogger SetInitialLogger()
         {
-            return new LoggerConfiguration().WriteTo.File(new SerilogFormatter(), $@"{GetConfigDirectory()}\logs\{DateTime.Now:dd-MM-yyyy}_{LogLevel.ToString()}.log",
+            var logConfig = new LoggerConfiguration().WriteTo.File(new SerilogFormatter(), $@"{GetConfigDirectory()}\logs\{DateTime.Now:dd-MM-yyyy}_{LogLevel.ToString()}.log",
                 fileSizeLimitBytes: 500000, rollOnFileSizeLimit: true, retainedFileCountLimit: 15).CreateLogger();
+            return logConfig;
         }
 
         /// <summary>

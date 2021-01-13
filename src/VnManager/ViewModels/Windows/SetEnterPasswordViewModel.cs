@@ -229,22 +229,28 @@ namespace VnManager.ViewModels.Windows
         /// <returns></returns>
         private async Task PasswordAttemptCheckerAsync()
         {
+            const int fewTries = 5;
+            const int fewTriesWait = 650;
+            const int mediumTries = 20;
+            const int maxTries = 50;
+            const int maxTriesWait = 30;
+            
             switch (_attemptCounter)
             {
-                case { } n when (n <= 5):
+                case { } n when (n <= fewTries):
                     IsUnlockPasswordButtonEnabled = false;
-                    await Task.Delay(TimeSpan.FromMilliseconds(650));
+                    await Task.Delay(TimeSpan.FromMilliseconds(fewTriesWait));
                     IsUnlockPasswordButtonEnabled = true;
                     break;
-                case { } n when (n >= 5 && n <= 20):
+                case { } n when (n >= fewTries && n <= mediumTries):
                     IsUnlockPasswordButtonEnabled = false;
                     var wait = new Random().NextDouble() * new Random().Next(2,8) + 2;
                     await Task.Delay(TimeSpan.FromSeconds(wait));
                     IsUnlockPasswordButtonEnabled = true;
                     break;
-                case { } n when (n > 20 && n <= 50):
+                case { } n when (n > mediumTries && n <= maxTries):
                     IsUnlockPasswordButtonEnabled = false;
-                    await Task.Delay(TimeSpan.FromSeconds(30));
+                    await Task.Delay(TimeSpan.FromSeconds(maxTriesWait));
                     IsUnlockPasswordButtonEnabled = true;
                     break;
                 default:

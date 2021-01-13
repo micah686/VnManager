@@ -16,6 +16,8 @@ namespace VnManager.Helpers
         /// <returns></returns>
         public static string GetHumanDate(DateTime dateTime)
         {
+            const int daysOfWeek = 7;
+            const int todayYesterday = 2;
             string output;
             if (dateTime == DateTime.MinValue)
             {
@@ -23,13 +25,13 @@ namespace VnManager.Helpers
             }
             else
             {
-                if ((Convert.ToDateTime(dateTime) - DateTime.Today).Days > -7)
+                if ((Convert.ToDateTime(dateTime) - DateTime.Today).Days > -daysOfWeek)
                 {
                     if (dateTime == DateTime.Today)
                     {
                         output = "Today";
                     }
-                    else if ((Convert.ToDateTime(dateTime) - DateTime.Today).Days > -2 &&
+                    else if ((Convert.ToDateTime(dateTime) - DateTime.Today).Days > -todayYesterday &&
                              (Convert.ToDateTime(dateTime) - DateTime.Today).Days < 0)
                     {
                         output = "Yesterday";
@@ -57,11 +59,12 @@ namespace VnManager.Helpers
         public static string GetHumanTime(TimeSpan timeSpan)
         {
             string output;
+            const int minuteSpan = 60;
             if (timeSpan == TimeSpan.Zero)
             {
                 output = "Never";
             }
-            else if (timeSpan == new TimeSpan(0, 0, 0, 60))
+            else if (timeSpan == new TimeSpan(0, 0, 0, minuteSpan))
             {
                 output = "Less than a minute";
             }

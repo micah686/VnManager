@@ -226,11 +226,12 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
 
         private async Task<bool> PreSearchCheckAsync()
         {
+            
             if (string.IsNullOrEmpty(VnName) || string.IsNullOrWhiteSpace(VnName))
             {
                 return false;
             }
-            if (VnName.Length < 2)
+            if (VnName.Length <= 1)
             {
                 return false;
             }
@@ -243,8 +244,9 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             {
                 if (VndbConnectionTest.VndbTcpSocketTest() == false)
                 {
+                    const int delay = 3500;
                     App.Logger.Warning("Could not connect to the Vndb API over SSL");
-                    await Task.Delay(3500);
+                    await Task.Delay(delay);
                 }
                 else
                 {

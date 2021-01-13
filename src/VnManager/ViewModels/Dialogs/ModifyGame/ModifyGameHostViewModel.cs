@@ -49,19 +49,7 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
             {
                 case AddGameSourceType.Vndb:
                 {
-                    var cred = CredentialManager.GetCredentials(App.CredDb);
-                    if (cred == null || cred.UserName.Length < 1)
-                    {
-                        return;
-                    }
-                    using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
-                    var dbUserData = db.GetCollection<VnInfo>(DbVnInfo.VnInfo.ToString()).Query()
-                        .Where(x => x.VnId == SelectedGame.GameId.Value).FirstOrDefault();
-                    if (dbUserData != null)
-                    {
-                        WindowTitle = $"{App.ResMan.GetString("Modify")} {dbUserData.Title}";
-                        GameTitle = dbUserData.Title;
-                    }
+                    SetVndbTitle();
 
                     break;
                 }
@@ -72,6 +60,23 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
                 default:
                     //do nothing
                     break;
+            }
+        }
+
+        private static void SetVndbTitle()
+        {
+            var cred = CredentialManager.GetCredentials(App.CredDb);
+            if (cred == null || cred.UserName.Length < 1)
+            {
+                return;
+            }
+            using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
+            var dbUserData = db.GetCollection<VnInfo>(DbVnInfo.VnInfo.ToString()).Query()
+                .Where(x => x.VnId == SelectedGame.GameId.Value).FirstOrDefault();
+            if (dbUserData != null)
+            {
+                WindowTitle = $"{App.ResMan.GetString("Modify")} {dbUserData.Title}";
+                GameTitle = dbUserData.Title;
             }
         }
     }

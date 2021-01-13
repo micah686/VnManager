@@ -65,7 +65,7 @@ namespace VnManager.Helpers.Vndb
         /// <returns></returns>
         public static async Task ThrottledWaitAsync(ThrottledError throttled, int counter)
         {
-            
+            const int bufferWait = 5;
             var minWait = TimeSpan.FromSeconds((throttled.MinimumWait - DateTime.Now).TotalSeconds);
             var maxWait = TimeSpan.FromSeconds((throttled.FullWait - DateTime.Now).TotalSeconds);
             Debug.WriteLine($"Vndb API throttled! You need to wait {minWait.Seconds} seconds minimum or {maxWait.Seconds} seconds maximum before issuing new commands\nErrorCounter:{counter}");
@@ -74,7 +74,7 @@ namespace VnManager.Helpers.Vndb
             double waitTime = counter == 0 ? minWait.TotalSeconds : TimeSpan.FromSeconds(5).TotalSeconds;            
             if (counter >= 1)
             {
-                waitTime = waitTime > maxWait.TotalSeconds ? maxWait.TotalSeconds : minWait.TotalSeconds + 5;
+                waitTime = waitTime > maxWait.TotalSeconds ? maxWait.TotalSeconds : minWait.TotalSeconds + bufferWait;
             }
             waitTime = Math.Abs(waitTime);
             var timeSpan = TimeSpan.FromSeconds(waitTime);

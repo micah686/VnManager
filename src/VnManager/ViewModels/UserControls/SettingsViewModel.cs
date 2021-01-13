@@ -55,13 +55,13 @@ namespace VnManager.ViewModels.UserControls
                 switch (App.UserSettings.MaxSexualRating)
                 {
                     case SexualRating.Safe:
-                        MaxSexualIndex = 0;
+                        MaxSexualIndex = (int)SexualRating.Safe;
                         break;
                     case SexualRating.Suggestive:
-                        MaxSexualIndex = 1;
+                        MaxSexualIndex = (int)SexualRating.Suggestive;
                         break;
                     case SexualRating.Explicit:
-                        MaxSexualIndex = 2;
+                        MaxSexualIndex = (int)SexualRating.Explicit;
                         break;
                     default:
                         MaxSexualIndex = 0;
@@ -79,13 +79,13 @@ namespace VnManager.ViewModels.UserControls
                 switch (App.UserSettings.MaxViolenceRating)
                 {
                     case ViolenceRating.Tame:
-                        MaxViolenceIndex = 0;
+                        MaxViolenceIndex = (int)ViolenceRating.Tame;
                         break;
                     case ViolenceRating.Violent:
-                        MaxViolenceIndex = 1;
+                        MaxViolenceIndex = (int)ViolenceRating.Violent;
                         break;
                     case ViolenceRating.Brutal:
-                        MaxViolenceIndex = 2;
+                        MaxViolenceIndex = (int)ViolenceRating.Brutal;
                         break;
                     default:
                         MaxViolenceIndex = 0;
@@ -103,13 +103,13 @@ namespace VnManager.ViewModels.UserControls
                 switch (App.UserSettings.SettingsVndb.Spoiler)
                 {
                     case SpoilerLevel.None:
-                        SpoilerIndex = 0;
+                        SpoilerIndex = (int)SpoilerLevel.None;
                         break;
                     case SpoilerLevel.Minor:
-                        SpoilerIndex = 1;
+                        SpoilerIndex = (int)SpoilerLevel.Minor;
                         break;
                     case SpoilerLevel.Major:
-                        SpoilerIndex = 2;
+                        SpoilerIndex = (int)SpoilerLevel.Major;
                         break;
                     default:
                         SpoilerIndex = 0;

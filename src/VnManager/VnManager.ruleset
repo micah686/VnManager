@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RuleSet Name="SonarQube - VnManager Strict C#" ToolsVersion="16.0">
+  <Include Path="..\.sonarlint\micah686_vnmanagercsharp.ruleset" Action="Default" />
+  <Include Path="..\.sonarlint\micah686_vnmanagercsharp.ruleset" Action="Default" />
+</RuleSet>

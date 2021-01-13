@@ -39,8 +39,6 @@ namespace VnManager.ViewModels.UserControls
             _container = container;
             _windowManager = windowManager;
             _testImg = ImageHelper.CreateEmptyBitmapImage();
-            var foo = _container.Get<ImportViewModel>();
-            _windowManager.ShowWindow(foo);
         }
 
         

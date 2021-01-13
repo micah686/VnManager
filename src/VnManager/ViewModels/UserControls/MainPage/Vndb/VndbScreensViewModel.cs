@@ -58,7 +58,10 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             _scrList = LoadScreenshotList();
             BindScreenshotCollection();
             _finishedLoad = true;
-            if (ScreenshotCollection.Count > 0) SelectedScreenIndex = 0;
+            if (ScreenshotCollection.Count > 0)
+            {
+                SelectedScreenIndex = 0;
+            }
         }
 
         private List<BindingImage> LoadScreenshotList()
@@ -78,6 +81,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
 
         private void LoadLargeScreenshot()
         {
+            const int blurWeight = 20;
             try
             {
                 List<BindingImage> screenshotList = _scrList;
@@ -97,12 +101,12 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
                     var imgBytes = File.ReadAllBytes($"{path}.aes");
                     var imgStream = Secure.DecStreamToStream(new MemoryStream(imgBytes));
                     var imgNsfw = ImageHelper.CreateBitmapFromStream(imgStream);
-                    MainImage = CreateBlurBindingImage(imgNsfw, userIsNsfw, 20);
+                    MainImage = CreateBlurBindingImage(imgNsfw, userIsNsfw, blurWeight);
                 }
                 else
                 {
                     var img = ImageHelper.CreateBitmapFromPath(path);
-                    MainImage = CreateBlurBindingImage(img, userIsNsfw, 20);
+                    MainImage = CreateBlurBindingImage(img, userIsNsfw, blurWeight);
                 }
             }
             catch (Exception e)
@@ -115,6 +119,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
 
         private void BindScreenshotCollection()
         {
+            const int blurWeight = 10;
             List<BindingImage> screenshotList = _scrList;
             List<BindingImage> toDelete = new List<BindingImage>();
             foreach (var item in screenshotList)
@@ -134,12 +139,12 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
                     var imgBytes = File.ReadAllBytes($"{thumbPath}.aes");
                     var imgStream = Secure.DecStreamToStream(new MemoryStream(imgBytes));
                     image = ImageHelper.CreateBitmapFromStream(imgStream);
-                    ScreenshotCollection.Add(CreateBlurBindingImage(image, userIsNsfw,10));
+                    ScreenshotCollection.Add(CreateBlurBindingImage(image, userIsNsfw,blurWeight));
                 }
                 else if (rating == false && File.Exists(thumbPath) && File.Exists(imagePath))
                 {
                     image = ImageHelper.CreateBitmapFromPath(thumbPath);
-                    ScreenshotCollection.Add(CreateBlurBindingImage(image, userIsNsfw, 10));
+                    ScreenshotCollection.Add(CreateBlurBindingImage(image, userIsNsfw, blurWeight));
                 }
                 else
                 {

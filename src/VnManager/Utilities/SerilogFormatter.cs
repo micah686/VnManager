@@ -46,8 +46,8 @@ namespace VnManager.Utilities
                 outstrBuilder.Append($"[ {logEvent.Level} | {dateStr} {timeStr}] Msg: {logEvent.MessageTemplate}\n");
                 if (logEvent.Exception != null)
                 {
-                    outstrBuilder.Append(
-                        $"Ex Message: {ex.Message}\nStackTrace: {ex.StackTrace}\nInner Ex: {ex.InnerException}\nSource: {ex.Source}\nData: {ex.Data}\nHResult: {ex.HResult}\nTargetSite: {ex.TargetSite}\n\n");
+                    outstrBuilder.Append($"Ex Message: {ex.Message}\nStackTrace: {ex.StackTrace}\nInner Ex: {ex.InnerException}\nSource: " +
+                                         $"{ex.Source}\nData: {ex.Data}\nHResult: {ex.HResult}\nTargetSite: {ex.TargetSite}\n\n");
                 }
                 if (logEvent.Properties.Count > 0)
                 {

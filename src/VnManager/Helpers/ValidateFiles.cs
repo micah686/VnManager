@@ -26,9 +26,9 @@ namespace VnManager.Helpers
                 int bytesRead = 0;
                 using (FileStream fileStream = File.Open(filepath, FileMode.Open, FileAccess.Read, FileShare.Read))
                 {
-                    bytesRead = fileStream.Read(twoBytes, 0, 2);
+                    bytesRead = fileStream.Read(twoBytes, 0, twoBytes.Length);
                 }
-                if (bytesRead != 2)
+                if (bytesRead != twoBytes.Length)
                 {
                     return false;
                 }

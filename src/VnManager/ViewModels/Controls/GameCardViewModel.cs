@@ -41,7 +41,8 @@ namespace VnManager.ViewModels.Controls
                 }
                 else
                 {
-                    value.Image = ImageHelper.BlurImage(value.Image, 10);
+                    const int blurWeight = 10;
+                    value.Image = ImageHelper.BlurImage(value.Image, blurWeight);
                     SetAndNotify(ref _coverImage, value);
 
                 }

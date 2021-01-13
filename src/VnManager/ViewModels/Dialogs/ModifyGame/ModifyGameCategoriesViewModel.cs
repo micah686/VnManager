@@ -284,13 +284,14 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
 
         private bool IsValidName(string input)
         {
+            const int minLetters = 2;
             if (input == null || input == AllCategory)
             {
                 return false;
             }
             var validCharacters = input.All(x => char.IsLetterOrDigit(x) || char.IsWhiteSpace(x));
             var minimumLetters = input.Count(char.IsLetter);
-            return validCharacters && minimumLetters > 2;
+            return validCharacters && minimumLetters > minLetters;
         }
 
         private bool IsNewCategory(string input)

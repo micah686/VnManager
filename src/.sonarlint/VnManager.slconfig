@@ -1,0 +1,15 @@
+{
+  "ServerUri": "https://sonarcloud.io/",
+  "Organization": {
+    "Key": "micah686",
+    "Name": "micah686"
+  },
+  "ProjectKey": "micah686_VnManager",
+  "ProjectName": "VnManager",
+  "Profiles": {
+    "CSharp": {
+      "ProfileKey": "AXayca8549G6u_4ZnOVu",
+      "ProfileTimestamp": "2021-01-12T02:52:43Z"
+    }
+  }
+}
