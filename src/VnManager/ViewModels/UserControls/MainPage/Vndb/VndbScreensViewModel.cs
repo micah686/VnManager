@@ -2,19 +2,12 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using AdysTech.CredentialManager;
 using LiteDB;
 using Stylet;
-using StyletIoC;
-using VndbSharp.Models.Common;
 using VnManager.Helpers;
 using VnManager.Models.Db;
-using VnManager.Models.Db.User;
 using VnManager.Models.Db.Vndb.Main;
 
 namespace VnManager.ViewModels.UserControls.MainPage.Vndb

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace VnManager.Helpers
+﻿namespace VnManager.Helpers
 {
     public static class NormalizeWhiteSpace
     {

@@ -1,20 +1,14 @@
-﻿using System.IO;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Threading;
 using FluentValidation;
-using LiteDB;
 using Stylet;
 using StyletIoC;
-using VnManager.Converters;
 using VnManager.Utilities;
 using VnManager.ViewModels;
 using MvvmDialogs;
 using Sentry;
 using Sentry.Protocol;
-using VnManager.Helpers;
-using VnManager.ViewModels.Dialogs.AddGameSources;
 using VnManager.ViewModels.UserControls;
-using VnManager.ViewModels.Windows;
 using VnManager.ViewModels.Controls;
 
 namespace VnManager

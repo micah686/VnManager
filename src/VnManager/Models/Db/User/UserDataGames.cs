@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using LiteDB;
 using VnManager.Extensions;
 using VnManager.Helpers;
 using VnManager.ViewModels.Dialogs.AddGameSources;
-using VnManager.ViewModels.Windows;
 
 namespace VnManager.Models.Db.User
 {

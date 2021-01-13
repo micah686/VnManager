@@ -1,10 +1,5 @@
 ﻿using System;
-using Serilog.Events;
-using Serilog.Formatting;
-using System.IO;
 using Serilog;
-using Serilog.Core;
-using VnManager.Converters;
 
 namespace VnManager.Utilities
 {

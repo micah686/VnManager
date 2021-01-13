@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows;
+﻿using System.Windows;
 using Microsoft.Xaml.Behaviors;
 
 namespace VnManager.Extensions

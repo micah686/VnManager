@@ -1,12 +1,8 @@
-﻿using MvvmDialogs;
-using Stylet;
+﻿using Stylet;
 using StyletIoC;
 using System;
-using System.Drawing;
 using System.Globalization;
 using System.IO;
-using System.Reflection;
-using System.Resources;
 using System.Windows;
 using System.Windows.Media;
 using AdysTech.CredentialManager;

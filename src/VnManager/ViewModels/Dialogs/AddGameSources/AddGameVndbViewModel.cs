@@ -1,16 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using System.Linq;
-using System.Reflection;
-using System.Resources;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Data;
 using AdysTech.CredentialManager;
 using FluentValidation;
 using LiteDB;
@@ -28,9 +22,6 @@ using VnManager.MetadataProviders;
 using VnManager.Models;
 using VnManager.Models.Db;
 using VnManager.Models.Db.User;
-using VnManager.ViewModels.UserControls;
-using VnManager.ViewModels.Windows;
-using static VnManager.ViewModels.Dialogs.AddGameSources.AddGameMainViewModel;
 
 namespace VnManager.ViewModels.Dialogs.AddGameSources
 {

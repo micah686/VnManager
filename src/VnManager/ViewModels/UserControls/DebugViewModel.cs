@@ -5,7 +5,6 @@ using System.Runtime.InteropServices;
 using System.Windows.Media.Imaging;
 using StyletIoC;
 using VnManager.Helpers;
-using VnManager.ViewModels.Dialogs;
 
 
 namespace VnManager.ViewModels.UserControls

@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using VnManager.ViewModels.Dialogs;
 using VnManager.ViewModels.Dialogs.AddGameSources;
-using VnManager.ViewModels.Windows;
 
 namespace VnManager.Models
 {

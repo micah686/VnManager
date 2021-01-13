@@ -1,5 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using LiteDB;
+﻿using LiteDB;
 using VndbSharp.Models.Dumps;
 
 namespace VnManager.Models.Db.Vndb.TagTrait

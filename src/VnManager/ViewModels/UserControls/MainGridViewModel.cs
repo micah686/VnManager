@@ -1,10 +1,7 @@
 ﻿using MvvmDialogs;
 using Stylet;
 using StyletIoC;
-using VnManager.ViewModels.Dialogs;
-using VnManager.ViewModels.UserControls;
 using VnManager.ViewModels.UserControls.MainPage;
-using VnManager.ViewModels.Windows;
 
 namespace VnManager.ViewModels.UserControls
 {

@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media;
@@ -12,13 +10,10 @@ using AdysTech.CredentialManager;
 using LiteDB;
 using MahApps.Metro.IconPacks;
 using Stylet;
-using VndbSharp.Models.Common;
 using VnManager.Helpers;
 using VnManager.Helpers.Vndb;
 using VnManager.Models.Db;
 using VnManager.Models.Db.Vndb.Character;
-using VnManager.Models.Db.Vndb.TagTrait;
-using VnManager.Models.Settings;
 
 
 namespace VnManager.ViewModels.UserControls.MainPage.Vndb

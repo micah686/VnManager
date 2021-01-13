@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using AdysTech.CredentialManager;
+﻿using AdysTech.CredentialManager;
 using LiteDB;
-using MvvmDialogs;
 using Stylet;
 using StyletIoC;
 using VnManager.Models.Db;

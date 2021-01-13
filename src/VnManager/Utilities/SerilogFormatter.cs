@@ -2,8 +2,6 @@
 using Serilog.Events;
 using Serilog.Formatting;
 using System.IO;
-using Serilog;
-using VnManager.Utilities;
 using System.Text;
 
 namespace VnManager.Utilities

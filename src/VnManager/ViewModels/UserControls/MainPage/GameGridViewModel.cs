@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Windows.Media.Imaging;
 using AdysTech.CredentialManager;
 using LiteDB;
 using Stylet;

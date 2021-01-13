@@ -2,26 +2,17 @@
 using StyletIoC;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Text;
 using VndbSharp.Models.Common;
-using System.Xml;
-using System.Xml.Serialization;
 using VnManager.Models.Settings;
 using System.IO;
 using VnManager.Helpers;
 using System.Linq;
-using System.Reflection;
-using System.Resources;
-using System.Threading.Tasks;
-using System.Windows;
 using AdysTech.CredentialManager;
 using LiteDB;
 using MvvmDialogs;
 using MvvmDialogs.FrameworkDialogs.FolderBrowser;
 using VnManager.Models.Db;
 using VnManager.Models.Db.User;
-using VnManager.Models.Db.Vndb.Main;
 using VnManager.ViewModels.Dialogs;
 
 namespace VnManager.ViewModels.UserControls

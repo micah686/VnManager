@@ -1,5 +1,4 @@
-﻿using System;
-using LiteDB;
+﻿using LiteDB;
 using VndbSharp.Models.Common;
 
 namespace VnManager.Models.Db.Vndb.Main

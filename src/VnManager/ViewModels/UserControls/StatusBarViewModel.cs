@@ -1,9 +1,4 @@
 ﻿using Stylet;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Text;
-using System.Windows.Media;
 using MahApps.Metro.IconPacks;
 using Brush = System.Windows.Media.Brush;
 using Brushes = System.Windows.Media.Brushes;

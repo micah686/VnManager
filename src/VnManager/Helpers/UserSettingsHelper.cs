@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
-using System.Windows;
-using AdonisUI;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using VndbSharp.Models.Common;

@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using AdysTech.CredentialManager;
@@ -19,7 +18,6 @@ using VnManager.MetadataProviders.Vndb;
 using VnManager.Models.Db;
 using VnManager.Models.Db.User;
 using VnManager.ViewModels.Dialogs.AddGameSources;
-using VnManager.ViewModels.Windows;
 
 namespace VnManager.ViewModels.Dialogs
 {

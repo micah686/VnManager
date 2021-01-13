@@ -1,17 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using AdysTech.CredentialManager;
 using LiteDB;
-using Stylet;
-using StyletIoC;
 using VnManager.MetadataProviders.Vndb;
 using VnManager.Models;
 using VnManager.Models.Db;
 using VnManager.Models.Db.User;
 using VnManager.ViewModels.Dialogs.AddGameSources;
-using VnManager.ViewModels.UserControls;
 
 namespace VnManager.MetadataProviders
 {

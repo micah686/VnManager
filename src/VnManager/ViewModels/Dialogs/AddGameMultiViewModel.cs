@@ -2,11 +2,6 @@
 using MvvmDialogs;
 using MvvmDialogs.FrameworkDialogs.OpenFile;
 using Stylet;
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Resources;
-using System.Text;
 using VnManager.Helpers;
 
 namespace VnManager.ViewModels.Dialogs

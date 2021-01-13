@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using VndbSharp;
-using VndbSharp.Interfaces;
 using VndbSharp.Models;
 using VndbSharp.Models.Character;
 using VndbSharp.Models.Errors;
@@ -14,7 +12,6 @@ using VndbSharp.Models.Release;
 using VndbSharp.Models.Staff;
 using VndbSharp.Models.VisualNovel;
 using VnManager.Helpers.Vndb;
-using VnManager.Models;
 using VnManager.ViewModels.UserControls;
 
 namespace VnManager.MetadataProviders.Vndb

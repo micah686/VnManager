@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Windows;
 using AdysTech.CredentialManager;
 using FluentValidation;
@@ -9,11 +6,9 @@ using LiteDB;
 using MvvmDialogs;
 using MvvmDialogs.FrameworkDialogs.OpenFile;
 using Stylet;
-using StyletIoC;
 using VnManager.Helpers;
 using VnManager.Models.Db;
 using VnManager.Models.Db.User;
-using VnManager.Models.Db.Vndb.Main;
 using VnManager.ViewModels.Dialogs.AddGameSources;
 
 namespace VnManager.ViewModels.Dialogs.ModifyGame

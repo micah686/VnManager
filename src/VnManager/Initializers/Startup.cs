@@ -1,17 +1,13 @@
 ﻿using System;
 using System.IO;
 using System.IO.Abstractions;
-using VnManager.Utilities;
 using VnManager.Helpers;
 using System.Globalization;
-using System.Linq;
-using System.Security.Cryptography;
 using AdysTech.CredentialManager;
 using LiteDB;
 using Sentry;
 using VnManager.Models.Db;
 using VnManager.Models.Db.User;
-using VnManager.Models.Db.Vndb.Main;
 
 namespace VnManager.Initializers
 {

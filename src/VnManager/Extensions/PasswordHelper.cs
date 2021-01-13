@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Net;
 using System.Runtime.InteropServices;
 using System.Security;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 

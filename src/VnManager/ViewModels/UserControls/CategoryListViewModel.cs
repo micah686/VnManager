@@ -1,12 +1,9 @@
 ﻿using Stylet;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using AdysTech.CredentialManager;
 using LiteDB;
 using VnManager.Models.Db;
 using VnManager.Models.Db.User;
-using VnManager.ViewModels.Dialogs.ModifyGame;
 
 namespace VnManager.ViewModels.UserControls
 {

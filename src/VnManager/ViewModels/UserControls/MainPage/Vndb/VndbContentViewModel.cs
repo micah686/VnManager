@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Windows;
-using System.Windows.Media;
-using AdysTech.CredentialManager;
-using LiteDB;
-using Stylet;
-using StyletIoC;
-using VnManager.Models.Db;
+﻿using Stylet;
 using VnManager.Models.Db.User;
 
 namespace VnManager.ViewModels.UserControls.MainPage.Vndb

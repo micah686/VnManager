@@ -1,17 +1,11 @@
 ﻿using System;
 using System.Buffers.Binary;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Security.Cryptography;
 using System.IO;
-using System.IO.Compression;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
-using System.Windows;
 using AdysTech.CredentialManager;
 
 namespace VnManager.Helpers

@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using VndbSharp.Interfaces;
 using VndbSharp.Models.Errors;
-using VnManager.Utilities;
 using VnManager.ViewModels.UserControls;
 
 namespace VnManager.Helpers.Vndb
