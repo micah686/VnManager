@@ -8,7 +8,7 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <!-- Boostrapper -->
+                <!-- Bootstrapper -->
                 <s:ApplicationLoader>
                     <s:ApplicationLoader.Bootstrapper>
                         <local:Bootstrapper/>

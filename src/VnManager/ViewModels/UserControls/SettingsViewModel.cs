@@ -9,6 +9,7 @@ using VnManager.Helpers;
 using System.Linq;
 using AdysTech.CredentialManager;
 using LiteDB;
+using LiteDB.Engine;
 using MvvmDialogs;
 using MvvmDialogs.FrameworkDialogs.FolderBrowser;
 using VnManager.Models.Db;
@@ -176,33 +177,13 @@ namespace VnManager.ViewModels.UserControls
             {
                 return;
             }
-            using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
+            
+            File.Copy(Path.Combine(App.ConfigDirPath, App.DbPath), fileName);
+            
+            using (var db = new LiteDatabase($"Filename={fileName};Password={cred.Password}"))
             {
-                var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString()).FindAll();
-
-                using (var exportDatabase = new LiteDatabase(fileName))
-                {
-                    var exportUserData = exportDatabase.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString());
-
-                    List<UserDataGames> userDataList = dbUserData.Select(item => new UserDataGames
-                        {
-                            Id = item.Id,
-                            GameId = item.GameId,
-                            GameName = item.GameName,
-                            SourceType = item.SourceType,
-                            LastPlayed = item.LastPlayed,
-                            PlayTime = item.PlayTime,
-                            Categories = item.Categories,
-                            ExePath = item.ExePath,
-                            IconPath = item.IconPath,
-                            Arguments = item.Arguments
-                        })
-                        .ToList();
-
-                    exportUserData.Insert(userDataList);
-                    _windowManager.ShowMessageBox($"{App.ResMan.GetString("UserDataExportedPath")}\n{fileName}", $"{App.ResMan.GetString("UserDataExportedTitle")}");
-
-                }
+                db.Rebuild(new RebuildOptions {Password = App.ImportExportDbKey});
+                _windowManager.ShowMessageBox($"{App.ResMan.GetString("UserDataExportedPath")}\n{fileName}", $"{App.ResMan.GetString("UserDataExportedTitle")}");
             }
         }
 

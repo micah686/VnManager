@@ -880,69 +880,6 @@ namespace VnManager.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Import was cancelled.
-        /// </summary>
-        public static string ImportDbCancel {
-            get {
-                return ResourceManager.GetString("ImportDbCancel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Cancelling import. Finishing up current item..
-        /// </summary>
-        public static string ImportDbCancelWorking {
-            get {
-                return ResourceManager.GetString("ImportDbCancelWorking", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Getting Metadata (Step 1/4).
-        /// </summary>
-        public static string ImportDbProg1 {
-            get {
-                return ResourceManager.GetString("ImportDbProg1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Saving to Database (Step 2/4).
-        /// </summary>
-        public static string ImportDbProg2 {
-            get {
-                return ResourceManager.GetString("ImportDbProg2", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Downloading Images (Step 3/4).
-        /// </summary>
-        public static string ImportDbProg3 {
-            get {
-                return ResourceManager.GetString("ImportDbProg3", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Downloading Screenshots (Step 4/4).
-        /// </summary>
-        public static string ImportDbProg4 {
-            get {
-                return ResourceManager.GetString("ImportDbProg4", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Importing. This may take a while.
-        /// </summary>
-        public static string ImportDbStarting {
-            get {
-                return ResourceManager.GetString("ImportDbStarting", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Import Into Database.
         /// </summary>
         public static string ImportIntoDb {
@@ -1429,15 +1366,6 @@ namespace VnManager.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Total Progress:.
-        /// </summary>
-        public static string TotalProgressColon {
-            get {
-                return ResourceManager.GetString("TotalProgressColon", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Traits.
         /// </summary>
         public static string Traits {
@@ -1641,6 +1569,15 @@ namespace VnManager.Strings {
         public static string ValidationExePathNotValid {
             get {
                 return ResourceManager.GetString("ValidationExePathNotValid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Validation Failed.
+        /// </summary>
+        public static string ValidationFailed {
+            get {
+                return ResourceManager.GetString("ValidationFailed", resourceCulture);
             }
         }
         

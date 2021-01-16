@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Windows.Data;
 
 namespace VnManager.Converters
 {
@@ -12,6 +15,23 @@ namespace VnManager.Converters
         public static string ConvertToCsv(IEnumerable<string> input)
         {
             return input != null ? string.Join(",", input) : null;
+        }
+    }
+
+    /// <summary>
+    /// Converts an Enumerable list of strings to a CSV
+    /// </summary>
+    public class BindingCsvConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var values = (IEnumerable<string>) value;
+            return values != null ? string.Join(",", values) : null;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
         }
     }
 }

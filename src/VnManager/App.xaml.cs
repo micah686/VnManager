@@ -143,6 +143,10 @@ namespace VnManager
         /// Relative path name for the database
         /// </summary>
         internal const string DbPath = @"database\Data.db";
+        /// <summary>
+        /// Password to encrypt/decrypt the database dump for importing/exporting
+        /// </summary>
+        internal const string ImportExportDbKey = "VnManager!Import#Key_33087@Unlock";
 
     }
 }

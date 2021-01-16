@@ -7,7 +7,7 @@
              xmlns:s="https://github.com/canton7/Stylet"
              xmlns:converters="clr-namespace:VnManager.Converters"
              xmlns:mvd="https://github.com/fantasticfiasco/mvvm-dialogs"
-             xmlns:extensions="clr-namespace:AdonisUI.Extensions;assembly=AdonisUI"
+             xmlns:adExt="clr-namespace:AdonisUI.Extensions;assembly=AdonisUI"
              xmlns:controls="clr-namespace:AdonisUI.Controls;assembly=AdonisUI"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:ext="clr-namespace:VnManager.Extensions"
@@ -15,34 +15,17 @@
              mvd:DialogServiceViews.IsRegistered="True"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance vm:ImportViewModel}"
-             MinHeight="300" MinWidth="300" Height="300" Width="450"
+             MinHeight="300" MinWidth="300" Height="400" Width="650"
              Title="{x:Static res:Resources.ImportDataTitle}">
-    <i:Interaction.Behaviors>
-        <ext:CancelCloseWindowBehavior CancelClose="{Binding BlockClosing}"/>
-    </i:Interaction.Behaviors>
 
     <controls:AdonisWindow.Resources>
         <converters:DataGridRowIdConverter x:Key="RowIdConverter"/>
+        <converters:BindingCsvConverter x:Key="BindingCsvConverter"/>
         <s:BoolToVisibilityConverter x:Key="BoolToVisConverter"/>
         <s:BoolToVisibilityConverter x:Key="InverseVisConverter" FalseVisibility="Visible" TrueVisibility="Collapsed"/>
     </controls:AdonisWindow.Resources>
     <Grid >
-        <Grid HorizontalAlignment="Center" Margin="5" Visibility="{Binding IsImportingVisible, Converter={StaticResource BoolToVisConverter}}">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="50"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-
-            <Label Grid.Row="0"  Content="{Binding ImportMessage}" FontSize="16" />
-            <ProgressBar Grid.Row="1"  IsIndeterminate="{Binding IsImportProcessing}"  Height="25"  Width="225" extensions:ProgressBarExtension.Content="{Binding CurrentProgressMsg}"/>
-            <ProgressBar Grid.Row="2"  Value="{Binding TotalProgress}"  Height="25" Width="225" Margin="0,15,0,0" extensions:ProgressBarExtension.Content="{Binding TotalProgressMsg}"
-                         extensions:ProgressBarExtension.IsProgressAnimationEnabled="{Binding IsImportProcessing}"/>
-            <Button Grid.Row="3"  Width="70" Height="25" HorizontalAlignment="Center" Margin="0,30,0,0" Content="{x:Static res:Resources.Cancel}" Command="{s:Action CancelImport}" IsEnabled="{Binding IsImportProcessing}"/>
-        </Grid>
-
-        <Grid Margin="5" Visibility="{Binding IsImportingVisible, Converter={StaticResource InverseVisConverter}}" >
+        <Grid Margin="5" >
             <Grid.RowDefinitions>
                 <RowDefinition Height="30"/>
                 <RowDefinition Height="*"/>
@@ -52,16 +35,15 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <Label Grid.Column="0" Content="{x:Static res:Resources.BrowseDbDump}"/>
+                <Label Grid.Column="0" Content="{x:Static res:Resources.BrowseDbDump}" Margin="5,3,0,0"/>
                 <Button Grid.Column="1" Content="{x:Static res:Resources.Browse}" HorizontalAlignment="Left" Margin="5,0,0,0" Width="70" VerticalAlignment="Top" Command="{s:Action BrowseImportDump}"/>
+                <TextBlock Grid.Column="2" Text="{Binding DatabaseName}" Margin="15,3,0,0"/>
             </Grid>
             <Grid Grid.Row="1">
-                <DataGrid ItemsSource="{Binding UserDataGamesCollection, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False"
-                                  CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False" CanUserSortColumns="False"
-                                  IsEnabled="{Binding IsDataGridEnabled}">
-                    <DataGrid.Resources>
-                    </DataGrid.Resources>
+                <DataGrid ItemsSource="{Binding UserDataGamesCollection, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False"
+                                  CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False" CanUserSortColumns="False">
                     <DataGrid.Columns>
 
                         <DataGridTextColumn Header="{x:Static res:Resources.GameName}" IsReadOnly="True" Binding="{Binding GameName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
@@ -91,12 +73,12 @@
                         <DataGridTextColumn Header="{x:Static res:Resources.ExeType}" IsReadOnly="True" Binding="{Binding ExeType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
                         <DataGridTextColumn Header="{x:Static res:Resources.LastPlayed}" IsReadOnly="True" Binding="{Binding LastPlayed, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
                         <DataGridTextColumn Header="{x:Static res:Resources.PlayTime}" IsReadOnly="True" Binding="{Binding PlayTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
-                        <DataGridTextColumn Header="{x:Static res:Resources.Categories}"  Binding="{Binding Categories, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
+                        <DataGridTextColumn Header="{x:Static res:Resources.Categories}"  Binding="{Binding Categories, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True, Converter={StaticResource BindingCsvConverter}}"/>
                         <DataGridTemplateColumn Header="{x:Static res:Resources.DeleteRow}">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <Button Content="{x:Static res:Resources.DeleteRow}" Command="{s:Action RemoveRow}" Background="Crimson"
-                                                    CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGridRow}}, Converter={StaticResource RowIdConverter}}"/>
+                                    <Button Content="{x:Static res:Resources.DeleteRow}" Command="{s:Action RemoveRow}" Background="Crimson" adExt:CursorSpotlightExtension.BorderBrush="Orange" adExt:CursorSpotlightExtension.BackgroundBrush="Crimson" 
+                                            adExt:RippleExtension.BackgroundBrush="Crimson" CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGridRow}}, Converter={StaticResource RowIdConverter}}"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -107,8 +89,8 @@
             </Grid>
             <Grid Grid.Row="2">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <Button Width="150" Height="30" Content="{x:Static res:Resources.ImportIntoDb}" Command="{s:Action ValidateDataAsync}" IsEnabled="{Binding IsImportProcessing, Converter={StaticResource InverseVisConverter}}"/>
-                    <Button Width="90" Height="30" Margin="15,0,0,0" Content="{x:Static res:Resources.CancelImport}" Command="{s:Action CancelImport}" IsEnabled="{Binding IsImportProcessing}"/>
+                    <Button Width="150" Height="30" Content="{x:Static res:Resources.ImportIntoDb}" Command="{s:Action ImportDataAsync}" />
+                    
                 </StackPanel>
             </Grid>
 

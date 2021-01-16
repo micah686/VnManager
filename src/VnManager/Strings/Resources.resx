@@ -390,27 +390,6 @@
   <data name="ImportDataTitle" xml:space="preserve">
     <value>Import User Data</value>
   </data>
-  <data name="ImportDbCancel" xml:space="preserve">
-    <value>Import was cancelled</value>
-  </data>
-  <data name="ImportDbCancelWorking" xml:space="preserve">
-    <value>Cancelling import. Finishing up current item.</value>
-  </data>
-  <data name="ImportDbProg1" xml:space="preserve">
-    <value>Getting Metadata (Step 1/4)</value>
-  </data>
-  <data name="ImportDbProg2" xml:space="preserve">
-    <value>Saving to Database (Step 2/4)</value>
-  </data>
-  <data name="ImportDbProg3" xml:space="preserve">
-    <value>Downloading Images (Step 3/4)</value>
-  </data>
-  <data name="ImportDbProg4" xml:space="preserve">
-    <value>Downloading Screenshots (Step 4/4)</value>
-  </data>
-  <data name="ImportDbStarting" xml:space="preserve">
-    <value>Importing. This may take a while</value>
-  </data>
   <data name="ImportIntoDb" xml:space="preserve">
     <value>Import Into Database</value>
   </data>
@@ -573,9 +552,6 @@
   <data name="TitleColon" xml:space="preserve">
     <value>Title:</value>
   </data>
-  <data name="TotalProgressColon" xml:space="preserve">
-    <value>Total Progress:</value>
-  </data>
   <data name="Traits" xml:space="preserve">
     <value>Traits</value>
   </data>
@@ -644,6 +620,9 @@
   </data>
   <data name="ValidationExePathNotValid" xml:space="preserve">
     <value>Not a valid path to exe</value>
+  </data>
+  <data name="ValidationFailed" xml:space="preserve">
+    <value>Validation Failed</value>
   </data>
   <data name="ValidationFailedRecheck" xml:space="preserve">
     <value>Validation Failed. Please fix any errors and try again</value>

@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Media.Imaging;
 using StyletIoC;
 using VnManager.Helpers;
+using VnManager.ViewModels.Dialogs;
 
 
 namespace VnManager.ViewModels.UserControls
@@ -38,6 +39,8 @@ namespace VnManager.ViewModels.UserControls
             _container = container;
             _windowManager = windowManager;
             _testImg = ImageHelper.CreateEmptyBitmapImage();
+            var vm = _container.Get<ImportViewModel>();
+            _windowManager.ShowDialog(vm);
         }
 
         

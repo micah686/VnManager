@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -9,8 +10,10 @@ using System.Windows;
 using AdysTech.CredentialManager;
 using FluentValidation;
 using LiteDB;
+using LiteDB.Engine;
 using MvvmDialogs;
 using MvvmDialogs.FrameworkDialogs.OpenFile;
+using Sentry;
 using Stylet;
 using VndbSharp.Models;
 using VnManager.Helpers;
@@ -21,23 +24,13 @@ using VnManager.ViewModels.Dialogs.AddGameSources;
 
 namespace VnManager.ViewModels.Dialogs
 {
+    /// <summary>
+    /// ViewModel for Importing an old database
+    /// </summary>
     public class ImportViewModel: Screen
     {
-        public BindableCollection<UserDataGames> UserDataGamesCollection { get; set; } = new BindableCollection<UserDataGames>();
-        public bool IsDataGridEnabled { get; set; } = false;
-
-        private bool _didCancelImport = false;
-        public bool IsImportingVisible { get; set; } = false;
-
-        public string ImportMessage { get; set; }
-        public string CurrentProgressMsg { get; set; }
-        public string TotalProgressMsg { get; set; }
-        public double TotalProgress { get; set; }
-        public bool IsImportProcessing { get; set; }
-        public bool BlockClosing { get; set; } = false;
-
-
-        private readonly List<int> _vndbGameIds= new List<int>();
+        public BindableCollection<UserDataGames> UserDataGamesCollection { get; private set; } = new BindableCollection<UserDataGames>();
+        public string DatabaseName { get; set; }
 
         private readonly IDialogService _dialogService;
         private readonly IWindowManager _windowManager;
@@ -50,6 +43,10 @@ namespace VnManager.ViewModels.Dialogs
         }
 
 
+        /// <summary>
+        /// Browse for the encrypted dump for import
+        /// <see cref="BrowseImportDump"/>
+        /// </summary>
         public void BrowseImportDump()
         {
             var settings = new OpenFileDialogSettings
@@ -72,41 +69,60 @@ namespace VnManager.ViewModels.Dialogs
             }
         }
 
+        /// <summary>
+        /// Loads the database, then fills the table with the UserData
+        /// </summary>
+        /// <param name="filePath">Path to the import database file</param>
         private void LoadDatabase(string filePath)
         {
+            string dbError = App.ResMan.GetString("DbError");
             try
             {
-                using (var db = new LiteDatabase($"{filePath}"))
+                using (var db = new LiteDatabase($"Filename={filePath};Password={App.ImportExportDbKey}"))
                 {
                     IEnumerable<UserDataGames> dbUserData =
                         db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString()).FindAll().ToArray();
                     var addList = new List<UserDataGames>();
-                    var validator = new ImportUserDataValidator();
                     foreach (var item in dbUserData)
                     {
-                        var result = validator.Validate(item);
+                        var result = _validator.Validate(item);
                         foreach (var error in result.Errors)
                         {
                             item.SetError(error.PropertyName, error.ErrorMessage);
                         }
+
                         addList.Add(item);
                     }
 
 
                     UserDataGamesCollection.AddRange(addList);
-                    IsDataGridEnabled = true;
+                    File.Copy(filePath, Path.Combine(App.ConfigDirPath, @"database\Import.db"));
                 }
+
+                DatabaseName = Path.GetFileName(filePath);
+            }
+            catch (IOException)
+            {
+                var errorStr = App.ResMan.GetString("DbIsLockedProc");
+                _windowManager.ShowMessageBox(errorStr, dbError, MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
             catch (Exception ex)
             {
                 App.Logger.Warning(ex, "Failed to load database for import");
+                SentrySdk.CaptureException(ex);
                 _windowManager.ShowMessageBox($"{App.ResMan.GetString("ImportInvalidDb")}\n{Path.GetFileName(filePath)}",
                     $"{App.ResMan.GetString("ImportInvalidDbTitle")}", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
         }
 
 
-        public void BrowseExe(int idCol)
+        /// <summary>
+        /// Dialog to select a new Exe file
+        /// <see cref="BrowseExe"/>
+        /// </summary>
+        /// <param name="idCol">Column number from the dataTable</param>
+        /// <returns></returns>
+        public async Task BrowseExe(int idCol)
         {
             if (idCol != -1)
             {
@@ -126,12 +142,20 @@ namespace VnManager.ViewModels.Dialogs
                 {
                     UserDataGamesCollection[idCol].ExePath = settings.FileName;
                     UserDataGamesCollection.Refresh();
+                    UserDataGamesCollection[idCol].ClearAllErrors();
+                    await _validator.ValidateAsync(UserDataGamesCollection[idCol]);
                 }
             }
 
         }
 
-        public void BrowseIcon(int idCol)
+        /// <summary>
+        /// Dialog to select a new Icon file
+        /// <see cref="BrowseIcon"/>
+        /// </summary>
+        /// <param name="idCol">Column number from the dataTable</param>
+        /// <returns></returns>
+        public async Task BrowseIcon(int idCol)
         {
             if (idCol != -1)
             {
@@ -151,11 +175,18 @@ namespace VnManager.ViewModels.Dialogs
                 {
                     UserDataGamesCollection[idCol].IconPath = settings.FileName;
                     UserDataGamesCollection.Refresh();
+                    UserDataGamesCollection[idCol].ClearAllErrors();
+                    await _validator.ValidateAsync(UserDataGamesCollection[idCol]);
                 }
             }
 
         }
 
+        /// <summary>
+        /// Removes the selected row from the dataTable
+        /// <see cref="RemoveRow"/>
+        /// </summary>
+        /// <param name="row">Column number from the dataTable</param>
         public void RemoveRow(int row)
         {
             try
@@ -171,111 +202,73 @@ namespace VnManager.ViewModels.Dialogs
 
         }
 
-        public async Task ValidateDataAsync()
-        {
-            int errorCount = 0;
-            
-            
-            foreach (var item in UserDataGamesCollection)
-            {
-                item.ClearAllErrors();
-                var result = await _validator.ValidateAsync(item);
-                foreach (var error in result.Errors)
-                {
-                    errorCount += 1;
-                    item.SetError(error.PropertyName, error.ErrorMessage);
-                }
-
-            }
-
-            if (errorCount > 0)
-            {
-                _windowManager.ShowMessageBox($"{App.ResMan.GetString("ValidationFailedRecheck")}");
-            }
-            else
-            {
-                await ImportDataAsync();
-
-            }
-
-        }
-
-
-
-        private async Task ImportDataAsync()
+        
+        /// <summary>
+        /// Checks data from import table, then updates the import db
+        /// <see cref="ImportDataAsync"/>
+        /// </summary>
+        /// <returns></returns>
+        public async Task ImportDataAsync()
         {
             try
             {
                 var entryCount = UserDataGamesCollection.Count;
+                var goodEntries = new List<UserDataGames>();
 
+                if (entryCount < 1)
+                {
+                    return;
+                }
+                for (int i = 0; i < entryCount; i++)
+                {
+
+                    var entry = UserDataGamesCollection.First();
+                    entry.ClearAllErrors();
+                    var result = await _validator.ValidateAsync(entry);
+
+                    if (result.Errors.Count > 0)
+                    {
+                        var error = result.Errors.First();
+                        entry.SetError(error.PropertyName, error.ErrorMessage);
+                        _windowManager.ShowMessageBox(App.ResMan.GetString("ValidationFailedRecheck"), App.ResMan.GetString("ValidationFailed"));
+                        return;
+                    }
+                    
+                    
+                    var goodEntry = new UserDataGames()
+                    {
+                        Index = entry.Index, Categories = entry.Categories, Title = entry.Title,
+                        SourceType = entry.SourceType, IconPath = entry.IconPath,
+                        GameId = entry.GameId, Arguments = entry.Arguments, CoverPath = entry.CoverPath,
+                        ExePath = entry.ExePath, ExeType = entry.ExeType, GameName = entry.GameName, Id = entry.Id,
+                        LastPlayed = entry.LastPlayed, PlayTime = entry.PlayTime
+                    };
+                    goodEntries.Add(goodEntry);
+
+                    
+
+                    UserDataGamesCollection.RemoveAt(0);
+                    UserDataGamesCollection.Refresh();
+
+                }
                 var cred = CredentialManager.GetCredentials(App.CredDb);
                 if (cred == null || cred.UserName.Length < 1)
                 {
                     return;
                 }
-
-                BlockClosing = true;
-                IsDataGridEnabled = true;
-                IsImportProcessing = true;
-                for (int i = 0; i < entryCount; i++)
+                var dbString = $"Filename={Path.Combine(App.ConfigDirPath, @"database\Import.db")};Password={App.ImportExportDbKey}";
+                using (var db = new LiteDatabase(dbString))
                 {
-                    if (_didCancelImport == true)
-                    {
-                        BlockClosing = false;
-                        IsDataGridEnabled = true;
-                        return;
-                    }
-                    
-                    int errorCount = 0;
-
-                    int maxId;
-
-                    using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
-                    {
-                        maxId = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString()).Query().OrderByDescending(x => x.Index).Select(x => x.Index)
-                            .FirstOrDefault();
-                    }
-
-                    var entry = UserDataGamesCollection.First();
-                    var result = await _validator.ValidateAsync(entry);
-                    foreach (var error in result.Errors)
-                    {
-                        errorCount += 1;
-                        entry.SetError(error.PropertyName, error.ErrorMessage);
-                    }
-
-                    if (errorCount > 0)
-                    {
-                        
-                        _windowManager.ShowMessageBox($"{App.ResMan.GetString("ValidationFailedRecheck")}");
-                        return;
-                    }
-
-                    maxId += 1;
-                    entry.Index = maxId;
-
-                    await Task.Run(() =>
-                    {
-                        using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
-                        var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString());
-                        dbUserData.Insert(entry);
-                    });
-
-                    if (entry.SourceType == AddGameSourceType.Vndb)
-                    {
-                        _vndbGameIds.Add(entry.GameId);
-                    }
-
-                    UserDataGamesCollection.RemoveAt(0);
-                    UserDataGamesCollection.Refresh();
-
-                    BlockClosing = false;
+                    var userGames = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString());
+                    userGames.DeleteAll();
+                    userGames.InsertBulk(goodEntries);
+                    db.Rebuild(new RebuildOptions {Password = cred.Password});
                 }
-
-                BlockClosing = false;
-                IsDataGridEnabled = true;
-                IsImportProcessing = false;
-                await UpdateVndbDataAsync(_vndbGameIds);
+                
+                File.Delete(Path.Combine(App.ConfigDirPath, App.DbPath));
+                File.Move(Path.Combine(App.ConfigDirPath, @"database\Import.db"), Path.Combine(App.ConfigDirPath, App.DbPath));
+                
+                _windowManager.ShowMessageBox(App.ResMan.GetString("UserDataImported"), App.ResMan.GetString("ImportComplete"));
             }
             catch (Exception ex)
             {
@@ -288,82 +281,25 @@ namespace VnManager.ViewModels.Dialogs
 
         }
 
-
-        private async Task UpdateVndbDataAsync(ICollection<int> gameIds)
+        /// <summary>
+        /// Checks to see if the temporary Import.db still exists
+        /// If it does, delete it
+        /// </summary>
+        protected override void OnClose()
         {
-            RequestOptions ro = new RequestOptions { Count = 25 };
-            var getData = new GetVndbData();
-            using (var client = new VndbSharp.Vndb(true))
+            if (File.Exists(Path.Combine(App.ConfigDirPath, @"database\Import.db")))
             {
-                IsImportingVisible = true;
-                IsImportProcessing = true;
-                ImportMessage = $"{App.ResMan.GetString("ImportDbStarting")}";
-                TotalProgressMsg = $"{App.ResMan.GetString("TotalProgressColon")} 0/{gameIds.Count}";
-                var totalIncrement = 100 / gameIds.Count;
-                var count = 0;
-
-
-                foreach (var strId in gameIds)
-                {
-                    while (_didCancelImport == false)
-                    {
-                        BlockClosing = true;
-                        CurrentProgressMsg = $"{App.ResMan.GetString("ImportDbProg1")}";
-                        var id = (uint)strId;
-                        var visualNovel = await getData.GetVisualNovelAsync(client, id);
-                        var releases = await getData.GetReleasesAsync(client, id, ro);
-                        uint[] producerIds = releases.SelectMany(x => x.Producers.Select(y => y.Id)).Distinct().ToArray();
-                        var producers = await getData.GetProducersAsync(client, producerIds, ro);
-                        var characters = await getData.GetCharactersAsync(client, id, ro);
-                        uint[] staffIds = visualNovel.Staff.Select(x => x.StaffId).Distinct().ToArray();
-                        var staff = await getData.GetStaffAsync(client, staffIds, ro);
-
-                        CurrentProgressMsg = $"{App.ResMan.GetString("ImportDbProg2")}";
-                        SaveVnDataToDb.SaveVnInfo(visualNovel);
-                        SaveVnDataToDb.SaveVnCharacters(characters, id);
-                        SaveVnDataToDb.SaveVnReleases(releases);
-                        SaveVnDataToDb.SaveProducers(producers);
-                        SaveVnDataToDb.SaveStaff(staff, (int)id);
-
-                        CurrentProgressMsg = $"{App.ResMan.GetString("ImportDbProg3")}";
-                        await DownloadVndbContent.DownloadCoverImageAsync(id);
-                        await DownloadVndbContent.DownloadCharacterImagesAsync(id);
-                        CurrentProgressMsg = $"{App.ResMan.GetString("ImportDbProg4")}";
-                        await DownloadVndbContent.DownloadScreenshotsAsync(id);
-
-
-                        TotalProgress += totalIncrement;
-                        count = count + 1;
-                        TotalProgressMsg = $"{App.ResMan.GetString("TotalProgressColon")} {count}/ {gameIds.Count}";
-                        BlockClosing = false;
-                    }
-
-                }
-
-                ImportMessage = _didCancelImport ? $"{App.ResMan.GetString("ImportDbCancel")}" : $"{App.ResMan.GetString("ImportComplete")}. \n {App.ResMan.GetString("CanCloseWindow")}";
-
-                CurrentProgressMsg = $"{ App.ResMan.GetString("Done")}";
-                IsImportProcessing = false;
-
+                File.Delete(Path.Combine(App.ConfigDirPath, @"database\Import.db"));
             }
-            _windowManager.ShowMessageBox($"{App.ResMan.GetString("UserDataImported")}");
         }
-
-
-        public void CancelImport()
-        {
-            _didCancelImport = true;
-            IsDataGridEnabled = true;
-            BlockClosing = false;
-            IsImportProcessing = false;
-            ImportMessage = $"{App.ResMan.GetString("ImportDbCancelWorking")}";
-        }
-
     }
 
-
+    
     public class ImportUserDataValidator : AbstractValidator<UserDataGames>
     {
+        /// <summary>
+        /// Validation methods
+        /// </summary>
         public ImportUserDataValidator()
         {
             RuleFor(x => x.Id).Cascade(CascadeMode.Stop)
@@ -397,6 +333,11 @@ namespace VnManager.ViewModels.Dialogs
         }
 
         #region Helpers
+        /// <summary>
+        /// Checks if Guid is valid
+        /// </summary>
+        /// <param name="guid">GUID to check</param>
+        /// <returns></returns>
         public static bool IsValidGuid(Guid guid)
         {
             bool isValid = Guid.TryParse(guid.ToString(), out _);
@@ -407,6 +348,11 @@ namespace VnManager.ViewModels.Dialogs
             return isValid;
         }
 
+        /// <summary>
+        /// Checks that there isn't a duplicate GUID
+        /// </summary>
+        /// <param name="id">GUID to check</param>
+        /// <returns></returns>
         private static bool IsNotDuplicateGuid(Guid id)
         {
             var cred = CredentialManager.GetCredentials(App.CredDb);
@@ -421,13 +367,23 @@ namespace VnManager.ViewModels.Dialogs
             }
         }
 
+        /// <summary>
+        /// Checks if string is valid int
+        /// </summary>
+        /// <param name="id">id to validate</param>
+        /// <returns></returns>
         private static bool ValidateInteger(Stringable<int> id)
         {
             var result = int.TryParse(id.StringValue, out _);
             return result;
         }
 
-
+        /// <summary>
+        /// Checks if the value is valid in the specified enum
+        /// </summary>
+        /// <param name="value">Enum to Validate</param>
+        /// <param name="enumType">Specified Enum Type</param>
+        /// <returns></returns>
         private static bool IsDefinedInEnum(Enum value, Type enumType)
         {
             if (value.GetType() != enumType)
@@ -438,12 +394,22 @@ namespace VnManager.ViewModels.Dialogs
             return Enum.IsDefined(enumType, value);
         }
 
+        /// <summary>
+        /// checks if the DateTime is valid
+        /// </summary>
+        /// <param name="dateTime">DateTime to validate</param>
+        /// <returns></returns>
         private static bool ValidateDateTime(DateTime dateTime)
         {
             var result = DateTime.TryParse(dateTime.ToString(CultureInfo.InvariantCulture), out _);
             return result;
         }
 
+        /// <summary>
+        /// Checks if the TimeSpan is valid
+        /// </summary>
+        /// <param name="ts">Timespan to validate</param>
+        /// <returns></returns>
         private static bool ValidateTimeSpan(TimeSpan ts)
         {
             var result = TimeSpan.TryParse(ts.ToString(), CultureInfo.InvariantCulture, out _);
