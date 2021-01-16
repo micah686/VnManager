@@ -4,57 +4,56 @@
     ".NETCoreApp,Version=v3.1": {
       "AdonisUI.ClassicTheme": {
         "type": "Direct",
-        "requested": "[1.16.0, )",
-        "resolved": "1.16.0",
-        "contentHash": "vx1oqFXO2HrFAUtU5UXvY/FkaEhY146EHktQiPCHuxObwslCVX+/jBMY+vmROzEpp5/Tv7R9hYAE1oS8CjdTsw==",
+        "requested": "[1.17.0, )",
+        "resolved": "1.17.0",
+        "contentHash": "5HMwLksmq2KxLywIGQk89Kr5eHfphYxhxXZ4y7Z8LvcwxZHlvt43eywf5fQCDtVCFA3hYWP65Lwh9CRJAbGtsw==",
         "dependencies": {
-          "AdonisUI": "1.16.0"
+          "AdonisUI": "1.17.0"
         }
       },
       "AdysTech.CredentialManager": {
         "type": "Direct",
-        "requested": "[2.2.0, )",
-        "resolved": "2.2.0",
-        "contentHash": "RcjusdpJJzRQcgp4yr2qotv6WMFMUxMVMIV4QyP0g6MlroFhTS2p9sANOClcmi9sF8cT9DFAUOd6bihhMiiZrQ=="
+        "requested": "[2.3.0, )",
+        "resolved": "2.3.0",
+        "contentHash": "TSIZDpH5OKbd7nwDh7XR7KL9zEJpKjzD15lDYtdPqZ7kzTPmebh8E9FKEntJxPS+HpGScYeN8npYzfIGgRIw0Q=="
       },
       "FluentValidation": {
         "type": "Direct",
-        "requested": "[9.2.1, )",
-        "resolved": "9.2.1",
-        "contentHash": "ID5dfcOlqQPc+Y001if7ZezMBv95AYCTwjmG8f6f8cE/dOjcCO4L0rSa+QTqtgfJmJJDFIU0oifRDTmDrxP9+A=="
+        "requested": "[9.4.0, )",
+        "resolved": "9.4.0",
+        "contentHash": "MfOKZJoGX2B7sh0tEB8BU6pRL/ECvSKiNcrK9QsZ3aQYTVQKL9Fw0FR8qh4Wy9+DIQz9didDiMm0HfCOt6S62A=="
       },
       "LiteDB": {
         "type": "Direct",
-        "requested": "[5.0.9, )",
-        "resolved": "5.0.9",
-        "contentHash": "cWnNWXL+qaP/qrkUCYZHBUJcv+IsfJfofa+Ed4EyT0zs/gkXqfKvjTbS3uSMBfcd9I7Yf+q9YPmCpmVFrVGQtw=="
+        "requested": "[5.0.10, )",
+        "resolved": "5.0.10",
+        "contentHash": "x70WuqMDuP75dajqSLvO+AnI/BbwS6da+ukTO7rueV7VoXoQ5CRA9FV4r7cOS4OUr2NS1Up7LDIutjCxQycRvg=="
       },
       "MahApps.Metro.IconPacks.Material": {
         "type": "Direct",
-        "requested": "[4.5.0, )",
-        "resolved": "4.5.0",
-        "contentHash": "bvOGaQX/B12lspUnV3L7KBt2MKLnForwd+5V1t/zR3nTLpbUKpEaiv44zBv9L0MTSc/lMLa8SmwrzgL1t9mrzg=="
+        "requested": "[4.8.0, )",
+        "resolved": "4.8.0",
+        "contentHash": "KZ6BRhXtFlcKuuh5n13ezexZSuyVOo7O+tQwacLRvzfl421P+/rWfRO1rcsHimvo2Bpm4cG8uTj7KXagsioJyg=="
       },
       "Microsoft.Xaml.Behaviors.Wpf": {
         "type": "Direct",
-        "requested": "[1.1.19, )",
-        "resolved": "1.1.19",
-        "contentHash": "5sPWkbqImc2t1aQwIfJcKsUo7tOg1Tr8+6xVzZJB56Nzt4u9NlpcLofgdX/aRYpPKdWDA3U23Akw1KQzU5e82g=="
+        "requested": "[1.1.31, )",
+        "resolved": "1.1.31",
+        "contentHash": "LZpuf82ACZWldmfMuv3CTUMDh3o0xo0uHUaybR5HgqVLDBJJ9RZLykplQ/bTJd0/VDt3EhD4iDgUgbdIUAM+Kg=="
       },
       "MvvmDialogs": {
         "type": "Direct",
-        "requested": "[7.1.1, )",
-        "resolved": "7.1.1",
-        "contentHash": "zqmycGZ3zdSqaUDwAOpTfhePRPcCWtT226V0AWAK6iR6Y//V6skiO3NvLiUNwtVDGvvn40CyNnrsPqLrvD+sgA=="
+        "requested": "[8.0.0, )",
+        "resolved": "8.0.0",
+        "contentHash": "hxcVWQkqF6HGNDaAC6CISy7ZI4gLTLkkgDHzDvDq/oYesNmFOhF9Qr5J90e7vWTT5maCEzRT2rGP98YCVkT94g=="
       },
       "PropertyChanged.Fody": {
         "type": "Direct",
-        "requested": "[3.2.9, )",
-        "resolved": "3.2.9",
-        "contentHash": "HA88YFp467IF8GHPENg+wBGo2RPHnInxVOZNwjnHXkumieFSY0XMIF3etneME8oLZeXHOjfPBe7TxDL3Pc5YSw==",
+        "requested": "[3.3.1, )",
+        "resolved": "3.3.1",
+        "contentHash": "/K/X8wn2IZV7Zezb+WvieOalWopFJKEcB7BrPoDFCj74VexupWdtvqriCoifSyrX0E+XhTzk0cVQd26hQ7TODg==",
         "dependencies": {
-          "Fody": "6.2.4",
-          "NETStandard.Library": "1.6.1"
+          "Fody": "6.3.0"
         }
       },
       "Sentry": {
@@ -88,27 +87,27 @@
       },
       "Stylet": {
         "type": "Direct",
-        "requested": "[1.3.4, )",
-        "resolved": "1.3.4",
-        "contentHash": "bCEdA+AIi+TM9SQQGLYMsFRIfzZcDUDg2Mznyr72kOkcC/cdBj01/jel4/v2aoKwbFcxVjiqmpgnbsFgMEZ4zQ==",
+        "requested": "[1.3.5, )",
+        "resolved": "1.3.5",
+        "contentHash": "9vjjaTgf5sZAGHnxQWIslD32MG5gXj7ANgS+w965L5Eh//UC3qwZDrEf226Pf+v1P/ldAJDpUySnOyGlb3TSSw==",
         "dependencies": {
           "System.Drawing.Common": "4.6.0"
         }
       },
       "System.IO.Abstractions.TestingHelpers": {
         "type": "Direct",
-        "requested": "[12.1.9, )",
-        "resolved": "12.1.9",
-        "contentHash": "l9JaOqamOxaHnKhNboAjFlAI5meOA7heB18l5UGSPigxRXCTQB0ucfe7QsoSZPNtILVkQa3w3kkZYy7qM25XPw==",
+        "requested": "[13.2.9, )",
+        "resolved": "13.2.9",
+        "contentHash": "R5ATxnRqYV9aFknnp3WIdTbyM7bObrkcG6njl0CM9plrlImPr1T/VgHQRwdHyjnuMdnFVl4G3XuXkgrSd6Bxuw==",
         "dependencies": {
-          "System.IO.Abstractions": "12.1.9"
+          "System.IO.Abstractions": "13.2.9"
         }
       },
       "VndbSharp": {
         "type": "Direct",
-        "requested": "[1.1.0, )",
-        "resolved": "1.1.0",
-        "contentHash": "K8DA/dVN6qxZfFkZgaUe24ebin9y2xt4BkLYcD7IVhDtez8fGvOGvm3M9od1IdaKeqxR8BRgPaiBrtHWZT4PhQ==",
+        "requested": "[1.1.1, )",
+        "resolved": "1.1.1",
+        "contentHash": "GUHM5LEngMoQCDu55f0TYFtCDmhLh4UbP4/OOfMrhMgJH+9AeiBqDGYZSqEHETKi7oJpCxCdd4+ozO4vho2amg==",
         "dependencies": {
           "NETStandard.Library": "1.6.1",
           "Newtonsoft.Json": "10.0.3",
@@ -120,16 +119,16 @@
       },
       "AdonisUI": {
         "type": "Transitive",
-        "resolved": "1.16.0",
-        "contentHash": "FJdHAyIqAHA8JDqev4qUHVGFcgly/EydaTtBwACNl4B73k2WAy18CTGn4NDnokpprI9eTtWrQaLkdGUWcLyVCQ==",
+        "resolved": "1.17.0",
+        "contentHash": "Qb0T6TuQB9fPYESFr24clBNC+QbIJB07yWaZ7OotSrNHsBj7hdwglc4yqJ7skZqI8e88owTeVfmcwpq4tdqucA==",
         "dependencies": {
           "System.Drawing.Common": "4.6.0"
         }
       },
       "Fody": {
         "type": "Transitive",
-        "resolved": "6.2.4",
-        "contentHash": "IHt3dR3i9NjFqqhFzUAwoFbDkOJiarDkZBSrQA3tjAquARMvhamYvnB10/slNLNr4UMc2zY/uHX21aP6mLGaQg=="
+        "resolved": "6.3.0",
+        "contentHash": "kBGlW/vBUvBSyCvFI3YICNl77gjUr0KMROlBTeBPN/+J3JMU57w1dpXPwjmU4ahdBTYLomzgxKLaJ3jVNuXuQg=="
       },
       "Microsoft.NETCore.Platforms": {
         "type": "Transitive",
@@ -499,8 +498,8 @@
       },
       "System.IO.Abstractions": {
         "type": "Transitive",
-        "resolved": "12.1.9",
-        "contentHash": "8IoXTEixMi5kQxIHOhBsve9ghfig7AeVVF1mLHWWMcBtd8FAijlwkKZE01prdV4601sPutMZbpan3KJasSuveA==",
+        "resolved": "13.2.9",
+        "contentHash": "eyucRaO1g5CSKXHgl8Mq35+QohhWuBp1vKjsXh1LE+udAaA3vuIHo5t9LqAd+hxURZWTzXZs1P6d++UxXUmxnQ==",
         "dependencies": {
           "System.IO.FileSystem.AccessControl": "4.7.0"
         }

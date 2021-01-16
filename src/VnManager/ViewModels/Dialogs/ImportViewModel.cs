@@ -269,6 +269,7 @@ namespace VnManager.ViewModels.Dialogs
                 File.Move(Path.Combine(App.ConfigDirPath, @"database\Import.db"), Path.Combine(App.ConfigDirPath, App.DbPath));
                 
                 _windowManager.ShowMessageBox(App.ResMan.GetString("UserDataImported"), App.ResMan.GetString("ImportComplete"));
+                RequestClose();
             }
             catch (Exception ex)
             {
