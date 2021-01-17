@@ -2,8 +2,10 @@
 using System;
 using AdysTech.CredentialManager;
 using LiteDB;
+using StyletIoC;
 using VnManager.Models.Db;
 using VnManager.Models.Db.User;
+using VnManager.ViewModels.UserControls.MainPage;
 
 namespace VnManager.ViewModels.UserControls
 {
@@ -11,8 +13,15 @@ namespace VnManager.ViewModels.UserControls
     {
         public BindableCollection<string> CategoryCollection { get; private set; }
 
-        public CategoryListViewModel()
+        public int SelectedIndex { get; set; } = 0;
+        public static string SelectedCategory { get; set; } = "All";
+
+        private readonly IWindowManager _windowManager;
+        private readonly IContainer _container;
+        public CategoryListViewModel(IContainer container, IWindowManager windowManager)
         {
+            _container = container;
+            _windowManager = windowManager;
             try
             {
                 CategoryCollection = new BindableCollection<string>();
@@ -33,7 +42,13 @@ namespace VnManager.ViewModels.UserControls
                 throw;
             }
             
+        }
 
+        public void SelectionChanged()
+        {
+            var vm = _container.Get<GameGridViewModel>();
+            
+            MainGridViewModel.Instance.ActivateItem(vm);
         }
     }
 }

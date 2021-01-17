@@ -40,7 +40,15 @@ namespace VnManager.ViewModels.UserControls.MainPage
             }
             using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
             {
-                dbUserData.AddRange(db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString()).Query().ToList());
+                var dbAll = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString()).Query().ToList();
+                GameCollection.Clear();
+                foreach (var userData in dbAll)
+                {
+                    if (userData.Categories != null && userData.Categories.Contains(CategoryListViewModel.SelectedCategory))
+                    {
+                        dbUserData.Add(userData);
+                    }
+                }
                 dbVnInfo.AddRange(db.GetCollection<VnInfo>(DbVnInfo.VnInfo.ToString()).Query().ToList());
             }
 
@@ -87,9 +95,17 @@ namespace VnManager.ViewModels.UserControls.MainPage
                 {
                     var bi = new BindingImage
                     {
-                        Image = ImageHelper.CreateBitmapFromPath(coverPath),
+                        Image = ImageHelper.CreateEmptyBitmapImage(),
                         IsNsfw = false
                     };
+                    if (File.Exists(coverPath))
+                    {
+                        bi = new BindingImage
+                        {
+                            Image = ImageHelper.CreateBitmapFromPath(coverPath),
+                            IsNsfw = false
+                        };
+                    }
                     card.CoverImage = bi;
                     card.Title = game.Title;
                     card.LastPlayedString = $"Last Played: {TimeDateChanger.GetHumanDate(entry.LastPlayed)}";

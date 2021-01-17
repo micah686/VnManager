@@ -41,6 +41,7 @@ namespace VnManager.MetadataProviders
                         entry.GameId = 0;
                         entry.LastPlayed = DateTime.UtcNow;
                         entry.PlayTime = TimeSpan.Zero;
+                        entry.Categories = new List<string> {"All"};
                         gamesList.Add(entry);
                     }
                 }
@@ -54,6 +55,7 @@ namespace VnManager.MetadataProviders
                     entry.ExePath = data.ExePath;
                     entry.IconPath = data.IconPath;
                     entry.Arguments = data.ExeArguments;
+                    entry.Categories = new List<string> { "All" };
                     //These last 2 should only have data on a NoSourceGame
                     entry.CoverPath = data.CoverPath;
                     entry.Title = data.Title;

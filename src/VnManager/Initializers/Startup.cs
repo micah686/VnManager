@@ -3,6 +3,7 @@ using System.IO;
 using System.IO.Abstractions;
 using VnManager.Helpers;
 using System.Globalization;
+using System.Linq;
 using AdysTech.CredentialManager;
 using LiteDB;
 using Sentry;
@@ -165,10 +166,13 @@ namespace VnManager.Initializers
             }
             using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
             var dbUserData = db.GetCollection<UserDataCategories>(DbUserData.UserData_Categories.ToString());
-            if (dbUserData.Query().Where(x => x.CategoryName == "All").FirstOrDefault() != null)
+
+            var userDataList = dbUserData.Query().ToList();
+            if (userDataList.Any() || userDataList.Any(x => x.CategoryName == "All"))
             {
                 return;
             }
+            
             var entry = new UserDataCategories() {CategoryName = "All"};
             dbUserData.Insert(entry);
         }
