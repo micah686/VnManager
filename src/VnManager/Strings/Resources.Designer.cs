@@ -601,38 +601,11 @@ namespace VnManager.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Downloading producers information.
-        /// </summary>
-        public static string DownProducersInfo {
-            get {
-                return ResourceManager.GetString("DownProducersInfo", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Downloading releases information.
-        /// </summary>
-        public static string DownReleasesInfo {
-            get {
-                return ResourceManager.GetString("DownReleasesInfo", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Downloading Screenshots.
         /// </summary>
         public static string DownScreenshots {
             get {
                 return ResourceManager.GetString("DownScreenshots", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Downloading staff information.
-        /// </summary>
-        public static string DownStaffInfo {
-            get {
-                return ResourceManager.GetString("DownStaffInfo", resourceCulture);
             }
         }
         

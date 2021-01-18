@@ -2,7 +2,6 @@
 using LiteDB;
 using VndbSharp.Models.Common;
 using VnManager.Models.Db.Vndb.Character;
-using VnManager.Models.Db.Vndb.Release;
 
 namespace VnManager.Models.Db.Vndb.Main
 {

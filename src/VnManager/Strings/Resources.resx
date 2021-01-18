@@ -297,17 +297,8 @@
   <data name="DownCoverImage" xml:space="preserve">
     <value>Downloading Cover Image</value>
   </data>
-  <data name="DownProducersInfo" xml:space="preserve">
-    <value>Downloading producers information</value>
-  </data>
-  <data name="DownReleasesInfo" xml:space="preserve">
-    <value>Downloading releases information</value>
-  </data>
   <data name="DownScreenshots" xml:space="preserve">
     <value>Downloading Screenshots</value>
-  </data>
-  <data name="DownStaffInfo" xml:space="preserve">
-    <value>Downloading staff information</value>
   </data>
   <data name="DownTagDump" xml:space="preserve">
     <value>Downloading tag dump</value>

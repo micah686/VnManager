@@ -9,15 +9,11 @@ using LiteDB;
 using VndbSharp.Models.Character;
 using VndbSharp.Models.Producer;
 using VndbSharp.Models.Release;
-using VndbSharp.Models.Staff;
 using VndbSharp.Models.VisualNovel;
 using VnManager.Converters;
 using VnManager.Models.Db;
 using VnManager.Models.Db.Vndb.Character;
 using VnManager.Models.Db.Vndb.Main;
-using VnManager.Models.Db.Vndb.Producer;
-using VnManager.Models.Db.Vndb.Release;
-using VnManager.Models.Db.Vndb.Staff;
 using VnManager.ViewModels.UserControls;
 
 namespace VnManager.MetadataProviders.Vndb
@@ -25,16 +21,13 @@ namespace VnManager.MetadataProviders.Vndb
     public static class SaveVnDataToDb
     {
 
-        public static async Task SortVnInfoAsync(VisualNovel vn, ICollection<Release>rel,List<Producer> prod, ICollection<Character> character, List<Staff> staff, double currentProgress)
+        public static async Task SortVnInfoAsync(VisualNovel vn,  ICollection<Character> character, double currentProgress)
         {
 
 
 
             SaveVnInfo(vn);
             SaveVnCharacters(character, vn.Id);
-            SaveVnReleases(rel, vn.Id);
-            SaveProducers(prod);
-            SaveStaff(staff, (int)vn.Id);
 
             await DownloadVndbContent.DownloadCoverImageAsync(vn.Id);
             await DownloadVndbContent.DownloadCharacterImagesAsync(vn.Id);
@@ -66,21 +59,17 @@ namespace VnManager.MetadataProviders.Vndb
                 using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
                 {
                     var dbVnInfo = db.GetCollection<VnInfo>(DbVnInfo.VnInfo.ToString());
-                    ILiteCollection<VnInfoAnime> dbVnInfoAnime = db.GetCollection<VnInfoAnime>(DbVnInfo.VnInfo_Anime.ToString());
                     var dbVnInfoLinks = db.GetCollection<VnInfoLinks>(DbVnInfo.VnInfo_Links.ToString());
                     ILiteCollection<VnInfoScreens> dbVnInfoScreens = db.GetCollection<VnInfoScreens>(DbVnInfo.VnInfo_Screens.ToString());
                     ILiteCollection<VnInfoRelations> dbVnInfoRelations = db.GetCollection<VnInfoRelations>(DbVnInfo.VnInfo_Relations.ToString());
-                    ILiteCollection<VnInfoStaff> dbVnInfoStaff = db.GetCollection<VnInfoStaff>(DbVnInfo.VnInfo_Staff.ToString());
                     ILiteCollection<VnInfoTags> dbVnInfoTags = db.GetCollection<VnInfoTags>(DbVnInfo.VnInfo_Tags.ToString());
 
                     var prevVnInfo = dbVnInfo.Query().Where(x => x.VnId == visualNovel.Id).FirstOrDefault();
                     var prevVnInfoLinks = dbVnInfoLinks.Query().Where(x => x.VnId == visualNovel.Id).FirstOrDefault();
 
                     List<VnInfoTags> vnTags = new List<VnInfoTags>();
-                    List<VnInfoStaff> vnStaff = new List<VnInfoStaff>();
                     List<VnInfoRelations> vnRelations = new List<VnInfoRelations>();
                     List<VnInfoScreens> vnScreenshot = new List<VnInfoScreens>();
-                    List<VnInfoAnime> vnAnime = new List<VnInfoAnime>();
 
                     var vn = prevVnInfo ?? new VnInfo();
 
@@ -99,8 +88,6 @@ namespace VnManager.MetadataProviders.Vndb
                     vn.Popularity = visualNovel.Popularity;
                     vn.Rating = visualNovel.Rating;
 
-                    //anime
-                    vnAnime.AddRange(FormatVnInfoAnime(visualNovel, dbVnInfoAnime));
 
                     //links
                     VnInfoLinks vnLinks = prevVnInfoLinks ?? new VnInfoLinks();
@@ -115,18 +102,14 @@ namespace VnManager.MetadataProviders.Vndb
                     //relations
                     vnRelations.AddRange(FormatVnInfoRelations(visualNovel, dbVnInfoRelations));
 
-                    //staff
-                    vnStaff.AddRange(FormatVnInfoStaff(visualNovel, dbVnInfoStaff));
 
                     //tags
                     vnTags.AddRange(FormatVnInfoTags(visualNovel, dbVnInfoTags));
 
                     dbVnInfo.Upsert(vn);
-                    dbVnInfoAnime.Upsert(vnAnime);
                     dbVnInfoLinks.Upsert(vnLinks);
                     dbVnInfoScreens.Upsert(vnScreenshot);
                     dbVnInfoRelations.Upsert(vnRelations);
-                    dbVnInfoStaff.Upsert(vnStaff);
                     dbVnInfoTags.Upsert(vnTags);
                 }
             }
@@ -140,30 +123,6 @@ namespace VnManager.MetadataProviders.Vndb
             }
         }
 
-        private static List<VnInfoAnime> FormatVnInfoAnime(VisualNovel visualNovel, ILiteCollection<VnInfoAnime> dbVnInfoAnime)
-        {
-            List<VnInfoAnime> vnAnime = new List<VnInfoAnime>();
-            if (visualNovel.Anime.Count > 0)
-            {
-                List<VnInfoAnime> prevVnInfoAnime = dbVnInfoAnime.Query().Where(x => x.VnId == visualNovel.Id).ToList();
-                foreach (var anime in visualNovel.Anime)
-                {
-                    var entry = prevVnInfoAnime.FirstOrDefault(x => x.AniDbId == anime.AniDbId) ??
-                                new VnInfoAnime();
-
-                    entry.VnId = visualNovel.Id;
-                    entry.AniDbId = anime.AniDbId;
-                    entry.AnnId = anime.AnimeNewsNetworkId;
-                    entry.AniNfoId = anime.AnimeNfoId;
-                    entry.TitleEng = anime.RomajiTitle;
-                    entry.TitleJpn = anime.KanjiTitle;
-                    entry.AnimeType = anime.Type;
-                    entry.Year = SimpleDateConverter.ConvertSimpleDate(anime.AiringYear);
-                    vnAnime.Add(entry);
-                }
-            }
-            return vnAnime;
-        }
 
         private static List<VnInfoScreens> FormatVnInfoScreens(VisualNovel visualNovel, ILiteCollection<VnInfoScreens> dbVnInfoScreens)
         {
@@ -211,28 +170,6 @@ namespace VnManager.MetadataProviders.Vndb
             return vnRelations;
         }
 
-        private static List<VnInfoStaff> FormatVnInfoStaff(VisualNovel visualNovel, ILiteCollection<VnInfoStaff> dbVnInfoStaff)
-        {
-            List<VnInfoStaff> vnStaff = new List<VnInfoStaff>();
-            if (visualNovel.Staff.Count > 0)
-            {
-                List<VnInfoStaff> prevVnInfoStaff = dbVnInfoStaff.Query().Where(x => x.VnId == visualNovel.Id).ToList();
-                foreach (var staff in visualNovel.Staff)
-                {
-                    var entry = prevVnInfoStaff.FirstOrDefault(x => x.StaffId == staff.StaffId) ??
-                                new VnInfoStaff();
-                    entry.VnId = visualNovel.Id;
-                    entry.StaffId = staff.StaffId;
-                    entry.AliasId = staff.AliasId;
-                    entry.Name = staff.Name;
-                    entry.Original = staff.Kanji;
-                    entry.Role = staff.Role;
-                    entry.Note = staff.Note;
-                    vnStaff.Add(entry);
-                }
-            }
-            return vnStaff;
-        }
 
         private static List<VnInfoTags> FormatVnInfoTags(VisualNovel visualNovel, ILiteCollection<VnInfoTags> dbVnInfoTags)
         {
@@ -271,17 +208,11 @@ namespace VnManager.MetadataProviders.Vndb
             {
                 var dbCharInfo = db.GetCollection<VnCharacterInfo>(DbVnCharacter.VnCharacter.ToString());
                 ILiteCollection<VnCharacterTraits> dbCharTraits = db.GetCollection<VnCharacterTraits>(DbVnCharacter.VnCharacter_Traits.ToString());
-                ILiteCollection<VnCharacterVns> dbCharVns = db.GetCollection<VnCharacterVns>(DbVnCharacter.VnCharacter_Vns.ToString());
-                ILiteCollection<VnCharacterVoiced> dbCharVoices = db.GetCollection<VnCharacterVoiced>(DbVnCharacter.VnCharacter_Voiced.ToString());
-                ILiteCollection<VnCharacterInstances> dbCharInstances = db.GetCollection<VnCharacterInstances>(DbVnCharacter.VnCharacter_Instances.ToString());
 
                 if (characters.Count > 0)
                 {
                     List<VnCharacterInfo> vnCharactersList = new List<VnCharacterInfo>();
                     List<VnCharacterTraits> vnCharacterTraitsList = new List<VnCharacterTraits>();
-                    List<VnCharacterVns> vnCharacterVnsList = new List<VnCharacterVns>();
-                    List<VnCharacterVoiced> vnCharacterVoicesList = new List<VnCharacterVoiced>();
-                    List<VnCharacterInstances> vnCharacterInstancesList = new List<VnCharacterInstances>();
                     foreach (Character vnCharacter in characters)
                     {
                         var prevVnCharacter = dbCharInfo.Query().Where(x => x.CharacterId == vnCharacter.Id);
@@ -306,19 +237,10 @@ namespace VnManager.MetadataProviders.Vndb
                         vnCharactersList.Add(character);
 
                         vnCharacterTraitsList.AddRange(FormatVnCharacterTraits(vnCharacter, dbCharTraits));
-
-                        vnCharacterVnsList.AddRange(FormatVnCharacterVns(vnCharacter, dbCharVns));
-
-                        vnCharacterVoicesList.AddRange(FormatVnCharacterVoiced(vnCharacter, dbCharVoices));
-
-                        vnCharacterInstancesList.AddRange(FormatVnCharacterInstances(vnCharacter, dbCharInstances));
                     }
 
                     dbCharInfo.Upsert(vnCharactersList);
                     dbCharTraits.Upsert(vnCharacterTraitsList);
-                    dbCharVns.Upsert(vnCharacterVnsList);
-                    dbCharVoices.Upsert(vnCharacterVoicesList);
-                    dbCharInstances.Upsert(vnCharacterInstancesList);
                 }
             }
 
@@ -345,407 +267,9 @@ namespace VnManager.MetadataProviders.Vndb
 
             return vnCharacterTraitsList;
         }
-
-        private static List<VnCharacterVns> FormatVnCharacterVns(Character vnCharacter, ILiteCollection<VnCharacterVns> dbCharVns)
-        {
-            List<VnCharacterVns> vnCharacterVnsList = new List<VnCharacterVns>();
-
-            if (vnCharacter.VisualNovels.Count > 0)
-            {
-                var prevVnCharacterVns = dbCharVns.Query().Where(x => x.CharacterId == vnCharacter.Id);
-                
-                foreach (var vn in vnCharacter.VisualNovels)
-                {
-                    var entry = prevVnCharacterVns.FirstOrDefault() ?? new VnCharacterVns();
-                    entry.CharacterId = vnCharacter.Id;
-                    entry.VnId = vn.Id;
-                    entry.ReleaseId = vn.ReleaseId;
-                    entry.SpoilerLevel = vn.SpoilerLevel;
-                    entry.Role = vn.Role.ToString();
-                    vnCharacterVnsList.Add(entry);
-                }
-            }
-            return vnCharacterVnsList;
-        }
-
-        private static List<VnCharacterVoiced> FormatVnCharacterVoiced(Character vnCharacter, ILiteCollection<VnCharacterVoiced> dbCharVoices)
-        {
-            List<VnCharacterVoiced> vnCharacterVoicesList = new List<VnCharacterVoiced>();
-
-            if (vnCharacter.VoiceActorMetadata.Count > 0)
-            {
-                var prevVnCharacterVoices = dbCharVoices.Query().Where(x => x.CharacterId == vnCharacter.Id);
-                
-                foreach (var voice in vnCharacter.VoiceActorMetadata)
-                {
-                    var entry = prevVnCharacterVoices.FirstOrDefault() ?? new VnCharacterVoiced();
-                    entry.CharacterId = (int)vnCharacter.Id;
-                    entry.StaffId = voice.StaffId;
-                    entry.StaffAliasId = voice.AliasId;
-                    entry.VnId = voice.VisualNovelId;
-                    entry.Note = voice.Note;
-                    vnCharacterVoicesList.Add(entry);
-                }
-            }
-
-            return vnCharacterVoicesList;
-        }
-        private static List<VnCharacterInstances> FormatVnCharacterInstances(Character vnCharacter, ILiteCollection<VnCharacterInstances> dbCharInstances)
-        {
-            List<VnCharacterInstances> vnCharacterInstancesList = new List<VnCharacterInstances>();
-
-            if (vnCharacter.CharacterInstances.Count > 0)
-            {
-                var prevVnCharacterInstances = dbCharInstances.Query().Where(x => x.CharacterId == vnCharacter.Id);
-                
-                foreach (var instance in vnCharacter.CharacterInstances)
-                {
-                    var entry = prevVnCharacterInstances.FirstOrDefault() ?? new VnCharacterInstances();
-                    entry.CharacterId = (int)vnCharacter.Id;
-                    entry.Name = instance.Name;
-                    entry.Original = instance.Kanji;
-                    entry.Spoiler = instance.Spoiler;
-                    vnCharacterInstancesList.Add(entry);
-                }
-            }
-
-            return vnCharacterInstancesList;
-        }
         #endregion
 
-        #region VnReleases
-        public static void SaveVnReleases(ICollection<Release> vnReleases, uint vnId)
-        {
-            if (vnReleases == null)
-            {
-                return;
-            }
-            var cred = CredentialManager.GetCredentials(App.CredDb);
-            if (cred == null || cred.UserName.Length < 1)
-            {
-                return;
-            }
-            using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
-            {
-                var dbVnRelease = db.GetCollection<VnRelease>(DbVnRelease.VnReleases.ToString());
-                var dbVnReleaseMedia = db.GetCollection<VnReleaseMedia>(DbVnRelease.VnRelease_Media.ToString());
-                var dbVnReleaseProducers = db.GetCollection<VnReleaseProducers>(DbVnRelease.VnRelease_Producers.ToString());
-                var dbReleaseVns = db.GetCollection<VnReleaseVn>(DbVnRelease.VnRelease_Vns.ToString());
-                if (vnReleases.Count <= 0)
-                {
-                    return;
-                }
-                List<VnRelease> vnReleaseList = new List<VnRelease>();
-                List<VnReleaseMedia> vnReleaseMediaList = new List<VnReleaseMedia>();
-                List<VnReleaseProducers> vnReleaseProducersList = new List<VnReleaseProducers>();
-                List<VnReleaseVn> vnReleaseVnsList = new List<VnReleaseVn>();
-                foreach (Release vnRelease in vnReleases)
-                {
-                    var prevVnRelease = dbVnRelease.Query().Where(x => x.ReleaseId == vnRelease.Id);
-                    var release = prevVnRelease.FirstOrDefault() ?? new VnRelease();
 
-                    release.VnId = vnId;
-                    release.ReleaseId = vnRelease.Id;
-                    release.Title = vnRelease.Name;
-                    release.Original = vnRelease.OriginalName;
-                    release.Released = SimpleDateConverter.ConvertSimpleDate(vnRelease.Released);
-                    release.ReleaseType = vnRelease.Type.ToString();
-                    release.Patch = vnRelease.IsPatch;
-                    release.Freeware = vnRelease.IsFreeware;
-                    release.Doujin = vnRelease.IsDoujin;
-                    release.Languages = CsvConverter.ConvertToCsv(vnRelease.Languages);
-                    release.Website = vnRelease.Website;
-                    release.Notes = vnRelease.Notes;
-                    release.MinAge = Convert.ToByte(vnRelease.MinimumAge, CultureInfo.InvariantCulture);
-                    release.Gtin = vnRelease.Gtin;
-                    release.Catalog = vnRelease.Catalog;
-                    release.Platforms = CsvConverter.ConvertToCsv(vnRelease.Platforms);
-                    release.Resolution = vnRelease.Resolution;
-                    release.Voiced = vnRelease.Voiced.ToString();
-                    release.Animation = string.Join(",", vnRelease.Animation);
-                    vnReleaseList.Add(release);
-
-
-                    if (vnRelease.Media.Count > 0)
-                    {
-                        ILiteQueryable<VnReleaseMedia> prevVnReleaseMedia = dbVnReleaseMedia.Query().Where(x => x.ReleaseId == vnRelease.Id);
-                        vnReleaseMediaList.AddRange(FormatVnProducersMedia(vnRelease, prevVnReleaseMedia));
-                    }
-
-                    if (vnRelease.Producers.Count > 0)
-                    {
-                        ILiteQueryable<VnReleaseProducers> prevVnReleaseProducers =
-                            dbVnReleaseProducers.Query().Where(x => x.ReleaseId == vnRelease.Id);
-                        vnReleaseProducersList.AddRange(FormatVnProducers(vnRelease, prevVnReleaseProducers));
-
-                    }
-
-                    if (vnRelease.VisualNovels.Count > 0)
-                    {
-                        ILiteQueryable<VnReleaseVn> prevVnReleaseVns = dbReleaseVns.Query().Where(x => x.ReleaseId == vnRelease.Id);
-                        vnReleaseVnsList.AddRange(FormatVnReleaseVns(vnRelease, prevVnReleaseVns));
-                    }
-
-                }
-
-                dbVnRelease.Upsert(vnReleaseList);
-                dbVnReleaseMedia.Upsert(vnReleaseMediaList);
-                dbVnReleaseProducers.Upsert(vnReleaseProducersList);
-                dbReleaseVns.Upsert(vnReleaseVnsList);
-
-            }
-
-        }
-
-        private static List<VnReleaseMedia> FormatVnProducersMedia(Release vnRelease, ILiteQueryableResult<VnReleaseMedia> prevVnReleaseMedia)
-        {
-            List<VnReleaseMedia> vnReleaseMediaList = new List<VnReleaseMedia>();
-            foreach (var media in vnRelease.Media)
-            {
-                var entry = prevVnReleaseMedia.FirstOrDefault() ?? new VnReleaseMedia();
-                entry.ReleaseId = vnRelease.Id;
-                entry.Medium = media.Medium;
-                entry.Quantity = media.Quantity;
-                vnReleaseMediaList.Add(entry);
-            }
-            return vnReleaseMediaList;
-        }
-
-        private static List<VnReleaseProducers> FormatVnProducers(Release vnRelease, ILiteQueryableResult<VnReleaseProducers> prevVnReleaseProducers)
-        {
-            List<VnReleaseProducers> vnReleaseProducersList = new List<VnReleaseProducers>();
-            foreach (var producer in vnRelease.Producers)
-            {
-                var entry = prevVnReleaseProducers.FirstOrDefault() ?? new VnReleaseProducers();
-                entry.ReleaseId = vnRelease.Id;
-                entry.ProducerId = producer.Id;
-                entry.Developer = producer.IsDeveloper;
-                entry.Publisher = producer.IsPublisher;
-                entry.Name = producer.Name;
-                entry.Original = producer.OriginalName;
-                entry.ProducerType = producer.ProducerType;
-                vnReleaseProducersList.Add(entry);
-            }
-            return vnReleaseProducersList;
-        }
-
-        private static List<VnReleaseVn> FormatVnReleaseVns(Release vnRelease, ILiteQueryableResult<VnReleaseVn> prevVnReleaseVns)
-        {
-            List<VnReleaseVn> vnReleaseVnsList = new List<VnReleaseVn>();
-            foreach (var vn in vnRelease.VisualNovels)
-            {
-                var entry = prevVnReleaseVns.FirstOrDefault() ?? new VnReleaseVn();
-                entry.ReleaseId = vnRelease.Id;
-                entry.VnId = vn.Id;
-                entry.Name = vn.Name;
-                entry.Original = vn.OriginalName;
-                vnReleaseVnsList.Add(entry);
-
-            }
-            return vnReleaseVnsList;
-        }
-        #endregion
-
-        #region VnProducers
-        public static void SaveProducers(List<Producer> vnProducers)
-        {
-            if (vnProducers == null)
-            {
-                return;
-            }
-            var cred = CredentialManager.GetCredentials(App.CredDb);
-            if (cred == null || cred.UserName.Length < 1)
-            {
-                return;
-            }
-            using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
-            {
-                var dbVnProducer = db.GetCollection<VnProducer>(DbVnProducer.VnProducer.ToString());
-                var dbVnProducerLinks = db.GetCollection<VnProducerLinks>(DbVnProducer.VnProducer_Links.ToString());
-                var dbVnProducerRelations = db.GetCollection<VnProducerRelations>(DbVnProducer.VnProducer_Relations.ToString());
-
-                List<VnProducer> vnProducersList = new List<VnProducer>();
-                List<VnProducerLinks> vnProducerLinksList = new List<VnProducerLinks>();
-                List<VnProducerRelations> vnProducerRelationsList = new List<VnProducerRelations>();
-                foreach (var vnProducer in vnProducers)
-                {
-                    var prevVnProducers = dbVnProducer.Query().Where(x => x.ProducerId == vnProducer.Id);
-                    var producer = prevVnProducers.FirstOrDefault() ?? new VnProducer();
-
-                    producer.ProducerId = (int?)vnProducer.Id;
-                    producer.Name = vnProducer.Name;
-                    producer.Original = vnProducer.OriginalName;
-                    producer.ProducerType = vnProducer.ProducerType;
-                    producer.Language = vnProducer.Language;
-                    producer.Aliases = CsvConverter.ConvertToCsv(vnProducer.Aliases);
-                    producer.Description = vnProducer.Description;
-                    vnProducersList.Add(producer);
-
-
-                    var prevVnProducerLinks = dbVnProducerLinks.Query().Where(x => x.ProducerId == vnProducer.Id);
-                    var links = prevVnProducerLinks.FirstOrDefault() ?? new VnProducerLinks();
-                    links.ProducerId = (int)vnProducer.Id;
-                    links.Homepage = vnProducer.Links.Homepage;
-                    links.WikiData = vnProducer.Links.Wikidata;
-                    vnProducerLinksList.Add(links);
-
-                    ILiteQueryable<VnProducerRelations> prevVnProducerRelations =
-                        dbVnProducerRelations.Query().Where(x => x.ProducerId == vnProducer.Id);
-                    vnProducerRelationsList.AddRange(FormatVnProducerRelations(vnProducer, prevVnProducerRelations));
-
-                }
-
-                dbVnProducer.Upsert(vnProducersList);
-                dbVnProducerLinks.Upsert(vnProducerLinksList);
-                dbVnProducerRelations.Upsert(vnProducerRelationsList);
-            }
-        }
-
-        private static List<VnProducerRelations> FormatVnProducerRelations(Producer vnProducer, ILiteQueryableResult<VnProducerRelations> prevVnProducerRelations)
-        {
-            List<VnProducerRelations> vnProducerRelationsList = new List<VnProducerRelations>();
-            foreach (var relation in vnProducer.Relations)
-            {
-                var entry = prevVnProducerRelations.FirstOrDefault() ?? new VnProducerRelations();
-                entry.RelationId = (int?)relation.Id;
-                entry.ProducerId = (int?)vnProducer.Id;
-                entry.Relation = relation.Relation;
-                entry.Name = relation.Name;
-                entry.Original = relation.OriginalName;
-                vnProducerRelationsList.Add(entry);
-            }
-            return vnProducerRelationsList;
-        }
-        #endregion
-
-        #region VnStaff
-        public static void SaveStaff(List<Staff> vnStaffList, int vnid)
-        {
-            if (vnStaffList == null)
-            {
-                return;
-            }
-            var cred = CredentialManager.GetCredentials(App.CredDb);
-            if (cred == null || cred.UserName.Length < 1)
-            {
-                return;
-            }
-            using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
-            {
-                var dbVnStaff = db.GetCollection<VnStaff>(DbVnStaff.VnStaff.ToString());
-                var dbVnStaffAliases = db.GetCollection<VnStaffAliases>(DbVnStaff.VnStaff_Aliases.ToString());
-                var dbVnStaffVns = db.GetCollection<VnStaffVns>(DbVnStaff.VnStaff_Vns.ToString());
-                var dbVnStaffVoiced = db.GetCollection<VnStaffVoiced>(DbVnStaff.VnStaff_Voiced.ToString());
-                var dbVnStaffLinks = db.GetCollection<VnStaffLinks>(DbVnStaff.VnStaff_Links.ToString());
-
-                List<VnStaff> staffList = new List<VnStaff>();
-                List<VnStaffAliases> vnStaffAliasesList = new List<VnStaffAliases>();
-                List<VnStaffVns> vnStaffVnList = new List<VnStaffVns>();
-                List<VnStaffVoiced> vnStaffVoicedList = new List<VnStaffVoiced>();
-                List<VnStaffLinks> vnStaffLinks = new List<VnStaffLinks>();
-
-                foreach (var vnStaff in vnStaffList)
-                {
-                    //staff
-                    var prevVnStaff = dbVnStaff.Query().Where(x => x.StaffId == vnStaff.Id);
-                    var staff = prevVnStaff.FirstOrDefault() ?? new VnStaff();
-                    
-                    staff.StaffId = (int?)vnStaff.Id;
-                    staff.Name = vnStaff.Name;
-                    staff.Original = vnStaff.OriginalName;
-                    staff.Language = vnStaff.Language;
-                    staff.Gender = vnStaff.Gender;
-                    staff.Description = vnStaff.Description;
-                    staff.MainAliasId = vnStaff.MainAlias;
-                    staffList.Add(staff);
-
-                    //aliases
-                    if (vnStaff.Aliases.Count > 0)
-                    {
-                        ILiteQueryable<VnStaffAliases> prevVnStaffAliases = dbVnStaffAliases.Query().Where(x => x.StaffId == vnStaff.Id);
-                        vnStaffAliasesList.AddRange(FormatVnStaffAliases(vnStaff, prevVnStaffAliases));
-                    }
-
-                    //vns
-                    if (vnStaff.Vns.Length > 0)
-                    {
-                        ILiteQueryable<VnStaffVns> prevVnStaffVns = dbVnStaffVns.Query().Where(x => x.StaffId == staff.StaffId);
-                        vnStaffVnList.AddRange(FormatStaffVns(vnStaff, vnid, prevVnStaffVns));
-                    }
-                    //voiced
-                    if (vnStaff.Voiced.Length > 0)
-                    {
-                        ILiteQueryable<VnStaffVoiced> prevVnStaffVoiced = dbVnStaffVoiced.Query().Where(x => x.StaffId == vnStaff.Id);
-                        vnStaffVoicedList.AddRange(FormatVnStaffVoiced(vnStaff, vnid, prevVnStaffVoiced));
-                    }
-                    //links
-                    var links = new VnStaffLinks
-                    {
-                        StaffId = staff.StaffId,
-                        Homepage = vnStaff.StaffLinks.Homepage,
-                        Twitter = vnStaff.StaffLinks.Twitter,
-                        AniDb = vnStaff.StaffLinks.AniDb,
-                        Pixiv = vnStaff.StaffLinks.Pixiv,
-                        Wikidata = vnStaff.StaffLinks.Wikidata
-                    };
-                    vnStaffLinks.Add(links);                    
-
-                }
-
-                dbVnStaff.Upsert(staffList);
-                dbVnStaffAliases.Upsert(vnStaffAliasesList);
-                dbVnStaffVns.Upsert(vnStaffVnList);
-                dbVnStaffVoiced.Upsert(vnStaffVoicedList);
-                dbVnStaffLinks.Insert(vnStaffLinks);
-            }
-        }
-
-        private static List<VnStaffAliases> FormatVnStaffAliases(Staff vnStaff, ILiteQueryableResult<VnStaffAliases> prevVnStaffAliases)
-        {
-            List<VnStaffAliases> vnStaffAliasesList = new List<VnStaffAliases>();
-            
-            foreach (var alias in vnStaff.Aliases)
-            {
-                var vnAliases = prevVnStaffAliases.FirstOrDefault() ?? new VnStaffAliases();
-                vnAliases.StaffId = (int?)vnStaff.Id;
-                vnAliases.AliasId = (int)alias.Id;
-                vnAliases.Name = alias.Name;
-                vnAliases.Original = alias.OriginalName;
-                vnStaffAliasesList.Add(vnAliases);
-            }
-            return vnStaffAliasesList;
-        }
-        private static List<VnStaffVns> FormatStaffVns(Staff vnStaff, int vnid, ILiteQueryableResult<VnStaffVns> prevVnStaffVns)
-        {
-            List<VnStaffVns> vnStaffVnList = new List<VnStaffVns>();
-            
-            foreach (var vn in vnStaff.Vns)
-            {
-                var staffVns = prevVnStaffVns.FirstOrDefault() ?? new VnStaffVns();
-                staffVns.VnId = vnid;
-                staffVns.StaffId = (int?)vnStaff.Id;
-                staffVns.AliasId = (int)vn.AliasId;
-                staffVns.Role = vn.Role;
-                staffVns.Note = vn.Note;
-                vnStaffVnList.Add(staffVns);
-            }
-            return vnStaffVnList;
-        }
-        private static List<VnStaffVoiced> FormatVnStaffVoiced(Staff vnStaff, int vnid, ILiteQueryableResult<VnStaffVoiced> prevVnStaffVoiced)
-        {
-            List<VnStaffVoiced> vnStaffVoicedList = new List<VnStaffVoiced>();
-            foreach (var voiced in vnStaff.Voiced)
-            {
-                var entry = prevVnStaffVoiced.FirstOrDefault() ?? new VnStaffVoiced();
-                entry.VnId = vnid;
-                entry.StaffId = (int?)vnStaff.Id;
-                entry.CharacterId = (int)voiced.CharacterId;
-                entry.Note = voiced.Note;
-                vnStaffVoicedList.Add(entry);
-            }
-            return vnStaffVoicedList;
-        }
-        #endregion
 
     }
 }
