@@ -23,9 +23,11 @@ namespace VnManager.MetadataProviders.Vndb
 
         public static async Task SortVnInfoAsync(VisualNovel vn,  ICollection<Character> character, double currentProgress)
         {
-
-
-
+            if (vn == null)
+            {
+                return;
+            }
+            
             SaveVnInfo(vn);
             SaveVnCharacters(character, vn.Id);
 

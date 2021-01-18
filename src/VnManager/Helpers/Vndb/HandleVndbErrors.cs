@@ -60,6 +60,10 @@ namespace VnManager.Helpers.Vndb
         /// <returns></returns>
         public static async Task ThrottledWaitAsync(ThrottledError throttled, int counter)
         {
+            if (throttled == null)
+            {
+                return;
+            }
             const int bufferWait = 5;
             var minWait = TimeSpan.FromSeconds((throttled.MinimumWait - DateTime.Now).TotalSeconds);
             var maxWait = TimeSpan.FromSeconds((throttled.FullWait - DateTime.Now).TotalSeconds);

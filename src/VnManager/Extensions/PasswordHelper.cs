@@ -31,31 +31,39 @@ namespace VnManager.Extensions
         [DebuggerHidden]
         public static void SetAttach(DependencyObject dp, bool value)
         {
-            dp.SetValue(AttachProperty, value);
+            dp?.SetValue(AttachProperty, value);
         }
 
         [DebuggerHidden]
         public static bool GetAttach(DependencyObject dp)
         {
+            if (dp == null)
+            {
+                return false;
+            }
             return (bool)dp.GetValue(AttachProperty);
         }
 
         [DebuggerHidden]
         public static string GetPassword(DependencyObject dp)
         {
-            return (string)dp.GetValue(PasswordProperty);
+            return (string)dp?.GetValue(PasswordProperty);
         }
 
         [DebuggerHidden]
         public static void SetPassword(DependencyObject dp, string value)
         {
             SecureString val= new NetworkCredential("", value).SecurePassword;
-            dp.SetValue(PasswordProperty, val);
+            dp?.SetValue(PasswordProperty, val);
         }
 
         [DebuggerHidden]
         private static bool GetIsUpdating(DependencyObject dp)
         {
+            if (dp == null)
+            {
+                return false;
+            }
             return (bool)dp.GetValue(IsUpdatingProperty);
         }
 

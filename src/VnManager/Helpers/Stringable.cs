@@ -53,7 +53,7 @@ namespace VnManager.Helpers
         /// Create a new instance, representing the given value
         /// </summary>
         /// <param name="value">Value to represent</param>
-        public Stringable(T value) : this(value, value.ToString(), true) { }
+        public Stringable(T value) : this(value, value?.ToString(), true) { }
 
         private Stringable(T value, string stringValue, bool isValid)
         {
@@ -149,7 +149,7 @@ namespace VnManager.Helpers
 
         public StringableConverter(Type type)
         {
-            if (!type.IsGenericType || type.GetGenericTypeDefinition() != typeof(Stringable<>) || type.GetGenericArguments().Length != 1)
+            if (type == null || !type.IsGenericType || type.GetGenericTypeDefinition() != typeof(Stringable<>) || type.GetGenericArguments().Length != 1)
             {
                 throw new ArgumentException("Incompatible type", nameof(type));
             }

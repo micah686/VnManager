@@ -23,6 +23,10 @@ namespace VnManager.Extensions
         /// <returns>The value of the StatusBarContent property</returns>
         public static bool GetIsNumericOnly(DependencyObject d)
         {
+            if (d == null)
+            {
+                return false;
+            }
             return (bool)d.GetValue(IsNumericOnlyProperty);
         }
 
@@ -33,7 +37,7 @@ namespace VnManager.Extensions
         /// <param name="value">value of the property</param>
         public static void SetIsNumericOnly(DependencyObject d, bool value)
         {
-            d.SetValue(IsNumericOnlyProperty, value);
+            d?.SetValue(IsNumericOnlyProperty, value);
         }
 
         /// <summary>

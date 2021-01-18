@@ -16,12 +16,10 @@ namespace VnManager.ViewModels.UserControls
         public int SelectedIndex { get; set; } = 0;
         public static string SelectedCategory { get; set; } = "All";
 
-        private readonly IWindowManager _windowManager;
         private readonly IContainer _container;
-        public CategoryListViewModel(IContainer container, IWindowManager windowManager)
+        public CategoryListViewModel(IContainer container)
         {
             _container = container;
-            _windowManager = windowManager;
             try
             {
                 CategoryCollection = new BindableCollection<string>();

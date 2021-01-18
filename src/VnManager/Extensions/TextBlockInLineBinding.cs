@@ -12,12 +12,12 @@ namespace VnManager.Extensions
     {
         public static IEnumerable<Inline> GetInlines(DependencyObject d)
         {
-            return (IEnumerable<Inline>)d.GetValue(InlinesProperty);
+            return (IEnumerable<Inline>)d?.GetValue(InlinesProperty);
         }
 
         public static void SetInlines(DependencyObject d, IEnumerable<Inline> value)
         {
-            d.SetValue(InlinesProperty, value);
+            d?.SetValue(InlinesProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for Inlines.  This enables animation, styling, binding, etc...

@@ -6,7 +6,6 @@ using System.Text;
 using System.Windows;
 using AdysTech.CredentialManager;
 using LiteDB;
-using MvvmDialogs;
 using MvvmDialogs.FrameworkDialogs.OpenFile;
 using Stylet;
 using VnManager.Models.Db;
@@ -20,13 +19,11 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
     public class ModifyGameDeleteViewModel: Screen
     {
         private readonly IWindowManager _windowManager;
-        private readonly IDialogService _dialogService;
-        public ModifyGameDeleteViewModel(IWindowManager windowManager, IDialogService dialogService)
+
+        public ModifyGameDeleteViewModel(IWindowManager windowManager)
         {
             DisplayName = App.ResMan.GetString("DeleteGame");
             _windowManager = windowManager;
-            _dialogService = dialogService;
-            
         }
 
         public void DeleteGame()

@@ -23,22 +23,30 @@ namespace VnManager.Extensions
 
         public static bool GetObserve(DependencyObject frameworkElement)
         {
+            if (frameworkElement == null)
+            {
+                return false;
+            }
             return (bool)frameworkElement.GetValue(ObserveProperty);
         }
 
         public static void SetObserve(DependencyObject frameworkElement, bool observe)
         {
-            frameworkElement.SetValue(ObserveProperty, observe);
+            frameworkElement?.SetValue(ObserveProperty, observe);
         }
 
         public static bool GetObservedMouseOver(DependencyObject frameworkElement)
         {
+            if (frameworkElement == null)
+            {
+                return false;
+            }
             return (bool)frameworkElement.GetValue(ObservedMouseOverProperty);
         }
 
         public static void SetObservedMouseOver(DependencyObject frameworkElement, bool observedMouseOver)
         {
-            frameworkElement.SetValue(ObservedMouseOverProperty, observedMouseOver);
+            frameworkElement?.SetValue(ObservedMouseOverProperty, observedMouseOver);
         }
 
         private static void OnObserveChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e)
