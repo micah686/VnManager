@@ -14,6 +14,17 @@ namespace VnManager.Helpers
     /// </summary>
     public class GaussianBlur
     {
+        private const int MaxColorValue = 255;
+        private const int Divisor = 2;
+        private const uint AlphaHex = 0xff000000;
+        private const int RedHex = 0xff0000;
+        private const int GreenHex = 0x00ff00;
+        private const int BlueHex = 0x0000ff;
+        private const int AlphaShift = 24;
+        private const int RedShift = 16;
+        private const int GreenShift = 8;
+
+
         private readonly int[] _alpha;
         private readonly int[] _red;
         private readonly int[] _green;
@@ -26,6 +37,10 @@ namespace VnManager.Helpers
 
         public GaussianBlur(Bitmap image)
         {
+            if (image == null)
+            {
+                return;
+            }
             var rct = new Rectangle(0, 0, image.Width, image.Height);
             var source = new int[rct.Width * rct.Height];
             var bits = image.LockBits(rct, ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
@@ -42,10 +57,10 @@ namespace VnManager.Helpers
 
             Parallel.For(0, source.Length, _pOptions, i =>
             {
-                _alpha[i] = (int)((source[i] & 0xff000000) >> 24);
-                _red[i] = (source[i] & 0xff0000) >> 16;
-                _green[i] = (source[i] & 0x00ff00) >> 8;
-                _blue[i] = (source[i] & 0x0000ff);
+                _alpha[i] = (int)((source[i] & AlphaHex) >> AlphaShift);
+                _red[i] = (source[i] & RedHex) >> RedShift;
+                _green[i] = (source[i] & GreenHex) >> GreenShift;
+                _blue[i] = (source[i] & BlueHex);
             });
         }
 
@@ -65,12 +80,12 @@ namespace VnManager.Helpers
 
             Parallel.For(0, dest.Length, _pOptions, i =>
             {
-                CheckForMinMax(ref newAlpha[i], 0,255);
-                CheckForMinMax(ref newRed[i], 0, 255);
-                CheckForMinMax(ref newGreen[i], 0, 255);
-                CheckForMinMax(ref newBlue[i], 0, 255);
+                CheckForMinMax(ref newAlpha[i], 0,MaxColorValue);
+                CheckForMinMax(ref newRed[i], 0, MaxColorValue);
+                CheckForMinMax(ref newGreen[i], 0, MaxColorValue);
+                CheckForMinMax(ref newBlue[i], 0, MaxColorValue);
 
-                dest[i] = (int)((uint)(newAlpha[i] << 24) | (uint)(newRed[i] << 16) | (uint)(newGreen[i] << 8) | (uint)newBlue[i]);
+                dest[i] = (int)((uint)(newAlpha[i] << AlphaShift) | (uint)(newRed[i] << RedShift) | (uint)(newGreen[i] << GreenShift) | (uint)newBlue[i]);
             });
 
             var image = new Bitmap(_width, _height);
@@ -83,17 +98,20 @@ namespace VnManager.Helpers
 
         private void GaussBlur_4(int[] source, int[] dest, int r)
         {
+            
+            const int secondIncrement = 2;
+            
             var bxs = BoxesForGauss(r, 3);
-            BoxBlur_4(source, dest, _width, _height, (bxs[0] - 1) / 2);
-            BoxBlur_4(dest, source, _width, _height, (bxs[1] - 1) / 2);
-            BoxBlur_4(source, dest, _width, _height, (bxs[2] - 1) / 2);
+            BoxBlur_4(source, dest, _width, _height, (bxs[0] - 1) / Divisor);
+            BoxBlur_4(dest, source, _width, _height, (bxs[1] - 1) / Divisor);
+            BoxBlur_4(source, dest, _width, _height, (bxs[secondIncrement] - 1) / Divisor);
         }
 
         private static int[] BoxesForGauss(int sigma, int n)
         {
             var wIdeal = Math.Sqrt((12 * sigma * sigma / n) + 1);
             var wl = (int)Math.Floor(wIdeal);
-            if (wl % 2 == 0)
+            if (wl % Divisor == 0)
             {
                 wl--;
             }
