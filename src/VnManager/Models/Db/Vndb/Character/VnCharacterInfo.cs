@@ -24,8 +24,6 @@ namespace VnManager.Models.Db.Vndb.Character
         public int? Hip { get; set; }
         public int? Height { get; set; }
         public int? Weight { get; set; }
-        public virtual ICollection<VnCharacterTraits> VnCharacterTraits { get; set; }
-        public virtual VnCharacterVns VnCharacterVns { get; set; }
 
     }
 }

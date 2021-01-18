@@ -21,8 +21,10 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
             _container = container;
             var gamePath = _container.Get<ModifyGamePathViewModel>();
             var gameCategories = _container.Get<ModifyGameCategoriesViewModel>();
+            var gameDelete = _container.Get<ModifyGameDeleteViewModel>();
             Items.Add(gamePath);
             Items.Add(gameCategories);
+            Items.Add(gameDelete);
             
             ActivateItem(gamePath);
             

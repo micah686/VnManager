@@ -273,6 +273,12 @@
   <data name="DeleteEverythingWarning" xml:space="preserve">
     <value>THIS WILL DELETE ALL USER DATA! ARE YOU SURE YOU WANT TO CONTINUE?</value>
   </data>
+  <data name="DeleteGame" xml:space="preserve">
+    <value>Delete Game</value>
+  </data>
+  <data name="DeleteGameCheck" xml:space="preserve">
+    <value>Are you sure you want to delete this game?</value>
+  </data>
   <data name="DeleteGlobalCategory" xml:space="preserve">
     <value>Delete a Global Category</value>
   </data>

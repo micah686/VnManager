@@ -24,10 +24,7 @@ namespace VnManager.Models.Db.Vndb.Release
         public string Platforms { get; set; }
         public string Resolution { get; set; }
         public string Voiced { get; set; }
-        public string Animation { get; set; }
         //using a csv for animation
-        public virtual VnReleaseMedia VnReleaseMedia { get; set; }
-        public virtual VnReleaseProducers VnReleaseProducers { get; set; }
-        public virtual VnReleaseVn VnReleaseVn { get; set; }
+        public string Animation { get; set; }
     }
 }

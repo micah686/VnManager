@@ -24,15 +24,5 @@ namespace VnManager.Models.Db.Vndb.Main
         public ImageRating ImageRating { get; set; }
         public double? Popularity { get; set; }
         public double Rating { get; set; }
-        public int VoteCount { get; set; }
-        public virtual VnInfoAnime VnInfoAnime { get; set; }
-        public virtual VnInfoLinks VnInfoLinks { get; set; }
-        public virtual VnInfoRelations VnInfoRelations { get; set; }
-        public virtual VnInfoScreens VnInfoScreens { get; set; }
-        public virtual VnInfoStaff VnInfoStaff { get; set; }
-        public virtual ICollection<VnInfoTags> VnInfoTags { get; set; }
-        public virtual ICollection<VnCharacterInfo> VnCharacters { get; set; }
-        public virtual ICollection<VnRelease> VnReleases { get; set; }
-        public virtual ICollection<VnInfoScreens> VnInfoScreensCollection { get; set; }
     }
 }

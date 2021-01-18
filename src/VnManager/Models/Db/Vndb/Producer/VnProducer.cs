@@ -13,7 +13,5 @@ namespace VnManager.Models.Db.Vndb.Producer
         public string Language { get; set; }
         public string Aliases { get; set; }
         public string Description { get; set; }
-        public virtual VnProducerLinks VnProducerLinks { get; set; }
-        public virtual VnProducerRelations VnProducerRelations { get; set; }
     }
 }

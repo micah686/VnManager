@@ -529,6 +529,24 @@ namespace VnManager.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Delete Game.
+        /// </summary>
+        public static string DeleteGame {
+            get {
+                return ResourceManager.GetString("DeleteGame", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to delete this game?.
+        /// </summary>
+        public static string DeleteGameCheck {
+            get {
+                return ResourceManager.GetString("DeleteGameCheck", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Delete a Global Category.
         /// </summary>
         public static string DeleteGlobalCategory {

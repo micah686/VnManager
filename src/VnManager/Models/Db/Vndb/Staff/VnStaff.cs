@@ -16,9 +16,5 @@ namespace VnManager.Models.Db.Vndb.Staff
         public string Language { get; set; }
         public string Description { get; set; }
         public string MainAliasId { get; set; }
-        public virtual VnStaffAliases VnStaffAliases { get; set; }
-        public virtual VnStaffLinks VnStaffLinks { get; set; }
-        public ReadOnlyCollection<StaffVns> StaffVns { get;}
-        public ReadOnlyCollection<StaffVoiced> StaffVoicedCollection { get; }
     }
 }

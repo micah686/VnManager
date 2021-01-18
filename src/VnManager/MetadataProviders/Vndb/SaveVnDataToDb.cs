@@ -32,7 +32,7 @@ namespace VnManager.MetadataProviders.Vndb
 
             SaveVnInfo(vn);
             SaveVnCharacters(character, vn.Id);
-            SaveVnReleases(rel);
+            SaveVnReleases(rel, vn.Id);
             SaveProducers(prod);
             SaveStaff(staff, (int)vn.Id);
 
@@ -158,6 +158,7 @@ namespace VnManager.MetadataProviders.Vndb
                     entry.TitleEng = anime.RomajiTitle;
                     entry.TitleJpn = anime.KanjiTitle;
                     entry.AnimeType = anime.Type;
+                    entry.Year = SimpleDateConverter.ConvertSimpleDate(anime.AiringYear);
                     vnAnime.Add(entry);
                 }
             }
@@ -292,7 +293,7 @@ namespace VnManager.MetadataProviders.Vndb
                         character.Original = vnCharacter.OriginalName;
                         character.Gender = vnCharacter.Gender.ToString();
                         character.BloodType = vnCharacter.BloodType.ToString();
-                        character.Birthday = BirthdayConverter.ConvertBirthday(vnCharacter.Birthday);
+                        character.Birthday = SimpleDateConverter.ConvertSimpleDate(vnCharacter.Birthday);
                         character.Aliases = CsvConverter.ConvertToCsv(vnCharacter.Aliases);
                         character.Description = vnCharacter.Description;
                         character.ImageLink = !string.IsNullOrEmpty(vnCharacter.Image) ? vnCharacter.Image : string.Empty;
@@ -413,7 +414,7 @@ namespace VnManager.MetadataProviders.Vndb
         #endregion
 
         #region VnReleases
-        public static void SaveVnReleases(ICollection<Release> vnReleases)
+        public static void SaveVnReleases(ICollection<Release> vnReleases, uint vnId)
         {
             if (vnReleases == null)
             {
@@ -443,9 +444,11 @@ namespace VnManager.MetadataProviders.Vndb
                     var prevVnRelease = dbVnRelease.Query().Where(x => x.ReleaseId == vnRelease.Id);
                     var release = prevVnRelease.FirstOrDefault() ?? new VnRelease();
 
+                    release.VnId = vnId;
                     release.ReleaseId = vnRelease.Id;
                     release.Title = vnRelease.Name;
                     release.Original = vnRelease.OriginalName;
+                    release.Released = SimpleDateConverter.ConvertSimpleDate(vnRelease.Released);
                     release.ReleaseType = vnRelease.Type.ToString();
                     release.Patch = vnRelease.IsPatch;
                     release.Freeware = vnRelease.IsFreeware;
@@ -633,31 +636,25 @@ namespace VnManager.MetadataProviders.Vndb
                 var dbVnStaffAliases = db.GetCollection<VnStaffAliases>(DbVnStaff.VnStaff_Aliases.ToString());
                 var dbVnStaffVns = db.GetCollection<VnStaffVns>(DbVnStaff.VnStaff_Vns.ToString());
                 var dbVnStaffVoiced = db.GetCollection<VnStaffVoiced>(DbVnStaff.VnStaff_Voiced.ToString());
+                var dbVnStaffLinks = db.GetCollection<VnStaffLinks>(DbVnStaff.VnStaff_Links.ToString());
 
                 List<VnStaff> staffList = new List<VnStaff>();
                 List<VnStaffAliases> vnStaffAliasesList = new List<VnStaffAliases>();
                 List<VnStaffVns> vnStaffVnList = new List<VnStaffVns>();
                 List<VnStaffVoiced> vnStaffVoicedList = new List<VnStaffVoiced>();
+                List<VnStaffLinks> vnStaffLinks = new List<VnStaffLinks>();
 
                 foreach (var vnStaff in vnStaffList)
                 {
                     //staff
                     var prevVnStaff = dbVnStaff.Query().Where(x => x.StaffId == vnStaff.Id);
                     var staff = prevVnStaff.FirstOrDefault() ?? new VnStaff();
-
+                    
                     staff.StaffId = (int?)vnStaff.Id;
                     staff.Name = vnStaff.Name;
                     staff.Original = vnStaff.OriginalName;
                     staff.Language = vnStaff.Language;
                     staff.Gender = vnStaff.Gender;
-                    staff.VnStaffLinks = new VnStaffLinks
-                    {
-                        Homepage = vnStaff.StaffLinks.Homepage,
-                        Twitter = vnStaff.StaffLinks.Twitter,
-                        AniDb = vnStaff.StaffLinks.AniDb,
-                        Pixiv = vnStaff.StaffLinks.Pixiv,
-                        Wikidata = vnStaff.StaffLinks.Wikidata
-                    };
                     staff.Description = vnStaff.Description;
                     staff.MainAliasId = vnStaff.MainAlias;
                     staffList.Add(staff);
@@ -681,6 +678,17 @@ namespace VnManager.MetadataProviders.Vndb
                         ILiteQueryable<VnStaffVoiced> prevVnStaffVoiced = dbVnStaffVoiced.Query().Where(x => x.StaffId == vnStaff.Id);
                         vnStaffVoicedList.AddRange(FormatVnStaffVoiced(vnStaff, vnid, prevVnStaffVoiced));
                     }
+                    //links
+                    var links = new VnStaffLinks
+                    {
+                        StaffId = staff.StaffId,
+                        Homepage = vnStaff.StaffLinks.Homepage,
+                        Twitter = vnStaff.StaffLinks.Twitter,
+                        AniDb = vnStaff.StaffLinks.AniDb,
+                        Pixiv = vnStaff.StaffLinks.Pixiv,
+                        Wikidata = vnStaff.StaffLinks.Wikidata
+                    };
+                    vnStaffLinks.Add(links);                    
 
                 }
 
@@ -688,6 +696,7 @@ namespace VnManager.MetadataProviders.Vndb
                 dbVnStaffAliases.Upsert(vnStaffAliasesList);
                 dbVnStaffVns.Upsert(vnStaffVnList);
                 dbVnStaffVoiced.Upsert(vnStaffVoicedList);
+                dbVnStaffLinks.Insert(vnStaffLinks);
             }
         }
 

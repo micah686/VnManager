@@ -62,7 +62,8 @@ namespace VnManager.Models.Db
         VnStaff,
         VnStaff_Aliases,
         VnStaff_Vns,
-        VnStaff_Voiced
+        VnStaff_Voiced,
+        VnStaff_Links
     }
 
     #endregion
