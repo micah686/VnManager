@@ -194,7 +194,7 @@ namespace VnManager.ViewModels.Controls
         /// <summary>
         /// Gets or sets the list of buttons which are shown in the View.
         /// </summary>
-        public IObservableCollection<LabelledValue<MessageBoxResult>> ButtonList { get; protected set; }
+        public IObservableCollection<LabelledValue<MessageBoxResult>> ButtonList { get; private set; }
 
         /// <summary>
         /// Gets or sets the item in ButtonList which is the Default button

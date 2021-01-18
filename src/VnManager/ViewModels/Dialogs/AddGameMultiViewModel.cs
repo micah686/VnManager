@@ -8,7 +8,7 @@ namespace VnManager.ViewModels.Dialogs
 {
     public class AddGameMultiViewModel: Screen
     {
-        public BindableCollection<MultiExeGamePaths> GameCollection { get; set; } = new BindableCollection<MultiExeGamePaths>();
+        public BindableCollection<MultiExeGamePaths> GameCollection { get; } = new BindableCollection<MultiExeGamePaths>();
         public string ExePath { get; set; }
         public string IconPath { get; set; }
         public string ExeArguments { get; set; }

@@ -17,7 +17,7 @@ namespace VnManager.ViewModels.UserControls.MainPage
 {
     public class GameGridViewModel: Screen
     {
-        public BindableCollection<GameCardViewModel> GameCollection { get; set; } = new BindableCollection<GameCardViewModel>();
+        public BindableCollection<GameCardViewModel> GameCollection { get; } = new BindableCollection<GameCardViewModel>();
 
         private readonly IWindowManager _windowManager;
         private readonly IContainer _container;

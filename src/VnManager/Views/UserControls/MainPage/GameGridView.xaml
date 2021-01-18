@@ -13,7 +13,7 @@
     <UserControl.Resources>
         <ResourceDictionary Source="../../../Styles/Listbox/NoHighlight.xaml"/>
     </UserControl.Resources>
-    <ListBox ItemsSource="{Binding GameCollection, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ItemContainerStyle="{DynamicResource NoHighlightItem}" ScrollViewer.VerticalScrollBarVisibility="Auto">
+    <ListBox ItemsSource="{Binding GameCollection, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ItemContainerStyle="{DynamicResource NoHighlightItem}" ScrollViewer.VerticalScrollBarVisibility="Auto">
         <ListBox.ItemsPanel>
             <ItemsPanelTemplate>
                 <WrapPanel/>

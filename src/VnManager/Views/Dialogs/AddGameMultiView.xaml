@@ -25,7 +25,7 @@
             </Grid.RowDefinitions>
 
             <DockPanel Grid.Row="0" MaxHeight="190">
-                <ListView ItemsSource="{Binding GameCollection}" VerticalAlignment="Stretch" MinHeight="150" ScrollViewer.VerticalScrollBarVisibility="Visible">
+                <ListView ItemsSource="{Binding GameCollection, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Stretch" MinHeight="150" ScrollViewer.VerticalScrollBarVisibility="Visible">
                     <ListView.Resources>
                         <Style TargetType="{x:Type ListViewItem}">
                             <Setter Property="Template">
