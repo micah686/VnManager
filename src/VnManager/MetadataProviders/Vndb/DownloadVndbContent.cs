@@ -40,7 +40,7 @@ namespace VnManager.MetadataProviders.Vndb
                 {
                     var uri = new Uri(entry.ImageLink);
                     App.StatusBar.IsFileDownloading = true;
-                    string path = $@"{App.AssetDirPath}\sources\vndb\images\cover\{Path.GetFileName(uri.AbsoluteUri)}";
+                    string path = $@"{App.AssetDirPath}\sources\vndb\images\cover\{entry.VnId}.jpg";
                     await ImageHelper.DownloadImageAsync(uri, NsfwHelper.RawRatingIsNsfw(entry.ImageRating), path);
                 }
             }

@@ -72,7 +72,7 @@ namespace VnManager.ViewModels.UserControls.MainPage
                 {
                     continue;
                 }
-                var coverPath = $@"{App.AssetDirPath}\sources\vndb\images\cover\{Path.GetFileName(game.ImageLink)}";
+                var coverPath = $@"{App.AssetDirPath}\sources\vndb\images\cover\{game.VnId}.jpg";
 
                 var rating = NsfwHelper.RawRatingIsNsfw(game.ImageRating);
 

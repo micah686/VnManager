@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -12,6 +13,7 @@ using VnManager.Models.Db;
 using VnManager.Models.Db.User;
 using VnManager.Models.Db.Vndb.Character;
 using VnManager.Models.Db.Vndb.Main;
+using VnManager.ViewModels.Dialogs.AddGameSources;
 
 namespace VnManager.ViewModels.Dialogs.ModifyGame
 {
@@ -33,42 +35,43 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
                 MessageBoxButton.YesNo, MessageBoxImage.Exclamation);
             if (result == MessageBoxResult.Yes)
             {
-                DeleteData();
-
+                switch (ModifyGameHostViewModel.SelectedGame.SourceType)
+                {
+                    case AddGameSourceType.Vndb:
+                        DeleteVndbData();
+                        break;
+                    case AddGameSourceType.NoSource:
+                        DeleteNoSourceData();
+                        break;
+                    case AddGameSourceType.NotSet:
+                        break;
+                    default:
+                        break;
+                }
             }
         }
 
-        private void DeleteData()
+        private void DeleteVndbData()
         {
             var cred = CredentialManager.GetCredentials(App.CredDb);
             if (cred == null || cred.UserName.Length < 1)
             {
                 return;
             }
+            var vnid = ModifyGameHostViewModel.SelectedGame.GameId.Value;
             using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
             {
-
-                
                 var dbInfo = db.GetCollection<VnInfo>(DbVnInfo.VnInfo.ToString());
                 var dbInfoLinks = db.GetCollection<VnInfoLinks>(DbVnInfo.VnInfo_Links.ToString());
                 var dbInfoRelations = db.GetCollection<VnInfoRelations>(DbVnInfo.VnInfo_Relations.ToString());
                 var dbInfoScreens = db.GetCollection<VnInfoScreens>(DbVnInfo.VnInfo_Screens.ToString());
                 var dbInfoTags = db.GetCollection<VnInfoTags>(DbVnInfo.VnInfo_Tags.ToString());
 
-
-                
-
-                
-
                 var dbCharacter = db.GetCollection<VnCharacterInfo>(DbVnCharacter.VnCharacter.ToString());
                 var dbCharacterTraits = db.GetCollection<VnCharacterTraits>(DbVnCharacter.VnCharacter_Traits.ToString());
 
-
-                var vnid = ModifyGameHostViewModel.SelectedGame.GameId.Value;
                 var charIds = dbCharacter.Query().Where(x => x.VnId == vnid).Select(x => x.CharacterId).ToList();
                 
-
-                #region Info
                 dbInfo.DeleteMany(x => x.VnId == vnid);
                 dbInfoLinks.DeleteMany(x => x.VnId == vnid);
                 dbInfoRelations.DeleteMany(x => x.VnId == vnid);
@@ -76,11 +79,6 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
                 dbInfoTags.DeleteMany(x => x.VnId == vnid);
 
 
-                #endregion
-
-                #region Character
-
-                
                 var charExclude = new List<uint>();
                 foreach (var characterInfo in dbCharacter.FindAll())
                 {
@@ -94,18 +92,53 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
                 dbCharacter.DeleteMany(x => charDeleteIds.Contains(x.CharacterId));
                 dbCharacterTraits.DeleteMany(x => charDeleteIds.Contains(x.CharacterId));
 
-                #endregion
-
-                
-
-
-
-
-
                 var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString());
                 dbUserData.DeleteMany(x => x.Id == ModifyGameHostViewModel.SelectedGame.Id);
 
+            }
+            DeleteVndbImages(vnid);
+            
+            var parent = (ModifyGameHostViewModel)Parent;
+            parent.RequestClose();
+            RootViewModel.Instance.ActivateMainClick();
+        }
 
+        private void DeleteVndbImages(int vnId)
+        {
+            string basePath = $@"{App.AssetDirPath}\sources\vndb\images";
+
+            var characters = $@"{basePath}\characters\{vnId}";
+            var screenshots = $@"{basePath}\screenshots\{vnId}";
+            var cover = $@"{basePath}\cover\{vnId}.jpg";
+
+            if (Directory.Exists(characters))
+            {
+                Directory.Delete(characters, true);
+            }
+
+            if (Directory.Exists(screenshots))
+            {
+                Directory.Delete(screenshots, true);
+            }
+
+            if (File.Exists(cover))
+            {
+                File.Delete(cover);
+            }
+
+        }
+
+        private void DeleteNoSourceData()
+        {
+            var cred = CredentialManager.GetCredentials(App.CredDb);
+            if (cred == null || cred.UserName.Length < 1)
+            {
+                return;
+            }
+            using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
+            {
+                var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString());
+                dbUserData.DeleteMany(x => x.Id == ModifyGameHostViewModel.SelectedGame.Id);
 
             }
         }
