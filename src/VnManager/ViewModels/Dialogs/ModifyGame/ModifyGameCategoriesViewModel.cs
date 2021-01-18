@@ -15,13 +15,13 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
     {
         #region Properties
         //Add Category
-        public BindableCollection<string> AddCategoriesCollection { get; set; }
+        public BindableCollection<string> AddCategoriesCollection { get; } = new BindableCollection<string>();
         public bool IsAddCategoriesEnabled { get; set; }
         public int SelectedAddIndex { get; set; }
         public string SelectedAddValue { get; set; }
         public string AddCategoryMessage { get; set; }
         //Remove Category
-        public BindableCollection<string> RemoveCategoriesCollection { get; set; }
+        public BindableCollection<string> RemoveCategoriesCollection { get; } = new BindableCollection<string>();
         public bool IsRemoveCategoriesEnabled { get; set; }
         public int SelectedRemoveIndex { get; set; }
         public string SelectedRemoveValue { get; set; }
@@ -30,7 +30,7 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
         //Create Category
         public string NewCategoryValue { get; set; }
         //Delete Category
-        public BindableCollection<string> DeleteCategoriesCollection { get; set; }
+        public BindableCollection<string> DeleteCategoriesCollection { get; } = new BindableCollection<string>();
         public string DeleteCategorySelectedValue { get; set; }
         public int DeleteCategoryIndex { get; set; }
         public bool DeleteCategoryEnabled { get; set; }
@@ -47,9 +47,6 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
 
         protected override void OnViewLoaded()
         {
-            RemoveCategoriesCollection = new BindableCollection<string>();
-            AddCategoriesCollection = new BindableCollection<string>();
-            DeleteCategoriesCollection = new BindableCollection<string>();
             IsRemoveCategoriesEnabled = true;
             FillCategories();
         }

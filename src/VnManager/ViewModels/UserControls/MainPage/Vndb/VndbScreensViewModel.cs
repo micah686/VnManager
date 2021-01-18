@@ -33,7 +33,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
 
         public BindingImage MainImage { get; set; }
 
-        public BindableCollection<BindingImage> ScreenshotCollection { get; set; } = new BindableCollection<BindingImage>();
+        public BindableCollection<BindingImage> ScreenshotCollection { get; private set; } = new BindableCollection<BindingImage>();
 
         private List<BindingImage> _scrList = new List<BindingImage>();
         private bool _finishedLoad = false;

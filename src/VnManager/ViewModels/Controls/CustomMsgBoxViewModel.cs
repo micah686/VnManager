@@ -14,32 +14,32 @@ namespace VnManager.ViewModels.Controls
         /// <summary>
         /// Gets or sets the mapping of button to text to display on that button. You can modify this to localize your application.
         /// </summary>
-        public static IDictionary<MessageBoxResult, string> ButtonLabels { get; set; }
+        public static IDictionary<MessageBoxResult, string> ButtonLabels { get; }
 
         /// <summary>
         /// Gets or sets the mapping of MessageBoxButton values to the buttons which should be displayed
         /// </summary>
-        public static IDictionary<MessageBoxButton, MessageBoxResult[]> ButtonToResults { get; set; }
+        public static IDictionary<MessageBoxButton, MessageBoxResult[]> ButtonToResults { get; }
 
         /// <summary>
         /// Gets or sets the mapping of MessageBoxImage to the SystemIcon to display. You can customize this if you really want.
         /// </summary>
-        public static IDictionary<MessageBoxImage, Icon> IconMapping { get; set; }
+        public static IDictionary<MessageBoxImage, Icon> IconMapping { get; }
 
         /// <summary>
         /// Gets or sets the mapping of MessageBoxImage to the sound to play when the MessageBox is shown. You can customize this if you really want.
         /// </summary>
-        public static IDictionary<MessageBoxImage, SystemSound> SoundMapping { get; set; }
+        public static IDictionary<MessageBoxImage, SystemSound> SoundMapping { get; }
 
         /// <summary>
         /// Gets or sets the default <see cref="System.Windows.FlowDirection"/> to use
         /// </summary>
-        public static FlowDirection DefaultFlowDirection { get; set; }
+        public static FlowDirection DefaultFlowDirection { get; }
 
         /// <summary>
         /// Gets or sets the default <see cref="System.Windows.TextAlignment"/> to use
         /// </summary>
-        public static TextAlignment DefaultTextAlignment { get; set; }
+        public static TextAlignment DefaultTextAlignment { get; }
 
         static CustomMsgBoxViewModel()
         {

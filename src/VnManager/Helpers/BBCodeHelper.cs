@@ -22,12 +22,12 @@ namespace VnManager.Helpers
         /// </summary>
         /// <param name="text">String of BBCode</param>
         /// <returns>List of InLines. This needs to be bound using the Textblock Inline Binding Extension</returns>
-        public static List<Inline> Helper(string text)
+        public static Inline[] Helper(string text)
         {
             string modifiedText = text;
             if (string.IsNullOrEmpty(modifiedText))
             {
-                return new List<Inline>();
+                return new Inline[] {new Span()};
             }
             modifiedText = ReplaceSpoilers(text);
             modifiedText = ReplaceVndbLocalUrls(modifiedText);
@@ -37,7 +37,7 @@ namespace VnManager.Helpers
             var inlineList = FormatUrlsInLine(modifiedText);
 
 
-            return inlineList;
+            return inlineList.ToArray();
         }
 
 

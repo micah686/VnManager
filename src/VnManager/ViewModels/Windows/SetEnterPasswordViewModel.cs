@@ -140,14 +140,15 @@ namespace VnManager.ViewModels.Windows
                 {
                     
                     var password = new SecureString();
-
+                    const int passwordLength = 64;
+                    const int specialCharacters = 16;
 #if DEBUG
                     foreach (var character in "123456") //TODO:Debug only password
                     {
                         password.AppendChar(character);
                     }
 #else
-                    foreach (var character in Secure.GenerateSecurePassword(64,16))
+                    foreach (var character in Secure.GenerateSecurePassword(passwordLength,specialCharacters))
                     {
                         password.AppendChar(character);
                     }

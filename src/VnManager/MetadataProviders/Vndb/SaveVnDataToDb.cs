@@ -78,7 +78,7 @@ namespace VnManager.MetadataProviders.Vndb
                     vn.VnId = visualNovel.Id;
                     vn.Title = visualNovel.Name;
                     vn.Original = visualNovel.OriginalName;
-                    vn.Released = visualNovel.Released?.ToString() ?? null;
+                    vn.Released = visualNovel.Released?.ToString();
                     vn.Languages = CsvConverter.ConvertToCsv(visualNovel.Languages);
                     vn.OriginalLanguages = CsvConverter.ConvertToCsv(visualNovel.OriginalLanguages);
                     vn.Platforms = CsvConverter.ConvertToCsv(visualNovel.Platforms);

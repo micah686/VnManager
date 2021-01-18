@@ -43,9 +43,9 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
         public Tuple<string, Visibility> Weight { get; set; }
         public Tuple<string, Visibility> BustWaistHips { get; set; }
 
-        public List<Inline> Description { get; set; }
+        public Inline[] Description { get; set; }
         
-        public BindableCollection<TagTraitBinding> TraitCollection { get; set; } = new BindableCollection<TagTraitBinding>();
+        public BindableCollection<TagTraitBinding> TraitCollection { get; } = new BindableCollection<TagTraitBinding>();
 
         #endregion
 

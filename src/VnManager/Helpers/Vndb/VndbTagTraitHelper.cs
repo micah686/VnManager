@@ -19,7 +19,7 @@ namespace VnManager.Helpers.Vndb
     {
         private const string _sexualString = "Sexual";
         #region Tags
-        public static List<TagTraitBinding> GetTags(int vnId)
+        public static TagTraitBinding[] GetTags(int vnId)
         {
             List<VnInfoTags> tagList;
             List<VnTagData> tagDump;
@@ -27,7 +27,7 @@ namespace VnManager.Helpers.Vndb
             var cred = CredentialManager.GetCredentials(App.CredDb);
             if (cred == null || cred.UserName.Length < 1)
             {
-                return new List<TagTraitBinding>();
+                return new[] {new TagTraitBinding()};
             }
             using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
             {
@@ -60,8 +60,8 @@ namespace VnManager.Helpers.Vndb
 
 
             var tagBindingList = (from @group in tempList.GroupBy(x => x.Parent)
-                let tuple = @group.Select(tag => new Tuple<string, string>(tag.Child, tag.colorText)).ToList()
-                select new TagTraitBinding {Parent = @group.Key, Children = tuple}).OrderBy(x => x.Parent).ToList();
+                let tuple = @group.Select(tag => new Tuple<string, string>(tag.Child, tag.colorText)).ToArray()
+                select new TagTraitBinding {Parent = @group.Key, Children = tuple}).OrderBy(x => x.Parent).ToArray();
             return tagBindingList;
         }
 
@@ -91,7 +91,7 @@ namespace VnManager.Helpers.Vndb
         #endregion
 
         #region Traits
-        public static List<TagTraitBinding> GetTraits(int characterId)
+        public static TagTraitBinding[] GetTraits(int characterId)
         {
             List<VnCharacterTraits> traitList;
             List<VnTraitData> traitDump;
@@ -99,7 +99,7 @@ namespace VnManager.Helpers.Vndb
             var cred = CredentialManager.GetCredentials(App.CredDb);
             if (cred == null || cred.UserName.Length < 1)
             {
-                return new List<TagTraitBinding>();
+                return new[] {new TagTraitBinding()};
             }
             using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
             {
@@ -132,8 +132,8 @@ namespace VnManager.Helpers.Vndb
 
 
             var traitBindingList = (from @group in tempList.GroupBy(x => x.Parent)
-                let tuple = @group.Select(trait => new Tuple<string, string>(trait.Child, trait.colorText)).ToList()
-                select new TagTraitBinding {Parent = @group.Key, Children = tuple}).OrderBy(x => x.Parent).ToList();
+                let tuple = @group.Select(trait => new Tuple<string, string>(trait.Child, trait.colorText)).ToArray()
+                select new TagTraitBinding {Parent = @group.Key, Children = tuple}).OrderBy(x => x.Parent).ToArray();
             return traitBindingList;
         }
         
@@ -170,6 +170,6 @@ namespace VnManager.Helpers.Vndb
         /// <summary>
         /// Tuple is NameOfChild, ColorInHex
         /// </summary>
-        public List<Tuple<string, string>> Children { get; set; }
+        public Tuple<string, string>[] Children { get; set; }
     }
 }

@@ -28,13 +28,13 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
         public string VnLength { get; set; }
         public string Popularity { get; set; }
         public string Rating { get; set; }
-        public BindableCollection<BitmapSource> LanguageCollection { get; set; } = new BindableCollection<BitmapSource>();
-        public BindableCollection<TagTraitBinding> TagCollection { get; set; } = new BindableCollection<TagTraitBinding>();
+        public BindableCollection<BitmapSource> LanguageCollection { get; } = new BindableCollection<BitmapSource>();
+        public BindableCollection<TagTraitBinding> TagCollection { get; } = new BindableCollection<TagTraitBinding>();
         public Visibility SummaryHeaderVisibility { get; set; }
         public Visibility TagHeaderVisibility { get; set; }
         public Visibility RelationHeaderVisibility { get; set; }
 
-        public List<Inline> DescriptionInLine { get; set; }
+        public Inline[] DescriptionInLine { get; private set; }
 
         public string LastPlayed { get; set; }
         public string PlayTime { get; set; }
@@ -43,7 +43,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
 
         #region Relation Binding
 
-        public BindableCollection<VnRelationsBinding> VnRelations { get; set; } = new BindableCollection<VnRelationsBinding>();
+        public BindableCollection<VnRelationsBinding> VnRelations { get; } = new BindableCollection<VnRelationsBinding>();
 
         #endregion
 
@@ -56,7 +56,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             
             TagCollection.Clear();
             TagCollection.AddRange(VndbTagTraitHelper.GetTags(VndbContentViewModel.VnId));
-            SummaryHeaderVisibility = DescriptionInLine.Count < 1 ? Visibility.Collapsed : Visibility.Visible;
+            SummaryHeaderVisibility = DescriptionInLine.Length < 1 ? Visibility.Collapsed : Visibility.Visible;
             TagHeaderVisibility = TagCollection.Count < 1 ? Visibility.Collapsed : Visibility.Visible;
             RelationHeaderVisibility = VnRelations.Count < 1 ? Visibility.Collapsed : Visibility.Visible;
         }
