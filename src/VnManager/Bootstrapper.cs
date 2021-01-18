@@ -67,6 +67,10 @@ namespace VnManager
 
         protected override void OnUnhandledException(DispatcherUnhandledExceptionEventArgs e)
         {
+            if (e == null)
+            {
+                return;
+            }
             //always want a verbose log if the program crashes
             LogManager.SetLogLevel(LogLevel.Verbose);
             App.Logger.Fatal(e.Exception, "Program Crashed!");

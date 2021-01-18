@@ -16,7 +16,8 @@ namespace VnManager
     public partial class App : Application
     {
         private static Assembly Assembly { get; } = typeof(App).Assembly;
-        public static string VersionString { get; } = Assembly.GetName().Version?.ToString(3);
+        private const int FieldCount = 3;
+        public static string VersionString { get; } = Assembly.GetName().Version?.ToString(FieldCount);
 
         public static string ExecutableDirPath { get; } = AppDomain.CurrentDomain.BaseDirectory!;
 

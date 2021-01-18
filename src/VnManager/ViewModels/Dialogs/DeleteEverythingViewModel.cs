@@ -25,25 +25,31 @@ namespace VnManager.ViewModels.Dialogs
 
         private void TimerOnElapsed(object sender, ElapsedEventArgs e)
         {
+            const int initialCount = 0;
+            const int firstCount = 1;
+            const int secondCount = 2;
+            const int thirdCount = 3;
+            const int fourthCount = 4;
+            
             switch (_timerHitCount)
             {
-                case 0:
+                case initialCount:
                     _timerHitCount += 1;
                     YesButtonTest = "4";
                     break;
-                case 1:
+                case firstCount:
                     _timerHitCount += 1;
                     YesButtonTest = "3";
                     break;
-                case 2:
+                case secondCount:
                     _timerHitCount += 1;
                     YesButtonTest = "2";
                     break;
-                case 3:
+                case thirdCount:
                     _timerHitCount += 1;
                     YesButtonTest = "1";
                     break;
-                case 4:
+                case fourthCount:
                     _timerHitCount += 1;
                     YesButtonTest = App.ResMan.GetString("Yes");
                     CanPressDelete = true;
