@@ -6,6 +6,7 @@ using AdysTech.CredentialManager;
 using FluentValidation;
 using LiteDB;
 using Stylet;
+using VnManager.Events;
 using VnManager.Models.Db;
 using VnManager.Models.Db.User;
 
@@ -38,9 +39,11 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
         #endregion
 
         private readonly IWindowManager _windowManager;
-        public ModifyGameCategoriesViewModel(IWindowManager windowManager, IModelValidator<ModifyGameCategoriesViewModel> validator) : base(validator)
+        private readonly IEventAggregator _events;
+        public ModifyGameCategoriesViewModel(IWindowManager windowManager, IEventAggregator events, IModelValidator<ModifyGameCategoriesViewModel> validator) : base(validator)
         {
             _windowManager = windowManager;
+            _events = events;
             DisplayName = App.ResMan.GetString("Categories");
 
         }
@@ -223,7 +226,7 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
                     dbUserCategories.Insert(newCategory);
                 }
                 _windowManager.ShowMessageBox($"{App.ResMan.GetString("CreatedCategory")} {NewCategoryValue}", App.ResMan.GetString("CreatedCategory"));
-                RootViewModel.Instance.ActivateMainClick();
+                _events.PublishOnUIThread(new UpdateEvent { ShouldUpdate = true }, EventChannels.RefreshCategoryList.ToString());
                 FillCategories();
                 NewCategoryValue = string.Empty;
             }
@@ -257,8 +260,8 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
                 
                 dbUserCategories.DeleteMany(c => c.CategoryName == DeleteCategorySelectedValue);
             }
-            
-            RootViewModel.Instance.ActivateMainClick();
+
+            _events.PublishOnUIThread(new UpdateEvent { ShouldUpdate = true }, EventChannels.RefreshCategoryList.ToString());
             FillCategories();
         }
 

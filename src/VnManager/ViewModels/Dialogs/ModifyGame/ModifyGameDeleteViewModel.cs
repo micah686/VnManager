@@ -8,6 +8,7 @@ using AdysTech.CredentialManager;
 using LiteDB;
 using MvvmDialogs.FrameworkDialogs.OpenFile;
 using Stylet;
+using VnManager.Events;
 using VnManager.Models.Db;
 using VnManager.Models.Db.User;
 using VnManager.Models.Db.Vndb.Character;
@@ -19,11 +20,12 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
     public class ModifyGameDeleteViewModel: Screen
     {
         private readonly IWindowManager _windowManager;
-
-        public ModifyGameDeleteViewModel(IWindowManager windowManager)
+        private readonly IEventAggregator _events;
+        public ModifyGameDeleteViewModel(IWindowManager windowManager, IEventAggregator events)
         {
             DisplayName = App.ResMan.GetString("DeleteGame");
             _windowManager = windowManager;
+            _events = events;
         }
 
         public void DeleteGame()
@@ -97,7 +99,7 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
             
             var parent = (ModifyGameHostViewModel)Parent;
             parent.RequestClose();
-            RootViewModel.Instance.ActivateMainClick();
+            _events.PublishOnUIThread(new UpdateEvent {ShouldUpdate = true}, EventChannels.RefreshGameGrid.ToString());
         }
 
         private void DeleteVndbImages(int vnId)

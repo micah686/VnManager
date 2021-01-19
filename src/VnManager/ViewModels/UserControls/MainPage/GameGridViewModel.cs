@@ -6,6 +6,7 @@ using AdysTech.CredentialManager;
 using LiteDB;
 using Stylet;
 using StyletIoC;
+using VnManager.Events;
 using VnManager.Helpers;
 using VnManager.Models.Db;
 using VnManager.Models.Db.User;
@@ -15,19 +16,26 @@ using VnManager.ViewModels.Dialogs.AddGameSources;
 
 namespace VnManager.ViewModels.UserControls.MainPage
 {
-    public class GameGridViewModel: Screen
+    public class GameGridViewModel: Screen, IHandle<UpdateEvent>
     {
         public BindableCollection<GameCardViewModel> GameCollection { get; } = new BindableCollection<GameCardViewModel>();
 
         private readonly IWindowManager _windowManager;
         private readonly IContainer _container;
-        public GameGridViewModel(IContainer container, IWindowManager windowManager)
+        public GameGridViewModel(IContainer container, IWindowManager windowManager, IEventAggregator events)
         {
             _container = container;
             _windowManager = windowManager;
+
+            SetupEvents(events);
+
             GetGameData();
         }
 
+        private void SetupEvents(IEventAggregator eventAggregator)
+        {
+            eventAggregator.Subscribe(this, EventChannels.RefreshGameGrid.ToString());
+        }
 
         private void GetGameData()
         {
@@ -115,6 +123,15 @@ namespace VnManager.ViewModels.UserControls.MainPage
                 }
                 GameCollection.Add(card);
             }
+        }
+
+        public void Handle(UpdateEvent message)
+        {
+            if (message != null && message.ShouldUpdate)
+            {
+                GetGameData();
+            }
+            
         }
     }
 }
