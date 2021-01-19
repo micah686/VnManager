@@ -7,8 +7,6 @@ using System.Threading.Tasks;
 using AdysTech.CredentialManager;
 using LiteDB;
 using VndbSharp.Models.Character;
-using VndbSharp.Models.Producer;
-using VndbSharp.Models.Release;
 using VndbSharp.Models.VisualNovel;
 using VnManager.Converters;
 using VnManager.Models.Db;

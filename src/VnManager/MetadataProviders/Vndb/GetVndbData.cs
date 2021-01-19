@@ -7,8 +7,6 @@ using VndbSharp;
 using VndbSharp.Models;
 using VndbSharp.Models.Character;
 using VndbSharp.Models.Errors;
-using VndbSharp.Models.Producer;
-using VndbSharp.Models.Release;
 using VndbSharp.Models.VisualNovel;
 using VnManager.Helpers.Vndb;
 using VnManager.ViewModels.UserControls;

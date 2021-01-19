@@ -16,6 +16,7 @@ using VndbSharp;
 using VndbSharp.Models;
 using VndbSharp.Models.Errors;
 using VndbSharp.Models.VisualNovel;
+using VnManager.Events;
 using VnManager.Helpers;
 using VnManager.Helpers.Vndb;
 using VnManager.MetadataProviders;
@@ -128,11 +129,14 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
         private readonly IWindowManager _windowManager;
         private readonly IDialogService _dialogService;
         private readonly IContainer _container;
-        public AddGameVndbViewModel(IContainer container, IWindowManager windowManager, IModelValidator<AddGameVndbViewModel> validator, IDialogService dialogService) : base(validator)
+        private readonly IEventAggregator _events;
+        public AddGameVndbViewModel(IContainer container, IWindowManager windowManager, IModelValidator<AddGameVndbViewModel> validator, 
+            IDialogService dialogService, IEventAggregator events) : base(validator)
         {
             _container = container;
             _windowManager = windowManager;
             _dialogService = dialogService;
+            _events = events;
             IsNotExeCollection = true;
             CanChangeVnName = true;
             SuggestedNamesCollection = new BindableCollection<string>();
@@ -305,7 +309,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
                 IsLockDown = false;
                 parent.CanChangeSource = true;
                 parent.RequestClose(true);
-                RootViewModel.Instance.ActivateMainClick();
+                _events.PublishOnUIThread(new UpdateEvent { ShouldUpdate = true }, EventChannels.RefreshGameGrid.ToString());
             }
 
             IsLockDown = false;

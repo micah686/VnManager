@@ -1,19 +1,15 @@
 ﻿using Stylet;
 using StyletIoC;
 using System;
-using System.Collections.Generic;
 using VndbSharp.Models.Common;
 using VnManager.Models.Settings;
 using System.IO;
 using VnManager.Helpers;
-using System.Linq;
 using AdysTech.CredentialManager;
 using LiteDB;
 using LiteDB.Engine;
 using MvvmDialogs;
 using MvvmDialogs.FrameworkDialogs.FolderBrowser;
-using VnManager.Models.Db;
-using VnManager.Models.Db.User;
 using VnManager.ViewModels.Dialogs;
 
 namespace VnManager.ViewModels.UserControls

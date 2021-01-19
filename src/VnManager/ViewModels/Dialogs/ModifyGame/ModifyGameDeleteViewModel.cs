@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using AdysTech.CredentialManager;
 using LiteDB;
-using MvvmDialogs.FrameworkDialogs.OpenFile;
 using Stylet;
 using VnManager.Events;
 using VnManager.Models.Db;

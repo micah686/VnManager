@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -15,12 +14,9 @@ using MvvmDialogs;
 using MvvmDialogs.FrameworkDialogs.OpenFile;
 using Sentry;
 using Stylet;
-using VndbSharp.Models;
 using VnManager.Helpers;
-using VnManager.MetadataProviders.Vndb;
 using VnManager.Models.Db;
 using VnManager.Models.Db.User;
-using VnManager.ViewModels.Dialogs.AddGameSources;
 
 namespace VnManager.ViewModels.Dialogs
 {
