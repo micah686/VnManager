@@ -14,12 +14,30 @@ using VnManager.ViewModels.Windows;
 
 namespace VnManager.ViewModels
 {
+    public interface IMainGridViewModelFactory
+    {
+        MainGridViewModel CreateMainGridViewModel();
+    }
+
+    public interface ISettingsViewModelFactory
+    {
+        SettingsViewModel CreateSettingsViewModel();
+    }
+
+    public interface IDebugViewModelFactory
+    {
+        DebugViewModel CreateDebugViewModel();
+    }
+    
     public class RootViewModel: Conductor<Screen>
     {
         public StatusBarViewModel StatusBarPage { get; set; }
 
         private readonly IContainer _container;
         private readonly IWindowManager _windowManager;
+        private readonly IMainGridViewModelFactory _mainGridVmFactory;
+        private readonly ISettingsViewModelFactory _settingsVmFactory;
+        private readonly IDebugViewModelFactory _debugVmFactory;
 
         private int _windowButtonPressedCounter = 0;
 
@@ -88,16 +106,33 @@ namespace VnManager.ViewModels
         #endregion
 
 
-        public RootViewModel(IContainer container, IWindowManager windowManager)
+#if DEBUG
+        public RootViewModel(IContainer container, IWindowManager windowManager, IMainGridViewModelFactory mainGridFactory, ISettingsViewModelFactory settingsFactory,
+            IDebugViewModelFactory debugFactory)
         {
             Instance = this;
             _container = container;
             _windowManager = windowManager;
+            _mainGridVmFactory = mainGridFactory;
+            _settingsVmFactory = settingsFactory;
+            _debugVmFactory = debugFactory;
             App.StatusBar = _container.Get<StatusBarViewModel>();
 
-
+        }
+#else
+        public RootViewModel(IContainer container, IWindowManager windowManager, IMainGridViewModelFactory mainGridFactory, ISettingsViewModelFactory settingsFactory)
+        {
+            Instance = this;
+            _container = container;
+            _windowManager = windowManager;
+            _mainGridVmFactory = mainGridFactory;
+            _settingsVmFactory = settingsFactory;
+            App.StatusBar = _container.Get<StatusBarViewModel>();
 
         }
+#endif
+
+
 
         protected override void OnViewLoaded()
         {
@@ -112,8 +147,8 @@ namespace VnManager.ViewModels
                 {
                     App.UserSettings = UserSettingsHelper.ReadUserSettings();//read for any changed user settings
                     CheckForImportDb();
-                    var mainGrid = _container.Get<MainGridViewModel>();
-                    ActivateItem(mainGrid);
+                    var mainGridVm = _mainGridVmFactory.CreateMainGridViewModel();
+                    ActivateItem(mainGridVm);
                     StatusBarPage = _container.Get<StatusBarViewModel>();
                     var result = Application.Current.TryFindResource(AdonisUI.Colors.ForegroundColor);
                     SettingsIconColor = result == null ? System.Windows.Media.Brushes.LightSteelBlue : new SolidColorBrush((System.Windows.Media.Color)result);
@@ -126,8 +161,8 @@ namespace VnManager.ViewModels
             else
             {
                 CheckDbError();
-                var mainGrid = _container.Get<MainGridViewModel>();
-                ActivateItem(mainGrid);
+                var mainGridVm = _mainGridVmFactory.CreateMainGridViewModel();
+                ActivateItem(mainGridVm);
                 StatusBarPage = _container.Get<StatusBarViewModel>();
                 var result = Application.Current.TryFindResource(AdonisUI.Colors.ForegroundColor);
                 SettingsIconColor = result == null ? System.Windows.Media.Brushes.LightSteelBlue : new SolidColorBrush((System.Windows.Media.Color)result);
@@ -255,21 +290,21 @@ namespace VnManager.ViewModels
 
         public void ActivateSettingsClick()
         {
-            var vm = _container.Get<SettingsViewModel>();
-            ActivateItem(vm);
+            var settingsVm = _settingsVmFactory.CreateSettingsViewModel();
+            ActivateItem(settingsVm);
         }
 
         public void ActivateMainClick()
         {
-            var vm = _container.Get<MainGridViewModel>();
-            ActivateItem(vm);
+            var mainGridVm = _mainGridVmFactory.CreateMainGridViewModel();
+            ActivateItem(mainGridVm);
         }
 
 
         public void DebugClick()
         {
-            var vm = _container.Get<DebugViewModel>();
-            ActivateItem(vm);
+            var debugVm = _debugVmFactory.CreateDebugViewModel();
+            ActivateItem(debugVm);
         }
 
     }

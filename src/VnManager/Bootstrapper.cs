@@ -45,6 +45,10 @@ namespace VnManager
 
             builder.Bind<StatusBarViewModel>().ToSelf().InSingletonScope();
             builder.Bind<IMessageBoxViewModel>().To<CustomMsgBoxViewModel>();
+            
+            builder.Bind<IMainGridViewModelFactory>().ToAbstractFactory();
+            builder.Bind<ISettingsViewModelFactory>().ToAbstractFactory();
+            builder.Bind<IDebugViewModelFactory>().ToAbstractFactory();
         }
 
         protected override void Configure()
