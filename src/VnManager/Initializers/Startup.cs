@@ -1,181 +1,154 @@
-﻿using System;
+﻿using Stylet;
+using StyletIoC;
+using System;
 using System.IO;
-using System.IO.Abstractions;
-using VnManager.Helpers;
-using System.Globalization;
-using System.Linq;
+using System.Windows;
 using AdysTech.CredentialManager;
 using LiteDB;
-using Sentry;
-using VnManager.Models.Db;
-using VnManager.Models.Db.User;
+using VnManager.Helpers;
+using VnManager.ViewModels.Dialogs;
+using VnManager.ViewModels.Windows;
 
 namespace VnManager.Initializers
 {
-    public static class Startup
+    public  class Startup
     {
-        private const string sentryDSN = "https://820e9443ed4e4555900f0037710dd0e3@o499434.ingest.sentry.io/5577936";
-        private const string noTrackSentryDSN = "https://00000000@000000.ingest.localhost.lan/000000";
-        private static readonly IFileSystem fs = new FileSystem();
-
-
-        public static void StartupPrep()
+        private readonly IContainer _container;
+        private readonly IWindowManager _windowManager;
+        public Startup(IContainer container, IWindowManager windowManager)
         {
-            SetDirectories();
-            CreateFolders();
-            DeleteOldLogs();
-            DeleteOldBackupDatabase();
-            SentrySetup();
-            SetupCategories();
+            _container = container;
+            _windowManager = windowManager;
+            StartupCheck();
         }
-        
+
         /// <summary>
-        /// Set the default directories for the program to use (AppData)
-        /// If debugging, the default directories will always be in the folder that the exe is located in
+        /// Checks if everything is setup properly
         /// </summary>
-        private static void SetDirectories()
-        {            
-            bool canReadWrite = (CheckWriteAccess.CheckWrite(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData))
-                                 && CheckWriteAccess.CheckWrite(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)));
-            if (canReadWrite)
+        private void StartupCheck()
+        {
+            if (!IsNormalStart())
             {
-#if DEBUG
-                App.AssetDirPath = fs.Path.Combine(App.ExecutableDirPath, "Data");
-                App.ConfigDirPath = fs.Path.Combine(App.ExecutableDirPath, "Data");
-#else
-                App.AssetDirPath = fs.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "VnManager");
-                App.ConfigDirPath = fs.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "VnManager");
-#endif
+                App.UserSettings = UserSettingsHelper.ReadUserSettings();
+                var auth = _container.Get<SetEnterPasswordViewModel>();
+                var isAuth = _windowManager.ShowDialog(auth);
+
+                if (isAuth == true)
+                {
+                    App.UserSettings = UserSettingsHelper.ReadUserSettings();//read for any changed user settings
+                    CheckForImportDb();
+                }
+                else
+                {
+                    Environment.Exit(0);//closed auth window
+                }
             }
             else
             {
-                App.AssetDirPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-                App.Logger.Error("Could not read/write to asset/config directories");
-                AdonisUI.Controls.MessageBox.Show(
-                    $"Could not read/write to user data directories!\nExiting Application", "Failed to start!", AdonisUI.Controls.MessageBoxButton.OK, AdonisUI.Controls.MessageBoxImage.Exclamation);
-                Environment.Exit(1);
+                CheckDbError();
             }
-
-            CreateFolders();            
         }
         
-        /// <summary>
-        /// Create default folders for use with the program
-        /// </summary>
-        private static void CreateFolders()
-        {
-            //Assets folder ( images, logs,...)
-            fs.Directory.CreateDirectory(Path.Combine(App.AssetDirPath, @"sources\vndb\images\cover"));
-            fs.Directory.CreateDirectory(Path.Combine(App.AssetDirPath, @"sources\vndb\images\cover"));
-            fs.Directory.CreateDirectory(Path.Combine(App.AssetDirPath, @"sources\vndb\images\screenshots"));
-            fs.Directory.CreateDirectory(Path.Combine(App.AssetDirPath, @"sources\vndb\images\characters"));
-
-            fs.Directory.CreateDirectory(Path.Combine(App.AssetDirPath, @"logs"));
-
-            //Config
-            fs.Directory.CreateDirectory(Path.Combine(App.ConfigDirPath, @"database"));
-            fs.Directory.CreateDirectory(Path.Combine(App.ConfigDirPath, @"config"));
-        }
 
         /// <summary>
-        /// This should delete any log files that are a month old or older
+        /// Checks to see if the user has been asked to import the database yet. If not, prompts for importing data into the Db
         /// </summary>
-        private static void DeleteOldLogs()
+        private void CheckForImportDb()
         {
-            //doesn't delete logs out of User Profile directory
-            var minDate = (DateTime.Today - new TimeSpan(30, 0, 0, 0));
-            if (!Directory.Exists(App.ConfigDirPath + @"\logs"))
+            if (App.UserSettings.DidAskImportDb != false)
             {
                 return;
             }
-            foreach (var file in Directory.GetFiles(App.ConfigDirPath + @"\logs"))
+            var result = _windowManager.ShowMessageBox(App.ResMan.GetString("AskImportDb"),
+                App.ResMan.GetString("ImportDataTitle"), MessageBoxButton.YesNo);
+            if (result == MessageBoxResult.Yes)
             {
-                var name = Path.GetFileName(file);
-                int charLoc = name.IndexOf("_", StringComparison.Ordinal);
-                var subst = name.Substring(0, charLoc);
-
-                var didParse = DateTime.TryParseExact(subst.ToCharArray(), "dd-MM-yyyy".ToCharArray(), CultureInfo.InvariantCulture, DateTimeStyles.None, out var date);
-                if (didParse == false)
-                {
-                    continue;
-                }
-                if (date >= minDate)
-                {
-                    continue;
-                }
-                try
-                {
-                    File.Delete(file);
-                }
-                catch (Exception ex)
-                {
-                    App.Logger.Warning(ex, "Couldn't delete log file");
-                }
+                var vm = _container.Get<ImportViewModel>();
+                _windowManager.ShowDialog(vm);
             }
 
+
+            App.UserSettings.DidAskImportDb = true;
+            UserSettingsHelper.SaveUserSettings(App.UserSettings);
         }
 
+
+        //should exit if it can't read the database
         /// <summary>
-        /// This will delete old database backups that are older than 14 days.
+        /// Checks if the program can successfully open the database.
+        /// If it encounters an error, the program will exit, as the program can't function if it can't read the database
         /// </summary>
-        private static void DeleteOldBackupDatabase()
+        private void CheckDbError()
         {
-            var dbDir = Directory.EnumerateFiles(Path.Combine(App.ConfigDirPath, @"database\"), "Data_BACKUP_*.db",
-                SearchOption.AllDirectories);
-            var minDate = (DateTime.Today - new TimeSpan(14, 0, 0, 0));
-            foreach (var file in dbDir)
+            string appExit = App.ResMan.GetString("AppExit");
+            string dbError = App.ResMan.GetString("DbError");
+
+            string errorStr;
+            try
             {
-                var name = Path.GetFileName(file);
-                var subst = name.Substring(12, 10).Replace('-', '/');
-                if (DateTime.TryParse(subst, out var dbDateTime)&& dbDateTime <= minDate)
+                var cred = CredentialManager.GetCredentials(App.CredDb);
+                if (cred == null || cred.UserName.Length < 1)
                 {
-                    File.Delete(name);
+                    errorStr = $"{App.ResMan.GetString("PasswordNoEmpty")}\n{appExit}";
+                    _windowManager.ShowMessageBox(errorStr, dbError);
+                    Environment.Exit(1);
+                }
+                else
+                {
+                    using (var db = new LiteDatabase($"Filename={Path.Combine(App.ConfigDirPath, App.DbPath)};Password={cred.Password}"))
+                    {
+                        //do nothing. This is checking if the database can be opened
+                    }
                 }
             }
+            catch (IOException)
+            {
+                errorStr = $"{App.ResMan.GetString("DbIsLockedProc")}\n{appExit}";
+                _windowManager.ShowMessageBox(errorStr, dbError);
+                Environment.Exit(1);
+            }
+            catch (LiteException ex)
+            {
+                if (ex.Message == "Invalid password")
+                {
+                    errorStr = $"{App.ResMan.GetString("PassIncorrect")}\n{appExit}";
+                    _windowManager.ShowMessageBox(errorStr, dbError);
+                    Environment.Exit(1);
+                }
+                else
+                {
+                    errorStr = $"{ex.Message}\n{appExit}";
+                    _windowManager.ShowMessageBox(errorStr, dbError);
+                    Environment.Exit(1);
+                }
+            }
+            catch (Exception)
+            {
+                errorStr = $"{App.ResMan.GetString("UnknownException")}\n{appExit}";
+                _windowManager.ShowMessageBox(errorStr, dbError);
+                Environment.Exit(1);
+            }
         }
 
-        private static void SentrySetup()
+
+        private static bool IsNormalStart()
         {
-            var so = new SentryOptions
+            var configFile = Path.Combine(App.ConfigDirPath, @"config\config.json");
+            if (!File.Exists(configFile))
             {
-                Dsn = new Dsn(sentryDSN),
-                Debug = true,
-                Environment = $@"VnManager-{App.VersionString}",
-                AttachStacktrace = true
-            };
-            if (File.Exists(@$"{App.ConfigDirPath}\METRICS_OPT_OUT"))
-            {
-                so.Dsn = new Dsn(noTrackSentryDSN);
+                return false;
             }
-            SentrySdk.Init(so);
-#if DEBUG
-            SentrySdk.ConfigureScope(scope=> scope.SetTag("version-type", "Debug"));
-#else
-            SentrySdk.ConfigureScope(scope=> scope.SetTag("version-type", "Normal"));//maybe add a version for release, nightly,...?
-#endif
-
-
+            if (!UserSettingsHelper.ValidateConfigFile())
+            {
+                return false;
+            }
+            if (CredentialManager.GetCredentials(App.CredDb) == null)
+            {
+                return false;
+            }
+            App.UserSettings = UserSettingsHelper.ReadUserSettings();
+            var useEncryption = App.UserSettings.RequirePasswordEntry;
+            return !useEncryption;
         }
-
-        private static void SetupCategories()
-        {
-            var cred = CredentialManager.GetCredentials(App.CredDb);
-            if (cred == null || cred.UserName.Length < 1)
-            {
-                return;
-            }
-            using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
-            var dbUserData = db.GetCollection<UserDataCategories>(DbUserData.UserData_Categories.ToString());
-
-            var userDataList = dbUserData.Query().ToList();
-            if (userDataList.Any() || userDataList.Any(x => x.CategoryName == "All"))
-            {
-                return;
-            }
-            
-            var entry = new UserDataCategories() {CategoryName = "All"};
-            dbUserData.Insert(entry);
-        }
-
     }
 }
