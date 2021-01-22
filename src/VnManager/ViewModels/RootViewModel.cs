@@ -21,8 +21,8 @@ namespace VnManager.ViewModels
     {
         DebugViewModel CreateDebugViewModel();
     }
-    
-    public class RootViewModel: Conductor<Screen>
+
+    public class RootViewModel : Conductor<Screen>
     {
         public StatusBarViewModel StatusBarPage { get; set; }
 
@@ -44,7 +44,7 @@ namespace VnManager.ViewModels
             get => _isSettingsPressed;
             set
             {
-                if(_windowButtonPressedCounter != 0 && value == true)
+                if (_windowButtonPressedCounter != 0 && value == true)
                 {
                     SetAndNotify(ref _isSettingsPressed, false);
                     return;
@@ -69,59 +69,6 @@ namespace VnManager.ViewModels
         public System.Windows.Media.Brush SettingsIconColor { get; set; }
         #endregion
 
-        public RootViewModel(IContainer container, IWindowManager windowManager, IMainGridViewModelFactory mainGridFactory, ISettingsViewModelFactory settingsFactory)
-        {
-            Instance = this;
-            _container = container;
-            _windowManager = windowManager;
-            _mainGridVmFactory = mainGridFactory;
-            _settingsVmFactory = settingsFactory;
-            App.StatusBar = _container.Get<StatusBarViewModel>();
-            _ = new Initializers.Startup(_container, windowManager);
-
-        }
-
-
-        protected override void OnViewLoaded()
-        {
-            var mainGridVm = _mainGridVmFactory.CreateMainGridViewModel();
-            ActivateItem(mainGridVm);
-            StatusBarPage = _container.Get<StatusBarViewModel>();
-            var result = Application.Current.TryFindResource(AdonisUI.Colors.ForegroundColor);
-            SettingsIconColor = result == null ? System.Windows.Media.Brushes.LightSteelBlue : new SolidColorBrush((System.Windows.Media.Color)result);
-        }
-
-        
-
-        /// <summary>
-        /// Creates a formatted window title
-        /// </summary>
-        /// <returns></returns>
-        private static string FormatWindowTitle()
-        {
-            var appName = App.ResMan.GetString("ApplicationTitle", CultureInfo.InvariantCulture);
-            var appVersion = App.VersionString;
-
-            var formatted = string.Format(CultureInfo.InvariantCulture, $"{appName} {appVersion}");
-            return formatted;
-        }
-
-
-        public void ActivateSettingsClick()
-        {
-            var settingsVm = _settingsVmFactory.CreateSettingsViewModel();
-            ActivateItem(settingsVm);
-        }
-
-        public void ActivateMainClick()
-        {
-            var mainGridVm = _mainGridVmFactory.CreateMainGridViewModel();
-            ActivateItem(mainGridVm);
-        }
-
-
-        #region Debug Only Code
-#if DEBUG
         #region DebugPressed
         private bool _debugPressed;
         public bool DebugPressed
@@ -150,6 +97,8 @@ namespace VnManager.ViewModels
 
         #endregion
 
+
+#if DEBUG
         private readonly IDebugViewModelFactory _debugVmFactory;
         public RootViewModel(IContainer container, IWindowManager windowManager, IMainGridViewModelFactory mainGridFactory, ISettingsViewModelFactory settingsFactory,
             IDebugViewModelFactory debugFactory)
@@ -161,19 +110,72 @@ namespace VnManager.ViewModels
             _settingsVmFactory = settingsFactory;
             _debugVmFactory = debugFactory;
             App.StatusBar = _container.Get<StatusBarViewModel>();
+            _ = new Initializers.Startup(_container, windowManager);
 
+        }
+#else
+        public RootViewModel(IContainer container, IWindowManager windowManager, IMainGridViewModelFactory mainGridFactory, ISettingsViewModelFactory settingsFactory)
+        {
+            Instance = this;
+            _container = container;
+            _windowManager = windowManager;
+            _mainGridVmFactory = mainGridFactory;
+            _settingsVmFactory = settingsFactory;
+            App.StatusBar = _container.Get<StatusBarViewModel>();
+            _ = new Initializers.Startup(_container, windowManager);
+
+        }
+#endif
+
+
+
+        protected override void OnViewLoaded()
+        {
+            var mainGridVm = _mainGridVmFactory.CreateMainGridViewModel();
+            ActivateItem(mainGridVm);
+            StatusBarPage = _container.Get<StatusBarViewModel>();
+            var result = Application.Current.TryFindResource(AdonisUI.Colors.ForegroundColor);
+            SettingsIconColor = result == null ? System.Windows.Media.Brushes.LightSteelBlue : new SolidColorBrush((System.Windows.Media.Color)result);
+        }
+
+
+
+        /// <summary>
+        /// Creates a formatted window title
+        /// </summary>
+        /// <returns></returns>
+        private static string FormatWindowTitle()
+        {
+            var appName = App.ResMan.GetString("ApplicationTitle", CultureInfo.InvariantCulture);
+            var appVersion = App.VersionString;
+
+            var formatted = string.Format(CultureInfo.InvariantCulture, $"{appName} {appVersion}");
+            return formatted;
+        }
+
+
+        public void ActivateSettingsClick()
+        {
+            var settingsVm = _settingsVmFactory.CreateSettingsViewModel();
+            ActivateItem(settingsVm);
+        }
+
+        public void ActivateMainClick()
+        {
+            var mainGridVm = _mainGridVmFactory.CreateMainGridViewModel();
+            ActivateItem(mainGridVm);
         }
 
 
         public void DebugClick()
         {
+#if DEBUG
             var debugVm = _debugVmFactory.CreateDebugViewModel();
             ActivateItem(debugVm);
-        }
-
+#else
+            //Do Nothing
 #endif
-        #endregion
-
+        }
 
     }
 }
