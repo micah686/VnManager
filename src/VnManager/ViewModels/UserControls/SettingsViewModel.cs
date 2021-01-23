@@ -167,18 +167,12 @@ namespace VnManager.ViewModels.UserControls
             {
                 return;
             }
-            var fileName = $@"{savePath}\VnManager_Export_{DateTime.UtcNow:yyyy-MMMM-dd}.db";
-            var cred = CredentialManager.GetCredentials(App.CredDb);
-            if (cred == null || cred.UserName.Length < 1)
-            {
-                return;
-            }
+
             
-            File.Copy(Path.Combine(App.ConfigDirPath, App.DbPath), fileName);
-            
-            using (var db = new LiteDatabase($"Filename={fileName};Password={cred.Password}"))
+            var fileName = $@"{savePath}\VnManager_Export_{DateTime.UtcNow:yyyy-MMMM-dd}.vnbak";
+            var didCreate = ImportExportHelper.Compact(fileName);
+            if (didCreate)
             {
-                db.Rebuild(new RebuildOptions {Password = App.ImportExportDbKey});
                 _windowManager.ShowMessageBox($"{App.ResMan.GetString("UserDataExportedPath")}\n{fileName}", $"{App.ResMan.GetString("UserDataExportedTitle")}");
             }
         }

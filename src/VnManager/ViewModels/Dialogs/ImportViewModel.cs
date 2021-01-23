@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -48,9 +49,9 @@ namespace VnManager.ViewModels.Dialogs
             var settings = new OpenFileDialogSettings
             {
                 Title = $"{App.ResMan.GetString("BrowseDbDump")}",
-                DefaultExt = ".db",
-                Filter = $"{App.ResMan.GetString("DbDump")} (*.db)|*.db",
-                FileName = "VnManager_Export_YYYY-Month-DD.db",
+                DefaultExt = ".vnbak",
+                Filter = $"{App.ResMan.GetString("DbDump")} (*.vnbak)|*.vnbak",
+                FileName = "VnManager_Export_YYYY-Month-DD.vnbak",
                 DereferenceLinks = true,
                 CheckPathExists = true,
                 CheckFileExists = true,
@@ -74,7 +75,17 @@ namespace VnManager.ViewModels.Dialogs
             string dbError = App.ResMan.GetString("DbError");
             try
             {
-                using (var db = new LiteDatabase($"Filename={filePath};Password={App.ImportExportDbKey}"))
+                var didExpand = ImportExportHelper.Expand(filePath);
+                if (!didExpand)
+                {
+                    return;
+                }
+                var dbPath = @$"{App.AssetDirPath}\Import.db";
+                if (!File.Exists(dbPath))
+                {
+                    return;
+                }
+                using (var db = new LiteDatabase($"Filename={dbPath};Password={App.ImportExportDbKey}"))
                 {
                     IEnumerable<UserDataGames> dbUserData =
                         db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString()).FindAll().ToArray();
@@ -92,7 +103,8 @@ namespace VnManager.ViewModels.Dialogs
 
 
                     UserDataGamesCollection.AddRange(addList);
-                    File.Copy(filePath, Path.Combine(App.ConfigDirPath, @"database\Import.db"));
+                    File.Copy(@$"{App.AssetDirPath}\Import.db", Path.Combine(App.ConfigDirPath, @"database\Import.db"));
+                    
                 }
 
                 DatabaseName = Path.GetFileName(filePath);
@@ -263,6 +275,18 @@ namespace VnManager.ViewModels.Dialogs
                 
                 File.Delete(Path.Combine(App.ConfigDirPath, App.DbPath));
                 File.Move(Path.Combine(App.ConfigDirPath, @"database\Import.db"), Path.Combine(App.ConfigDirPath, App.DbPath));
+
+                if (File.Exists(@$"{App.AssetDirPath}\Images.zip"))
+                {
+                    ZipFile.ExtractToDirectory(@$"{App.AssetDirPath}\Images.zip", @$"{App.AssetDirPath}\sources");
+                    File.Delete(@$"{App.AssetDirPath}\Images.zip");
+                }
+
+                if (File.Exists(@$"{App.AssetDirPath}\Import.db"))
+                {
+                    File.Delete(@$"{App.AssetDirPath}\Import.db");
+                }
+                
                 
                 _windowManager.ShowMessageBox(App.ResMan.GetString("UserDataImported"), App.ResMan.GetString("ImportComplete"));
                 RequestClose();
