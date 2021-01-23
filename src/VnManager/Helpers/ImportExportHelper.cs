@@ -98,13 +98,32 @@ namespace VnManager.Helpers
             var data = input.Skip(7);
 
 
-
+            const double thresholdRatio = 10;
             using (var ms = new MemoryStream(data.ToArray()))
             {
                 using (var archive = new ZipArchive(ms, ZipArchiveMode.Read))
                 {
-                    archive.Entries.First(x => x.Name == "Import.db").ExtractToFile(@$"{App.AssetDirPath}\Import.db");
-                    archive.Entries.First(x => x.Name == "Images.zip").ExtractToFile(@$"{App.AssetDirPath}\Images.zip");
+                    var dbEntry = archive.Entries.FirstOrDefault(x => x.Name == "Import.db");
+                    if (dbEntry != null)
+                    {
+                        var compressionRatio = dbEntry.Length / dbEntry.CompressedLength;
+                        if (compressionRatio > thresholdRatio)
+                        {
+                            return false;
+                        }
+
+                        dbEntry.ExtractToFile(@$"{App.AssetDirPath}\Import.db");
+                    }
+                    var imageEntry = archive.Entries.FirstOrDefault(x => x.Name == "Images.zip");
+                    if (imageEntry != null)
+                    {
+                        var compressionRatio = imageEntry.Length / imageEntry.CompressedLength;
+                        if (compressionRatio > thresholdRatio)
+                        {
+                            return false;
+                        }
+                        imageEntry.ExtractToFile(@$"{App.AssetDirPath}\Images.zip");
+                    }
                 }
             }
             return true;
