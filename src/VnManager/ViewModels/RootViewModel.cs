@@ -110,7 +110,6 @@ namespace VnManager.ViewModels
             _settingsVmFactory = settingsFactory;
             _debugVmFactory = debugFactory;
             App.StatusBar = _container.Get<StatusBarViewModel>();
-            _ = new Initializers.Startup(_container, windowManager);
 
         }
 #else
@@ -122,8 +121,6 @@ namespace VnManager.ViewModels
             _mainGridVmFactory = mainGridFactory;
             _settingsVmFactory = settingsFactory;
             App.StatusBar = _container.Get<StatusBarViewModel>();
-            _ = new Initializers.Startup(_container, windowManager);
-
         }
 #endif
 
@@ -131,6 +128,7 @@ namespace VnManager.ViewModels
 
         protected override void OnViewLoaded()
         {
+            _ = new Initializers.Startup(_container, _windowManager);
             var mainGridVm = _mainGridVmFactory.CreateMainGridViewModel();
             ActivateItem(mainGridVm);
             StatusBarPage = _container.Get<StatusBarViewModel>();
