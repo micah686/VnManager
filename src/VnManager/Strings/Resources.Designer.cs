@@ -349,6 +349,24 @@ namespace VnManager.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Closing is currently disabled.
+        /// </summary>
+        public static string ClosingDisabledMessage {
+            get {
+                return ResourceManager.GetString("ClosingDisabledMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Closing is disabled.
+        /// </summary>
+        public static string ClosingDisabledTitle {
+            get {
+                return ResourceManager.GetString("ClosingDisabledTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Collection.
         /// </summary>
         public static string Collection {
@@ -1182,6 +1200,51 @@ namespace VnManager.Strings {
         public static string RemoveCategoryFrom {
             get {
                 return ResourceManager.GetString("RemoveCategoryFrom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Repair/Update Game Data.
+        /// </summary>
+        public static string RepairGameData {
+            get {
+                return ResourceManager.GetString("RepairGameData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This will download a fresh copy of the data, and clearing out any previous entries..
+        /// </summary>
+        public static string RepairMessage1 {
+            get {
+                return ResourceManager.GetString("RepairMessage1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to contine with this Repair/Update?.
+        /// </summary>
+        public static string RepairMessage2 {
+            get {
+                return ResourceManager.GetString("RepairMessage2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Repair/Update.
+        /// </summary>
+        public static string RepairUpdate {
+            get {
+                return ResourceManager.GetString("RepairUpdate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Repair/Update Vndb Data.
+        /// </summary>
+        public static string RepairVndb {
+            get {
+                return ResourceManager.GetString("RepairVndb", resourceCulture);
             }
         }
         

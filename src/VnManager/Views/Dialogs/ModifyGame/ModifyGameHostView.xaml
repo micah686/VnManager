@@ -12,7 +12,8 @@
                        Height="410" Width="500" ResizeMode="NoResize" ShowInTaskbar="False"
                        Title="{Binding WindowTitle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
     <Grid>
-        <TabControl ItemsSource="{Binding Items}" SelectedItem="{Binding ActiveItem}" DisplayMemberPath="DisplayName">
+        <TabControl ItemsSource="{Binding Items}" SelectedItem="{Binding ActiveItem}" DisplayMemberPath="DisplayName" 
+                    IsEnabled="{Binding EnableTabs, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
             <TabControl.ContentTemplate>
                 <DataTemplate>
                     <ContentControl s:View.Model="{Binding}" IsTabStop="False"/>

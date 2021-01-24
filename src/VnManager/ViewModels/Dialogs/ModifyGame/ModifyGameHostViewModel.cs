@@ -1,4 +1,7 @@
-﻿using AdysTech.CredentialManager;
+﻿using System;
+using System.Threading.Tasks;
+using AdonisUI.Controls;
+using AdysTech.CredentialManager;
 using LiteDB;
 using Stylet;
 using StyletIoC;
@@ -6,6 +9,8 @@ using VnManager.Models.Db;
 using VnManager.Models.Db.User;
 using VnManager.Models.Db.Vndb.Main;
 using VnManager.ViewModels.Dialogs.AddGameSources;
+using MessageBoxButton = System.Windows.MessageBoxButton;
+using MessageBoxImage = System.Windows.MessageBoxImage;
 
 namespace VnManager.ViewModels.Dialogs.ModifyGame
 {
@@ -14,17 +19,23 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
         internal static UserDataGames SelectedGame { get; private set; }
         public static string WindowTitle { get; set; }
         public static string GameTitle { get; set; }
+        public bool BlockClosing { get; set; } = false;
+        public bool EnableTabs { get; set; } = true;
 
         private readonly IContainer _container;
-        public ModifyGameHostViewModel(IContainer container)
+        private readonly IWindowManager _windowManager;
+        public ModifyGameHostViewModel(IContainer container, IWindowManager windowManager)
         {
             _container = container;
-            var gamePath = _container.Get<ModifyGamePathViewModel>();
-            var gameCategories = _container.Get<ModifyGameCategoriesViewModel>();
-            var gameDelete = _container.Get<ModifyGameDeleteViewModel>();
+            _windowManager = windowManager;
+            var gamePath = _container.Get<Func<ModifyGamePathViewModel>>().Invoke();
+            var gameCategories = _container.Get<Func<ModifyGameCategoriesViewModel>>().Invoke();
+            var gameDelete = _container.Get<Func<ModifyGameDeleteViewModel>>().Invoke();
+            var gameRepair = _container.Get<Func<ModifyGameRepairViewModel>>().Invoke();
             Items.Add(gamePath);
             Items.Add(gameCategories);
             Items.Add(gameDelete);
+            Items.Add(gameRepair);
             
             ActivateItem(gamePath);
             
@@ -35,6 +46,18 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
             base.ActivateItem(item);
         }
 
+
+        public override Task<bool> CanCloseAsync()
+        {
+            if (BlockClosing)
+            {
+                _windowManager.ShowMessageBox(App.ResMan.GetString("ClosingDisabledMessage"), App.ResMan.GetString("ClosingDisabledTitle"), MessageBoxButton.OK,
+                    MessageBoxImage.Exclamation);
+                return Task.FromResult(false);
+
+            }
+            return base.CanCloseAsync();
+        }
 
         internal static void SetSelectedGame(UserDataGames game)
         {
@@ -78,6 +101,17 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
                 WindowTitle = $"{App.ResMan.GetString("Modify")} {dbUserData.Title}";
                 GameTitle = dbUserData.Title;
             }
+        }
+
+        public void LockControls()
+        {
+            EnableTabs = false;
+            BlockClosing = true;
+        }
+        public void UnlockControls()
+        {
+            EnableTabs = true;
+            BlockClosing = false;
         }
     }
 }

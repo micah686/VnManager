@@ -213,6 +213,12 @@
   <data name="Characters" xml:space="preserve">
     <value>Characters</value>
   </data>
+  <data name="ClosingDisabledMessage" xml:space="preserve">
+    <value>Closing is currently disabled</value>
+  </data>
+  <data name="ClosingDisabledTitle" xml:space="preserve">
+    <value>Closing is disabled</value>
+  </data>
   <data name="Collection" xml:space="preserve">
     <value>Collection</value>
   </data>
@@ -491,6 +497,21 @@
   </data>
   <data name="RemoveCategoryFrom" xml:space="preserve">
     <value>Remove Category from</value>
+  </data>
+  <data name="RepairGameData" xml:space="preserve">
+    <value>Repair/Update Game Data</value>
+  </data>
+  <data name="RepairMessage1" xml:space="preserve">
+    <value>This will download a fresh copy of the data, and clearing out any previous entries.</value>
+  </data>
+  <data name="RepairMessage2" xml:space="preserve">
+    <value>Are you sure you want to contine with this Repair/Update?</value>
+  </data>
+  <data name="RepairUpdate" xml:space="preserve">
+    <value>Repair/Update</value>
+  </data>
+  <data name="RepairVndb" xml:space="preserve">
+    <value>Repair/Update Vndb Data</value>
   </data>
   <data name="ResetApplication" xml:space="preserve">
     <value>Reset Application</value>

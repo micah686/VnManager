@@ -49,6 +49,25 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
 
         private void DeleteVndbData()
         {
+            DeleteVndbContent();
+            var cred = CredentialManager.GetCredentials(App.CredDb);
+            if (cred == null || cred.UserName.Length < 1)
+            {
+                return;
+            }
+
+            using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
+            {
+                var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString());
+                dbUserData.DeleteMany(x => x.Id == ModifyGameHostViewModel.SelectedGame.Id);
+            }
+            var parent = (ModifyGameHostViewModel)Parent;
+            parent.RequestClose();
+            _events.PublishOnUIThread(new UpdateEvent { ShouldUpdate = true }, EventChannels.RefreshGameGrid.ToString());
+        }
+
+        internal static void DeleteVndbContent()
+        {
             var cred = CredentialManager.GetCredentials(App.CredDb);
             if (cred == null || cred.UserName.Length < 1)
             {
@@ -67,7 +86,7 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
                 var dbCharacterTraits = db.GetCollection<VnCharacterTraits>(DbVnCharacter.VnCharacter_Traits.ToString());
 
                 var charIds = dbCharacter.Query().Where(x => x.VnId == vnid).Select(x => x.CharacterId).ToList();
-                
+
                 dbInfo.DeleteMany(x => x.VnId == vnid);
                 dbInfoLinks.DeleteMany(x => x.VnId == vnid);
                 dbInfoRelations.DeleteMany(x => x.VnId == vnid);
@@ -88,18 +107,13 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
                 dbCharacter.DeleteMany(x => charDeleteIds.Contains(x.CharacterId));
                 dbCharacterTraits.DeleteMany(x => charDeleteIds.Contains(x.CharacterId));
 
-                var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString());
-                dbUserData.DeleteMany(x => x.Id == ModifyGameHostViewModel.SelectedGame.Id);
-
             }
             DeleteVndbImages(vnid);
-            
-            var parent = (ModifyGameHostViewModel)Parent;
-            parent.RequestClose();
-            _events.PublishOnUIThread(new UpdateEvent {ShouldUpdate = true}, EventChannels.RefreshGameGrid.ToString());
-        }
 
-        private void DeleteVndbImages(int vnId)
+            
+        }
+        
+        private static void DeleteVndbImages(int vnId)
         {
             string basePath = $@"{App.AssetDirPath}\sources\vndb\images";
 
