@@ -94,7 +94,7 @@ namespace VnManager.Helpers
             catch (Exception e)
             {
                 App.Logger.Warning(e, "Failed to get create bitmap from path");
-                throw;
+                return CreateEmptyBitmapImage();
             }
         }
 
@@ -130,7 +130,7 @@ namespace VnManager.Helpers
             catch (Exception e)
             {
                 App.Logger.Warning(e, "Failed to get create bitmap from stream");
-                throw;
+                return CreateEmptyBitmapImage();
             }
         }
 
