@@ -16,6 +16,7 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
 {
     public class ModifyGameDeleteViewModel: Screen
     {
+        private UserDataGames _selectedGame;
         private readonly IWindowManager _windowManager;
         private readonly IEventAggregator _events;
         public ModifyGameDeleteViewModel(IWindowManager windowManager, IEventAggregator events)
@@ -25,13 +26,24 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
             _events = events;
         }
 
+        protected override void OnViewLoaded()
+        {
+            var parent = (ModifyGameHostViewModel) Parent;
+            _selectedGame = parent.SelectedGame;
+        }
+
+        internal void SetSelectedGame(UserDataGames selectedGame)
+        {
+            _selectedGame = selectedGame;
+        }
+        
         public void DeleteGame()
         {
             var result = _windowManager.ShowMessageBox(App.ResMan.GetString("DeleteGameCheck"), App.ResMan.GetString("DeleteGame"),
                 MessageBoxButton.YesNo, MessageBoxImage.Exclamation);
             if (result == MessageBoxResult.Yes)
             {
-                switch (ModifyGameHostViewModel.SelectedGame.SourceType)
+                switch (_selectedGame.SourceType)
                 {
                     case AddGameSourceType.Vndb:
                         DeleteVndbData();
@@ -59,21 +71,21 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
             using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
             {
                 var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString());
-                dbUserData.DeleteMany(x => x.Id == ModifyGameHostViewModel.SelectedGame.Id);
+                dbUserData.DeleteMany(x => x.Id == _selectedGame.Id);
             }
             var parent = (ModifyGameHostViewModel)Parent;
             parent.RequestClose();
             _events.PublishOnUIThread(new UpdateEvent { ShouldUpdate = true }, EventChannels.RefreshGameGrid.ToString());
         }
 
-        internal static void DeleteVndbContent()
+        internal void DeleteVndbContent()
         {
             var cred = CredentialManager.GetCredentials(App.CredDb);
             if (cred == null || cred.UserName.Length < 1)
             {
                 return;
             }
-            var vnid = ModifyGameHostViewModel.SelectedGame.GameId.Value;
+            var vnid = _selectedGame.GameId.Value;
             using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
             {
                 var dbInfo = db.GetCollection<VnInfo>(DbVnInfo.VnInfo.ToString());
@@ -110,9 +122,9 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
             }
             DeleteVndbImages(vnid);
 
-            
+
         }
-        
+
         private static void DeleteVndbImages(int vnId)
         {
             string basePath = $@"{App.AssetDirPath}\sources\vndb\images";
@@ -148,7 +160,7 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
             using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
             {
                 var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString());
-                dbUserData.DeleteMany(x => x.Id == ModifyGameHostViewModel.SelectedGame.Id);
+                dbUserData.DeleteMany(x => x.Id == _selectedGame.Id);
 
             }
         }

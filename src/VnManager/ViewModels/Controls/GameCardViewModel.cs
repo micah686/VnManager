@@ -81,10 +81,9 @@ namespace VnManager.ViewModels.Controls
         public void SettingsClick()
         {
             SetGameEntry();
-            var vm = _container.Get<ModifyGameHostViewModel>();
-            ModifyGameHostViewModel.SetSelectedGame(_selectedGame);
-            _windowManager.ShowDialog(vm);
-
+            var modifyHost = _container.Get<Func<ModifyGameHostViewModel>>().Invoke();
+            modifyHost.SetSelectedGame(_selectedGame);
+            _windowManager.ShowDialog(modifyHost);
         }
 
         private void SetGameEntry()

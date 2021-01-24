@@ -23,6 +23,7 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
 
         public Visibility NoSourceVisibility { get; set; } = Visibility.Collapsed;
 
+        private UserDataGames _selectedGame;
         private readonly OpenFileDialogSettings _defaultOpenFileDialogSettings;
         private readonly IWindowManager _windowManager;
         private readonly IDialogService _dialogService;
@@ -44,20 +45,22 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
 
         protected override void OnViewLoaded()
         {
+            var parent = (ModifyGameHostViewModel)Parent;
+            _selectedGame = parent.SelectedGame;
             SetOriginalValues();
         }
 
         private void SetOriginalValues()
         {
-            ExePath = ModifyGameHostViewModel.SelectedGame.ExePath;
-            IconPath = ModifyGameHostViewModel.SelectedGame.IconPath;
-            Arguments = ModifyGameHostViewModel.SelectedGame.Arguments;
+            ExePath = _selectedGame.ExePath;
+            IconPath = _selectedGame.IconPath;
+            Arguments = _selectedGame.Arguments;
 
-            if (ModifyGameHostViewModel.SelectedGame.SourceType == AddGameSourceType.NoSource)
+            if (_selectedGame.SourceType == AddGameSourceType.NoSource)
             {
                 NoSourceVisibility = Visibility.Visible;
-                Title = ModifyGameHostViewModel.SelectedGame.Title;
-                CoverPath = ModifyGameHostViewModel.SelectedGame.CoverPath;
+                Title = _selectedGame.Title;
+                CoverPath = _selectedGame.CoverPath;
             }
         }
 
@@ -123,7 +126,7 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
                 }
                 using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
                 var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString());
-                var entry = dbUserData.Query().Where(x => x.Id == ModifyGameHostViewModel.SelectedGame.Id)
+                var entry = dbUserData.Query().Where(x => x.Id == _selectedGame.Id)
                     .FirstOrDefault();
                 if (entry != null)
                 {

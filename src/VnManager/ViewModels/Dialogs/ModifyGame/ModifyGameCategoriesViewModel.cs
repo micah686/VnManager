@@ -38,6 +38,7 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
 
         #endregion
 
+        private UserDataGames _selectedGame;
         private readonly IWindowManager _windowManager;
         private readonly IEventAggregator _events;
         public ModifyGameCategoriesViewModel(IWindowManager windowManager, IEventAggregator events, IModelValidator<ModifyGameCategoriesViewModel> validator) : base(validator)
@@ -50,6 +51,9 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
 
         protected override void OnViewLoaded()
         {
+            var parent = (ModifyGameHostViewModel) Parent;
+            _selectedGame = parent.SelectedGame;
+            
             IsRemoveCategoriesEnabled = true;
             FillCategories();
         }
@@ -66,24 +70,25 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
             var dbUserCategories = db.GetCollection<UserDataCategories>(DbUserData.UserData_Categories.ToString());
 
             var categoriesExceptAll = dbUserCategories.Query().Where(x => x.CategoryName != "All").Select(x => x.CategoryName).ToList();
-            
 
-            AddCategoryMessage = $"{App.ResMan.GetString("AddCategoryTo")} {ModifyGameHostViewModel.GameTitle}";
-            RemoveCategoryMessage = $"{App.ResMan.GetString("RemoveCategoryFrom")} {ModifyGameHostViewModel.GameTitle}";
+            var parent = (ModifyGameHostViewModel) Parent;
+            
+            AddCategoryMessage = $"{App.ResMan.GetString("AddCategoryTo")} {parent.GameTitle}";
+            RemoveCategoryMessage = $"{App.ResMan.GetString("RemoveCategoryFrom")} {parent.GameTitle}";
 
             AddCategoriesCollection.Clear();
             RemoveCategoriesCollection.Clear();
             DeleteCategoriesCollection.Clear();
 
-            if(ModifyGameHostViewModel.SelectedGame.Categories == null)
+            if (_selectedGame.Categories == null)
             {
                 return;
             }
-            
+
             FillAddCategory(categoriesExceptAll);
             FillRemoveCategory(categoriesExceptAll);
             FillDeleteCategory(categoriesExceptAll);
-            
+
             DeleteCategoryIndex = 0;
 
         }
@@ -91,11 +96,11 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
         #region AddCategory
         private void FillAddCategory(List<string> exceptAllList)
         {
-            if (exceptAllList.Count > 0 && ModifyGameHostViewModel.SelectedGame.Categories.Count > 0)
+            if (exceptAllList.Count > 0 && _selectedGame.Categories.Count > 0)
             {
-                var validAdd = exceptAllList.Except(ModifyGameHostViewModel.SelectedGame.Categories).ToList();
+                var validAdd = exceptAllList.Except(_selectedGame.Categories).ToList();
                 validAdd.Remove("All");
-                if (validAdd.Count >0)
+                if (validAdd.Count > 0)
                 {
                     AddCategoriesCollection.AddRange(validAdd);
                     IsAddCategoriesEnabled = true;
@@ -105,7 +110,7 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
                 {
                     IsAddCategoriesEnabled = false;
                 }
-                
+
             }
             else
             {
@@ -125,16 +130,16 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
             using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
             {
                 var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString());
-                var entry = ModifyGameHostViewModel.SelectedGame;
+                var entry = _selectedGame;
                 if (entry.Categories.Count > 0)
                 {
-                    ModifyGameHostViewModel.SelectedGame.Categories.Add(SelectedAddValue);
-                    ModifyGameHostViewModel.SelectedGame.Categories = ModifyGameHostViewModel.SelectedGame.Categories
+                    _selectedGame.Categories.Add(SelectedAddValue);
+                    _selectedGame.Categories = _selectedGame.Categories
                         .Where(s => !string.IsNullOrWhiteSpace(s)).Distinct().ToList();
 
                 }
 
-                dbUserData.Update(ModifyGameHostViewModel.SelectedGame);
+                dbUserData.Update(_selectedGame);
             }
 
             FillCategories();
@@ -146,9 +151,9 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
         #region RemoveCategory
         private void FillRemoveCategory(List<string> exceptAllList)
         {
-            if (exceptAllList.Count > 0 && ModifyGameHostViewModel.SelectedGame.Categories.Count > 1)
+            if (exceptAllList.Count > 0 && _selectedGame.Categories.Count > 1)
             {
-                var validRemove = exceptAllList.Intersect(ModifyGameHostViewModel.SelectedGame.Categories).ToList();
+                var validRemove = exceptAllList.Intersect(_selectedGame.Categories).ToList();
                 validRemove.Remove("All");
                 if (validRemove.Count > 0)
                 {
@@ -160,7 +165,7 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
                 {
                     IsRemoveCategoriesEnabled = false;
                 }
-                
+
             }
             else
             {
@@ -180,16 +185,16 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
             using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
             {
                 var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString());
-                var entry = ModifyGameHostViewModel.SelectedGame;
+                var entry = _selectedGame;
                 if (entry.Categories.Count > 0)
                 {
-                    ModifyGameHostViewModel.SelectedGame.Categories.Remove(SelectedRemoveValue);
-                    ModifyGameHostViewModel.SelectedGame.Categories = ModifyGameHostViewModel.SelectedGame.Categories
+                    _selectedGame.Categories.Remove(SelectedRemoveValue);
+                    _selectedGame.Categories = _selectedGame.Categories
                         .Where(s => !string.IsNullOrWhiteSpace(s)).Distinct().ToList();
 
                 }
 
-                dbUserData.Update(ModifyGameHostViewModel.SelectedGame);
+                dbUserData.Update(_selectedGame);
             }
             FillCategories();
         }
@@ -206,7 +211,7 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
             {
                 DeleteCategoryEnabled = false;
             }
-            
+
         }
 
         public async Task CreateNewCategory()
@@ -235,7 +240,7 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
         public void DeleteCategory()
         {
             var result = _windowManager.ShowMessageBox($"{App.ResMan.GetString("ConfirmDeleteCategoryMsg")} {NewCategoryValue}", App.ResMan.GetString("ConfirmDeleteCategory"), MessageBoxButton.YesNo);
-            if(result == MessageBoxResult.No)
+            if (result == MessageBoxResult.No)
             {
                 return;
             }
@@ -251,13 +256,13 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
                 List<UserDataGames> newGamesList = new List<UserDataGames>();
                 foreach (var userData in dbUserData.Query().ToArray())
                 {
-                    if (userData.Categories != null && userData.Categories.Count >1 && DeleteCategorySelectedValue != "All")
+                    if (userData.Categories != null && userData.Categories.Count > 1 && DeleteCategorySelectedValue != "All")
                     {
                         userData.Categories.RemoveAll(x => x == DeleteCategorySelectedValue);
                         newGamesList.Add(userData);
                     }
                 }
-                
+
                 dbUserCategories.DeleteMany(c => c.CategoryName == DeleteCategorySelectedValue);
             }
 

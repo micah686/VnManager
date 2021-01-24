@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Windows;
 using System.Threading.Tasks;
-using AdonisUI.Controls;
 using AdysTech.CredentialManager;
 using LiteDB;
 using Stylet;
@@ -9,16 +9,14 @@ using VnManager.Models.Db;
 using VnManager.Models.Db.User;
 using VnManager.Models.Db.Vndb.Main;
 using VnManager.ViewModels.Dialogs.AddGameSources;
-using MessageBoxButton = System.Windows.MessageBoxButton;
-using MessageBoxImage = System.Windows.MessageBoxImage;
 
 namespace VnManager.ViewModels.Dialogs.ModifyGame
 {
     public class ModifyGameHostViewModel: Conductor<Screen>.Collection.OneActive
     {
-        internal static UserDataGames SelectedGame { get; private set; }
-        public static string WindowTitle { get; set; }
-        public static string GameTitle { get; set; }
+        internal UserDataGames SelectedGame { get; private set; }
+        public string WindowTitle { get; set; }
+        public string GameTitle { get; set; }
         public bool BlockClosing { get; set; } = false;
         public bool EnableTabs { get; set; } = true;
 
@@ -28,7 +26,7 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
         {
             _container = container;
             _windowManager = windowManager;
-            var gamePath = _container.Get<Func<ModifyGamePathViewModel>>().Invoke();
+            var gamePath = _container.Get<ModifyGamePathViewModel>();
             var gameCategories = _container.Get<Func<ModifyGameCategoriesViewModel>>().Invoke();
             var gameDelete = _container.Get<Func<ModifyGameDeleteViewModel>>().Invoke();
             var gameRepair = _container.Get<Func<ModifyGameRepairViewModel>>().Invoke();
@@ -59,14 +57,14 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
             return base.CanCloseAsync();
         }
 
-        internal static void SetSelectedGame(UserDataGames game)
+        internal void SetSelectedGame(UserDataGames game)
         {
             SelectedGame = game;
             SetTitle();
             
         }
 
-        private static void SetTitle()
+        private void SetTitle()
         {
             switch (SelectedGame.SourceType)
             {
@@ -86,7 +84,7 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
             }
         }
 
-        private static void SetVndbTitle()
+        private void SetVndbTitle()
         {
             var cred = CredentialManager.GetCredentials(App.CredDb);
             if (cred == null || cred.UserName.Length < 1)
