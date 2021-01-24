@@ -39,7 +39,7 @@ namespace VnManager.MetadataProviders
                         entry.SourceType = data.SourceType;
                         entry.Id = Guid.NewGuid();
                         entry.GameId = 0;
-                        entry.LastPlayed = DateTime.UtcNow;
+                        entry.LastPlayed = DateTime.MinValue;
                         entry.PlayTime = TimeSpan.Zero;
                         entry.Categories = new List<string> {"All"};
                         gamesList.Add(entry);
@@ -50,7 +50,7 @@ namespace VnManager.MetadataProviders
                     entry.SourceType = data.SourceType;
                     entry.Id = Guid.NewGuid();
                     entry.GameId = data.GameId;
-                    entry.LastPlayed = DateTime.UtcNow;
+                    entry.LastPlayed = DateTime.MinValue;
                     entry.PlayTime = TimeSpan.Zero;
                     entry.ExePath = data.ExePath;
                     entry.IconPath = data.IconPath;

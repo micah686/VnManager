@@ -52,7 +52,8 @@ namespace VnManager.Helpers
             {
                 List<string> spoilerList = new List<string>();
                 string rawText = text;
-                Regex regex = new Regex(@"\[spoiler\](.*)\[\/spoiler\]", RegexOptions.IgnoreCase);
+                
+                Regex regex = new Regex(@"\[spoiler\]((?:.|\n)+?)\[\/spoiler\]", RegexOptions.IgnoreCase);
                 foreach (Match match in regex.Matches(text))
                 {
                     rawText = rawText.Replace(match.Groups[0].ToString(), match.Groups[1].ToString());
