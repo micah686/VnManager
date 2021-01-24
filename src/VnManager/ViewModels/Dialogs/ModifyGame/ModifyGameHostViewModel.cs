@@ -26,7 +26,7 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
         {
             _container = container;
             _windowManager = windowManager;
-            var gamePath = _container.Get<ModifyGamePathViewModel>();
+            var gamePath = _container.Get<Func<ModifyGamePathViewModel>>().Invoke();
             var gameCategories = _container.Get<Func<ModifyGameCategoriesViewModel>>().Invoke();
             var gameDelete = _container.Get<Func<ModifyGameDeleteViewModel>>().Invoke();
             var gameRepair = _container.Get<Func<ModifyGameRepairViewModel>>().Invoke();

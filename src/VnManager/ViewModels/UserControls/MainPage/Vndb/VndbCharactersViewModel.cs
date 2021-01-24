@@ -29,7 +29,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
 
 
         public int SelectedCharacterIndex { get; set; }
-        private int _characterId = -1;
+        private int _characterId = 0;
 
         #region CharacterData
         public BitmapSource CharacterImage { get; set; }
@@ -54,6 +54,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
 
         protected override void OnViewLoaded()
         {
+            _finishedLoad = false;
             if(CharacterNamesCollection.Count >0)
             {
                 return;
@@ -65,6 +66,9 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
                 SelectedCharacterIndex = 0;
             }
             SetupDefaultVisProps();
+            _finishedLoad = true;
+            
+            CharacterSelectionChanged();
         }
 
         #region CharacterListMethods
@@ -84,10 +88,8 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
                     .ToList();
                 CharacterNamesCollection.AddRange(list);
                 _allCharacterNamesCollection = list;
-                SelectedCharacterIndex = -1;
-                _finishedLoad = true;
+                SelectedCharacterIndex = 0;
             }
-
         }
 
         public void SearchCharacters()
@@ -139,6 +141,10 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
 
         private void UpdateCharacterData()
         {
+            if(_characterId == -1)
+            {
+                return;
+            }
             var cred = CredentialManager.GetCredentials(App.CredDb);
             if (cred == null || cred.UserName.Length < 1)
             {

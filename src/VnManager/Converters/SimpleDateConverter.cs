@@ -14,25 +14,18 @@ namespace VnManager.Converters
         /// <returns></returns>
         public static string ConvertSimpleDate(SimpleDate birthday)
         {
-            string month;
-            string day = string.Empty;
-            if (birthday == null)
-            {
-                return string.Empty;
-            }
+            string day = birthday?.Day == null ? string.Empty : birthday.Day.ToString();
+
+            string month = birthday?.Day == null ? string.Empty : DateTimeFormatInfo.InvariantInfo.GetMonthName(Convert.ToInt32(birthday.Month, CultureInfo.InvariantCulture));
+
                 
-            if (birthday.Month == null)
+            if (month == string.Empty)
             {
                 month = string.Empty;
                 day = string.Empty;
             }
-            else
-            {
-                month = DateTimeFormatInfo.InvariantInfo.GetMonthName(Convert.ToInt32(birthday.Month, CultureInfo.InvariantCulture));
-                
-            }
-
-            var year = birthday.Year == null ? string.Empty : birthday.Year.ToString();
+            
+            var year = birthday?.Year == null ? string.Empty : birthday.Year.ToString();
             var formatted = $"{month} {day} {year}";
             formatted = NormalizeWhiteSpace.FixWhiteSpace(formatted);
             return formatted;

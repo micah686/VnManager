@@ -164,11 +164,11 @@
                         </DockPanel>
                         <DockPanel>
                             <Label DockPanel.Dock="Left" Content="{x:Static res:Resources.PopularityColon}"/>
-                            <TextBlock DockPanel.Dock="Left" Margin="10,0,0,0" Text="{Binding VnLength}"/>
+                            <TextBlock DockPanel.Dock="Left" Margin="10,0,0,0" Text="{Binding Popularity}"/>
                         </DockPanel>
                         <DockPanel>
                             <Label DockPanel.Dock="Left" Content="{x:Static res:Resources.RatingColon}"/>
-                            <TextBlock DockPanel.Dock="Left" Margin="10,0,0,0" Text="{Binding VnLength}"/>
+                            <TextBlock DockPanel.Dock="Left" Margin="10,0,0,0" Text="{Binding Rating}"/>
                         </DockPanel>
                     </StackPanel>
 

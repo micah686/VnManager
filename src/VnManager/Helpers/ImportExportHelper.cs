@@ -13,8 +13,6 @@ namespace VnManager.Helpers
     {
         public static void CreateBackup()
         {
-            var foo = App.AssetDirPath;
-            var bar = new BackupFormat();
             Compact(App.AssetDirPath);
             Expand(Path.Combine(App.AssetDirPath, "example.vnbak"));
         }

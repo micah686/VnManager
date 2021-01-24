@@ -80,8 +80,8 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
                 Aliases = vnInfoEntry.Aliases;
                 ReleasedDate = TimeDateChanger.GetHumanDate(DateTime.Parse(vnInfoEntry.Released, CultureInfo.InvariantCulture));
                 VnLength = vnInfoEntry.Length;
-                Popularity = vnInfoEntry.Popularity.ToString();//make a UI use this double?
-                Rating = vnInfoEntry.Rating.ToString(CultureInfo.InvariantCulture);
+                Popularity = $"{vnInfoEntry.Popularity:F}";
+                Rating = $"{vnInfoEntry.Rating:F}";
                 LoadLanguages(ref vnInfoEntry);
                 var coverPath = $@"{App.AssetDirPath}\sources\vndb\images\cover\{vnInfoEntry.VnId}.jpg";
                 CoverImage = ImageHelper.CreateBitmapFromPath(coverPath);
