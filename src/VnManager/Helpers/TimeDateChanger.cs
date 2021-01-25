@@ -17,7 +17,7 @@ namespace VnManager.Helpers
             string output;
             if (dateTime == DateTime.MinValue)
             {
-                output = "Never";
+                output = App.ResMan.GetString("Never");
             }
             else
             {
@@ -25,12 +25,12 @@ namespace VnManager.Helpers
                 {
                     if (dateTime == DateTime.Today)
                     {
-                        output = "Today";
+                        output = App.ResMan.GetString("Today");
                     }
                     else if ((Convert.ToDateTime(dateTime) - DateTime.Today).Days > -todayYesterday &&
                              (Convert.ToDateTime(dateTime) - DateTime.Today).Days < 0)
                     {
-                        output = "Yesterday";
+                        output = App.ResMan.GetString("Yesterday");
                     }
                     else
                     {
@@ -58,11 +58,11 @@ namespace VnManager.Helpers
             const int minuteSpan = 60;
             if (timeSpan == TimeSpan.Zero)
             {
-                output = "Never";
+                output = App.ResMan.GetString("Never");
             }
-            else if (timeSpan == new TimeSpan(0, 0, 0, minuteSpan))
+            else if (timeSpan <= new TimeSpan(0, 0, 0, minuteSpan))
             {
-                output = "Less than a minute";
+                output = App.ResMan.GetString("Less1Min");
             }
             else
             {

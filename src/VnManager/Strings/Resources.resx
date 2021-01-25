@@ -411,6 +411,9 @@
   <data name="LengthColon" xml:space="preserve">
     <value>Length:</value>
   </data>
+  <data name="Less1Min" xml:space="preserve">
+    <value>&lt; 1 Minute</value>
+  </data>
   <data name="LightTheme" xml:space="preserve">
     <value>Light Theme</value>
   </data>
@@ -437,6 +440,9 @@
   </data>
   <data name="Name" xml:space="preserve">
     <value>Name</value>
+  </data>
+  <data name="Never" xml:space="preserve">
+    <value>Never</value>
   </data>
   <data name="No" xml:space="preserve">
     <value>No</value>
@@ -569,6 +575,9 @@
   </data>
   <data name="TitleColon" xml:space="preserve">
     <value>Title:</value>
+  </data>
+  <data name="Today" xml:space="preserve">
+    <value>Today</value>
   </data>
   <data name="Traits" xml:space="preserve">
     <value>Traits</value>
@@ -704,5 +713,8 @@
   </data>
   <data name="Yes" xml:space="preserve">
     <value>Yes</value>
+  </data>
+  <data name="Yesterday" xml:space="preserve">
+    <value>Yesterday</value>
   </data>
 </root>

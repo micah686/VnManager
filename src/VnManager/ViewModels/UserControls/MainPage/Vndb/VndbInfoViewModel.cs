@@ -10,6 +10,7 @@ using System.Windows.Media.Imaging;
 using AdysTech.CredentialManager;
 using LiteDB;
 using Stylet;
+using VnManager.Extensions;
 using VnManager.Helpers;
 using VnManager.Helpers.Vndb;
 using VnManager.Models.Db.User;
@@ -172,33 +173,64 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
                 
             }
 
-            if (vnEntry?.ExePath != null && Directory.Exists(Path.GetDirectoryName(vnEntry?.ExePath)))
+            if (vnEntry?.ExePath != null && Directory.Exists(Path.GetDirectoryName(vnEntry.ExePath)))
             {
                 var filepath = $"{vnEntry.ExePath} {vnEntry.Arguments}";
                 Directory.SetCurrentDirectory(Path.GetDirectoryName(vnEntry.ExePath));
 
                 var process = new Process {StartInfo = {FileName = filepath}, EnableRaisingEvents = true};
                 parent.ProcessList.Add(process);
+                process.Exited += VnOrChildProcessExited;
                 process.Start();
                 parent.IsGameRunning = true;
                 parent.GameStopwatch.Start();
-                process.Exited += Exit;
-                parent.CheckProcessesTimer.Start();
+                parent.ProcessList.AddRange(process.GetChildProcesses());
 
             }
 
-            
-            
-
-
-
-
         }
 
-        private void Exit(object sender, EventArgs e)
+        private void VnOrChildProcessExited(object sender, EventArgs e)
         {
-            var t = sender.GetType();
-            
+            var process = (Process) sender;
+            if (process == null)
+            {
+                return;
+            }
+            var children = process.GetChildProcesses().ToArray();//Get children of exiting process, then attach Exit event handler to each of the children
+            if (children.Length >0)
+            {
+                foreach (var childProcess in children)
+                {
+                    childProcess.EnableRaisingEvents = true;
+                    childProcess.Exited += VnOrChildProcessExited;
+                }
+            }
+            else
+            {
+                var parent = (VndbContentViewModel)Parent;
+                parent.GameStopwatch.Stop();
+                
+
+                var cred = CredentialManager.GetCredentials(App.CredDb);
+                if (cred == null || cred.UserName.Length < 1)
+                {
+                    return;
+                }
+
+                using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
+                {
+                    var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString());
+                    var gameEntry = dbUserData.Query().Where(x => x.Id == VndbContentViewModel.SelectedGame.Id).FirstOrDefault();
+                    gameEntry.LastPlayed = DateTime.UtcNow;
+                    gameEntry.PlayTime = parent.GameStopwatch.Elapsed;
+                    dbUserData.Update(gameEntry);
+                }
+                parent.GameStopwatch.Reset();
+                parent.IsGameRunning = false;
+
+            }
+
         }
         
         

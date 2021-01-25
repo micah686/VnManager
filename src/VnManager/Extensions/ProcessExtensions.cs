@@ -24,7 +24,7 @@ namespace VnManager.Extensions
             }
             catch (Exception ex)
             {
-                
+                App.Logger.Warning(ex, "Failed to get child processes");
                 throw;
             }
         }
