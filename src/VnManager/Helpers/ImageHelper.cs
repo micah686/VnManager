@@ -275,7 +275,7 @@ namespace VnManager.Helpers
         //TODO: Method not used yet
         public static BitmapSource CreateIcon(string path)
         {
-            if (path == null)
+            if (path == null|| !File.Exists(path))
             {
                 return CreateEmptyBitmapImage();
             }

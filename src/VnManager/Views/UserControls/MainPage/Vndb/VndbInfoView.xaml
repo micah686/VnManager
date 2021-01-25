@@ -28,8 +28,11 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <Label Grid.Row="0" Content="{Binding Title, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="24" FontWeight="DemiBold"
-                   Margin="7,20,0,0"/>
+            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="7,20,0,10">
+                <Image Source="{Binding GameIcon, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" MaxWidth="32" MaxHeight="32"/>
+                <Label Content="{Binding Title, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="7,-2,0,0" FontSize="24" FontWeight="DemiBold"/>
+            </StackPanel>
+            
 
             <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" Margin="5">
                 <Button Width="150" Height="50" Content="Play" Background="ForestGreen" adExt:CursorSpotlightExtension.BorderBrush="Lime" adExt:CursorSpotlightExtension.BackgroundBrush="ForestGreen"

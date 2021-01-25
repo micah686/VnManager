@@ -21,6 +21,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
     {
         #region Binding Properties
         public BitmapSource CoverImage { get; set; }
+        public BitmapSource GameIcon { get; set; }
         public string Title { get; set; }
         public string MainTitle { get; set; }
         public string Aliases { get; set; }
@@ -105,6 +106,8 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             {
                 LastPlayed = TimeDateChanger.GetHumanDate(dbUserData.LastPlayed);
                 PlayTime = TimeDateChanger.GetHumanTime(dbUserData.PlayTime);
+
+                GameIcon = ImageHelper.CreateIcon(!string.IsNullOrEmpty(dbUserData.IconPath) ? dbUserData.IconPath : dbUserData.ExePath);
             }
         }
         
