@@ -36,7 +36,7 @@
 
             <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" Margin="5">
                 <Button Width="150" Height="50" Content="Play" Background="ForestGreen" adExt:CursorSpotlightExtension.BorderBrush="Lime" adExt:CursorSpotlightExtension.BackgroundBrush="ForestGreen"
-                        adExt:RippleExtension.BackgroundBrush="Lime" adExt:RippleExtension.BorderBrush="LawnGreen" adExt:RippleExtension.ForegroundBrush="Black"/>
+                        adExt:RippleExtension.BackgroundBrush="Lime" adExt:RippleExtension.BorderBrush="LawnGreen" adExt:RippleExtension.ForegroundBrush="Black" Command="{s:Action StartVn}"/>
 
                 <StackPanel Margin="25,0,0,0">
                     <Label Content="Last Played" FontSize="16" FontWeight="Bold"/>

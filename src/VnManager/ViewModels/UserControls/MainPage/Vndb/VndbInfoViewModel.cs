@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -155,6 +156,54 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
         }
 
 
+        public void StartVn()
+        {
+            var parent = (VndbContentViewModel) Parent;
+            var cred = CredentialManager.GetCredentials(App.CredDb);
+            if (cred == null || cred.UserName.Length < 1)
+            {
+                return;
+            }
+
+            UserDataGames vnEntry;
+            using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
+            {
+                vnEntry = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString()).Query().Where(x => x.Id == VndbContentViewModel.SelectedGame.Id).FirstOrDefault();
+                
+            }
+
+            if (vnEntry?.ExePath != null && Directory.Exists(Path.GetDirectoryName(vnEntry?.ExePath)))
+            {
+                var filepath = $"{vnEntry.ExePath} {vnEntry.Arguments}";
+                Directory.SetCurrentDirectory(Path.GetDirectoryName(vnEntry.ExePath));
+
+                var process = new Process {StartInfo = {FileName = filepath}, EnableRaisingEvents = true};
+                parent.ProcessList.Add(process);
+                process.Start();
+                parent.IsGameRunning = true;
+                parent.GameStopwatch.Start();
+                process.Exited += Exit;
+                parent.CheckProcessesTimer.Start();
+
+            }
+
+            
+            
+
+
+
+
+        }
+
+        private void Exit(object sender, EventArgs e)
+        {
+            var t = sender.GetType();
+            
+        }
+        
+        
+        
+        
         public class VnRelationsBinding
         {
             public string RelTitle { get; set; }
