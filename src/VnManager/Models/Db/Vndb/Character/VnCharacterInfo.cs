@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using LiteDB;
+﻿using LiteDB;
 using VndbSharp.Models.Common;
 
 namespace VnManager.Models.Db.Vndb.Character

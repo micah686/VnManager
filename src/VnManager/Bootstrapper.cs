@@ -19,7 +19,6 @@ namespace VnManager
         {
             // This is called just after the application is started, but before the IoC container is set up.
             // Set up things like logging, etc
-            //Initializers.Startup.StartupPrep();
             Initializers.PreStartupCheck.StartupPrep();
 
             LogManager.UpdateLoggerDirectory();

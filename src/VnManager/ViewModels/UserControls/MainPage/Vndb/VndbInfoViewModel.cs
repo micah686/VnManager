@@ -160,6 +160,10 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
         public void StartVn()
         {
             var parent = (VndbContentViewModel) Parent;
+            if (parent.IsGameRunning)
+            {
+                return;
+            }
             var cred = CredentialManager.GetCredentials(App.CredDb);
             if (cred == null || cred.UserName.Length < 1)
             {

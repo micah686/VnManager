@@ -1,13 +1,8 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
-using System.Timers;
-using System.Windows.Input.Manipulations;
 using Stylet;
-using VnManager.Extensions;
 using VnManager.Models.Db.User;
 
 namespace VnManager.ViewModels.UserControls.MainPage.Vndb

@@ -6,8 +6,6 @@ using VnManager.Models.Settings;
 using System.IO;
 using VnManager.Helpers;
 using AdysTech.CredentialManager;
-using LiteDB;
-using LiteDB.Engine;
 using MvvmDialogs;
 using MvvmDialogs.FrameworkDialogs.FolderBrowser;
 using VnManager.ViewModels.Dialogs;
