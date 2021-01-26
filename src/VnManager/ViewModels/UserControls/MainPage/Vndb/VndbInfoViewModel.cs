@@ -41,6 +41,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
 
         public string LastPlayed { get; set; }
         public string PlayTime { get; set; }
+        public Visibility IsStartButtonVisible { get; set; }
 
         #endregion
 
@@ -62,6 +63,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             SummaryHeaderVisibility = DescriptionInLine.Length < 1 ? Visibility.Collapsed : Visibility.Visible;
             TagHeaderVisibility = TagCollection.Count < 1 ? Visibility.Collapsed : Visibility.Visible;
             RelationHeaderVisibility = VnRelations.Count < 1 ? Visibility.Collapsed : Visibility.Visible;
+            IsStartButtonVisible = Visibility.Visible;
         }
 
         private void LoadMainData()
@@ -157,6 +159,10 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
         }
 
 
+        /// <summary>
+        /// Referenced by the Play button on the GUI
+        /// <see cref="StartVn"/>
+        /// </summary>
         public void StartVn()
         {
             var parent = (VndbContentViewModel) Parent;
@@ -188,10 +194,20 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
                 process.Start();
                 parent.IsGameRunning = true;
                 parent.GameStopwatch.Start();
+                IsStartButtonVisible = Visibility.Collapsed;
                 parent.ProcessList.AddRange(process.GetChildProcesses());
 
             }
 
+        }
+
+        /// <summary>
+        /// Referenced by the Stop button on the GUI
+        /// <see cref="StopVn"/>
+        /// </summary>
+        public void StopVn()
+        {
+            //TODO:Add stop methods here
         }
 
         private void VnOrChildProcessExited(object sender, EventArgs e)
@@ -209,6 +225,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
                     childProcess.EnableRaisingEvents = true;
                     childProcess.Exited += VnOrChildProcessExited;
                 }
+                return;
             }
             else
             {
@@ -232,6 +249,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
                 }
                 parent.GameStopwatch.Reset();
                 parent.IsGameRunning = false;
+                IsStartButtonVisible = Visibility.Visible;
 
             }
 

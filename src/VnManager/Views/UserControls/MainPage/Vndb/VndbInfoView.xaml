@@ -12,9 +12,13 @@
              xmlns:adonisUi="clr-namespace:AdonisUI;assembly=AdonisUI"
              xmlns:vm="clr-namespace:VnManager.ViewModels.UserControls.MainPage.Vndb"
              xmlns:ext="clr-namespace:VnManager.Extensions"
+             xmlns:conv="clr-namespace:VnManager.Converters"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance vm:VndbInfoViewModel}"
              d:DesignHeight="950" d:DesignWidth="800">
+    <UserControl.Resources>
+        <conv:InverseVisibilityConverter x:Key="VisibilityConverter"/>
+    </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" MinWidth="300"/>
@@ -35,8 +39,12 @@
             
 
             <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" Margin="5">
-                <Button Width="150" Height="50" Content="Play" Background="ForestGreen" adExt:CursorSpotlightExtension.BorderBrush="Lime" adExt:CursorSpotlightExtension.BackgroundBrush="ForestGreen"
-                        adExt:RippleExtension.BackgroundBrush="Lime" adExt:RippleExtension.BorderBrush="LawnGreen" adExt:RippleExtension.ForegroundBrush="Black" Command="{s:Action StartVn}"/>
+                <Button Width="150" Height="50" Content="{x:Static res:Resources.Play}" Background="ForestGreen" Foreground="Black" FontWeight="DemiBold" adExt:CursorSpotlightExtension.BorderBrush="Lime" adExt:CursorSpotlightExtension.BackgroundBrush="ForestGreen"
+                        adExt:RippleExtension.BackgroundBrush="Lime" adExt:RippleExtension.BorderBrush="LawnGreen" adExt:RippleExtension.ForegroundBrush="Black" 
+                        Command="{s:Action StartVn}" Visibility="{Binding IsStartButtonVisible}"/>
+                <Button Width="150" Height="50" Content="{x:Static res:Resources.Stop}" Background="Goldenrod" Foreground="Black" FontWeight="DemiBold"  adExt:CursorSpotlightExtension.BorderBrush="Orange" adExt:CursorSpotlightExtension.BackgroundBrush="Gold"
+                        adExt:RippleExtension.BackgroundBrush="OrangeRed" adExt:RippleExtension.BorderBrush="Goldenrod" adExt:RippleExtension.ForegroundBrush="Black" 
+                        Command="{s:Action StopVn}" Visibility="{Binding IsStartButtonVisible, Converter={StaticResource VisibilityConverter}}"/>
 
                 <StackPanel Margin="25,0,0,0">
                     <Label Content="Last Played" FontSize="16" FontWeight="Bold"/>
