@@ -44,9 +44,13 @@
                     <Button Content="{x:Static res:Resources.Browse}" Margin="5,0,0,0" Command="{s:Action BrowseIcon}"/>
                 </StackPanel>
 
-                <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,20,0,0">
-                    <TextBlock Text="{x:Static res:Resources.ArgsColon}"/>
-                    <TextBox Width="350" MaxLength="300" Margin="5,0,0,0" Text="{Binding Arguments, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                <StackPanel Grid.Row="3"  Margin="0,20,0,0">
+                    <CheckBox Content="{x:Static res:Resources.EnableCustomArgs}" IsChecked="{Binding EnableArgs}" 
+                              Style="{DynamicResource {x:Static adonisUi:Styles.ToggleSwitch}}" Margin="5,0,0,10" Click="{s:Action RecheckValidationAsync}"/>
+                    <StackPanel Orientation="Horizontal" IsEnabled="{Binding EnableArgs}">
+                        <TextBlock Text="{x:Static res:Resources.ArgsColon}"/>
+                        <TextBox Width="350" MaxLength="300" Margin="5,0,0,0" Text="{Binding Arguments, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    </StackPanel>
                 </StackPanel>
 
                 <Grid x:Name="NoSourceGrid" Grid.Row="4" Visibility="{Binding NoSourceVisibility}">

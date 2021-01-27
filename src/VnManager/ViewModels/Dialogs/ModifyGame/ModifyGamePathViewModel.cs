@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using System.Windows;
 using AdysTech.CredentialManager;
 using FluentValidation;
@@ -20,6 +21,7 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
         public string Arguments { get; set; }
         public string Title { get; set; }
         public string CoverPath { get; set; }
+        public bool EnableArgs { get; set; }
 
         public Visibility NoSourceVisibility { get; set; } = Visibility.Collapsed;
 
@@ -55,7 +57,7 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
             ExePath = _selectedGame.ExePath;
             IconPath = _selectedGame.IconPath;
             Arguments = _selectedGame.Arguments;
-
+            EnableArgs = !string.IsNullOrEmpty(Arguments);
             if (_selectedGame.SourceType == AddGameSourceType.NoSource)
             {
                 NoSourceVisibility = Visibility.Visible;
@@ -124,6 +126,12 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
                 {
                     return;
                 }
+
+                if (EnableArgs==false)
+                {
+                    Arguments = string.Empty;
+                }
+                
                 using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
                 var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString());
                 var entry = dbUserData.Query().Where(x => x.Id == _selectedGame.Id)
@@ -140,9 +148,14 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
                 }
                 _windowManager.ShowMessageBox(App.ResMan.GetString("GameUpdatedMsg"), App.ResMan.GetString("GameUpdated"));
             }
-            
         }
 
+        public async Task RecheckValidationAsync()
+        {
+            
+            await ValidateAsync();
+        }
+        
     }
 
     public class ModifyGamePathViewModelValidator : AbstractValidator<ModifyGamePathViewModel>
@@ -154,8 +167,13 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
             {
                 RuleFor(x => x.IconPath).Cascade(CascadeMode.Stop).IcoValidation();
             });
+
+            When(x => x.EnableArgs, () =>
+            {
+                RuleFor(x => x.Arguments).Cascade(CascadeMode.Stop).ArgsValidation();
+            });
+
             
-            RuleFor(x => x.Arguments).Cascade(CascadeMode.Stop).ArgsValidation();
 
             When(x => x.NoSourceVisibility == Visibility.Visible, () =>
             {
