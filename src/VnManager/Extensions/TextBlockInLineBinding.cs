@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿// Copyright (c) micah686. All Rights Reserved.
+// Licensed under the MIT License.  See the LICENSE file in the project root for license information.
+
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;

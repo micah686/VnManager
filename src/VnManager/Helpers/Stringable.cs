@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Copyright (c) micah686. All Rights Reserved.
+// Licensed under the MIT License.  See the LICENSE file in the project root for license information.
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq.Expressions;

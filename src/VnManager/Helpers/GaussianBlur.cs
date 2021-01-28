@@ -1,4 +1,8 @@
-﻿using System;
+﻿// Copyright (c) micah686. All Rights Reserved.
+// Licensed under the MIT License.  See the LICENSE file in the project root for license information.
+// Original Super fast Gaussian Blur creator, used from https://github.com/mdymel/superfastblur
+
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;

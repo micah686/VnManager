@@ -1,9 +1,13 @@
-﻿using System;
+﻿// Copyright (c) micah686. All Rights Reserved.
+// Licensed under the MIT License.  See the LICENSE file in the project root for license information.
+// used from https://brianlagunas.com/a-better-way-to-data-bind-enums-in-wpf/
+
+using System;
 using System.Windows.Markup;
 
 namespace VnManager.Extensions
 {
-    //https://brianlagunas.com/a-better-way-to-data-bind-enums-in-wpf/
+
     /// <summary>
     /// XAML converter for binding an Enum to an ItemSource
     /// </summary>

@@ -1,4 +1,7 @@
-﻿using System.Diagnostics;
+﻿// Copyright (c) micah686. All Rights Reserved.
+// Licensed under the MIT License.  See the LICENSE file in the project root for license information.
+
+using System.Diagnostics;
 using System.Net;
 using System.Runtime.InteropServices;
 using System.Security;
