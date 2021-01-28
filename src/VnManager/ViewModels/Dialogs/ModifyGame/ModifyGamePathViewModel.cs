@@ -154,6 +154,7 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
         {
             
             await ValidateAsync();
+            var foo = 1;
         }
         
     }
