@@ -1,4 +1,7 @@
-﻿using Stylet;
+﻿// Copyright (c) micah686. All rights reserved.
+// Licensed under the MIT License. See LICENSE file in the project root for full license information.
+
+using Stylet;
 using MahApps.Metro.IconPacks;
 using Brush = System.Windows.Media.Brush;
 using Brushes = System.Windows.Media.Brushes;

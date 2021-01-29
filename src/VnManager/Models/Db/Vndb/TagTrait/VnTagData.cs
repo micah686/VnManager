@@ -1,4 +1,7 @@
-﻿using LiteDB;
+﻿// Copyright (c) micah686. All rights reserved.
+// Licensed under the MIT License. See LICENSE file in the project root for full license information.
+
+using LiteDB;
 using VndbSharp.Models.Dumps;
 
 namespace VnManager.Models.Db.Vndb.TagTrait
