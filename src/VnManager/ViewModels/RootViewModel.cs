@@ -6,33 +6,20 @@ using StyletIoC;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Media;
+using VnManager.Interfaces;
 using VnManager.ViewModels.UserControls;
 
 namespace VnManager.ViewModels
 {
-    public interface IMainGridViewModelFactory
-    {
-        MainGridViewModel CreateMainGridViewModel();
-    }
-
-    public interface ISettingsViewModelFactory
-    {
-        SettingsViewModel CreateSettingsViewModel();
-    }
-
-    public interface IDebugViewModelFactory
-    {
-        DebugViewModel CreateDebugViewModel();
-    }
-
+    
     public class RootViewModel : Conductor<Screen>
     {
         public StatusBarViewModel StatusBarPage { get; set; }
 
         private readonly IContainer _container;
         private readonly IWindowManager _windowManager;
-        private readonly IMainGridViewModelFactory _mainGridVmFactory;
-        private readonly ISettingsViewModelFactory _settingsVmFactory;
+        private readonly IMainGridFactory _mainGridVmFactory;
+        private readonly ISettingsFactory _settingsVmFactory;
 
         private int _windowButtonPressedCounter = 0;
 
@@ -102,9 +89,9 @@ namespace VnManager.ViewModels
 
 
 #if DEBUG
-        private readonly IDebugViewModelFactory _debugVmFactory;
-        public RootViewModel(IContainer container, IWindowManager windowManager, IMainGridViewModelFactory mainGridFactory, ISettingsViewModelFactory settingsFactory,
-            IDebugViewModelFactory debugFactory)
+        private readonly IDebugFactory _debugVmFactory;
+        public RootViewModel(IContainer container, IWindowManager windowManager, IMainGridFactory mainGridFactory, ISettingsFactory settingsFactory,
+            IDebugFactory debugFactory)
         {
             Instance = this;
             _container = container;
@@ -116,7 +103,7 @@ namespace VnManager.ViewModels
 
         }
 #else
-        public RootViewModel(IContainer container, IWindowManager windowManager, IMainGridViewModelFactory mainGridFactory, ISettingsViewModelFactory settingsFactory)
+        public RootViewModel(IContainer container, IWindowManager windowManager, IMainGridFactory mainGridFactory, ISettingsFactory settingsFactory)
         {
             Instance = this;
             _container = container;
@@ -132,7 +119,7 @@ namespace VnManager.ViewModels
         protected override void OnViewLoaded()
         {
             _ = new Initializers.Startup(_container, _windowManager);
-            var mainGridVm = _mainGridVmFactory.CreateMainGridViewModel();
+            var mainGridVm = _mainGridVmFactory.CreateMainGrid();
             ActivateItem(mainGridVm);
             StatusBarPage = _container.Get<StatusBarViewModel>();
             var result = Application.Current.TryFindResource(AdonisUI.Colors.ForegroundColor);
@@ -157,13 +144,13 @@ namespace VnManager.ViewModels
 
         public void ActivateSettingsClick()
         {
-            var settingsVm = _settingsVmFactory.CreateSettingsViewModel();
+            var settingsVm = _settingsVmFactory.CreateSettings();
             ActivateItem(settingsVm);
         }
 
         public void ActivateMainClick()
         {
-            var mainGridVm = _mainGridVmFactory.CreateMainGridViewModel();
+            var mainGridVm = _mainGridVmFactory.CreateMainGrid();
             ActivateItem(mainGridVm);
         }
 
@@ -171,7 +158,7 @@ namespace VnManager.ViewModels
         public void DebugClick()
         {
 #if DEBUG
-            var debugVm = _debugVmFactory.CreateDebugViewModel();
+            var debugVm = _debugVmFactory.CreateDebug();
             ActivateItem(debugVm);
 #else
             //Do Nothing

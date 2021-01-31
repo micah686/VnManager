@@ -52,9 +52,9 @@ namespace VnManager
             builder.Bind<IMessageBoxViewModel>().To<CustomMsgBoxViewModel>();
             
             //Abstract Factories
-            builder.Bind<IMainGridViewModelFactory>().ToAbstractFactory();
-            builder.Bind<ISettingsViewModelFactory>().ToAbstractFactory();
-            builder.Bind<IDebugViewModelFactory>().ToAbstractFactory();
+            builder.Bind<IMainGridFactory>().ToAbstractFactory();
+            builder.Bind<ISettingsFactory>().ToAbstractFactory();
+            builder.Bind<IDebugFactory>().ToAbstractFactory();
             builder.Bind<IModifyGamePathFactory>().ToAbstractFactory();
             builder.Bind<IModifyGameCategoriesFactory>().ToAbstractFactory();
             builder.Bind<IModifyGameDeleteFactory>().ToAbstractFactory();
