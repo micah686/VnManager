@@ -7,6 +7,7 @@ using System.Windows;
 using Stylet;
 using StyletIoC;
 using VnManager.Events;
+using VnManager.Interfaces;
 using VnManager.MetadataProviders.Vndb;
 using VnManager.Models.Db.User;
 using VnManager.ViewModels.Dialogs.AddGameSources;
@@ -15,23 +16,17 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
 {
     public class ModifyGameRepairViewModel: Screen
     {
-        private UserDataGames _selectedGame;
+        internal UserDataGames SelectedGame;
         private readonly IWindowManager _windowManager;
-        private readonly IContainer _container;
         private readonly IEventAggregator _events;
-        public ModifyGameRepairViewModel(IWindowManager windowManager, IContainer container, IEventAggregator events)
+        private readonly IModifyGameDeleteFactory _gameDelete;
+        public ModifyGameRepairViewModel(IWindowManager windowManager, IEventAggregator events, IModifyGameDeleteFactory gameDelete)
         {
             DisplayName = App.ResMan.GetString("RepairUpdate");
             _windowManager = windowManager;
-            _container = container;
+            _gameDelete = gameDelete;
             _events = events;
 
-        }
-
-        protected override void OnViewLoaded()
-        {
-            var parent = (ModifyGameHostViewModel) Parent;
-            _selectedGame = parent.SelectedGame;
         }
 
         /// <summary>
@@ -42,7 +37,7 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
         public async Task RepairData()
         {
 
-            var source = _selectedGame.SourceType;
+            var source = SelectedGame.SourceType;
             if (source == AddGameSourceType.Vndb)
             {
                 await RepairVndbData();
@@ -64,11 +59,11 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
                 var parentHost = (ModifyGameHostViewModel)Parent;
                 parentHost.LockControls();
 
-                var modifyDelete = _container.Get<Func<ModifyGameDeleteViewModel>>().Invoke();
-                modifyDelete.SetSelectedGame(_selectedGame);
+                var modifyDelete = _gameDelete.CreateModifyGameDelete();
+                modifyDelete.SetSelectedGame(SelectedGame);
                 modifyDelete.DeleteVndbContent();
                 GetVndbData getData = new GetVndbData();
-                await getData.GetDataAsync(_selectedGame.GameId.Value);
+                await getData.GetDataAsync(SelectedGame.GameId.Value);
                 _events.PublishOnUIThread(new UpdateEvent { ShouldUpdate = true }, EventChannels.RefreshGameGrid.ToString());
                 parentHost.UnlockControls();
             }

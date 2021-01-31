@@ -11,6 +11,7 @@ using Stylet;
 using StyletIoC;
 using VnManager.Events;
 using VnManager.Helpers;
+using VnManager.Interfaces;
 using VnManager.Models.Db;
 using VnManager.Models.Db.User;
 using VnManager.Models.Db.Vndb.Main;
@@ -23,12 +24,10 @@ namespace VnManager.ViewModels.UserControls.MainPage
     {
         public BindableCollection<GameCardViewModel> GameCollection { get; } = new BindableCollection<GameCardViewModel>();
 
-        private readonly IWindowManager _windowManager;
-        private readonly IContainer _container;
-        public GameGridViewModel(IContainer container, IWindowManager windowManager, IEventAggregator events)
+        private readonly IGameCardFactory _gameCard;
+        public GameGridViewModel(IEventAggregator events, IGameCardFactory gameCard)
         {
-            _container = container;
-            _windowManager = windowManager;
+            _gameCard = gameCard;
 
             SetupEvents(events);
 
@@ -87,7 +86,7 @@ namespace VnManager.ViewModels.UserControls.MainPage
 
                 var rating = NsfwHelper.RawRatingIsNsfw(game.ImageRating);
 
-                var card = new GameCardViewModel(_container, _windowManager);
+                var card = _gameCard.CreateGameCard();
                 if (rating == true && File.Exists($"{coverPath}.aes"))
                 {
                     var imgBytes = File.ReadAllBytes($"{coverPath}.aes");

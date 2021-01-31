@@ -19,7 +19,7 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
 {
     public class ModifyGameDeleteViewModel: Screen
     {
-        private UserDataGames _selectedGame;
+        internal UserDataGames SelectedGame;
         private readonly IWindowManager _windowManager;
         private readonly IEventAggregator _events;
         public ModifyGameDeleteViewModel(IWindowManager windowManager, IEventAggregator events)
@@ -29,15 +29,10 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
             _events = events;
         }
 
-        protected override void OnViewLoaded()
-        {
-            var parent = (ModifyGameHostViewModel) Parent;
-            _selectedGame = parent.SelectedGame;
-        }
-
+        
         internal void SetSelectedGame(UserDataGames selectedGame)
         {
-            _selectedGame = selectedGame;
+            SelectedGame = selectedGame;
         }
         
         public void DeleteGame()
@@ -46,7 +41,7 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
                 MessageBoxButton.YesNo, MessageBoxImage.Exclamation);
             if (result == MessageBoxResult.Yes)
             {
-                switch (_selectedGame.SourceType)
+                switch (SelectedGame.SourceType)
                 {
                     case AddGameSourceType.Vndb:
                         DeleteVndbData();
@@ -74,7 +69,7 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
             using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
             {
                 var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString());
-                dbUserData.DeleteMany(x => x.Id == _selectedGame.Id);
+                dbUserData.DeleteMany(x => x.Id == SelectedGame.Id);
             }
             var parent = (ModifyGameHostViewModel)Parent;
             parent.RequestClose();
@@ -88,7 +83,7 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
             {
                 return;
             }
-            var vnid = _selectedGame.GameId.Value;
+            var vnid = SelectedGame.GameId.Value;
             using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
             {
                 var dbInfo = db.GetCollection<VnInfo>(DbVnInfo.VnInfo.ToString());
@@ -163,7 +158,7 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
             using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
             {
                 var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString());
-                dbUserData.DeleteMany(x => x.Id == _selectedGame.Id);
+                dbUserData.DeleteMany(x => x.Id == SelectedGame.Id);
 
             }
         }

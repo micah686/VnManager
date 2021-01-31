@@ -28,7 +28,7 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
 
         public Visibility NoSourceVisibility { get; set; } = Visibility.Collapsed;
 
-        private UserDataGames _selectedGame;
+        internal UserDataGames SelectedGame;
         private readonly OpenFileDialogSettings _defaultOpenFileDialogSettings;
         private readonly IWindowManager _windowManager;
         private readonly IDialogService _dialogService;
@@ -50,22 +50,20 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
 
         protected override void OnViewLoaded()
         {
-            var parent = (ModifyGameHostViewModel)Parent;
-            _selectedGame = parent.SelectedGame;
             SetOriginalValues();
         }
 
         private void SetOriginalValues()
         {
-            ExePath = _selectedGame.ExePath;
-            IconPath = _selectedGame.IconPath;
-            Arguments = _selectedGame.Arguments;
+            ExePath = SelectedGame.ExePath;
+            IconPath = SelectedGame.IconPath;
+            Arguments = SelectedGame.Arguments;
             EnableArgs = !string.IsNullOrEmpty(Arguments);
-            if (_selectedGame.SourceType == AddGameSourceType.NoSource)
+            if (SelectedGame.SourceType == AddGameSourceType.NoSource)
             {
                 NoSourceVisibility = Visibility.Visible;
-                Title = _selectedGame.Title;
-                CoverPath = _selectedGame.CoverPath;
+                Title = SelectedGame.Title;
+                CoverPath = SelectedGame.CoverPath;
             }
         }
 
@@ -137,7 +135,7 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
                 
                 using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
                 var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString());
-                var entry = dbUserData.Query().Where(x => x.Id == _selectedGame.Id)
+                var entry = dbUserData.Query().Where(x => x.Id == SelectedGame.Id)
                     .FirstOrDefault();
                 if (entry != null)
                 {
@@ -155,7 +153,6 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
 
         public async Task RecheckValidationAsync()
         {
-            
             await ValidateAsync();
         }
         

@@ -11,8 +11,10 @@ using VnManager.ViewModels;
 using MvvmDialogs;
 using Sentry;
 using Sentry.Protocol;
+using VnManager.Interfaces;
 using VnManager.ViewModels.UserControls;
 using VnManager.ViewModels.Controls;
+
 
 namespace VnManager
 {
@@ -49,9 +51,16 @@ namespace VnManager
             builder.Bind<StatusBarViewModel>().ToSelf().InSingletonScope();
             builder.Bind<IMessageBoxViewModel>().To<CustomMsgBoxViewModel>();
             
+            //Abstract Factories
             builder.Bind<IMainGridViewModelFactory>().ToAbstractFactory();
             builder.Bind<ISettingsViewModelFactory>().ToAbstractFactory();
             builder.Bind<IDebugViewModelFactory>().ToAbstractFactory();
+            builder.Bind<IModifyGamePathFactory>().ToAbstractFactory();
+            builder.Bind<IModifyGameCategoriesFactory>().ToAbstractFactory();
+            builder.Bind<IModifyGameDeleteFactory>().ToAbstractFactory();
+            builder.Bind<IModifyGameRepairFactory>().ToAbstractFactory();
+            builder.Bind<IModifyGameHostFactory>().ToAbstractFactory();
+            builder.Bind<IGameCardFactory>().ToAbstractFactory();
         }
 
         protected override void Configure()

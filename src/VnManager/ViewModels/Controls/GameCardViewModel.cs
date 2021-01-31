@@ -7,6 +7,7 @@ using LiteDB;
 using Stylet;
 using StyletIoC;
 using VnManager.Helpers;
+using VnManager.Interfaces;
 using VnManager.Models.Db;
 using VnManager.Models.Db.User;
 using VnManager.ViewModels.Dialogs.ModifyGame;
@@ -21,10 +22,12 @@ namespace VnManager.ViewModels.Controls
         
         private readonly IContainer _container;
         private readonly IWindowManager _windowManager;
-        public GameCardViewModel(IContainer container, IWindowManager windowManager)
+        private readonly IModifyGameHostFactory _gameHost;
+        public GameCardViewModel(IContainer container, IWindowManager windowManager, IModifyGameHostFactory gameHost)
         {
             _container = container;
             _windowManager = windowManager;
+            _gameHost = gameHost;
         }
         #region CoverImage
         private BindingImage _coverImage;
@@ -84,7 +87,7 @@ namespace VnManager.ViewModels.Controls
         public void SettingsClick()
         {
             SetGameEntry();
-            var modifyHost = _container.Get<Func<ModifyGameHostViewModel>>().Invoke();
+            var modifyHost = _gameHost.CreateModifyGameHost();
             modifyHost.SetSelectedGame(_selectedGame);
             _windowManager.ShowDialog(modifyHost);
         }

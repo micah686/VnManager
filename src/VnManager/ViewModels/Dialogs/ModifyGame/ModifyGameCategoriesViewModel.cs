@@ -41,7 +41,7 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
 
         #endregion
 
-        private UserDataGames _selectedGame;
+        internal UserDataGames SelectedGame;
         private readonly IWindowManager _windowManager;
         private readonly IEventAggregator _events;
         public ModifyGameCategoriesViewModel(IWindowManager windowManager, IEventAggregator events, IModelValidator<ModifyGameCategoriesViewModel> validator) : base(validator)
@@ -54,9 +54,6 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
 
         protected override void OnViewLoaded()
         {
-            var parent = (ModifyGameHostViewModel) Parent;
-            _selectedGame = parent.SelectedGame;
-            
             IsRemoveCategoriesEnabled = true;
             FillCategories();
         }
@@ -83,7 +80,7 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
             RemoveCategoriesCollection.Clear();
             DeleteCategoriesCollection.Clear();
 
-            if (_selectedGame.Categories == null)
+            if (SelectedGame.Categories == null)
             {
                 return;
             }
@@ -99,9 +96,9 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
         #region AddCategory
         private void FillAddCategory(List<string> exceptAllList)
         {
-            if (exceptAllList.Count > 0 && _selectedGame.Categories.Count > 0)
+            if (exceptAllList.Count > 0 && SelectedGame.Categories.Count > 0)
             {
-                var validAdd = exceptAllList.Except(_selectedGame.Categories).ToList();
+                var validAdd = exceptAllList.Except(SelectedGame.Categories).ToList();
                 validAdd.Remove("All");
                 if (validAdd.Count > 0)
                 {
@@ -133,16 +130,16 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
             using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
             {
                 var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString());
-                var entry = _selectedGame;
+                var entry = SelectedGame;
                 if (entry.Categories.Count > 0)
                 {
-                    _selectedGame.Categories.Add(SelectedAddValue);
-                    _selectedGame.Categories = _selectedGame.Categories
+                    SelectedGame.Categories.Add(SelectedAddValue);
+                    SelectedGame.Categories = SelectedGame.Categories
                         .Where(s => !string.IsNullOrWhiteSpace(s)).Distinct().ToList();
 
                 }
 
-                dbUserData.Update(_selectedGame);
+                dbUserData.Update(SelectedGame);
             }
 
             FillCategories();
@@ -154,9 +151,9 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
         #region RemoveCategory
         private void FillRemoveCategory(List<string> exceptAllList)
         {
-            if (exceptAllList.Count > 0 && _selectedGame.Categories.Count > 1)
+            if (exceptAllList.Count > 0 && SelectedGame.Categories.Count > 1)
             {
-                var validRemove = exceptAllList.Intersect(_selectedGame.Categories).ToList();
+                var validRemove = exceptAllList.Intersect(SelectedGame.Categories).ToList();
                 validRemove.Remove("All");
                 if (validRemove.Count > 0)
                 {
@@ -188,16 +185,16 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
             using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
             {
                 var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString());
-                var entry = _selectedGame;
+                var entry = SelectedGame;
                 if (entry.Categories.Count > 0)
                 {
-                    _selectedGame.Categories.Remove(SelectedRemoveValue);
-                    _selectedGame.Categories = _selectedGame.Categories
+                    SelectedGame.Categories.Remove(SelectedRemoveValue);
+                    SelectedGame.Categories = SelectedGame.Categories
                         .Where(s => !string.IsNullOrWhiteSpace(s)).Distinct().ToList();
 
                 }
 
-                dbUserData.Update(_selectedGame);
+                dbUserData.Update(SelectedGame);
             }
             FillCategories();
         }
