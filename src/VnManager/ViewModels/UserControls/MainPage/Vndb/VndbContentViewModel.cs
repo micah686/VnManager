@@ -23,9 +23,11 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
         internal Stopwatch GameStopwatch { get; set; } = new Stopwatch();
 
         private readonly IWindowManager _windowManager;
-        public VndbContentViewModel(IWindowManager windowManager)
+        private readonly INavigationController _navigationController;
+        public VndbContentViewModel(IWindowManager windowManager, INavigationController navigationController)
         {
             _windowManager = windowManager;
+            _navigationController = navigationController;
             var vInfo = new VndbInfoViewModel { DisplayName = App.ResMan.GetString("Main") };
             var vChar = new VndbCharactersViewModel { DisplayName = App.ResMan.GetString("Characters") };
             var vScreen = new VndbScreensViewModel { DisplayName = App.ResMan.GetString("Screenshots") };
@@ -47,16 +49,16 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             return base.CanCloseAsync();
         }
 
-        internal static void SetSelectedGame(UserDataGames game)
+        internal void SetSelectedGame(UserDataGames game)
         {
             SelectedGame = game;
             VnId = SelectedGame.GameId;
         }
         
 
-        public static void CloseClick()
+        public void CloseClick()
         {
-            RootViewModel.Instance.ActivateMainClick();
+            _navigationController.NavigateToMainGrid();
             SelectedGame = new UserDataGames();
         }
     }

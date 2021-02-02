@@ -2,17 +2,17 @@
 using System.Collections.Generic;
 using System.Text;
 using Stylet;
+using VnManager.Models.Db.User;
 using VnManager.ViewModels;
 using VnManager.ViewModels.UserControls;
+using VnManager.ViewModels.UserControls.MainPage.Vndb;
 
 namespace VnManager
 {
     public interface INavigationController
     {
-        void NavigateToSettings();
-
-        void NavigateToRootWindow();
         void NavigateToMainGrid();
+        void NavigateVndbHost(UserDataGames selectedGame);
     }
 
     public interface INavigationControllerDelegate
@@ -22,40 +22,27 @@ namespace VnManager
 
     public class NavigationController : INavigationController
     {
-        private readonly Func<SettingsViewModel> _settingsFactory;
         private readonly Func<MainGridViewModel> _mainGridFactory;
-        private readonly Func<RootViewModel> _rootWindowFactory;
-        //private readonly Func<Page2ViewModel> page2ViewModelFactory;
-
+        private readonly Func<VndbContentViewModel> _vndbHostFactory;
         public INavigationControllerDelegate Delegate { get; set; }
 
-        public NavigationController(Func<SettingsViewModel> settings, Func<RootViewModel> rootWindow, Func<MainGridViewModel> mainGrid)
+        public NavigationController(Func<SettingsViewModel> settings, Func<MainGridViewModel> mainGrid, Func<VndbContentViewModel> vndbHost)
         {
-            this._settingsFactory = settings ?? throw new ArgumentNullException(nameof(settings));
-            this._rootWindowFactory = rootWindow ?? throw new ArgumentNullException(nameof(rootWindow));
             this._mainGridFactory = mainGrid ?? throw new ArgumentNullException(nameof(mainGrid));
-            //this.page2ViewModelFactory = page2ViewModelFactory ?? throw new ArgumentNullException(nameof(page2ViewModelFactory));
+            this._vndbHostFactory = vndbHost;
         }
 
-        public void NavigateToSettings()
-        {
-            this.Delegate?.NavigateTo(this._settingsFactory());
-        }
-
-        //public void NavigateToPage2(string initiator)
-        //{
-        //    var vm = this.page2ViewModelFactory();
-        //    vm.Initiator = initiator;
-        //    this.Delegate?.NavigateTo(vm);
-        //}
-        public void NavigateToRootWindow()
-        {
-            this.Delegate?.NavigateTo(this._rootWindowFactory());
-        }
-
+        
         public void NavigateToMainGrid()
         {
             this.Delegate?.NavigateTo(this._mainGridFactory());
+        }
+
+        public void NavigateVndbHost(UserDataGames selectedGame)
+        {
+            var vm = this._vndbHostFactory();
+            vm.SetSelectedGame(selectedGame);
+            this.Delegate?.NavigateTo(vm);
         }
     }
 }

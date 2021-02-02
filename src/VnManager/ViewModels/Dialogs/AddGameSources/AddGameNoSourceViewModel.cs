@@ -59,10 +59,11 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
 
 
         private readonly IDialogService _dialogService;
-
-        public AddGameNoSourceViewModel(IDialogService dialogService, IModelValidator<AddGameNoSourceViewModel> validator): base(validator)
+        private readonly INavigationController _navigationController;
+        public AddGameNoSourceViewModel(IDialogService dialogService, INavigationController navigationController, IModelValidator<AddGameNoSourceViewModel> validator): base(validator)
         {
             _dialogService = dialogService;
+            _navigationController = navigationController;
 
             _defaultOpenFileDialogSettings = new OpenFileDialogSettings
             {
@@ -125,7 +126,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
                 await SetGameDataEntryAsync();
                 var parent = (AddGameMainViewModel)Parent;
                 parent.RequestClose(true);
-                RootViewModel.Instance.ActivateMainClick();
+                _navigationController.NavigateToMainGrid();
             }
         }
 

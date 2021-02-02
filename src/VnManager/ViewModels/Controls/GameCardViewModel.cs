@@ -23,10 +23,12 @@ namespace VnManager.ViewModels.Controls
         private readonly IContainer _container;
         private readonly IWindowManager _windowManager;
         private readonly IModifyGameHostFactory _gameHost;
-        public GameCardViewModel(IContainer container, IWindowManager windowManager, IModifyGameHostFactory gameHost)
+        private readonly INavigationController _navigationController;
+        public GameCardViewModel(IContainer container, IWindowManager windowManager, IModifyGameHostFactory gameHost, INavigationController navigationController)
         {
             _container = container;
             _windowManager = windowManager;
+            _navigationController = navigationController;
             _gameHost = gameHost;
         }
         #region CoverImage
@@ -74,10 +76,7 @@ namespace VnManager.ViewModels.Controls
         {
             SetGameEntry();
             //TODO: Update this so it's global
-            var vm = _container.Get<VndbContentViewModel>();
-            VndbContentViewModel.SetSelectedGame(_selectedGame);
-            RootViewModel.Instance.ActivateItem(vm);
-
+            _navigationController.NavigateVndbHost(_selectedGame);
         }
 
         /// <summary>
