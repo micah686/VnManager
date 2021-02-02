@@ -5,7 +5,6 @@ using System;
 using AdysTech.CredentialManager;
 using LiteDB;
 using Stylet;
-using StyletIoC;
 using VnManager.Helpers;
 using VnManager.Interfaces;
 using VnManager.Models.Db;
@@ -19,14 +18,12 @@ namespace VnManager.ViewModels.Controls
     public class GameCardViewModel: Screen
     {
         private UserDataGames _selectedGame;
-        
-        private readonly IContainer _container;
+
         private readonly IWindowManager _windowManager;
         private readonly IModifyGameHostFactory _gameHost;
         private readonly INavigationController _navigationController;
-        public GameCardViewModel(IContainer container, IWindowManager windowManager, IModifyGameHostFactory gameHost, INavigationController navigationController)
+        public GameCardViewModel(IWindowManager windowManager, IModifyGameHostFactory gameHost, INavigationController navigationController)
         {
-            _container = container;
             _windowManager = windowManager;
             _navigationController = navigationController;
             _gameHost = gameHost;

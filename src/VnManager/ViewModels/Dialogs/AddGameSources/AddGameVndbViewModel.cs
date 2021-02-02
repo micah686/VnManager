@@ -131,12 +131,12 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
 
         private readonly IWindowManager _windowManager;
         private readonly IDialogService _dialogService;
-        private readonly IContainer _container;
         private readonly IEventAggregator _events;
-        public AddGameVndbViewModel(IContainer container, IWindowManager windowManager, IModelValidator<AddGameVndbViewModel> validator, 
+        private readonly Func<AddGameMultiViewModel> _addGameMultiFactory;
+        public AddGameVndbViewModel(Func<AddGameMultiViewModel> addGameMulti, IWindowManager windowManager, IModelValidator<AddGameVndbViewModel> validator, 
             IDialogService dialogService, IEventAggregator events) : base(validator)
         {
-            _container = container;
+            _addGameMultiFactory = addGameMulti;
             _windowManager = windowManager;
             _dialogService = dialogService;
             _events = events;
@@ -274,8 +274,8 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
 
         public void ManageExes()
         {
-            var multiVm = _container.Get<AddGameMultiViewModel>();
-            var result = _windowManager.ShowDialog(multiVm);
+            var multiVm = _addGameMultiFactory();
+            var result = _windowManager.ShowDialog(_addGameMultiFactory());
             if (result != null && (result == true && multiVm.GameCollection != null))
             {
                 ExeCollection.Clear();
