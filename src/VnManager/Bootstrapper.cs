@@ -1,6 +1,7 @@
 ﻿// Copyright (c) micah686. All rights reserved.
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Windows;
 using System.Windows.Threading;
 using FluentValidation;
@@ -61,6 +62,9 @@ namespace VnManager
             builder.Bind<IModifyGameRepairFactory>().ToAbstractFactory();
             builder.Bind<IModifyGameHostFactory>().ToAbstractFactory();
             builder.Bind<IGameCardFactory>().ToAbstractFactory();
+
+            builder.Bind<NavigationController>().And<INavigationController>().To<NavigationController>().InSingletonScope();
+            builder.Bind<Func<SettingsViewModel>>().ToFactory<Func<SettingsViewModel>>(c => () => c.Get<SettingsViewModel>());
         }
 
         protected override void Configure()
@@ -74,6 +78,9 @@ namespace VnManager
         {
             // This is called just after the root ViewModel has been launched
             // Something like a version check that displays a dialog might be launched from here
+            var navigationController = this.Container.Get<NavigationController>();
+            navigationController.Delegate = this.RootViewModel;
+            navigationController.NavigateToMainGrid();
         }
 
         protected override void OnExit(ExitEventArgs e)

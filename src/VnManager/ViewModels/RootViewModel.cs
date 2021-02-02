@@ -12,7 +12,7 @@ using VnManager.ViewModels.UserControls;
 namespace VnManager.ViewModels
 {
     
-    public class RootViewModel : Conductor<Screen>
+    public class RootViewModel : Conductor<IScreen>, INavigationControllerDelegate
     {
         public StatusBarViewModel StatusBarPage { get; set; }
 
@@ -165,5 +165,9 @@ namespace VnManager.ViewModels
 #endif
         }
 
+        public void NavigateTo(IScreen screen)
+        {
+            this.ActivateItem(screen);
+        }
     }
 }

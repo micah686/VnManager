@@ -36,21 +36,27 @@ namespace VnManager.ViewModels.UserControls
 
         private readonly IContainer _container;
         private readonly IWindowManager _windowManager;
+        private readonly INavigationController navigationController;
 
-        public DebugViewModel(IContainer container, IWindowManager windowManager)
+        //public DebugViewModel(IContainer container, IWindowManager windowManager)
+        //{
+        //    _container = container;
+        //    _windowManager = windowManager;
+        //    _testImg = ImageHelper.CreateEmptyBitmapImage();
+        //    var vm = _container.Get<ImportViewModel>();
+        //    _windowManager.ShowDialog(vm);
+        //}
+        public DebugViewModel(INavigationController navigationController)
         {
-            _container = container;
-            _windowManager = windowManager;
-            _testImg = ImageHelper.CreateEmptyBitmapImage();
-            var vm = _container.Get<ImportViewModel>();
-            _windowManager.ShowDialog(vm);
+            this.navigationController = navigationController ?? throw new ArgumentNullException(nameof(navigationController));
         }
 
-        
+
+        public void NavTest() => this.navigationController.NavigateToSettings();
 
 
 
-        
+
 
         public void CauseException()
         {

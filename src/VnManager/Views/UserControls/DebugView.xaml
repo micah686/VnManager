@@ -23,6 +23,7 @@
 
         <StackPanel Grid.Row="1" HorizontalAlignment="Left">
             <Button Content="CauseCrash" Command="{s:Action CauseException}"/>
+            <Button Content="NavTest" Command="{s:Action NavTest}"/>
             <Image Source="{Binding TestImg, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="32" Height="32"></Image>
         </StackPanel>
 
