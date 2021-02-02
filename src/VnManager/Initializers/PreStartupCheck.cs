@@ -139,17 +139,14 @@ namespace VnManager.Initializers
 
         private static void SentrySetup()
         {
-            var so = new SentryOptions
+            var sentryDsnValue = File.Exists(@$"{App.ConfigDirPath}\METRICS_OPT_OUT") ? noTrackSentryDSN : sentryDSN;
+            var so = new SentryOptions()
             {
-                Dsn = new Dsn(sentryDSN),
+                Dsn = sentryDsnValue,
                 Debug = true,
                 Environment = $@"VnManager-{App.VersionString}",
                 AttachStacktrace = true
             };
-            if (File.Exists(@$"{App.ConfigDirPath}\METRICS_OPT_OUT"))
-            {
-                so.Dsn = new Dsn(noTrackSentryDSN);
-            }
             SentrySdk.Init(so);
 #if DEBUG
             SentrySdk.ConfigureScope(scope => scope.SetTag("version-type", "Debug"));
