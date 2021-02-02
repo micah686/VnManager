@@ -1,9 +1,8 @@
 ﻿// Copyright (c) micah686. All rights reserved.
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.
 
-using MvvmDialogs;
+using System;
 using Stylet;
-using StyletIoC;
 using VnManager.ViewModels.UserControls.MainPage;
 
 namespace VnManager.ViewModels.UserControls
@@ -18,17 +17,15 @@ namespace VnManager.ViewModels.UserControls
 
         public static MainGridViewModel Instance { get; private set; }
 
-        public MainGridViewModel(IContainer container, IWindowManager windowManager, IDialogService dialogService)
+        public MainGridViewModel(Func<LastPlayedViewModel> lastPlayed, Func<CategoryListViewModel> category, Func<AddGameButtonViewModel> addGame, Func<GameGridViewModel> gameGrid)
         {
             Instance = this;
-            var _container = container;
-            
-            LastPlayedPage = _container.Get<LastPlayedViewModel>();
-            CategoryListPage = _container.Get<CategoryListViewModel>();
-            AddGamePage = _container.Get<AddGameButtonViewModel>();
 
-            var gg = _container.Get<GameGridViewModel>();
-            ActivateItem(gg);
+            LastPlayedPage = lastPlayed();
+            CategoryListPage = category();
+            AddGamePage = addGame();
+
+            ActivateItem(gameGrid());
         }
 
         public sealed override void ActivateItem(Screen item)

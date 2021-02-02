@@ -34,28 +34,18 @@ namespace VnManager.ViewModels.UserControls
 
         #endregion
 
-        private readonly IContainer _container;
-        private readonly IWindowManager _windowManager;
-        private readonly INavigationController navigationController;
 
-        //public DebugViewModel(IContainer container, IWindowManager windowManager)
-        //{
-        //    _container = container;
-        //    _windowManager = windowManager;
-        //    _testImg = ImageHelper.CreateEmptyBitmapImage();
-        //    var vm = _container.Get<ImportViewModel>();
-        //    _windowManager.ShowDialog(vm);
-        //}
-        public DebugViewModel(INavigationController navigationController)
+
+        public DebugViewModel(IContainer container, IWindowManager windowManager)
         {
-            this.navigationController = navigationController ?? throw new ArgumentNullException(nameof(navigationController));
-        }
 
-
-        public void NavTest()
-        {
-            //=> this.navigationController.NavigateToSettings();
+            _testImg = ImageHelper.CreateEmptyBitmapImage();
+            var vm = container.Get<ImportViewModel>();
+            windowManager.ShowDialog(vm);
         }
+        
+
+        
 
 
 

@@ -2,7 +2,6 @@
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.
 
 using Stylet;
-using StyletIoC;
 using System;
 using VndbSharp.Models.Common;
 using VnManager.Models.Settings;
@@ -24,14 +23,14 @@ namespace VnManager.ViewModels.UserControls
         public int MaxViolenceIndex { get; set; }
 
 
-        private readonly IContainer _container;
         private readonly IWindowManager _windowManager;
         private readonly IDialogService _dialogService;
-        public SettingsViewModel(IContainer container, IWindowManager windowManager, IDialogService dialogService)
+        private readonly Func<DeleteEverythingViewModel> _deleteEverythingFactory;
+        public SettingsViewModel(IWindowManager windowManager, IDialogService dialogService, Func<DeleteEverythingViewModel> deleteEverything)
         {
-            _container = container;
             _windowManager = windowManager;
             _dialogService = dialogService;
+            _deleteEverythingFactory = deleteEverything;
             FillSexualDropdown();
             FillViolenceDropdown();
             FillSpoilerDropdown();
@@ -181,7 +180,7 @@ namespace VnManager.ViewModels.UserControls
 
         public void ResetApplication()
         {
-            var warning = _container.Get<DeleteEverythingViewModel>();
+            var warning = _deleteEverythingFactory();
             bool? result = _windowManager.ShowDialog(warning);
             switch (result)
             {
