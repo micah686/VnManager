@@ -52,7 +52,10 @@ namespace VnManager.ViewModels.UserControls
         }
 
 
-        public void NavTest() => this.navigationController.NavigateToSettings();
+        public void NavTest()
+        {
+            //=> this.navigationController.NavigateToSettings();
+        }
 
 
 
