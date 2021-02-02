@@ -65,11 +65,17 @@ namespace VnManager.ViewModels.UserControls.MainPage
             var userDataGamesEnumerable = dbUserData.ToArray();
             var vndbData = userDataGamesEnumerable.Where(x => x.SourceType == AddGameSourceType.Vndb).ToArray();
             var noSourceData = userDataGamesEnumerable.Where(x => x.SourceType == AddGameSourceType.NoSource).ToArray();
-            if (noSourceData.Length > 1)
+            if (noSourceData.Length > 0)
             {
-                throw new NotImplementedException("Need to create noSource");
+                
+                CreateNoSourceCards(noSourceData);
             }
-            GetVndbData(vndbData, dbVnInfo.ToArray());
+
+            if (vndbData.Length > 0)
+            {
+                GetVndbData(vndbData, dbVnInfo.ToArray());
+            }
+            
         }
 
 
@@ -127,6 +133,23 @@ namespace VnManager.ViewModels.UserControls.MainPage
             }
         }
 
+        private void CreateNoSourceCards(UserDataGames[] userDataArray)
+        {
+            foreach (var entry in userDataArray)
+            {
+                //TODO:Add in cover and ratings
+                var card = _gameCard.CreateGameCard();
+                card.Title = entry.Title;
+                card.LastPlayedString = $"{App.ResMan.GetString("LastPlayed")}: {TimeDateChanger.GetHumanDate(entry.LastPlayed)}";
+                card.TotalTimeString = $"{App.ResMan.GetString("PlayTime")}: {TimeDateChanger.GetHumanTime(entry.PlayTime)}";
+                card.CoverImage = new BindingImage {Image = ImageHelper.CreateEmptyBitmapImage()};
+                card.UserDataId = entry.Id;
+
+
+                GameCollection.Add(card);
+            }
+        }
+        
         public void Handle(UpdateEvent message)
         {
             if (message != null && message.ShouldUpdate)

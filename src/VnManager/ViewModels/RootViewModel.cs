@@ -1,6 +1,7 @@
 ﻿// Copyright (c) micah686. All rights reserved.
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.
 
+using System;
 using Stylet;
 using StyletIoC;
 using System.Globalization;
@@ -18,12 +19,10 @@ namespace VnManager.ViewModels
 
         private readonly IContainer _container;
         private readonly IWindowManager _windowManager;
-        private readonly IMainGridFactory _mainGridVmFactory;
-        private readonly ISettingsFactory _settingsVmFactory;
+        private readonly Func<MainGridViewModel> _mainGridVmFactory;
+        private readonly Func<SettingsViewModel> _settingsVmFactory;
 
         private int _windowButtonPressedCounter = 0;
-
-        public static RootViewModel Instance { get; private set; }
 
         public static string WindowTitle => FormatWindowTitle();
 
@@ -89,11 +88,10 @@ namespace VnManager.ViewModels
 
 
 #if DEBUG
-        private readonly IDebugFactory _debugVmFactory;
-        public RootViewModel(IContainer container, IWindowManager windowManager, IMainGridFactory mainGridFactory, ISettingsFactory settingsFactory,
-            IDebugFactory debugFactory)
+        private readonly Func<DebugViewModel> _debugVmFactory;
+        public RootViewModel(IContainer container, IWindowManager windowManager, Func<MainGridViewModel> mainGridFactory, Func<SettingsViewModel> settingsFactory,
+            Func<DebugViewModel> debugFactory)
         {
-            Instance = this;
             _container = container;
             _windowManager = windowManager;
             _mainGridVmFactory = mainGridFactory;
@@ -103,9 +101,8 @@ namespace VnManager.ViewModels
 
         }
 #else
-        public RootViewModel(IContainer container, IWindowManager windowManager, IMainGridFactory mainGridFactory, ISettingsFactory settingsFactory)
+        public RootViewModel(IContainer container, IWindowManager windowManager, Func<MainGridViewModel> mainGridFactory, Func<SettingsViewModel> settingsFactory)
         {
-            Instance = this;
             _container = container;
             _windowManager = windowManager;
             _mainGridVmFactory = mainGridFactory;
@@ -119,14 +116,12 @@ namespace VnManager.ViewModels
         protected override void OnViewLoaded()
         {
             _ = new Initializers.Startup(_container, _windowManager);
-            var mainGridVm = _mainGridVmFactory.CreateMainGrid();
+            var mainGridVm = _mainGridVmFactory();
             ActivateItem(mainGridVm);
             StatusBarPage = _container.Get<StatusBarViewModel>();
             var result = Application.Current.TryFindResource(AdonisUI.Colors.ForegroundColor);
             SettingsIconColor = result == null ? System.Windows.Media.Brushes.LightSteelBlue : new SolidColorBrush((System.Windows.Media.Color)result);
         }
-
-
 
         /// <summary>
         /// Creates a formatted window title
@@ -144,22 +139,19 @@ namespace VnManager.ViewModels
 
         public void ActivateSettingsClick()
         {
-            var settingsVm = _settingsVmFactory.CreateSettings();
-            ActivateItem(settingsVm);
+            ActivateItem(_settingsVmFactory());
         }
 
         public void ActivateMainClick()
         {
-            var mainGridVm = _mainGridVmFactory.CreateMainGrid();
-            ActivateItem(mainGridVm);
+            ActivateItem(_mainGridVmFactory());
         }
 
 
         public void DebugClick()
         {
 #if DEBUG
-            var debugVm = _debugVmFactory.CreateDebug();
-            ActivateItem(debugVm);
+            ActivateItem(_debugVmFactory());
 #else
             //Do Nothing
 #endif

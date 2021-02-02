@@ -26,7 +26,7 @@ namespace VnManager
         private readonly Func<VndbContentViewModel> _vndbHostFactory;
         public INavigationControllerDelegate Delegate { get; set; }
 
-        public NavigationController(Func<SettingsViewModel> settings, Func<MainGridViewModel> mainGrid, Func<VndbContentViewModel> vndbHost)
+        public NavigationController(Func<MainGridViewModel> mainGrid, Func<VndbContentViewModel> vndbHost)
         {
             this._mainGridFactory = mainGrid ?? throw new ArgumentNullException(nameof(mainGrid));
             this._vndbHostFactory = vndbHost;
