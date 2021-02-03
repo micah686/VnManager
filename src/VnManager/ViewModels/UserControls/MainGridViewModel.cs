@@ -2,7 +2,11 @@
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.
 
 using System;
+using AdysTech.CredentialManager;
+using LiteDB;
 using Stylet;
+using VnManager.Models.Db;
+using VnManager.Models.Db.User;
 using VnManager.ViewModels.UserControls.MainPage;
 
 namespace VnManager.ViewModels.UserControls
@@ -15,22 +19,38 @@ namespace VnManager.ViewModels.UserControls
         public AddGameButtonViewModel AddGamePage { get; set; }
 
 
-        public static MainGridViewModel Instance { get; private set; }
-
-        public MainGridViewModel(Func<LastPlayedViewModel> lastPlayed, Func<CategoryListViewModel> category, Func<AddGameButtonViewModel> addGame, Func<GameGridViewModel> gameGrid)
+        public MainGridViewModel(Func<LastPlayedViewModel> lastPlayed, Func<CategoryListViewModel> category, Func<AddGameButtonViewModel> addGame,
+            Func<GameGridViewModel> gameGrid, Func<NoGamesViewModel> noGames)
         {
-            Instance = this;
-
             LastPlayedPage = lastPlayed();
             CategoryListPage = category();
             AddGamePage = addGame();
-
-            ActivateItem(gameGrid());
+            CheckGames(gameGrid, noGames);
         }
 
-        public sealed override void ActivateItem(Screen item)
+        private void CheckGames(Func<GameGridViewModel> gameGrid, Func<NoGamesViewModel> noGames)
         {
-            base.ActivateItem(item);
+            var cred = CredentialManager.GetCredentials(App.CredDb);
+            if (cred == null || cred.UserName.Length < 1)
+            {
+                return;
+            }
+
+            int gameCount;
+            using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
+            {
+                gameCount = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString()).Count();
+                
+            }
+
+            if (gameCount < 1)
+            {
+                ActivateItem(noGames());
+            }
+            else
+            {
+                ActivateItem(gameGrid());
+            }
         }
     }
 }
