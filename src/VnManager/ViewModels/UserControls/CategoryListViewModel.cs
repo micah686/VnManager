@@ -5,7 +5,6 @@ using Stylet;
 using System;
 using AdysTech.CredentialManager;
 using LiteDB;
-using StyletIoC;
 using VnManager.Events;
 using VnManager.Models.Db;
 using VnManager.Models.Db.User;
@@ -20,10 +19,10 @@ namespace VnManager.ViewModels.UserControls
         public int SelectedIndex { get; set; } = 0;
         public static string SelectedCategory { get; set; } = "All";
 
-        private readonly IContainer _container;
-        public CategoryListViewModel(IContainer container, IEventAggregator events)
+        private readonly IEventAggregator _events;
+        public CategoryListViewModel(IEventAggregator events)
         {
-            _container = container;
+            _events = events;
             SetupEvents(events);
             ReloadCategories();
             
@@ -62,9 +61,7 @@ namespace VnManager.ViewModels.UserControls
         
         public void SelectionChanged()
         {
-            var vm = _container.Get<GameGridViewModel>();
-            
-            MainGridViewModel.Instance.ActivateItem(vm);
+            _events.PublishOnUIThread(new UpdateEvent { ShouldUpdate = true }, EventChannels.RefreshGameGrid.ToString());
         }
 
         public void Handle(UpdateEvent message)
