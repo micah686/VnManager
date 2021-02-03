@@ -11,6 +11,7 @@
              xmlns:main="clr-namespace:VnManager.Views.UserControls"
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:userControls="clr-namespace:VnManager.ViewModels.UserControls"
+             xmlns:res="clr-namespace:VnManager.Strings"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance userControls:MainGridViewModel}"
              >
@@ -32,7 +33,7 @@
                     </Grid.RowDefinitions>
                     <ContentControl Grid.Row="0" s:View.Model="{Binding LastPlayedPage}"/>
                     <ContentControl Grid.Row="1" s:View.Model="{Binding CategoryListPage}"/>
-                    <ContentControl Grid.Row="2" s:View.Model="{Binding AddGamePage}"/>
+                    <Button Grid.Row="2" Width="100"  Content="{x:Static res:Resources.AddGame}" Height="25" Command="{s:Action ShowAddGameDialog}"/>
                 </Grid>
 
 

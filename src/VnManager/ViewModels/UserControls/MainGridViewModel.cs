@@ -7,6 +7,7 @@ using LiteDB;
 using Stylet;
 using VnManager.Models.Db;
 using VnManager.Models.Db.User;
+using VnManager.ViewModels.Dialogs.AddGameSources;
 using VnManager.ViewModels.UserControls.MainPage;
 
 namespace VnManager.ViewModels.UserControls
@@ -16,15 +17,16 @@ namespace VnManager.ViewModels.UserControls
 
         public LastPlayedViewModel LastPlayedPage { get; set; }
         public CategoryListViewModel CategoryListPage { get; set; }
-        public AddGameButtonViewModel AddGamePage { get; set; }
 
-
-        public MainGridViewModel(Func<LastPlayedViewModel> lastPlayed, Func<CategoryListViewModel> category, Func<AddGameButtonViewModel> addGame,
+        private readonly IWindowManager _windowManager;
+        private readonly Func<AddGameMainViewModel> _addGameFactory;
+        public MainGridViewModel(IWindowManager windowManager, Func<LastPlayedViewModel> lastPlayed, Func<CategoryListViewModel> category, Func<AddGameMainViewModel> addGame,
             Func<GameGridViewModel> gameGrid, Func<NoGamesViewModel> noGames)
         {
+            _windowManager = windowManager;
+            _addGameFactory = addGame;
             LastPlayedPage = lastPlayed();
             CategoryListPage = category();
-            AddGamePage = addGame();
             CheckGames(gameGrid, noGames);
         }
 
@@ -51,6 +53,11 @@ namespace VnManager.ViewModels.UserControls
             {
                 ActivateItem(gameGrid());
             }
+        }
+
+        public void ShowAddGameDialog()
+        {
+            _windowManager.ShowDialog(_addGameFactory());
         }
     }
 }
