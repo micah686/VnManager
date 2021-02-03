@@ -7,7 +7,6 @@ using StyletIoC;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Media;
-using VnManager.Interfaces;
 using VnManager.ViewModels.UserControls;
 
 namespace VnManager.ViewModels

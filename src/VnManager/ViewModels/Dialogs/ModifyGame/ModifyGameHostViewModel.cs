@@ -1,13 +1,11 @@
 ﻿// Copyright (c) micah686. All rights reserved.
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Windows;
 using System.Threading.Tasks;
 using AdysTech.CredentialManager;
 using LiteDB;
 using Stylet;
-using StyletIoC;
 using VnManager.Interfaces;
 using VnManager.Models.Db;
 using VnManager.Models.Db.User;

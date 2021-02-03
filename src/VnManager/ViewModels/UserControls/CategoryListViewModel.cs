@@ -8,7 +8,6 @@ using LiteDB;
 using VnManager.Events;
 using VnManager.Models.Db;
 using VnManager.Models.Db.User;
-using VnManager.ViewModels.UserControls.MainPage;
 
 namespace VnManager.ViewModels.UserControls
 {

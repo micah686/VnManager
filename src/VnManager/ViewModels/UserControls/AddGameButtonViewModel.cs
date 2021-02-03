@@ -3,7 +3,6 @@
 
 using System;
 using Stylet;
-using StyletIoC;
 using VnManager.ViewModels.Dialogs.AddGameSources;
 
 namespace VnManager.ViewModels.UserControls

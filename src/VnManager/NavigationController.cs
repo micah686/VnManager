@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Stylet;
 using VnManager.Models.Db.User;
-using VnManager.ViewModels;
 using VnManager.ViewModels.UserControls;
 using VnManager.ViewModels.UserControls.MainPage.Vndb;
 

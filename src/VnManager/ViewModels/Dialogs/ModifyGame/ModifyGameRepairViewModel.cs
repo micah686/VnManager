@@ -5,7 +5,6 @@ using System;
 using System.Threading.Tasks;
 using System.Windows;
 using Stylet;
-using StyletIoC;
 using VnManager.Events;
 using VnManager.Interfaces;
 using VnManager.MetadataProviders.Vndb;

@@ -11,7 +11,6 @@ using VnManager.Utilities;
 using VnManager.ViewModels;
 using MvvmDialogs;
 using Sentry;
-using Sentry.Protocol;
 using VnManager.Interfaces;
 using VnManager.ViewModels.UserControls;
 using VnManager.ViewModels.Controls;

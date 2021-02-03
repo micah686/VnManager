@@ -14,7 +14,6 @@ using LiteDB;
 using MvvmDialogs;
 using MvvmDialogs.FrameworkDialogs.OpenFile;
 using Stylet;
-using StyletIoC;
 using VndbSharp;
 using VndbSharp.Models;
 using VndbSharp.Models.Errors;

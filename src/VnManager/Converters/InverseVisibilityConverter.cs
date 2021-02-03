@@ -2,9 +2,7 @@
 // Licensed under the MIT License.  See the LICENSE file in the project root for license information.
 
 using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Text;
 using System.Windows;
 using System.Windows.Data;
 
