@@ -20,4 +20,4 @@
 - minimize to taskbar when game is launched
 
 
-- add "All" to UserData category when importing or adding a new game. 
+- Sort games on game grid?
