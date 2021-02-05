@@ -13,25 +13,25 @@
              xmlns:userControls="clr-namespace:VnManager.ViewModels.UserControls"
              xmlns:res="clr-namespace:VnManager.Strings"
              mc:Ignorable="d" 
+             d:DesignHeight="200" d:DesignWidth="400"
              d:DataContext="{d:DesignInstance userControls:MainGridViewModel}"
              >
     <Grid>
-        <!--<Button Content="Button" HorizontalAlignment="Left" Margin="223,189,0,0" VerticalAlignment="Top" Height="51" Width="92" Command="{s:Action Click}"/>-->
         <DockPanel LastChildFill="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             
-            <Grid>
+            <Grid ShowGridLines="True">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" MinWidth="147"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <Grid Grid.Column="0" x:Name="GrdSideBar">
+                <Grid Grid.Column="0" x:Name="GrdSideBar" Margin="0,0,5,0">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="160"/>
-                        <RowDefinition Height="90*"/>
+                        <RowDefinition Height="25"/>
+                        <RowDefinition Height="90*" />
                         <RowDefinition Height="40"/>
                     </Grid.RowDefinitions>
-                    <ContentControl Grid.Row="0" s:View.Model="{Binding LastPlayedPage}"/>
+                    <Label Grid.Row="0" Content="{x:Static res:Resources.Categories}" HorizontalContentAlignment="Center"></Label>
                     <ContentControl Grid.Row="1" s:View.Model="{Binding CategoryListPage}"/>
                     <Button Grid.Row="2" Width="100"  Content="{x:Static res:Resources.AddGame}" Height="25" Command="{s:Action ShowAddGameDialog}"/>
                 </Grid>
@@ -39,14 +39,7 @@
 
 
                 <Grid Grid.Column="1" x:Name="GrdMain">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="40"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-                    <Grid Grid.Row="0" Background="OrangeRed">
-                        <Label Content="SearchByTags"/>
-                    </Grid>
-                    <ContentControl Grid.Row="1"  Margin="5" s:View.Model="{Binding ActiveItem}"/>
+                    <ContentControl Margin="5" s:View.Model="{Binding ActiveItem}"/>
                 </Grid>
 
                 <!--End -->

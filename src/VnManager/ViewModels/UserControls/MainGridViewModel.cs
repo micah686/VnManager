@@ -14,18 +14,15 @@ namespace VnManager.ViewModels.UserControls
 {
     public class MainGridViewModel: Conductor<Screen>
     {
-
-        public LastPlayedViewModel LastPlayedPage { get; set; }
         public CategoryListViewModel CategoryListPage { get; set; }
 
         private readonly IWindowManager _windowManager;
         private readonly Func<AddGameMainViewModel> _addGameFactory;
-        public MainGridViewModel(IWindowManager windowManager, Func<LastPlayedViewModel> lastPlayed, Func<CategoryListViewModel> category, Func<AddGameMainViewModel> addGame,
+        public MainGridViewModel(IWindowManager windowManager, Func<CategoryListViewModel> category, Func<AddGameMainViewModel> addGame,
             Func<GameGridViewModel> gameGrid, Func<NoGamesViewModel> noGames)
         {
             _windowManager = windowManager;
             _addGameFactory = addGame;
-            LastPlayedPage = lastPlayed();
             CategoryListPage = category();
             CheckGames(gameGrid, noGames);
         }
