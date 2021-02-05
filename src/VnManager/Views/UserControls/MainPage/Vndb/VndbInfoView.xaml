@@ -125,7 +125,7 @@
                     </Grid>
 
                     <Label DockPanel.Dock="Top" Content="{x:Static res:Resources.Relations}" Visibility="{Binding RelationHeaderVisibility}" Margin="0,25,0,0"/>
-                    <DataGrid DockPanel.Dock="Top" ItemsSource="{Binding VnRelations}" Margin="0,5,0,0"
+                    <DataGrid DockPanel.Dock="Top" ItemsSource="{Binding VnRelations}" Margin="0,5,0,0" Visibility="{Binding RelationsDataVisibility}"
                               IsHitTestVisible="False" AutoGenerateColumns="False" CanUserAddRows="False">
                         <DataGrid.Columns>
                             <DataGridTextColumn Binding="{Binding RelTitle}" Header="{x:Static res:Resources.Title}" Width="*"/>

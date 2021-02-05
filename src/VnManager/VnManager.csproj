@@ -184,6 +184,9 @@
     <None Update="Resources\flags\UA.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Resources\flags\Unknown.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Resources\flags\US.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

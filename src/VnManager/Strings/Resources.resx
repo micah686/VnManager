@@ -147,6 +147,9 @@
   <data name="AddRemoveCategories" xml:space="preserve">
     <value>Add/Remove Categories</value>
   </data>
+  <data name="AgeColon" xml:space="preserve">
+    <value>Age:</value>
+  </data>
   <data name="AliasesColon" xml:space="preserve">
     <value>Aliases:</value>
   </data>

@@ -227,6 +227,7 @@ namespace VnManager.MetadataProviders.Vndb
                         character.Original = vnCharacter.OriginalName;
                         character.Gender = vnCharacter.Gender.ToString();
                         character.BloodType = vnCharacter.BloodType.ToString();
+                        character.Age = vnCharacter.Age.ToString();
                         character.Birthday = SimpleDateConverter.ConvertSimpleDate(vnCharacter.Birthday);
                         character.Aliases = CsvConverter.ConvertToCsv(vnCharacter.Aliases);
                         character.Description = vnCharacter.Description;

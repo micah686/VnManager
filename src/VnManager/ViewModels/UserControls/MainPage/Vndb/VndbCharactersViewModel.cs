@@ -40,6 +40,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
         
         public Visibility TraitHeaderVisibility { get; set; }
         public Tuple<string, Visibility> OriginalName { get; set; }
+        public Tuple<string, Visibility> Age { get; set; }
         public Tuple<string, Visibility> BloodType { get; set; } 
         public Tuple<string, Visibility> Birthday { get; set; }
         public Tuple<string, Visibility> Height { get; set; }
@@ -134,6 +135,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             var defTuple = new Tuple<string, Visibility>(string.Empty, Visibility.Collapsed);
             OriginalName = defTuple;
             Birthday = defTuple;
+            Age = defTuple;
             BloodType = defTuple;
             Height = defTuple;
             Weight = defTuple;
@@ -172,6 +174,10 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
                 if (!string.IsNullOrEmpty(charInfo.Birthday))
                 {
                     Birthday = new Tuple<string, Visibility>($"{App.ResMan.GetString("BirthdayColon")} {charInfo.Birthday}", Visibility.Visible);
+                }
+                if (!string.IsNullOrEmpty(charInfo.Age))
+                {
+                    Birthday = new Tuple<string, Visibility>($"{App.ResMan.GetString("AgeColon")} {charInfo.Age}", Visibility.Visible);
                 }
 
                 if (!string.IsNullOrEmpty(charInfo.BloodType))

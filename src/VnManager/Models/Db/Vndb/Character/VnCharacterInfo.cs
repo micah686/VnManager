@@ -16,6 +16,7 @@ namespace VnManager.Models.Db.Vndb.Character
         public string Original { get; set; }
         public string Gender { get; set; }
         public string BloodType { get; set; }
+        public string Age { get; set; }
         public string Birthday { get; set; }
         public string Aliases { get; set; }
         public string Description { get; set; }

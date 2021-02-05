@@ -39,7 +39,9 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
         public Visibility SummaryHeaderVisibility { get; set; }
         public Visibility TagHeaderVisibility { get; set; }
         public Visibility RelationHeaderVisibility { get; set; }
-
+        public Visibility RelationsDataVisibility { get; set; }
+        public BindableCollection<VnRelationsBinding> VnRelations { get; } = new BindableCollection<VnRelationsBinding>();
+        
         public Inline[] DescriptionInLine { get; private set; }
 
         public string LastPlayed { get; set; }
@@ -48,11 +50,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
 
         #endregion
 
-        #region Relation Binding
-
-        public BindableCollection<VnRelationsBinding> VnRelations { get; } = new BindableCollection<VnRelationsBinding>();
-
-        #endregion
+        
 
         protected override void OnViewLoaded()
         {
@@ -66,6 +64,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             SummaryHeaderVisibility = DescriptionInLine.Length < 1 ? Visibility.Collapsed : Visibility.Visible;
             TagHeaderVisibility = TagCollection.Count < 1 ? Visibility.Collapsed : Visibility.Visible;
             RelationHeaderVisibility = VnRelations.Count < 1 ? Visibility.Collapsed : Visibility.Visible;
+            RelationsDataVisibility = VnRelations.Count < 1 ? Visibility.Collapsed : Visibility.Visible;
             IsStartButtonVisible = Visibility.Visible;
         }
 
@@ -138,6 +137,9 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
                     var entry = new VnRelationsBinding { RelTitle = relation.Title, RelRelation = relation.Relation };
                     VnRelations.Add(entry);
                 }
+
+                RelationsDataVisibility = VnRelations.Count < 1 ? Visibility.Collapsed : Visibility.Visible;
+
             }
         }
 
@@ -157,7 +159,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             string[] list = csv.Split(',');
             return list.Select(lang => File.Exists($@"{App.ExecutableDirPath}\Resources\flags\{lang}.png")
                     ? $@"{App.ExecutableDirPath}\Resources\flags\{lang}.png"
-                    : $@"{App.ExecutableDirPath}\Resources\flags\_unknown.png")
+                    : $@"{App.ExecutableDirPath}\Resources\flags\Unknown.png")
                 .ToList();
         }
 

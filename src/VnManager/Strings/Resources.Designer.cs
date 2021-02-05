@@ -151,6 +151,15 @@ namespace VnManager.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Age:.
+        /// </summary>
+        public static string AgeColon {
+            get {
+                return ResourceManager.GetString("AgeColon", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Aliases:.
         /// </summary>
         public static string AliasesColon {
