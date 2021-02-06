@@ -1,5 +1,4 @@
 TODO: 
-- Improve NoSOurce Games (should copy cover to folder, make sure title is saved correctly) 
 - Prevent closing AddVndb game while processing, as it crashes 
 - adjust 0 games based on what view is shown 
 - test launching game with parameters 
