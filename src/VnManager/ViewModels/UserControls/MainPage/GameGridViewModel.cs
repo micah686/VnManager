@@ -140,7 +140,8 @@ namespace VnManager.ViewModels.UserControls.MainPage
                 card.Title = entry.Title;
                 card.LastPlayedString = $"{App.ResMan.GetString("LastPlayed")}: {TimeDateChanger.GetHumanDate(entry.LastPlayed)}";
                 card.TotalTimeString = $"{App.ResMan.GetString("PlayTime")}: {TimeDateChanger.GetHumanTime(entry.PlayTime)}";
-                card.CoverImage = new BindingImage {Image = ImageHelper.CreateEmptyBitmapImage()};
+                var coverName = $"{Path.Combine(App.AssetDirPath, @"sources\noSource\images\cover\")}{entry.Id}.png";
+                card.CoverImage = File.Exists(coverName) ? new BindingImage { Image = ImageHelper.CreateBitmapFromPath(coverName) } : new BindingImage { Image = ImageHelper.CreateEmptyBitmapImage() };
                 card.UserDataId = entry.Id;
 
 

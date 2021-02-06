@@ -1,9 +1,11 @@
 ﻿// Copyright (c) micah686. All rights reserved.
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using Stylet;
 using StyletIoC;
+using VnManager.Models.Db.User;
 
 namespace VnManager.ViewModels.Dialogs.AddGameSources
 {
@@ -47,6 +49,19 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
                     App.Logger.Warning("No valid source type is selected,AddGameMainViewModel");
                     break;
             }
+        }
+
+        public static UserDataGames GetDefaultUserDataEntry()
+        {
+            var entry = new UserDataGames
+            {
+                Id = Guid.NewGuid(),
+                GameId = 0,
+                LastPlayed = DateTime.MinValue,
+                PlayTime = TimeSpan.Zero,
+                Categories = new List<string> { "All" }
+            };
+            return entry;
         }
     }
     public enum AddGameSourceType { NotSet, NoSource, Vndb }

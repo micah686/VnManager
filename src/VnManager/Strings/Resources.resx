@@ -456,6 +456,9 @@
   <data name="None" xml:space="preserve">
     <value>None</value>
   </data>
+  <data name="NoRepairAvail" xml:space="preserve">
+    <value>No repair is available</value>
+  </data>
   <data name="Normal" xml:space="preserve">
     <value>Normal</value>
   </data>

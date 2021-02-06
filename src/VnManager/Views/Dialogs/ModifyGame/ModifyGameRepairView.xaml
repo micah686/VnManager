@@ -25,13 +25,15 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <Label Grid.Row="0" Content="{x:Static res:Resources.RepairVndb}" HorizontalAlignment="Center"></Label>
+                    <Label Grid.Row="0" Content="{x:Static res:Resources.RepairVndb}" HorizontalAlignment="Center"/>
                     <Button Grid.Row="2" Width="150" Height="30" Content="{x:Static res:Resources.RepairUpdate}" Margin="0,30,0,0" Style="{DynamicResource {x:Static adonisUi:Styles.AccentButton}}"
                             Command="{s:Action RepairData}"/>
                 </Grid>
             </TabItem>
             <TabItem Header="{x:Static res:Resources.NoSource}">
-                <Grid></Grid>
+                <Grid>
+                    <Label Grid.Row="0" Content="{x:Static res:Resources.NoRepairAvail}" HorizontalAlignment="Center"/>
+                </Grid>
             </TabItem>
         </TabControl>
     </Grid>

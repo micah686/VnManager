@@ -1,6 +1,8 @@
 ﻿// Copyright (c) micah686. All rights reserved.
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.
 
+using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using AdysTech.CredentialManager;
@@ -123,29 +125,45 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             bool result = await ValidateAsync();
             if (result == true)
             {
-                await SetGameDataEntryAsync();
+                SetGameDataEntryAsync();
                 var parent = (AddGameMainViewModel)Parent;
                 parent.RequestClose(true);
                 _navigationController.NavigateToMainGrid();
             }
         }
 
-        private async Task SetGameDataEntryAsync()
+        private void SetGameDataEntryAsync()
         {
-            var gameEntry = new AddItemDbModel
+            const int maxFileSize = 5242880;//5MB
+            var entry = AddGameMainViewModel.GetDefaultUserDataEntry();
+            entry.SourceType = AddGameSourceType.NoSource;
+            entry.ExePath = ExePath;
+            entry.Arguments = ExeArguments;
+            entry.IconPath = IconPath;
+            entry.CoverPath = CoverPath;
+            entry.Title = Title;
+            var cred = CredentialManager.GetCredentials(App.CredDb);
+            if (cred == null || cred.UserName.Length < 1)
             {
-                SourceType = AddGameSourceType.NoSource,
-                ExeType = ExeType.Normal,
-                IsCollectionEnabled = false,
-                ExeCollection = null,
-                GameId = 0,
-                ExePath = ExePath,
-                IsIconEnabled = IsIconChecked,
-                IconPath = IconPath,
-                IsArgumentsEnabled = IsArgsChecked,
-                ExeArguments = ExeArguments
-            };
-            await MetadataCommon.SaveGameEntryDataAsync(gameEntry);
+                return;
+            }
+            using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
+            {
+                var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString());
+                dbUserData.Insert(entry);
+            }
+
+            var length = new FileInfo(CoverPath).Length;
+            if (length <= maxFileSize)
+            {
+                return;
+            }
+            var png = Image.FromFile(CoverPath);
+            png.Save($"{Path.Combine(App.AssetDirPath, @"sources\noSource\images\cover\")}{entry.Id}.png");
+            png.Dispose();
+
+
+
         }
 
         public void Cancel()

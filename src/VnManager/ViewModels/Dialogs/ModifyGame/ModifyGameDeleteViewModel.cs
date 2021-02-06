@@ -158,9 +158,21 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
             using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
             {
                 var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString());
-                dbUserData.DeleteMany(x => x.Id == SelectedGame.Id);
+                var currentGame = dbUserData.Query().Where(x => x.Id == SelectedGame.Id).FirstOrDefault();
+                if (currentGame == null)
+                {
+                    return;
+                }
+                var coverName = $"{Path.Combine(App.AssetDirPath, @"sources\noSource\images\cover\")}{currentGame.Id}{Path.GetExtension(currentGame.CoverPath)}";
+                if (File.Exists(coverName))
+                {
+                    File.Delete(coverName);
+                }
 
+                var bsonId = (BsonValue) currentGame.Index;
+                dbUserData.Delete(bsonId);
             }
+            _events.PublishOnUIThread(new UpdateEvent { ShouldUpdate = true }, EventChannels.RefreshGameGrid.ToString());
         }
     }
 }

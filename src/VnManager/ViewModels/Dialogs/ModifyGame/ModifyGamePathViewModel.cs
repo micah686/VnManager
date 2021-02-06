@@ -2,6 +2,8 @@
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Drawing;
+using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 using AdysTech.CredentialManager;
@@ -147,10 +149,30 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
                     dbUserData.Update(entry);
 
                 }
+
+                UpdateCover(CoverPath);
+
                 _windowManager.ShowMessageBox(App.ResMan.GetString("GameUpdatedMsg"), App.ResMan.GetString("GameUpdated"));
             }
         }
 
+        private void UpdateCover(string cover)
+        {
+            if (cover == string.Empty || !File.Exists(cover))
+            {
+                return;
+            }
+            const int maxFileSize = 5242880;//5MB
+            var length = new FileInfo(cover).Length;
+            if(length <= maxFileSize)
+            {
+                return;
+            }
+            var png = Image.FromFile(cover);
+            png.Save($"{Path.Combine(App.AssetDirPath, @"sources\noSource\images\cover\")}{SelectedGame.Id}.png");
+            png.Dispose();
+        }
+        
         public async Task RecheckValidationAsync()
         {
             await ValidateAsync();

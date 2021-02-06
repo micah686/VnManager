@@ -1078,6 +1078,15 @@ namespace VnManager.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No repair is available.
+        /// </summary>
+        public static string NoRepairAvail {
+            get {
+                return ResourceManager.GetString("NoRepairAvail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Normal.
         /// </summary>
         public static string Normal {

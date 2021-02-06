@@ -73,6 +73,8 @@ namespace VnManager.Initializers
             fs.Directory.CreateDirectory(Path.Combine(App.AssetDirPath, @"sources\vndb\images\screenshots"));
             fs.Directory.CreateDirectory(Path.Combine(App.AssetDirPath, @"sources\vndb\images\characters"));
 
+            fs.Directory.CreateDirectory(Path.Combine(App.AssetDirPath, @"sources\noSource\images\cover"));
+
             fs.Directory.CreateDirectory(Path.Combine(App.AssetDirPath, @"logs"));
 
             //Config
