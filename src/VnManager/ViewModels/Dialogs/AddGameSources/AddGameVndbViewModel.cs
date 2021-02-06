@@ -22,6 +22,7 @@ using VnManager.Events;
 using VnManager.Helpers;
 using VnManager.Helpers.Vndb;
 using VnManager.MetadataProviders;
+using VnManager.MetadataProviders.Vndb;
 using VnManager.Models;
 using VnManager.Models.Db;
 using VnManager.Models.Db.User;
@@ -320,23 +321,50 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
 
         private async Task SetGameDataEntryAsync()
         {
-            var gameEntry = new AddItemDbModel
+            List<UserDataGames> gamesList = new List<UserDataGames>();
+            if (ExeType == ExeType.Collection)
             {
-                SourceType = AddGameSourceType.Vndb,
-                ExeType = ExeType,
-                IsCollectionEnabled = ExeType == ExeType.Collection,
-                ExeCollection = null,
-                GameId = VnId,
-                ExePath = ExePath,
-                IsIconEnabled = IsIconChecked,
-                IconPath = IconPath,
-                IsArgumentsEnabled = IsArgsChecked,
-                ExeArguments = ExeArguments
-            };
-            await MetadataCommon.SaveGameEntryDataAsync(gameEntry);
+                foreach (var entry in ExeCollection.Select(item => AddGameMainViewModel.GetDefaultUserDataEntry()))
+                {
+                    entry.SourceType = AddGameSourceType.Vndb;
+                    entry.ExeType = ExeType;
+                    entry.GameId = VnId;
+                    entry.ExePath = ExePath;
+                    entry.IconPath = IconPath;
+                    entry.Arguments = ExeArguments;
+                    gamesList.Add(entry);
+                }
+            }
+            else
+            {
+                var entry = AddGameMainViewModel.GetDefaultUserDataEntry();
+                entry.SourceType = AddGameSourceType.Vndb;
+                entry.ExeType = ExeType;
+                entry.GameId = VnId;
+                entry.ExePath = ExePath;
+                entry.IconPath = IconPath;
+                entry.Arguments = ExeArguments;
+                gamesList.Add(entry);
+            }
+
+            var cred = CredentialManager.GetCredentials(App.CredDb);
+            if (cred == null || cred.UserName.Length < 1)
+            {
+                return;
+            }
+            using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
+            {
+                var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString());
+                dbUserData.Insert(gamesList);
+            }
+
+            GetVndbData getData = new GetVndbData();
+            await getData.GetDataAsync(VnId);
         }
         
 
+        
+        
         public void Cancel()
         {
             ClearData();
