@@ -2,6 +2,7 @@
 using Stylet;
 using VnManager.Models.Db.User;
 using VnManager.ViewModels.UserControls;
+using VnManager.ViewModels.UserControls.MainPage.NoSource;
 using VnManager.ViewModels.UserControls.MainPage.Vndb;
 
 namespace VnManager
@@ -10,6 +11,7 @@ namespace VnManager
     {
         void NavigateToMainGrid();
         void NavigateVndbHost(UserDataGames selectedGame);
+        void NavigateToNoSource(UserDataGames selectedGame);
     }
 
     public interface INavigationControllerDelegate
@@ -21,12 +23,14 @@ namespace VnManager
     {
         private readonly Func<MainGridViewModel> _mainGridFactory;
         private readonly Func<VndbContentViewModel> _vndbHostFactory;
+        private readonly Func<NoSourceMainViewModel> _noSourceFactory;
         public INavigationControllerDelegate Delegate { get; set; }
 
-        public NavigationController(Func<MainGridViewModel> mainGrid, Func<VndbContentViewModel> vndbHost)
+        public NavigationController(Func<MainGridViewModel> mainGrid, Func<VndbContentViewModel> vndbHost, Func<NoSourceMainViewModel> noSource)
         {
             this._mainGridFactory = mainGrid ?? throw new ArgumentNullException(nameof(mainGrid));
             this._vndbHostFactory = vndbHost;
+            this._noSourceFactory = noSource;
         }
 
         
@@ -38,6 +42,13 @@ namespace VnManager
         public void NavigateVndbHost(UserDataGames selectedGame)
         {
             var vm = this._vndbHostFactory();
+            vm.SetSelectedGame(selectedGame);
+            this.Delegate?.NavigateTo(vm);
+        }
+
+        public void NavigateToNoSource(UserDataGames selectedGame)
+        {
+            var vm = this._noSourceFactory();
             vm.SetSelectedGame(selectedGame);
             this.Delegate?.NavigateTo(vm);
         }

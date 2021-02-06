@@ -9,6 +9,7 @@ using VnManager.Helpers;
 using VnManager.Interfaces;
 using VnManager.Models.Db;
 using VnManager.Models.Db.User;
+using VnManager.ViewModels.Dialogs.AddGameSources;
 
 
 namespace VnManager.ViewModels.Controls
@@ -70,8 +71,19 @@ namespace VnManager.ViewModels.Controls
         public void MouseClick()
         {
             SetGameEntry();
-            //TODO: Update this so it's global
-            _navigationController.NavigateVndbHost(_selectedGame);
+            switch (_selectedGame.SourceType)
+            {
+                case AddGameSourceType.NoSource:
+                    _navigationController.NavigateToNoSource(_selectedGame);
+                    break;
+                case AddGameSourceType.Vndb:
+                    _navigationController.NavigateVndbHost(_selectedGame);
+                    break;
+                case AddGameSourceType.NotSet:
+                    break;
+                default:
+                    break;
+            }
         }
 
         /// <summary>

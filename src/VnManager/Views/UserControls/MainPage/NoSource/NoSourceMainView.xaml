@@ -1,0 +1,103 @@
+﻿<UserControl x:Class="VnManager.Views.UserControls.MainPage.NoSource.NoSourceMainView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:VnManager.Views.UserControls.MainPage.NoSource"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             xmlns:res="clr-namespace:VnManager.Strings"
+             xmlns:s="https://github.com/canton7/Stylet"
+             xmlns:adExt="clr-namespace:AdonisUI.Extensions;assembly=AdonisUI"
+             xmlns:adonisUi="clr-namespace:AdonisUI;assembly=AdonisUI"
+             xmlns:vm="clr-namespace:VnManager.ViewModels.UserControls.MainPage.NoSource"
+             xmlns:ext="clr-namespace:VnManager.Extensions"
+             xmlns:conv="clr-namespace:VnManager.Converters"
+             mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance vm:NoSourceMainViewModel}"
+             d:DesignHeight="950" d:DesignWidth="800">
+    <UserControl.Resources>
+        <conv:InverseVisibilityConverter x:Key="VisibilityConverter"/>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" MinWidth="300"/>
+            <ColumnDefinition Width="250"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid x:Name="LeftContent" Grid.Column="0" Margin="10,0,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="7,20,0,10">
+                <Image Source="{Binding GameIcon, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" MaxWidth="32" MaxHeight="32"/>
+                <Label Content="{Binding Title, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="7,-2,0,0" FontSize="24" FontWeight="DemiBold"/>
+            </StackPanel>
+
+
+            <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" Margin="5">
+                <Button Width="150" Height="50" Content="{x:Static res:Resources.Play}" Background="ForestGreen" Foreground="Black" FontWeight="DemiBold" adExt:CursorSpotlightExtension.BorderBrush="Lime" adExt:CursorSpotlightExtension.BackgroundBrush="ForestGreen"
+                        adExt:RippleExtension.BackgroundBrush="Lime" adExt:RippleExtension.BorderBrush="LawnGreen" adExt:RippleExtension.ForegroundBrush="Black" 
+                        Command="{s:Action StartVn}" Visibility="{Binding IsStartButtonVisible}"/>
+                <Button Width="150" Height="50" Content="{x:Static res:Resources.Stop}" Background="Goldenrod" Foreground="Black" FontWeight="DemiBold"  adExt:CursorSpotlightExtension.BorderBrush="Orange" adExt:CursorSpotlightExtension.BackgroundBrush="Gold"
+                        adExt:RippleExtension.BackgroundBrush="OrangeRed" adExt:RippleExtension.BorderBrush="Goldenrod" adExt:RippleExtension.ForegroundBrush="Black" 
+                        Command="{s:Action StopVn}" Visibility="{Binding IsStartButtonVisible, Converter={StaticResource VisibilityConverter}}"/>
+
+                <StackPanel Margin="25,0,0,0">
+                    <Label Content="Last Played" FontSize="16" FontWeight="Bold"/>
+                    <Label Content="{Binding LastPlayed}"/>
+                </StackPanel>
+
+                <Grid Margin="25,0,0,0" VerticalAlignment="Center">
+                    <iconPacks:Material Kind="ProgressClock" Height="28" Width="28"/>
+                </Grid>
+                <StackPanel Margin="5,0,0,0">
+                    <Label Content="PlayTime" FontSize="16" FontWeight="Bold"/>
+                    <Label Content="{Binding PlayTime}"/>
+                </StackPanel>
+
+            </StackPanel>
+
+            <StackPanel Grid.Row="2" Grid.Column="0">
+                
+                <StackPanel Orientation="Horizontal" Margin="15,0,15,5" >
+                    <Separator  Width="{Binding ActualWidth, Mode=OneWay, ElementName=LeftContent}"></Separator>
+                </StackPanel>
+                <Label Content="No metadata is associated with this game" HorizontalAlignment="Center"/>
+            </StackPanel>
+
+
+            
+
+
+
+        </Grid>
+
+        <Grid x:Name="RightContent" Grid.Column="1" HorizontalAlignment="Center">
+            <StackPanel>
+                <StackPanel Orientation="Horizontal"  Margin="0,10,0,10">
+                    <Border BorderThickness="3" BorderBrush="Black">
+                        <Image HorizontalAlignment="Left" MaxWidth="200" MaxHeight="300"  RenderOptions.BitmapScalingMode="Fant" Source="{Binding CoverImage, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
+                    </Border>
+                </StackPanel>
+                <Grid>
+
+
+                    <StackPanel>
+                        <DockPanel>
+                            <Label  Content="{x:Static res:Resources.TitleColon}"/>
+                            <TextBlock Margin="10,0,0,0" Text="{Binding Title}"/>
+                        </DockPanel>
+                    </StackPanel>
+
+                </Grid>
+
+                
+            </StackPanel>
+
+        </Grid>
+        <!--End Content -->
+    </Grid>
+</UserControl>
