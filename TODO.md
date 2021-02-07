@@ -2,7 +2,6 @@ TODO:
 - Prevent closing AddVndb game while processing, as it crashes 
 - test launching game with parameters 
 - create a view/VM for NoSourceGames 
-- Update links for Vndb games on that bar 
 - remove ICOntainers 
  - figure out how to deal with statusbar 
 - adjust the percentage of the statusbar when downloading/updating 

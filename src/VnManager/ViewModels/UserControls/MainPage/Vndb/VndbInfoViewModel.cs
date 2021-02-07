@@ -7,15 +7,18 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media.Imaging;
+using System.Xml.Serialization;
 using AdysTech.CredentialManager;
 using LiteDB;
 using Stylet;
 using VnManager.Extensions;
 using VnManager.Helpers;
 using VnManager.Helpers.Vndb;
+using VnManager.Models;
 using VnManager.Models.Db.User;
 using VnManager.Models.Db.Vndb.Main;
 using VnManager.Models.Db;
@@ -48,16 +51,22 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
         public string PlayTime { get; set; }
         public Visibility IsStartButtonVisible { get; set; }
 
+        public Tuple<string, Visibility> VndbLink { get; set; }
+        public Tuple<string, Visibility> WikiLink { get; set; }
+        
+
         #endregion
 
-        
+
 
         protected override void OnViewLoaded()
         {
+            VndbLink = new Tuple<string, Visibility>(string.Empty, Visibility.Visible);
+            WikiLink = new Tuple<string, Visibility>(string.Empty, Visibility.Collapsed);
             LoadMainData();
             LoadUserData();
             LoadRelations();
-
+            LoadLinks();
             
             TagCollection.Clear();
             TagCollection.AddRange(VndbTagTraitHelper.GetTags(VndbContentViewModel.VnId));
@@ -143,8 +152,60 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             }
         }
 
-        
+        private void LoadLinks()
+        {
+            var cred = CredentialManager.GetCredentials(App.CredDb);
+            if (cred == null || cred.UserName.Length < 1)
+            {
+                return;
+            }
+            using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
+            var dbUserData = db.GetCollection<VnInfoLinks>(DbVnInfo.VnInfo_Links.ToString()).Query()
+                .Where(x => x.VnId == VndbContentViewModel.VnId).FirstOrDefault();
+            if (dbUserData != null && !string.IsNullOrEmpty(dbUserData.Wikidata))
+            {
+                var wikiLink = GetWikipediaLink(dbUserData.Wikidata);
+                WikiLink = !string.IsNullOrEmpty(wikiLink) ? new Tuple<string, Visibility>(wikiLink, Visibility.Visible) : new Tuple<string, Visibility>(string.Empty, Visibility.Collapsed);
+            }
+        }
 
+        public void VndbLinkClick()
+        {
+            var link = $"https://vndb.org/v{VndbContentViewModel.VnId}";
+            var ps = new ProcessStartInfo(link)
+            {
+                UseShellExecute = true,
+                Verb = "open"
+            };
+            Process.Start(ps);
+        }
+
+        private string GetWikipediaLink(string wikiDataId)
+        {
+            var xmlResult = new WebClient().DownloadString(@$"https://www.wikidata.org/w/api.php?action=wbgetentities&format=xml&props=sitelinks&ids={wikiDataId}&sitefilter=enwiki");
+            XmlSerializer serializer = new XmlSerializer(typeof(WikiDataApi), new XmlRootAttribute("api"));
+            StringReader stringReader = new StringReader(xmlResult);
+            var xmlData = (WikiDataApi)serializer.Deserialize(stringReader);
+            var wikiTitle = xmlData.WdEntities?.WdEntity?.WdSitelinks?.WdSitelink?.Title;
+            return wikiTitle;
+        }
+        
+        public void WikiLinkClick()
+        {
+            if (WikiLink.Item2 == Visibility.Visible)
+            {
+
+                var link = $@"https://wikipedia.org/wiki/{WikiLink.Item1}";
+                var ps = new ProcessStartInfo(link)
+                {
+                    UseShellExecute = true,
+                    Verb = "open"
+                };
+                Process.Start(ps);
+            }
+        }
+        
+        
         private void LoadLanguages(ref VnInfo vnInfoEntry)
         {
             LanguageCollection.Clear();

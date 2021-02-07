@@ -3,11 +3,18 @@
 
 using Stylet;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
+using System.Net;
 using System.Runtime.InteropServices;
+using System.Text.Json;
 using System.Windows.Media.Imaging;
+using System.Xml.Serialization;
+using Newtonsoft.Json;
 using StyletIoC;
 using VnManager.Helpers;
+using VnManager.Models;
 using VnManager.ViewModels.Dialogs;
 
 
@@ -39,13 +46,35 @@ namespace VnManager.ViewModels.UserControls
         public DebugViewModel(IContainer container, IWindowManager windowManager)
         {
 
-            _testImg = ImageHelper.CreateEmptyBitmapImage();
-            var vm = container.Get<ImportViewModel>();
-            windowManager.ShowDialog(vm);
+            //_testImg = ImageHelper.CreateEmptyBitmapImage();
+            //var vm = container.Get<ImportViewModel>();
+            //windowManager.ShowDialog(vm);
         }
-        
 
-        
+
+        public void NavTest()
+        {
+            try
+            {
+                var result = new WebClient().DownloadString(@"https://www.wikidata.org/w/api.php?action=wbgetentities&format=xml&props=sitelinks&ids=Q857823&sitefilter=enwiki");
+
+                XmlSerializer serializer = new XmlSerializer(typeof(WikiDataApi), new XmlRootAttribute("api"));
+                StringReader stringReader = new StringReader(result);
+                var foo = (WikiDataApi) serializer.Deserialize(stringReader);
+
+
+
+
+
+
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                //throw;
+            }
+        }
 
 
 
@@ -59,4 +88,14 @@ namespace VnManager.ViewModels.UserControls
         [DllImport("kernel32.dll")]
         internal static extern void RaiseException(uint dwExceptionCode, uint dwExceptionFlags, uint nNumberOfArguments, IntPtr lpArguments);
     }
+
+    
+
+    
+
+    
+
+    
+
+    
 }

@@ -96,8 +96,6 @@ namespace VnManager.MetadataProviders.Vndb
                     VnInfoLinks vnLinks = prevVnInfoLinks ?? new VnInfoLinks();
                     vnLinks.VnId = visualNovel.Id;
                     vnLinks.Wikidata = visualNovel.VisualNovelLinks.Wikidata;
-                    vnLinks.Encubed = visualNovel.VisualNovelLinks.Encubed;
-                    vnLinks.Renai = visualNovel.VisualNovelLinks.Renai;
 
                     //screenshot
                     vnScreenshot.AddRange(FormatVnInfoScreens(visualNovel, dbVnInfoScreens));
