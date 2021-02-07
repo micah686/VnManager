@@ -1,6 +1,5 @@
 TODO: 
 - Prevent closing AddVndb game while processing, as it crashes 
-- adjust 0 games based on what view is shown 
 - test launching game with parameters 
 - create a view/VM for NoSourceGames 
 - Update links for Vndb games on that bar 

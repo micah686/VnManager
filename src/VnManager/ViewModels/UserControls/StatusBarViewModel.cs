@@ -13,7 +13,17 @@ namespace VnManager.ViewModels.UserControls
     {
         public string StatusString { get; set; }
         public bool IsWorking { get; set; }
-        public string GameCount { get; set; }
+        private string _gameCount;
+        public string GameCount
+        {
+            get => _gameCount;
+            set
+            {
+                value = $"{value} {App.ResMan.GetString("Games")}";
+                _gameCount = value;
+                SetAndNotify(ref _gameCount, value);
+            }
+        }
         public string InfoText { get; set; }
         public bool IsProgressBarVisible { get; set; }
         public double ProgressBarValue { get; set; }
@@ -34,7 +44,7 @@ namespace VnManager.ViewModels.UserControls
         {
             StatusString = App.ResMan.GetString("Ready");
             IsWorking = false;
-            GameCount = $"0 {App.ResMan.GetString("Games")}";
+            GameCount = "0";
             InfoText = "";
             IsProgressBarVisible = false;
             ProgressBarValue = 0;
@@ -51,7 +61,7 @@ namespace VnManager.ViewModels.UserControls
         {
             App.StatusBar.StatusString = App.ResMan.GetString("Ready");
             App.StatusBar.IsWorking = false;
-            App.StatusBar.GameCount = $"0 {App.ResMan.GetString("Games")}";
+            App.StatusBar.GameCount = "0";
             App.StatusBar.InfoText = "";
             App.StatusBar.IsProgressBarVisible = false;
             App.StatusBar.ProgressBarValue = 0;
@@ -63,5 +73,6 @@ namespace VnManager.ViewModels.UserControls
             App.StatusBar.StatusIconTooltip = null;
         }
         
+
     }
 }

@@ -68,6 +68,7 @@ namespace VnManager.ViewModels.UserControls
             if (message != null && message.ShouldUpdate)
             {
                 ReloadCategories();
+                SelectedIndex = 0;
             }
             
         }
