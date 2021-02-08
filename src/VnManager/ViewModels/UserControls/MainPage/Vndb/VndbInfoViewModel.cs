@@ -251,10 +251,10 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
 
             if (vnEntry?.ExePath != null && Directory.Exists(Path.GetDirectoryName(vnEntry.ExePath)))
             {
-                var filepath = $"{vnEntry.ExePath} {vnEntry.Arguments}";
+                var filepath = vnEntry.ExePath;
                 Directory.SetCurrentDirectory(Path.GetDirectoryName(vnEntry.ExePath));
 
-                var process = new Process {StartInfo = {FileName = filepath}, EnableRaisingEvents = true};
+                var process = new Process {StartInfo = {FileName = filepath, Arguments = vnEntry.Arguments}, EnableRaisingEvents = true};
                 parent.ProcessList.Add(process);
                 process.Exited += VnOrChildProcessExited;
                 process.Start();

@@ -216,6 +216,12 @@
   <data name="Characters" xml:space="preserve">
     <value>Characters</value>
   </data>
+  <data name="ClosingDisabledGameMessage" xml:space="preserve">
+    <value>Game must be closed in order to proceed with this operation</value>
+  </data>
+  <data name="ClosingDisabledGameTitle" xml:space="preserve">
+    <value>Game must be closed</value>
+  </data>
   <data name="ClosingDisabledMessage" xml:space="preserve">
     <value>Closing is currently disabled</value>
   </data>

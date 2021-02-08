@@ -358,6 +358,24 @@ namespace VnManager.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Game must be closed in order to proceed with this operation.
+        /// </summary>
+        public static string ClosingDisabledGameMessage {
+            get {
+                return ResourceManager.GetString("ClosingDisabledGameMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Game must be closed.
+        /// </summary>
+        public static string ClosingDisabledGameTitle {
+            get {
+                return ResourceManager.GetString("ClosingDisabledGameTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Closing is currently disabled.
         /// </summary>
         public static string ClosingDisabledMessage {

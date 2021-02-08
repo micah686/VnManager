@@ -41,7 +41,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
         {
             if (IsGameRunning)
             {
-                _windowManager.ShowMessageBox(App.ResMan.GetString("ClosingDisabledMessage"), App.ResMan.GetString("ClosingDisabledTitle"), MessageBoxButton.OK,
+                _windowManager.ShowMessageBox(App.ResMan.GetString("ClosingDisabledGameMessage"), App.ResMan.GetString("ClosingDisabledGameTitle"), MessageBoxButton.OK,
                     MessageBoxImage.Exclamation);
                 return Task.FromResult(false);
 
