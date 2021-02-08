@@ -18,26 +18,25 @@
 
         </Grid.Resources>
 
-        <StatusBar >
+        <StatusBar Background="{DynamicResource {x:Static adonisUi:Brushes.Layer3HighlightBrush}}">
             <StatusBar.ItemsPanel>
                 <ItemsPanelTemplate>
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition x:Name="ColStatus" Width="Auto" />
+                            <ColumnDefinition x:Name="ColWorking" Width="Auto" />
+                            <ColumnDefinition x:Name="Separator" Width="Auto" />
+                            <ColumnDefinition x:Name="ColGameCount" Width="Auto" />
+                            <ColumnDefinition x:Name="ColEmptySpace" Width="*" />
 
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition x:Name="ColInfoText" Width="Auto" />
+                            <ColumnDefinition x:Name="ColSeparator" Width="Auto" />
+                            <ColumnDefinition x:Name="ColProgressBar" Width="Auto" />
 
 
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition x:Name="ColFileDownload" Width="Auto" />
+                            <ColumnDefinition x:Name="ColDbWrite" Width="Auto" />
+                            
                         </Grid.ColumnDefinitions>
                     </Grid>
                 </ItemsPanelTemplate>
@@ -56,9 +55,8 @@
                 <ProgressBar Value="{Binding ProgressBarValue}" Width="90" Height="16" IsIndeterminate="{Binding IsProgressBarInfinite}"/>
             </StatusBarItem>
 
-            <Separator Grid.Column="8" />
 
-            <StatusBarItem Grid.Column="9" Visibility="{Binding IsFileDownloading, Converter={StaticResource BoolToVisibilityConverter}}" Margin="5,0,5,0">
+            <StatusBarItem Grid.Column="8" Visibility="{Binding IsFileDownloading, Converter={StaticResource BoolToVisibilityConverter}}" Margin="5,0,5,0">
                 <StatusBarItem.Style>
                     <Style TargetType="{x:Type StatusBarItem}">
                         <Style.Resources>
@@ -84,7 +82,7 @@
 
 
 
-            <StatusBarItem Grid.Column="10" Visibility="{Binding IsDatabaseProcessing, Converter={StaticResource BoolToVisibilityConverter}}" Margin="5,0,5,0">
+            <StatusBarItem Grid.Column="9" Visibility="{Binding IsDatabaseProcessing, Converter={StaticResource BoolToVisibilityConverter}}" Margin="5,0,5,0">
                 <StatusBarItem.Style>
                     <Style TargetType="{x:Type StatusBarItem}">
                         <Style.Resources>
@@ -102,9 +100,6 @@
                     </Style>
                 </StatusBarItem.Style>
                 <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.Database}"  />
-            </StatusBarItem>
-            <StatusBarItem Grid.Column="11" Margin="5,0,5,0" ToolTip="{Binding StatusIconTooltip}">
-                <iconPacks:PackIconMaterial x:Name="DbProc" Kind="{Binding StatusIcon}" Foreground="{Binding StatusIconColor}"/>
             </StatusBarItem>
 
         </StatusBar>
