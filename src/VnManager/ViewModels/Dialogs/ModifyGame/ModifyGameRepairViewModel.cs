@@ -62,7 +62,7 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
                 modifyDelete.SetSelectedGame(SelectedGame);
                 modifyDelete.DeleteVndbContent();
                 GetVndbData getData = new GetVndbData();
-                await getData.GetDataAsync(SelectedGame.GameId.Value);
+                await getData.GetDataAsync(SelectedGame.GameId.Value, true);
                 _events.PublishOnUIThread(new UpdateEvent { ShouldUpdate = true }, EventChannels.RefreshGameGrid.ToString());
                 parentHost.UnlockControls();
             }

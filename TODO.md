@@ -3,9 +3,7 @@ TODO:
 - test launching game with parameters 
 - create a view/VM for NoSourceGames 
 - remove ICOntainers 
- - figure out how to deal with statusbar 
-- adjust the percentage of the statusbar when downloading/updating 
-- see about only having vndb Tags/traits downloading once per session? (except a repair??) 
+- figure out how to deal with statusbar 
 - maybe remove the green checkmark on statusbar 
 - add logging statments all over 
 - have prevent leaving the game content view (even to settings?) while a game is playing 

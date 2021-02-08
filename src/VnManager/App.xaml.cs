@@ -132,6 +132,8 @@ namespace VnManager
         /// </summary>
         public static StatusBarViewModel StatusBar { get; set; }
 
+        public static bool DidDownloadTagTraitDump { get; set; }
+
         /// <summary>
         /// Credential name for the database encryption
         /// </summary>

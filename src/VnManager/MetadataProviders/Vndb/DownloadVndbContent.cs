@@ -54,6 +54,7 @@ namespace VnManager.MetadataProviders.Vndb
             finally
             {
                 App.StatusBar.IsFileDownloading = false;
+                App.StatusBar.InfoText = string.Empty;
             }
         }
 
@@ -100,6 +101,7 @@ namespace VnManager.MetadataProviders.Vndb
             finally
             {
                 App.StatusBar.IsFileDownloading = false;
+                App.StatusBar.InfoText = string.Empty;
             }
         }
 
@@ -143,6 +145,7 @@ namespace VnManager.MetadataProviders.Vndb
             finally
             {
                 App.StatusBar.IsFileDownloading = false;
+                App.StatusBar.InfoText = string.Empty;
             }
         }
 
@@ -156,13 +159,14 @@ namespace VnManager.MetadataProviders.Vndb
                 {
                     return;
                 }
+
                 using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
                 {
                     App.StatusBar.IsWorking = true;
                     var dbTags = db.GetCollection<VnTagData>(DbVnDump.VnDump_TagData.ToString());
                     App.StatusBar.InfoText = App.ResMan.GetString("DownTagDump");
-                    List<Tag> tagDump = (await VndbUtils.GetTagsDumpAsync()).ToList();
                     App.StatusBar.IsDatabaseProcessing = true;
+                    List<Tag> tagDump = (await VndbUtils.GetTagsDumpAsync()).ToList();
                     List<VnTagData> tagsToAdd = new List<VnTagData>();
                     var prevEntry = dbTags.Query().ToList();
 
@@ -186,10 +190,6 @@ namespace VnManager.MetadataProviders.Vndb
                     //remove any deleted tags
                     IEnumerable<int> idsToDelete = prevEntry.Except(tagsToAdd).Select(x => x.Index);
                     dbTags.DeleteMany(x => idsToDelete.Contains(x.Index));
-                    App.StatusBar.IsDatabaseProcessing = false;
-                    App.StatusBar.InfoText = "";
-                    App.StatusBar.IsWorking = false;
-                    App.StatusBar.StatusString = App.ResMan.GetString("Ready");
                 }
 
             }
@@ -197,6 +197,11 @@ namespace VnManager.MetadataProviders.Vndb
             {
                 App.Logger.Error(ex, "An error happened while getting/saving the tag dump");
                 StatusBarViewModel.ResetValues();
+            }
+            finally
+            {
+                App.StatusBar.IsDatabaseProcessing = false;
+                App.StatusBar.InfoText = string.Empty;
             }
         }
 
@@ -209,13 +214,14 @@ namespace VnManager.MetadataProviders.Vndb
                 {
                     return;
                 }
+
                 using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
                 {
                     App.StatusBar.IsWorking = true;
                     var dbTraits = db.GetCollection<VnTraitData>(DbVnDump.VnDump_TraitData.ToString());
                     App.StatusBar.InfoText = App.ResMan.GetString("DownTraitDump");
-                    List<Trait> traitDump = (await VndbUtils.GetTraitsDumpAsync()).ToList();
                     App.StatusBar.IsDatabaseProcessing = true;
+                    List<Trait> traitDump = (await VndbUtils.GetTraitsDumpAsync()).ToList();
                     List<VnTraitData> traitsToAdd = new List<VnTraitData>();
                     var prevEntry = dbTraits.Query().ToList();
                     foreach (var item in traitDump)
@@ -237,10 +243,6 @@ namespace VnManager.MetadataProviders.Vndb
 
                     IEnumerable<int> idsToDelete = prevEntry.Except(traitsToAdd).Select(x => x.Index);
                     dbTraits.DeleteMany(x => idsToDelete.Contains(x.Index));
-                    App.StatusBar.IsDatabaseProcessing = false;
-                    App.StatusBar.InfoText = "";
-                    App.StatusBar.IsWorking = false;
-                    App.StatusBar.StatusString = App.ResMan.GetString("Ready");
                 }
             }
             catch (Exception ex)
@@ -248,6 +250,11 @@ namespace VnManager.MetadataProviders.Vndb
                 App.Logger.Error(ex, "An error happened while getting/saving the trait dump");
                 StatusBarViewModel.ResetValues();
                 throw;
+            }
+            finally
+            {
+                App.StatusBar.IsDatabaseProcessing = false;
+                App.StatusBar.InfoText = string.Empty;
             }
         }
     }

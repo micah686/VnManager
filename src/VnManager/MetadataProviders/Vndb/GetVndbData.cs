@@ -21,16 +21,28 @@ namespace VnManager.MetadataProviders.Vndb
         private readonly Stopwatch stopwatch = new Stopwatch();
         private readonly TimeSpan maxTime = TimeSpan.FromMinutes(3);
         private bool _didErrorOccur = false;
-        public async Task GetDataAsync(int gameId)
+        public async Task GetDataAsync(int gameId, bool isRepairing)
         {
             uint vnId = (uint)gameId;
             try
             {
+                const int max = 100;
+                const int countWithTagTrait = 9;
+                const int countWithoutTagTrait = 7;
+                double increment;
+                if (isRepairing || !App.DidDownloadTagTraitDump)
+                {
+                    increment = (double) max / countWithTagTrait;
+                }
+                else
+                {
+                    increment = (double) max / countWithoutTagTrait;
+                }
+                
                 using (var client = new VndbSharp.Vndb(true))
                 {
                     App.StatusBar.IsWorking = true;
                     App.StatusBar.StatusString = App.ResMan.GetString("Working");
-                    const double increment = (double)100 / 7;
                     double current = increment;
 
                     App.StatusBar.IsProgressBarVisible = true;
@@ -66,7 +78,7 @@ namespace VnManager.MetadataProviders.Vndb
                     {
                         //run code to add info to database
                         
-                        await SaveVnDataToDb.SortVnInfoAsync(visualNovel, characters, current);
+                        await SaveVnDataToDb.SortVnInfoAsync(visualNovel, characters, increment, current, isRepairing);
                     }
 
                     

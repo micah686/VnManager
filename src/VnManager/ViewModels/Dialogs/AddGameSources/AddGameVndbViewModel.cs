@@ -359,7 +359,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             }
 
             GetVndbData getData = new GetVndbData();
-            await getData.GetDataAsync(VnId);
+            await getData.GetDataAsync(VnId, false);
         }
         
 

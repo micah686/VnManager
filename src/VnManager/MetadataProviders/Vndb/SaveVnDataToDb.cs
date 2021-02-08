@@ -22,26 +22,62 @@ namespace VnManager.MetadataProviders.Vndb
     public static class SaveVnDataToDb
     {
 
-        public static async Task SortVnInfoAsync(VisualNovel vn,  ICollection<Character> character, double currentProgress)
+        public static async Task SortVnInfoAsync(VisualNovel vn,  ICollection<Character> character, double increment, double currentProgress, bool isRepairing)
         {
             if (vn == null)
             {
+                StatusBarViewModel.ResetValues();
                 return;
             }
+
+            try
+            {
+                var currentValue = currentProgress;
+
+                SaveVnInfo(vn);
+                currentValue += increment;
+                App.StatusBar.ProgressBarValue = currentValue;
+
+                SaveVnCharacters(character, vn.Id);
+                currentValue += increment;
+                App.StatusBar.ProgressBarValue = currentValue;
+
+                await DownloadVndbContent.DownloadCoverImageAsync(vn.Id);
+                currentValue += increment;
+                App.StatusBar.ProgressBarValue = currentValue;
+
+                await DownloadVndbContent.DownloadCharacterImagesAsync(vn.Id);
+                currentValue += increment;
+                App.StatusBar.ProgressBarValue = currentValue;
+                await DownloadVndbContent.DownloadScreenshotsAsync(vn.Id);
+                currentValue += increment;
+
+                App.StatusBar.ProgressBarValue = currentValue;
+                App.StatusBar.IsFileDownloading = false;
+
+                if (isRepairing || !App.DidDownloadTagTraitDump)
+                {
+                    App.StatusBar.IsDatabaseProcessing = true;
+                    await DownloadVndbContent.GetAndSaveTagDumpAsync();
+                    currentValue += increment;
+                    App.StatusBar.ProgressBarValue = currentValue;
+
+                    await DownloadVndbContent.GetAndSaveTraitDumpAsync();
+                    currentValue += increment;
+                    App.StatusBar.ProgressBarValue = currentValue;
+                }
+            }
+            catch (Exception)
+            {
+                StatusBarViewModel.ResetValues();
+            }
+            finally
+            {
+                StatusBarViewModel.ResetValues();
+            }
             
-            SaveVnInfo(vn);
-            SaveVnCharacters(character, vn.Id);
-
-            await DownloadVndbContent.DownloadCoverImageAsync(vn.Id);
-            await DownloadVndbContent.DownloadCharacterImagesAsync(vn.Id);
-            await DownloadVndbContent.DownloadScreenshotsAsync(vn.Id);
-            App.StatusBar.IsFileDownloading = false;
-
-
-            App.StatusBar.IsDatabaseProcessing = true;
-            await DownloadVndbContent.GetAndSaveTagDumpAsync();
-            await DownloadVndbContent.GetAndSaveTraitDumpAsync();
-            StatusBarViewModel.ResetValues();
+            
+            
         }
 
 
