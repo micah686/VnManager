@@ -34,10 +34,11 @@ namespace VnManager.ViewModels.UserControls.MainPage.NoSource
         private bool _isGameRunning = false;
         private readonly Stopwatch _gameStopwatch = new Stopwatch();
         private readonly IWindowManager _windowManager;
-
-        public NoSourceMainViewModel(IWindowManager windowManager)
+        private readonly INavigationController _navigationController;
+        public NoSourceMainViewModel(IWindowManager windowManager, INavigationController navigationController)
         {
             _windowManager = windowManager;
+            _navigationController = navigationController;
         }
 
         protected override void OnViewLoaded()
@@ -60,7 +61,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.NoSource
 
         public void CloseClick()
         {
-            this.RequestClose();
+            _navigationController.NavigateToMainGrid();
         }
 
         internal void SetSelectedGame(UserDataGames game)
@@ -104,6 +105,10 @@ namespace VnManager.ViewModels.UserControls.MainPage.NoSource
 
         public void StopVn()
         {
+            if (!_gameStopwatch.IsRunning)
+            {
+                return;
+            }
             const int maxWaitTime = 30000; //30 seconds
             foreach (var process in _processList)
             {
@@ -111,28 +116,12 @@ namespace VnManager.ViewModels.UserControls.MainPage.NoSource
                 process.WaitForExit(maxWaitTime);
             }
 
-            _processList = _processList.Where(x => x.HasExited == false).ToList();
+            _processList = _processList.Where(x => !x.HasExited).ToList();
             foreach (var process in _processList)
             {
                 process.Kill(true);
             }
-
-            _gameStopwatch.Stop();
-
-            var cred = CredentialManager.GetCredentials(App.CredDb);
-            if (cred == null || cred.UserName.Length < 1)
-            {
-                return;
-            }
-
-            using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
-            {
-                var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString());
-                var gameEntry = dbUserData.Query().Where(x => x.Id == _selectedGame.Id).FirstOrDefault();
-                gameEntry.LastPlayed = DateTime.UtcNow;
-                gameEntry.PlayTime = _gameStopwatch.Elapsed;
-                dbUserData.Update(gameEntry);
-            }
+            
             _isGameRunning = false;
             _gameStopwatch.Reset();
             IsStartButtonVisible = Visibility.Visible;
@@ -161,6 +150,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.NoSource
             else
             {
                 _gameStopwatch.Stop();
+                var elp = _gameStopwatch.Elapsed;
                 var cred = CredentialManager.GetCredentials(App.CredDb);
                 if (cred == null || cred.UserName.Length < 1)
                 {
@@ -172,7 +162,9 @@ namespace VnManager.ViewModels.UserControls.MainPage.NoSource
                     var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString());
                     var gameEntry = dbUserData.Query().Where(x => x.Id == _selectedGame.Id).FirstOrDefault();
                     gameEntry.LastPlayed = DateTime.UtcNow;
-                    gameEntry.PlayTime = _gameStopwatch.Elapsed;
+                    gameEntry.PlayTime = gameEntry.PlayTime + _gameStopwatch.Elapsed;
+                    LastPlayed = $"{App.ResMan.GetString("LastPlayed")}: {TimeDateChanger.GetHumanDate(gameEntry.LastPlayed)}";
+                    PlayTime = $"{App.ResMan.GetString("PlayTime")}: {TimeDateChanger.GetHumanTime(gameEntry.PlayTime)}";
                     dbUserData.Update(gameEntry);
                 }
                 _gameStopwatch.Reset();

@@ -14,6 +14,7 @@ using Sentry;
 using VnManager.Interfaces;
 using VnManager.ViewModels.UserControls;
 using VnManager.ViewModels.Controls;
+using VnManager.ViewModels.UserControls.MainPage.NoSource;
 using VnManager.ViewModels.UserControls.MainPage.Vndb;
 
 
@@ -61,8 +62,9 @@ namespace VnManager
             builder.Bind<IGameCardFactory>().ToAbstractFactory();
 
             builder.Bind<NavigationController>().And<INavigationController>().To<NavigationController>().InSingletonScope();
-            //prevents SO exception
+            //prevents SO exception on navigationController
             builder.Bind<Func<VndbContentViewModel>>().ToFactory<Func<VndbContentViewModel>>(c => () => c.Get<VndbContentViewModel>());
+            builder.Bind<Func<NoSourceMainViewModel>>().ToFactory<Func<NoSourceMainViewModel>>(c => () => c.Get<NoSourceMainViewModel>());
         }
 
         protected override void Configure()
