@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
@@ -15,8 +13,6 @@ using VnManager.Extensions;
 using VnManager.Helpers;
 using VnManager.Models.Db;
 using VnManager.Models.Db.User;
-using VnManager.Models.Db.Vndb.Main;
-using VnManager.ViewModels.UserControls.MainPage.Vndb;
 
 namespace VnManager.ViewModels.UserControls.MainPage.NoSource
 {

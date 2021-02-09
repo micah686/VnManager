@@ -1,6 +1,7 @@
 ﻿// Copyright (c) micah686. All rights reserved.
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,7 +10,6 @@ using LiteDB;
 using Stylet;
 using VnManager.Events;
 using VnManager.Helpers;
-using VnManager.Interfaces;
 using VnManager.Models.Db;
 using VnManager.Models.Db.User;
 using VnManager.Models.Db.Vndb.Main;
@@ -22,8 +22,8 @@ namespace VnManager.ViewModels.UserControls.MainPage
     {
         public BindableCollection<GameCardViewModel> GameCollection { get; } = new BindableCollection<GameCardViewModel>();
 
-        private readonly IGameCardFactory _gameCard;
-        public GameGridViewModel(IEventAggregator events, IGameCardFactory gameCard)
+        private readonly Func<GameCardViewModel> _gameCard;
+        public GameGridViewModel(IEventAggregator events, Func<GameCardViewModel> gameCard)
         {
             _gameCard = gameCard;
 
@@ -96,7 +96,7 @@ namespace VnManager.ViewModels.UserControls.MainPage
 
                 var rating = NsfwHelper.RawRatingIsNsfw(game.ImageRating);
 
-                var card = _gameCard.CreateGameCard();
+                var card = _gameCard();
                 if (rating == true && File.Exists($"{coverPath}.aes"))
                 {
                     var imgBytes = File.ReadAllBytes($"{coverPath}.aes");
@@ -142,7 +142,7 @@ namespace VnManager.ViewModels.UserControls.MainPage
             foreach (var entry in userDataArray)
             {
                 //TODO:Add in cover and ratings
-                var card = _gameCard.CreateGameCard();
+                var card = _gameCard();
                 card.Title = entry.Title;
                 card.LastPlayedString = $"{App.ResMan.GetString("LastPlayed")}: {TimeDateChanger.GetHumanDate(entry.LastPlayed)}";
                 card.TotalTimeString = $"{App.ResMan.GetString("PlayTime")}: {TimeDateChanger.GetHumanTime(entry.PlayTime)}";

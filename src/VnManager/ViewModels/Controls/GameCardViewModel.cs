@@ -6,10 +6,10 @@ using AdysTech.CredentialManager;
 using LiteDB;
 using Stylet;
 using VnManager.Helpers;
-using VnManager.Interfaces;
 using VnManager.Models.Db;
 using VnManager.Models.Db.User;
 using VnManager.ViewModels.Dialogs.AddGameSources;
+using VnManager.ViewModels.Dialogs.ModifyGame;
 
 
 namespace VnManager.ViewModels.Controls
@@ -19,9 +19,9 @@ namespace VnManager.ViewModels.Controls
         private UserDataGames _selectedGame;
 
         private readonly IWindowManager _windowManager;
-        private readonly IModifyGameHostFactory _gameHost;
+        private readonly Func<ModifyGameHostViewModel> _gameHost;
         private readonly INavigationController _navigationController;
-        public GameCardViewModel(IWindowManager windowManager, IModifyGameHostFactory gameHost, INavigationController navigationController)
+        public GameCardViewModel(IWindowManager windowManager, Func<ModifyGameHostViewModel> gameHost, INavigationController navigationController)
         {
             _windowManager = windowManager;
             _navigationController = navigationController;
@@ -93,7 +93,7 @@ namespace VnManager.ViewModels.Controls
         public void SettingsClick()
         {
             SetGameEntry();
-            var modifyHost = _gameHost.CreateModifyGameHost();
+            var modifyHost = _gameHost();
             modifyHost.SetSelectedGame(_selectedGame);
             _windowManager.ShowDialog(modifyHost);
         }

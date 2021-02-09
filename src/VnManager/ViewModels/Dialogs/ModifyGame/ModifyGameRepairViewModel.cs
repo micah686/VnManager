@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using Stylet;
 using VnManager.Events;
-using VnManager.Interfaces;
 using VnManager.MetadataProviders.Vndb;
 using VnManager.Models.Db.User;
 using VnManager.ViewModels.Dialogs.AddGameSources;
@@ -18,8 +17,8 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
         internal UserDataGames SelectedGame;
         private readonly IWindowManager _windowManager;
         private readonly IEventAggregator _events;
-        private readonly IModifyGameDeleteFactory _gameDelete;
-        public ModifyGameRepairViewModel(IWindowManager windowManager, IEventAggregator events, IModifyGameDeleteFactory gameDelete)
+        private readonly Func<ModifyGameDeleteViewModel> _gameDelete;
+        public ModifyGameRepairViewModel(IWindowManager windowManager, IEventAggregator events, Func<ModifyGameDeleteViewModel> gameDelete)
         {
             DisplayName = App.ResMan.GetString("RepairUpdate");
             _windowManager = windowManager;
@@ -58,7 +57,7 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
                 var parentHost = (ModifyGameHostViewModel)Parent;
                 parentHost.LockControls();
 
-                var modifyDelete = _gameDelete.CreateModifyGameDelete();
+                var modifyDelete = _gameDelete();
                 modifyDelete.SetSelectedGame(SelectedGame);
                 modifyDelete.DeleteVndbContent();
                 GetVndbData getData = new GetVndbData();

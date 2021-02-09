@@ -1,12 +1,12 @@
 ﻿// Copyright (c) micah686. All rights reserved.
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Windows;
 using System.Threading.Tasks;
 using AdysTech.CredentialManager;
 using LiteDB;
 using Stylet;
-using VnManager.Interfaces;
 using VnManager.Models.Db;
 using VnManager.Models.Db.User;
 using VnManager.Models.Db.Vndb.Main;
@@ -24,12 +24,12 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
 
         private UserDataGames _selectedGame;
         private readonly IWindowManager _windowManager;
-        private readonly IModifyGamePathFactory _gamePath;
-        private readonly IModifyGameCategoriesFactory _gameCategories;
-        private readonly IModifyGameDeleteFactory _gameDelete;
-        private readonly IModifyGameRepairFactory _gameRepair;
+        private readonly Func<ModifyGamePathViewModel> _gamePath;
+        private readonly Func<ModifyGameCategoriesViewModel> _gameCategories;
+        private readonly Func<ModifyGameDeleteViewModel> _gameDelete;
+        private readonly Func<ModifyGameRepairViewModel> _gameRepair;
         public ModifyGameHostViewModel(IWindowManager windowManager,
-            IModifyGamePathFactory gamePath, IModifyGameCategoriesFactory gameCategories, IModifyGameDeleteFactory gameDelete, IModifyGameRepairFactory gameRepair)
+            Func<ModifyGamePathViewModel> gamePath, Func<ModifyGameCategoriesViewModel> gameCategories, Func<ModifyGameDeleteViewModel> gameDelete, Func<ModifyGameRepairViewModel> gameRepair)
         {
             _windowManager = windowManager;
             
@@ -41,10 +41,10 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
 
         protected override void OnViewLoaded()
         {
-            var gamePath = _gamePath.CreateModifyGamePath();
-            var gameCategories = _gameCategories.CreateModifyGameCategories();
-            var gameDelete = _gameDelete.CreateModifyGameDelete();
-            var gameRepair = _gameRepair.CreateModifyGameRepair();
+            var gamePath = _gamePath();
+            var gameCategories = _gameCategories();
+            var gameDelete = _gameDelete();
+            var gameRepair = _gameRepair();
 
             gamePath.SelectedGame = _selectedGame;
             gameCategories.SelectedGame = _selectedGame;

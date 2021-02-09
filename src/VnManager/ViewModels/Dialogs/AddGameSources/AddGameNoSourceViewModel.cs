@@ -12,8 +12,6 @@ using MvvmDialogs;
 using MvvmDialogs.FrameworkDialogs.OpenFile;
 using Stylet;
 using VnManager.Helpers;
-using VnManager.MetadataProviders;
-using VnManager.Models;
 using VnManager.Models.Db;
 using VnManager.Models.Db.User;
 

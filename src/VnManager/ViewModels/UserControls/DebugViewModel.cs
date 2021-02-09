@@ -3,19 +3,14 @@
 
 using Stylet;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Net;
 using System.Runtime.InteropServices;
-using System.Text.Json;
 using System.Windows.Media.Imaging;
 using System.Xml.Serialization;
-using Newtonsoft.Json;
 using StyletIoC;
-using VnManager.Helpers;
 using VnManager.Models;
-using VnManager.ViewModels.Dialogs;
 
 
 namespace VnManager.ViewModels.UserControls

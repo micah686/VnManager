@@ -21,9 +21,7 @@ using VndbSharp.Models.VisualNovel;
 using VnManager.Events;
 using VnManager.Helpers;
 using VnManager.Helpers.Vndb;
-using VnManager.MetadataProviders;
 using VnManager.MetadataProviders.Vndb;
-using VnManager.Models;
 using VnManager.Models.Db;
 using VnManager.Models.Db.User;
 

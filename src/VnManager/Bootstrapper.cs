@@ -11,7 +11,6 @@ using VnManager.Utilities;
 using VnManager.ViewModels;
 using MvvmDialogs;
 using Sentry;
-using VnManager.Interfaces;
 using VnManager.ViewModels.UserControls;
 using VnManager.ViewModels.Controls;
 using VnManager.ViewModels.UserControls.MainPage.NoSource;
@@ -52,19 +51,12 @@ namespace VnManager
 
             builder.Bind<StatusBarViewModel>().ToSelf().InSingletonScope();
             builder.Bind<IMessageBoxViewModel>().To<CustomMsgBoxViewModel>();
-            
-            //Abstract Factories
-            builder.Bind<IModifyGamePathFactory>().ToAbstractFactory();
-            builder.Bind<IModifyGameCategoriesFactory>().ToAbstractFactory();
-            builder.Bind<IModifyGameDeleteFactory>().ToAbstractFactory();
-            builder.Bind<IModifyGameRepairFactory>().ToAbstractFactory();
-            builder.Bind<IModifyGameHostFactory>().ToAbstractFactory();
-            builder.Bind<IGameCardFactory>().ToAbstractFactory();
 
             builder.Bind<NavigationController>().And<INavigationController>().To<NavigationController>().InSingletonScope();
-            //prevents SO exception on navigationController
+            //NOTE: prevents Stack Overflow exception on navigationController
             builder.Bind<Func<VndbContentViewModel>>().ToFactory<Func<VndbContentViewModel>>(c => () => c.Get<VndbContentViewModel>());
             builder.Bind<Func<NoSourceMainViewModel>>().ToFactory<Func<NoSourceMainViewModel>>(c => () => c.Get<NoSourceMainViewModel>());
+            builder.Bind<Func<GameCardViewModel>>().ToFactory<Func<GameCardViewModel>>(c => () => c.Get<GameCardViewModel>());
         }
 
         protected override void Configure()
