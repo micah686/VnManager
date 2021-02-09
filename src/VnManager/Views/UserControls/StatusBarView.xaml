@@ -23,20 +23,16 @@
                 <ItemsPanelTemplate>
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition x:Name="ColStatus" Width="Auto" />
-                            <ColumnDefinition x:Name="ColWorking" Width="Auto" />
-                            <ColumnDefinition x:Name="Separator" Width="Auto" />
-                            <ColumnDefinition x:Name="ColGameCount" Width="Auto" />
-                            <ColumnDefinition x:Name="ColEmptySpace" Width="*" />
-
-                            <ColumnDefinition x:Name="ColInfoText" Width="Auto" />
-                            <ColumnDefinition x:Name="ColSeparator" Width="Auto" />
-                            <ColumnDefinition x:Name="ColProgressBar" Width="Auto" />
-
-
-                            <ColumnDefinition x:Name="ColFileDownload" Width="Auto" />
-                            <ColumnDefinition x:Name="ColDbWrite" Width="Auto" />
-                            
+                            <ColumnDefinition Width="Auto" /><!--ColStatus -->
+                            <ColumnDefinition Width="Auto" /><!--ColWorking -->
+                            <ColumnDefinition Width="Auto" /><!--ColSep1 -->
+                            <ColumnDefinition Width="Auto" /><!--ColGameCount -->
+                            <ColumnDefinition Width="*" /><!--ColEmptySpace -->
+                            <ColumnDefinition Width="Auto" /><!--ColInfo -->
+                            <ColumnDefinition Width="Auto" /><!--ColSep2 -->
+                            <ColumnDefinition Width="Auto" /><!--ColProgressBar -->
+                            <ColumnDefinition Width="Auto" /><!--ColFileDown -->
+                            <ColumnDefinition Width="Auto" /><!--ColDbWork -->
                         </Grid.ColumnDefinitions>
                     </Grid>
                 </ItemsPanelTemplate>
@@ -55,8 +51,7 @@
                 <ProgressBar Value="{Binding ProgressBarValue}" Width="90" Height="16" IsIndeterminate="{Binding IsProgressBarInfinite}"/>
             </StatusBarItem>
 
-
-            <StatusBarItem Grid.Column="8" Visibility="{Binding IsFileDownloading, Converter={StaticResource BoolToVisibilityConverter}}" Margin="5,0,5,0">
+            <StatusBarItem Grid.Column="9" Visibility="{Binding IsFileDownloading, Converter={StaticResource BoolToVisibilityConverter}}" Margin="5,0,5,0">
                 <StatusBarItem.Style>
                     <Style TargetType="{x:Type StatusBarItem}">
                         <Style.Resources>
@@ -76,13 +71,7 @@
                 <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.ProgressDownload}"  />
             </StatusBarItem>
 
-
-
-
-
-
-
-            <StatusBarItem Grid.Column="9" Visibility="{Binding IsDatabaseProcessing, Converter={StaticResource BoolToVisibilityConverter}}" Margin="5,0,5,0">
+            <StatusBarItem Grid.Column="10" Visibility="{Binding IsDatabaseProcessing, Converter={StaticResource BoolToVisibilityConverter}}" Margin="5,0,5,0">
                 <StatusBarItem.Style>
                     <Style TargetType="{x:Type StatusBarItem}">
                         <Style.Resources>
@@ -101,7 +90,6 @@
                 </StatusBarItem.Style>
                 <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.Database}"  />
             </StatusBarItem>
-
         </StatusBar>
     </Grid>
 </UserControl>
