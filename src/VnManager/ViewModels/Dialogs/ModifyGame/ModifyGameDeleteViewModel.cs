@@ -49,8 +49,6 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
                     case AddGameSourceType.NoSource:
                         DeleteNoSourceData();
                         break;
-                    case AddGameSourceType.NotSet:
-                        break;
                     default:
                         break;
                 }

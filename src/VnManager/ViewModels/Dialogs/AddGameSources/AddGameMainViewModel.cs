@@ -3,6 +3,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Windows;
 using Stylet;
 using StyletIoC;
 using VnManager.Models.Db.User;
@@ -11,39 +13,43 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
 {
     public class AddGameMainViewModel: Conductor<Screen>
     {
-        
-
         public int SelectedIndex { get; set; }
-
-        public IEnumerable<string> SourceCollection { get; set; } = new[] {"Vndb", "No Source"};
-        public string SelectedSource { get; set; }
-        internal AddGameSourceType SelectedSourceEnum = AddGameSourceType.NotSet;
         public bool CanChangeSource { get; set; }
 
-
-        private readonly IContainer _container;
-        public AddGameMainViewModel(IContainer container)
+        private readonly Func<AddGameVndbViewModel> _addVndb;
+        private readonly Func<AddGameNoSourceViewModel> _addNoSource;
+        private readonly IWindowManager _windowManager;
+        public AddGameMainViewModel(IWindowManager windowManager, Func<AddGameVndbViewModel> vndb, Func<AddGameNoSourceViewModel> noSource)
         {
-            _container = container;
+            _windowManager = windowManager;
+            _addVndb = vndb;
+            _addNoSource = noSource;
             CanChangeSource = true;
             SourceChanged();
             SelectedIndex = 0;
         }
 
+        public override Task<bool> CanCloseAsync()
+        {
+            if (!CanChangeSource)
+            {
+                _windowManager.ShowMessageBox(App.ResMan.GetString("ClosingDisabledMessage"), App.ResMan.GetString("ClosingDisabledTitle"), MessageBoxButton.OK,
+                    MessageBoxImage.Exclamation);
+                return Task.FromResult(false);
+
+            }
+            return base.CanCloseAsync();
+        }
+
         public void SourceChanged()
         {
-            switch (SelectedSource)
+            switch ((AddGameSourceType)SelectedIndex)
             {
-                case "Vndb":
-                    SelectedSourceEnum = AddGameSourceType.Vndb;
-                    var vndb = _container.Get<AddGameVndbViewModel>();
-                    ActivateItem(vndb);
-                    
+                case AddGameSourceType.Vndb:
+                    ActivateItem(_addVndb());
                     break;
-                case "No Source":
-                    SelectedSourceEnum = AddGameSourceType.NoSource;
-                    var noSource = _container.Get<AddGameNoSourceViewModel>();
-                    ActivateItem(noSource);
+                case AddGameSourceType.NoSource:
+                    ActivateItem(_addNoSource());
                     break;
                 default:
                     App.Logger.Warning("No valid source type is selected,AddGameMainViewModel");
@@ -64,6 +70,6 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             return entry;
         }
     }
-    public enum AddGameSourceType { NotSet, NoSource, Vndb }
+    public enum AddGameSourceType { NoSource, Vndb }
     public enum ExeType { Normal, Launcher, Collection }
 }

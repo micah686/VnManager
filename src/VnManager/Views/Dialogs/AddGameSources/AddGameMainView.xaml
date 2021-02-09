@@ -9,6 +9,7 @@
              xmlns:res="clr-namespace:VnManager.Strings"
              xmlns:conv="clr-namespace:VnManager.Converters"
              xmlns:vm="clr-namespace:VnManager.ViewModels.Dialogs.AddGameSources"
+             xmlns:ext="clr-namespace:VnManager.Extensions"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance vm:AddGameMainViewModel}"
              Title="{x:Static res:Resources.AddGame}" Height="410" Width="500" ResizeMode="NoResize" ShowInTaskbar="False">
@@ -28,7 +29,7 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <Label Grid.Column="0" Content="{x:Static res:Resources.Source}" MinWidth="50"/>
-            <ComboBox Grid.Column="1" MinWidth="70" ItemsSource="{Binding SourceCollection, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectionChanged="{s:Action SourceChanged}" SelectedItem="{Binding SelectedSource}" 
+            <ComboBox Grid.Column="1" MinWidth="70" ItemsSource="{Binding Source={ext:EnumBindingSource {x:Type vm:AddGameSourceType}}}" SelectionChanged="{s:Action SourceChanged}"  
                       SelectedIndex="{Binding SelectedIndex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding CanChangeSource, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
         </Grid>
 

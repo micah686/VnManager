@@ -22,7 +22,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
         private readonly OpenFileDialogSettings _defaultOpenFileDialogSettings;
         public string Title { get; set; }
         public string CoverPath { get; private set; }
-        
+        public bool IsLockDown { get; set; }
         public string ExePath { get; private set; }
         public string IconPath { get; private set; }
         public string ExeArguments { get; set; }
@@ -54,8 +54,6 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
                 }
             }
         }
-
-
 
 
         private readonly IDialogService _dialogService;
@@ -120,14 +118,18 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
 
         public async Task SubmitAsync()
         {
+            IsLockDown = true;
+            var parent = (AddGameMainViewModel)Parent;
+            parent.CanChangeSource = false;
             bool result = await ValidateAsync();
             if (result == true)
             {
                 SetGameDataEntryAsync();
-                var parent = (AddGameMainViewModel)Parent;
                 parent.RequestClose(true);
                 _navigationController.NavigateToMainGrid();
             }
+            parent.CanChangeSource = true;
+            IsLockDown = false;
         }
 
         private void SetGameDataEntryAsync()

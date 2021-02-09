@@ -79,8 +79,6 @@ namespace VnManager.ViewModels.Controls
                 case AddGameSourceType.Vndb:
                     _navigationController.NavigateVndbHost(_selectedGame);
                     break;
-                case AddGameSourceType.NotSet:
-                    break;
                 default:
                     break;
             }

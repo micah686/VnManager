@@ -17,7 +17,10 @@
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance vm:AddGameNoSourceViewModel}"
              Height="380" Width="500">
-    <Grid >
+    <UserControl.Resources>
+        <conv:InverseBoolConverter x:Key="InverseBoolConverter"/>
+    </UserControl.Resources>
+    <Grid IsEnabled="{Binding IsLockDown, Converter={StaticResource InverseBoolConverter}}">
         <Grid.Resources>
             <conv:BooleanAndConverter x:Key="BooleanAndConverter"/>
             <conv:EnumToBooleanConverter x:Key="EnumToBooleanConverter"/>

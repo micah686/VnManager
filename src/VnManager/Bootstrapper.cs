@@ -13,6 +13,7 @@ using MvvmDialogs;
 using Sentry;
 using VnManager.ViewModels.UserControls;
 using VnManager.ViewModels.Controls;
+using VnManager.ViewModels.Dialogs.AddGameSources;
 using VnManager.ViewModels.UserControls.MainPage.NoSource;
 using VnManager.ViewModels.UserControls.MainPage.Vndb;
 
@@ -57,6 +58,8 @@ namespace VnManager
             builder.Bind<Func<VndbContentViewModel>>().ToFactory<Func<VndbContentViewModel>>(c => () => c.Get<VndbContentViewModel>());
             builder.Bind<Func<NoSourceMainViewModel>>().ToFactory<Func<NoSourceMainViewModel>>(c => () => c.Get<NoSourceMainViewModel>());
             builder.Bind<Func<GameCardViewModel>>().ToFactory<Func<GameCardViewModel>>(c => () => c.Get<GameCardViewModel>());
+            builder.Bind<Func<AddGameMainViewModel>>().ToFactory<Func<AddGameMainViewModel>>(c => () => c.Get<AddGameMainViewModel>());
+
         }
 
         protected override void Configure()
