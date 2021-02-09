@@ -15,6 +15,7 @@ using VnManager.Converters;
 using VnManager.Models.Db;
 using VnManager.Models.Db.Vndb.Character;
 using VnManager.Models.Db.Vndb.Main;
+using VnManager.ViewModels;
 using VnManager.ViewModels.UserControls;
 
 namespace VnManager.MetadataProviders.Vndb
@@ -36,35 +37,35 @@ namespace VnManager.MetadataProviders.Vndb
 
                 SaveVnInfo(vn);
                 currentValue += increment;
-                App.StatusBar.ProgressBarValue = currentValue;
+                RootViewModel.StatusBarPage.ProgressBarValue = currentValue;
 
                 SaveVnCharacters(character, vn.Id);
                 currentValue += increment;
-                App.StatusBar.ProgressBarValue = currentValue;
+                RootViewModel.StatusBarPage.ProgressBarValue = currentValue;
 
                 await DownloadVndbContent.DownloadCoverImageAsync(vn.Id);
                 currentValue += increment;
-                App.StatusBar.ProgressBarValue = currentValue;
+                RootViewModel.StatusBarPage.ProgressBarValue = currentValue;
 
                 await DownloadVndbContent.DownloadCharacterImagesAsync(vn.Id);
                 currentValue += increment;
-                App.StatusBar.ProgressBarValue = currentValue;
+                RootViewModel.StatusBarPage.ProgressBarValue = currentValue;
                 await DownloadVndbContent.DownloadScreenshotsAsync(vn.Id);
                 currentValue += increment;
 
-                App.StatusBar.ProgressBarValue = currentValue;
-                App.StatusBar.IsFileDownloading = false;
+                RootViewModel.StatusBarPage.ProgressBarValue = currentValue;
+                RootViewModel.StatusBarPage.IsFileDownloading = false;
 
                 if (isRepairing || !App.DidDownloadTagTraitDump)
                 {
-                    App.StatusBar.IsDatabaseProcessing = true;
+                    RootViewModel.StatusBarPage.IsDatabaseProcessing = true;
                     await DownloadVndbContent.GetAndSaveTagDumpAsync();
                     currentValue += increment;
-                    App.StatusBar.ProgressBarValue = currentValue;
+                    RootViewModel.StatusBarPage.ProgressBarValue = currentValue;
 
                     await DownloadVndbContent.GetAndSaveTraitDumpAsync();
                     currentValue += increment;
-                    App.StatusBar.ProgressBarValue = currentValue;
+                    RootViewModel.StatusBarPage.ProgressBarValue = currentValue;
                 }
             }
             catch (Exception)

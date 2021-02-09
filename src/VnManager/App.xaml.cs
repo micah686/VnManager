@@ -130,7 +130,7 @@ namespace VnManager
         /// <summary>
         /// Static instance of the Statusbar, so any method can write values to it
         /// </summary>
-        public static StatusBarViewModel StatusBar { get; set; }
+        //public static StatusBarViewModel StatusBar { get; set; }
 
         public static bool DidDownloadTagTraitDump { get; set; }
 

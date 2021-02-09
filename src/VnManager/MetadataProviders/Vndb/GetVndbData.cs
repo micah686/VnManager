@@ -12,6 +12,7 @@ using VndbSharp.Models.Character;
 using VndbSharp.Models.Errors;
 using VndbSharp.Models.VisualNovel;
 using VnManager.Helpers.Vndb;
+using VnManager.ViewModels;
 using VnManager.ViewModels.UserControls;
 
 namespace VnManager.MetadataProviders.Vndb
@@ -41,27 +42,27 @@ namespace VnManager.MetadataProviders.Vndb
                 
                 using (var client = new VndbSharp.Vndb(true))
                 {
-                    App.StatusBar.IsWorking = true;
-                    App.StatusBar.StatusString = App.ResMan.GetString("Working");
+                    RootViewModel.StatusBarPage.IsWorking = true;
+                    RootViewModel.StatusBarPage.StatusString = App.ResMan.GetString("Working");
                     double current = increment;
 
-                    App.StatusBar.IsProgressBarVisible = true;
-                    App.StatusBar.ProgressBarValue = 0;
-                    App.StatusBar.IsProgressBarInfinite = false;
+                    RootViewModel.StatusBarPage.IsProgressBarVisible = true;
+                    RootViewModel.StatusBarPage.ProgressBarValue = 0;
+                    RootViewModel.StatusBarPage.IsProgressBarInfinite = false;
 
                     RequestOptions ro = new RequestOptions { Count = 25 };
                     stopwatch.Start();
-                    App.StatusBar.InfoText = App.ResMan.GetString("DownVnInfo");
+                    RootViewModel.StatusBarPage.InfoText = App.ResMan.GetString("DownVnInfo");
                     var visualNovel = await GetVisualNovelAsync(client, vnId);
                     current += increment;
-                    App.StatusBar.ProgressBarValue = current;
+                    RootViewModel.StatusBarPage.ProgressBarValue = current;
 
 
 
-                    App.StatusBar.InfoText = App.ResMan.GetString("DownCharacterInfo");
+                    RootViewModel.StatusBarPage.InfoText = App.ResMan.GetString("DownCharacterInfo");
                     var characters = await GetCharactersAsync(client, vnId, ro);
                     current += increment;
-                    App.StatusBar.ProgressBarValue = current;
+                    RootViewModel.StatusBarPage.ProgressBarValue = current;
 
                     stopwatch.Stop();
                     stopwatch.Reset();
@@ -71,8 +72,8 @@ namespace VnManager.MetadataProviders.Vndb
                     {
                         App.Logger.Error("Failed to get all of the Vndb Info from the API, one of the items was null");
                         //stop the progressbar here, and force it to show an error icon
-                        App.StatusBar.IsWorking = false;
-                        App.StatusBar.InfoText = "";
+                        RootViewModel.StatusBarPage.IsWorking = false;
+                        RootViewModel.StatusBarPage.InfoText = "";
                     }
                     else
                     {

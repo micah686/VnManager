@@ -16,12 +16,14 @@ namespace VnManager.Initializers
 {
     public class Startup
     {
-        private readonly IContainer _container;
+        private readonly Func<ImportViewModel> _importVm;
+        private readonly Func<SetEnterPasswordViewModel> _enterPassVm;
         private readonly IWindowManager _windowManager;
-        public Startup(IContainer container, IWindowManager windowManager)
+        public Startup(IWindowManager windowManager, Func<ImportViewModel> import, Func<SetEnterPasswordViewModel> enterPass)
         {
-            _container = container;
             _windowManager = windowManager;
+            _importVm = import;
+            _enterPassVm = enterPass;
             StartupCheck();
         }
 
@@ -30,7 +32,7 @@ namespace VnManager.Initializers
             if (!IsNormalStart())
             {
                 App.UserSettings = UserSettingsHelper.ReadUserSettings();
-                var auth = _container.Get<SetEnterPasswordViewModel>();
+                var auth = _enterPassVm();
                 var isAuth = _windowManager.ShowDialog(auth);
 
                 if (isAuth == true)
@@ -61,7 +63,7 @@ namespace VnManager.Initializers
                 App.ResMan.GetString("ImportDataTitle"), MessageBoxButton.YesNo);
             if (result == MessageBoxResult.Yes)
             {
-                var vm = _container.Get<ImportViewModel>();
+                var vm = _importVm();
                 _windowManager.ShowDialog(vm);
             }
 

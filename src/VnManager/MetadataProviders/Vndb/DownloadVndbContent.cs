@@ -17,6 +17,7 @@ using VnManager.Models.Db;
 using VnManager.Models.Db.Vndb.Character;
 using VnManager.Models.Db.Vndb.Main;
 using VnManager.Models.Db.Vndb.TagTrait;
+using VnManager.ViewModels;
 using VnManager.ViewModels.UserControls;
 
 namespace VnManager.MetadataProviders.Vndb
@@ -27,7 +28,7 @@ namespace VnManager.MetadataProviders.Vndb
         {
             try
             {
-                App.StatusBar.InfoText = App.ResMan.GetString("DownCoverImage");
+                RootViewModel.StatusBarPage.InfoText = App.ResMan.GetString("DownCoverImage");
                 var cred = CredentialManager.GetCredentials(App.CredDb);
                 if (cred == null || cred.UserName.Length < 1)
                 {
@@ -42,7 +43,7 @@ namespace VnManager.MetadataProviders.Vndb
                 if (entry.ImageLink != null)
                 {
                     var uri = new Uri(entry.ImageLink);
-                    App.StatusBar.IsFileDownloading = true;
+                    RootViewModel.StatusBarPage.IsFileDownloading = true;
                     string path = $@"{App.AssetDirPath}\sources\vndb\images\cover\{entry.VnId}.jpg";
                     await ImageHelper.DownloadImageAsync(uri, NsfwHelper.RawRatingIsNsfw(entry.ImageRating), path);
                 }
@@ -53,8 +54,8 @@ namespace VnManager.MetadataProviders.Vndb
             }
             finally
             {
-                App.StatusBar.IsFileDownloading = false;
-                App.StatusBar.InfoText = string.Empty;
+                RootViewModel.StatusBarPage.IsFileDownloading = false;
+                RootViewModel.StatusBarPage.InfoText = string.Empty;
             }
         }
 
@@ -62,7 +63,7 @@ namespace VnManager.MetadataProviders.Vndb
         {
             try
             {
-                App.StatusBar.InfoText = App.ResMan.GetString("DownCharImages");
+                RootViewModel.StatusBarPage.InfoText = App.ResMan.GetString("DownCharImages");
                 var cred = CredentialManager.GetCredentials(App.CredDb);
                 if (cred == null || cred.UserName.Length < 1)
                 {
@@ -89,7 +90,7 @@ namespace VnManager.MetadataProviders.Vndb
                     string file = $@"{directory}\{Path.GetFileName(character)}";
                     if (!File.Exists(file) && !string.IsNullOrEmpty(character))
                     {
-                        App.StatusBar.IsFileDownloading = true;
+                        RootViewModel.StatusBarPage.IsFileDownloading = true;
                         await client.DownloadFileTaskAsync(new Uri(character), file);
                     }
                 }
@@ -100,8 +101,8 @@ namespace VnManager.MetadataProviders.Vndb
             }
             finally
             {
-                App.StatusBar.IsFileDownloading = false;
-                App.StatusBar.InfoText = string.Empty;
+                RootViewModel.StatusBarPage.IsFileDownloading = false;
+                RootViewModel.StatusBarPage.InfoText = string.Empty;
             }
         }
 
@@ -109,7 +110,7 @@ namespace VnManager.MetadataProviders.Vndb
         {
             try
             {
-                App.StatusBar.InfoText = App.ResMan.GetString("DownScreenshots");
+                RootViewModel.StatusBarPage.InfoText = App.ResMan.GetString("DownScreenshots");
                 var cred = CredentialManager.GetCredentials(App.CredDb);
                 if (cred == null || cred.UserName.Length < 1)
                 {
@@ -133,7 +134,7 @@ namespace VnManager.MetadataProviders.Vndb
                     List<BindingImage> scrList = entries.Select(screen => 
                         new BindingImage { IsNsfw = NsfwHelper.RawRatingIsNsfw(screen.ImageRating), ImageLink = screen.ImageLink, Rating = screen.ImageRating}).ToList();
 
-                    App.StatusBar.IsFileDownloading = true;
+                    RootViewModel.StatusBarPage.IsFileDownloading = true;
                     await ImageHelper.DownloadImagesWithThumbnailsAsync(scrList, directory);
                 }
             }
@@ -144,8 +145,8 @@ namespace VnManager.MetadataProviders.Vndb
             }
             finally
             {
-                App.StatusBar.IsFileDownloading = false;
-                App.StatusBar.InfoText = string.Empty;
+                RootViewModel.StatusBarPage.IsFileDownloading = false;
+                RootViewModel.StatusBarPage.InfoText = string.Empty;
             }
         }
 
@@ -162,10 +163,10 @@ namespace VnManager.MetadataProviders.Vndb
 
                 using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
                 {
-                    App.StatusBar.IsWorking = true;
+                    RootViewModel.StatusBarPage.IsWorking = true;
                     var dbTags = db.GetCollection<VnTagData>(DbVnDump.VnDump_TagData.ToString());
-                    App.StatusBar.InfoText = App.ResMan.GetString("DownTagDump");
-                    App.StatusBar.IsDatabaseProcessing = true;
+                    RootViewModel.StatusBarPage.InfoText = App.ResMan.GetString("DownTagDump");
+                    RootViewModel.StatusBarPage.IsDatabaseProcessing = true;
                     List<Tag> tagDump = (await VndbUtils.GetTagsDumpAsync()).ToList();
                     List<VnTagData> tagsToAdd = new List<VnTagData>();
                     var prevEntry = dbTags.Query().ToList();
@@ -200,8 +201,8 @@ namespace VnManager.MetadataProviders.Vndb
             }
             finally
             {
-                App.StatusBar.IsDatabaseProcessing = false;
-                App.StatusBar.InfoText = string.Empty;
+                RootViewModel.StatusBarPage.IsDatabaseProcessing = false;
+                RootViewModel.StatusBarPage.InfoText = string.Empty;
             }
         }
 
@@ -217,10 +218,10 @@ namespace VnManager.MetadataProviders.Vndb
 
                 using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
                 {
-                    App.StatusBar.IsWorking = true;
+                    RootViewModel.StatusBarPage.IsWorking = true;
                     var dbTraits = db.GetCollection<VnTraitData>(DbVnDump.VnDump_TraitData.ToString());
-                    App.StatusBar.InfoText = App.ResMan.GetString("DownTraitDump");
-                    App.StatusBar.IsDatabaseProcessing = true;
+                    RootViewModel.StatusBarPage.InfoText = App.ResMan.GetString("DownTraitDump");
+                    RootViewModel.StatusBarPage.IsDatabaseProcessing = true;
                     List<Trait> traitDump = (await VndbUtils.GetTraitsDumpAsync()).ToList();
                     List<VnTraitData> traitsToAdd = new List<VnTraitData>();
                     var prevEntry = dbTraits.Query().ToList();
@@ -253,8 +254,8 @@ namespace VnManager.MetadataProviders.Vndb
             }
             finally
             {
-                App.StatusBar.IsDatabaseProcessing = false;
-                App.StatusBar.InfoText = string.Empty;
+                RootViewModel.StatusBarPage.IsDatabaseProcessing = false;
+                RootViewModel.StatusBarPage.InfoText = string.Empty;
             }
         }
     }

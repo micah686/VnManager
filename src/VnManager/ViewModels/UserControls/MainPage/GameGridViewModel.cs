@@ -34,7 +34,7 @@ namespace VnManager.ViewModels.UserControls.MainPage
 
         protected override void OnClose()
         {
-            App.StatusBar.GameCount = "0";
+            RootViewModel.StatusBarPage.GameCount = "0";
         }
 
         private void SetupEvents(IEventAggregator eventAggregator)
@@ -79,7 +79,7 @@ namespace VnManager.ViewModels.UserControls.MainPage
                 GetVndbData(vndbData, dbVnInfo.ToArray());
             }
 
-            App.StatusBar.GameCount = GameCollection.Count.ToString();
+            RootViewModel.StatusBarPage.GameCount = GameCollection.Count.ToString();
         }
 
 

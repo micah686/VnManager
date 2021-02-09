@@ -7,19 +7,22 @@ using StyletIoC;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Media;
+using VnManager.ViewModels.Dialogs;
 using VnManager.ViewModels.UserControls;
+using VnManager.ViewModels.Windows;
 
 namespace VnManager.ViewModels
 {
     
     public class RootViewModel : Conductor<IScreen>, INavigationControllerDelegate
     {
-        public StatusBarViewModel StatusBarPage { get; set; }
+        public static StatusBarViewModel StatusBarPage { get; set; }
 
-        private readonly IContainer _container;
         private readonly IWindowManager _windowManager;
         private readonly Func<MainGridViewModel> _mainGridVmFactory;
         private readonly Func<SettingsViewModel> _settingsVmFactory;
+        private readonly Func<ImportViewModel> _importVm;
+        private readonly Func<SetEnterPasswordViewModel> _enterPassVm;
 
         private int _windowButtonPressedCounter = 0;
 
@@ -88,25 +91,31 @@ namespace VnManager.ViewModels
 
 #if DEBUG
         private readonly Func<DebugViewModel> _debugVmFactory;
-        public RootViewModel(IContainer container, IWindowManager windowManager, Func<MainGridViewModel> mainGridFactory, Func<SettingsViewModel> settingsFactory,
-            Func<DebugViewModel> debugFactory)
+        public RootViewModel(IWindowManager windowManager, Func<MainGridViewModel> mainGridFactory, Func<SettingsViewModel> settingsFactory, 
+            Func<ImportViewModel> import, Func<SetEnterPasswordViewModel> enterPass, Func<DebugViewModel> debugFactory)
         {
-            _container = container;
             _windowManager = windowManager;
             _mainGridVmFactory = mainGridFactory;
             _settingsVmFactory = settingsFactory;
-            _debugVmFactory = debugFactory;
-            App.StatusBar = _container.Get<StatusBarViewModel>();
 
+            _importVm = import;
+            _enterPassVm = enterPass;
+            _debugVmFactory = debugFactory;
+            
+            StatusBarPage = new StatusBarViewModel();
         }
 #else
-        public RootViewModel(IContainer container, IWindowManager windowManager, Func<MainGridViewModel> mainGridFactory, Func<SettingsViewModel> settingsFactory)
+        public RootViewModel(IWindowManager windowManager, Func<MainGridViewModel> mainGridFactory, Func<SettingsViewModel> settingsFactory,
+            Func<ImportViewModel> import, Func<SetEnterPasswordViewModel> enterPass)
         {
-            _container = container;
             _windowManager = windowManager;
             _mainGridVmFactory = mainGridFactory;
             _settingsVmFactory = settingsFactory;
-            App.StatusBar = _container.Get<StatusBarViewModel>();
+
+            _importVm = import;
+            _enterPassVm = enterPass;
+
+            StatusBarPage = new StatusBarViewModel();
         }
 #endif
 
@@ -114,10 +123,9 @@ namespace VnManager.ViewModels
 
         protected override void OnViewLoaded()
         {
-            _ = new Initializers.Startup(_container, _windowManager);
+            _ = new Initializers.Startup(_windowManager, _importVm, _enterPassVm);
             var mainGridVm = _mainGridVmFactory();
             ActivateItem(mainGridVm);
-            StatusBarPage = _container.Get<StatusBarViewModel>();
             var result = Application.Current.TryFindResource(AdonisUI.Colors.ForegroundColor);
             SettingsIconColor = result == null ? System.Windows.Media.Brushes.LightSteelBlue : new SolidColorBrush((System.Windows.Media.Color)result);
         }

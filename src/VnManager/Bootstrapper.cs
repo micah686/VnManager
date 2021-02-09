@@ -34,8 +34,6 @@ namespace VnManager
 
         /// <summary>
         /// Bind your own types. Concrete types are automatically self-bound.
-        /// builder.Bind<IMyInterface>().To<MyType>();
-        /// builder.Bind<IViewModelFactory>().ToAbstractFactory();
         /// </summary>
         /// <param name="builder"></param>
         protected override void ConfigureIoC(IStyletIoCBuilder builder)
@@ -50,10 +48,10 @@ namespace VnManager
             builder.Bind(typeof(IValidator<>)).ToAllImplementations();
             builder.Bind(typeof(IDialogService)).To(typeof(DialogService));
 
-            builder.Bind<StatusBarViewModel>().ToSelf().InSingletonScope();
             builder.Bind<IMessageBoxViewModel>().To<CustomMsgBoxViewModel>();
 
             builder.Bind<NavigationController>().And<INavigationController>().To<NavigationController>().InSingletonScope();
+            
             //NOTE: prevents Stack Overflow exception on navigationController
             builder.Bind<Func<VndbContentViewModel>>().ToFactory<Func<VndbContentViewModel>>(c => () => c.Get<VndbContentViewModel>());
             builder.Bind<Func<NoSourceMainViewModel>>().ToFactory<Func<NoSourceMainViewModel>>(c => () => c.Get<NoSourceMainViewModel>());

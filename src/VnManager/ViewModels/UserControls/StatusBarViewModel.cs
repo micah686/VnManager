@@ -59,18 +59,18 @@ namespace VnManager.ViewModels.UserControls
 
         public static void ResetValues()
         {
-            App.StatusBar.StatusString = App.ResMan.GetString("Ready");
-            App.StatusBar.IsWorking = false;
-            App.StatusBar.GameCount = "0";
-            App.StatusBar.InfoText = "";
-            App.StatusBar.IsProgressBarVisible = false;
-            App.StatusBar.ProgressBarValue = 0;
-            App.StatusBar.IsProgressBarInfinite = false;
-            App.StatusBar.IsFileDownloading = false;
-            App.StatusBar.IsDatabaseProcessing = false;
-            App.StatusBar.StatusIcon = PackIconMaterialKind.CheckCircleOutline;
-            App.StatusBar.StatusIconColor = Brushes.LimeGreen;
-            App.StatusBar.StatusIconTooltip = null;
+            RootViewModel.StatusBarPage.StatusString = App.ResMan.GetString("Ready");
+            RootViewModel.StatusBarPage.IsWorking = false;
+            RootViewModel.StatusBarPage.GameCount = "0";
+            RootViewModel.StatusBarPage.InfoText = "";
+            RootViewModel.StatusBarPage.IsProgressBarVisible = false;
+            RootViewModel.StatusBarPage.ProgressBarValue = 0;
+            RootViewModel.StatusBarPage.IsProgressBarInfinite = false;
+            RootViewModel.StatusBarPage.IsFileDownloading = false;
+            RootViewModel.StatusBarPage.IsDatabaseProcessing = false;
+            RootViewModel.StatusBarPage.StatusIcon = PackIconMaterialKind.CheckCircleOutline;
+            RootViewModel.StatusBarPage.StatusIconColor = Brushes.LimeGreen;
+            RootViewModel.StatusBarPage.StatusIconTooltip = null;
         }
         
 
