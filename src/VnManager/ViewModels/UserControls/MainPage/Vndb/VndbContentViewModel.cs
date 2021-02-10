@@ -15,7 +15,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
 
         internal static int VnId { get; private set; }
 
-        internal static UserDataGames SelectedGame { get; private set; }
+        internal static UserDataGames SelectedGame { get; set; }
         
 
         internal bool IsGameRunning { get; set; }

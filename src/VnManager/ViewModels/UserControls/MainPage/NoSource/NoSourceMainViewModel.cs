@@ -146,7 +146,6 @@ namespace VnManager.ViewModels.UserControls.MainPage.NoSource
             else
             {
                 _gameStopwatch.Stop();
-                var elp = _gameStopwatch.Elapsed;
                 var cred = CredentialManager.GetCredentials(App.CredDb);
                 if (cred == null || cred.UserName.Length < 1)
                 {
@@ -162,6 +161,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.NoSource
                     LastPlayed = $"{App.ResMan.GetString("LastPlayed")}: {TimeDateChanger.GetHumanDate(gameEntry.LastPlayed)}";
                     PlayTime = $"{App.ResMan.GetString("PlayTime")}: {TimeDateChanger.GetHumanTime(gameEntry.PlayTime)}";
                     dbUserData.Update(gameEntry);
+                    _selectedGame = gameEntry;
                 }
                 _gameStopwatch.Reset();
                 _isGameRunning = false;

@@ -231,38 +231,25 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
         /// </summary>
         public void StartVn()
         {
-            var parent = (VndbContentViewModel) Parent;
+            var parent = (VndbContentViewModel)Parent;
             if (parent.IsGameRunning)
             {
                 return;
             }
-            var cred = CredentialManager.GetCredentials(App.CredDb);
-            if (cred == null || cred.UserName.Length < 1)
-            {
-                return;
-            }
 
-            UserDataGames vnEntry;
-            using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
+            if (VndbContentViewModel.SelectedGame?.ExePath != null && File.Exists(VndbContentViewModel.SelectedGame.ExePath))
             {
-                vnEntry = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString()).Query().Where(x => x.Id == VndbContentViewModel.SelectedGame.Id).FirstOrDefault();
-                
-            }
-
-            if (vnEntry?.ExePath != null && Directory.Exists(Path.GetDirectoryName(vnEntry.ExePath)))
-            {
-                var filepath = vnEntry.ExePath;
-                Directory.SetCurrentDirectory(Path.GetDirectoryName(vnEntry.ExePath));
-
-                var process = new Process {StartInfo = {FileName = filepath, Arguments = vnEntry.Arguments}, EnableRaisingEvents = true};
+                var filePath = VndbContentViewModel.SelectedGame.ExePath;
+                Directory.SetCurrentDirectory(Path.GetDirectoryName(filePath));
+                var process = new Process { StartInfo = { FileName = filePath, Arguments = VndbContentViewModel.SelectedGame.Arguments }, EnableRaisingEvents = true };
                 parent.ProcessList.Add(process);
-                process.Exited += VnOrChildProcessExited;
+                process.Exited += MainOrChildProcessExited;
+
                 process.Start();
                 parent.IsGameRunning = true;
                 parent.GameStopwatch.Start();
                 IsStartButtonVisible = Visibility.Collapsed;
                 parent.ProcessList.AddRange(process.GetChildProcesses());
-
             }
 
         }
@@ -273,32 +260,53 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
         /// </summary>
         public void StopVn()
         {
-            //TODO:Add stop methods here
+            var parent = (VndbContentViewModel)Parent;
+            if (!parent.GameStopwatch.IsRunning)
+            {
+                return;
+            }
+            const int maxWaitTime = 30000; //30 seconds
+            foreach (var process in parent.ProcessList)
+            {
+                process.CloseMainWindow();
+                process.WaitForExit(maxWaitTime);
+            }
+
+            parent.ProcessList = parent.ProcessList.Where(x => !x.HasExited).ToList();
+            foreach (var process in parent.ProcessList)
+            {
+                process.Kill(true);
+            }
+
+            parent.IsGameRunning = false;
+            parent.GameStopwatch.Reset();
+            IsStartButtonVisible = Visibility.Visible;
+            parent.ProcessList.Clear();
         }
 
-        private void VnOrChildProcessExited(object sender, EventArgs e)
+        private void MainOrChildProcessExited(object sender, EventArgs e)
         {
-            var process = (Process) sender;
+            var parent = (VndbContentViewModel) Parent;
+            var process = (Process)sender;
             if (process == null)
             {
                 return;
             }
-            var children = process.GetChildProcesses().ToArray();//Get children of exiting process, then attach Exit event handler to each of the children
-            if (children.Length >0)
+            var children = process.GetChildProcesses().ToArray();
+            if (children.Length > 0)
             {
                 foreach (var childProcess in children)
                 {
                     childProcess.EnableRaisingEvents = true;
-                    childProcess.Exited += VnOrChildProcessExited;
+                    childProcess.Exited += MainOrChildProcessExited;
                 }
-                return;
+                parent.ProcessList.AddRange(children);
+
+                parent.ProcessList = parent.ProcessList.Where(x => x.HasExited == false).ToList();
             }
             else
             {
-                var parent = (VndbContentViewModel)Parent;
                 parent.GameStopwatch.Stop();
-                
-
                 var cred = CredentialManager.GetCredentials(App.CredDb);
                 if (cred == null || cred.UserName.Length < 1)
                 {
@@ -310,15 +318,16 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
                     var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString());
                     var gameEntry = dbUserData.Query().Where(x => x.Id == VndbContentViewModel.SelectedGame.Id).FirstOrDefault();
                     gameEntry.LastPlayed = DateTime.UtcNow;
-                    gameEntry.PlayTime = parent.GameStopwatch.Elapsed;
+                    gameEntry.PlayTime = gameEntry.PlayTime + parent.GameStopwatch.Elapsed;
+                    LastPlayed = $"{App.ResMan.GetString("LastPlayed")}: {TimeDateChanger.GetHumanDate(gameEntry.LastPlayed)}";
+                    PlayTime = $"{App.ResMan.GetString("PlayTime")}: {TimeDateChanger.GetHumanTime(gameEntry.PlayTime)}";
                     dbUserData.Update(gameEntry);
+                    VndbContentViewModel.SelectedGame = gameEntry;
                 }
                 parent.GameStopwatch.Reset();
                 parent.IsGameRunning = false;
                 IsStartButtonVisible = Visibility.Visible;
-
             }
-
         }
         
         
