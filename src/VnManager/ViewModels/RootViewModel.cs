@@ -3,7 +3,6 @@
 
 using System;
 using Stylet;
-using StyletIoC;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Media;
@@ -21,6 +20,7 @@ namespace VnManager.ViewModels
         private readonly IWindowManager _windowManager;
         private readonly Func<MainGridViewModel> _mainGridVmFactory;
         private readonly Func<SettingsViewModel> _settingsVmFactory;
+        private readonly Func<AboutViewModel> _aboutVmFactory;
         private readonly Func<ImportViewModel> _importVm;
         private readonly Func<SetEnterPasswordViewModel> _enterPassVm;
 
@@ -35,25 +35,24 @@ namespace VnManager.ViewModels
             get => _isSettingsPressed;
             set
             {
-                if (_windowButtonPressedCounter != 0 && value == true)
+                if (_windowButtonPressedCounter == 0 || _windowButtonPressedCounter > 0 && !value)
                 {
-                    SetAndNotify(ref _isSettingsPressed, false);
-                    return;
+                    SetAndNotify(ref _isSettingsPressed, value);
+                    if (_isSettingsPressed)
+                    {
+                        _windowButtonPressedCounter += 1;
+                        SettingsIconColor = Brushes.LimeGreen;
+                        ActivateSettingsClick();
+                    }
+                    else
+                    {
+                        _windowButtonPressedCounter -= 1;
+                        var result = Application.Current.TryFindResource(AdonisUI.Colors.ForegroundColor);
+                        SettingsIconColor = result == null ? Brushes.LightSteelBlue : new SolidColorBrush((Color)result);
+                        ActivateMainClick();
+                    }
                 }
-                SetAndNotify(ref _isSettingsPressed, value);
-                if (_isSettingsPressed == true)
-                {
-                    _windowButtonPressedCounter += 1;
-                    SettingsIconColor = System.Windows.Media.Brushes.LimeGreen;
-                    ActivateSettingsClick();
-                }
-                else
-                {
-                    _windowButtonPressedCounter -= 1;
-                    var result = Application.Current.TryFindResource(AdonisUI.Colors.ForegroundColor);
-                    SettingsIconColor = result == null ? System.Windows.Media.Brushes.LightSteelBlue : new SolidColorBrush((System.Windows.Media.Color)result);
-                    ActivateMainClick();
-                }
+
             }
         }
 
@@ -67,36 +66,61 @@ namespace VnManager.ViewModels
             get => _debugPressed;
             set
             {
-                if (_windowButtonPressedCounter != 0 && value == true)
+                if (_windowButtonPressedCounter == 0 || _windowButtonPressedCounter > 0 && !value)
                 {
-                    SetAndNotify(ref _debugPressed, false);
-                    return;
-                }
-                SetAndNotify(ref _debugPressed, value);
-                if (_debugPressed == true)
-                {
-                    _windowButtonPressedCounter += 1;
-                    DebugClick();
-                }
-                else
-                {
-                    _windowButtonPressedCounter -= 1;
-                    ActivateMainClick();
+                    SetAndNotify(ref _debugPressed, value);
+                    if (_debugPressed)
+                    {
+                        _windowButtonPressedCounter += 1;
+                        DebugClick();
+                    }
+                    else
+                    {
+                        _windowButtonPressedCounter -= 1;
+                        ActivateMainClick();
+                    }
                 }
             }
         }
 
         #endregion
 
+        #region AboutPressed
+        private bool _aboutPressed;
+        public bool AboutPressed
+        {
+            get => _aboutPressed;
+            set
+            {
+                if (_windowButtonPressedCounter == 0 || _windowButtonPressedCounter > 0 && !value)
+                {
+                    SetAndNotify(ref _aboutPressed, value);
+                    if (_aboutPressed)
+                    {
+                        _windowButtonPressedCounter += 1;
+                        ActivateAboutClick();
+                    }
+                    else
+                    {
+                        _windowButtonPressedCounter -= 1;
+                        ActivateMainClick();
+                    }
+                }
+            }
+        }
+        #endregion
+
+
 
 #if DEBUG
         private readonly Func<DebugViewModel> _debugVmFactory;
         public RootViewModel(IWindowManager windowManager, Func<MainGridViewModel> mainGridFactory, Func<SettingsViewModel> settingsFactory, 
-            Func<ImportViewModel> import, Func<SetEnterPasswordViewModel> enterPass, Func<DebugViewModel> debugFactory)
+            Func<ImportViewModel> import, Func<SetEnterPasswordViewModel> enterPass, Func<AboutViewModel> about, Func<DebugViewModel> debugFactory)
         {
             _windowManager = windowManager;
             _mainGridVmFactory = mainGridFactory;
             _settingsVmFactory = settingsFactory;
+            _aboutVmFactory = about;
 
             _importVm = import;
             _enterPassVm = enterPass;
@@ -106,11 +130,12 @@ namespace VnManager.ViewModels
         }
 #else
         public RootViewModel(IWindowManager windowManager, Func<MainGridViewModel> mainGridFactory, Func<SettingsViewModel> settingsFactory,
-            Func<ImportViewModel> import, Func<SetEnterPasswordViewModel> enterPass)
+            Func<ImportViewModel> import, Func<SetEnterPasswordViewModel> enterPass, Func<AboutViewModel> about)
         {
             _windowManager = windowManager;
             _mainGridVmFactory = mainGridFactory;
             _settingsVmFactory = settingsFactory;
+            _aboutVmFactory = about;
 
             _importVm = import;
             _enterPassVm = enterPass;
@@ -143,12 +168,17 @@ namespace VnManager.ViewModels
             return formatted;
         }
 
-
+        
         public void ActivateSettingsClick()
         {
             ActivateItem(_settingsVmFactory());
         }
 
+        public void ActivateAboutClick()
+        {
+            ActivateItem(_aboutVmFactory());
+        }
+        
         public void ActivateMainClick()
         {
             ActivateItem(_mainGridVmFactory());
