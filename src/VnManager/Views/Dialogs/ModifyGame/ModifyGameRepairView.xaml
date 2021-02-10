@@ -17,8 +17,8 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Label Grid.Row="0" Content="{x:Static res:Resources.RepairGameData}" HorizontalAlignment="Center"/>
-        <TabControl Grid.Row="1">
-            <TabItem Header="{x:Static res:Resources.Vndb}">
+        <TabControl Grid.Row="1" SelectedIndex="{Binding SelectedIndex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+            <TabItem Header="{x:Static res:Resources.Vndb}" IsEnabled="{Binding VndbEnabled, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -30,7 +30,7 @@
                             Command="{s:Action RepairData}"/>
                 </Grid>
             </TabItem>
-            <TabItem Header="{x:Static res:Resources.NoSource}">
+            <TabItem Header="{x:Static res:Resources.NoSource}" IsEnabled="{Binding NoSourceEnabled, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
                 <Grid>
                     <Label Grid.Row="0" Content="{x:Static res:Resources.NoRepairAvail}" HorizontalAlignment="Center"/>
                 </Grid>

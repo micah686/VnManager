@@ -14,6 +14,10 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
 {
     public class ModifyGameRepairViewModel: Screen
     {
+        public bool VndbEnabled { get; set; }
+        public bool NoSourceEnabled { get; set; }
+        public int SelectedIndex { get; set; } = -1;
+        
         internal UserDataGames SelectedGame;
         private readonly IWindowManager _windowManager;
         private readonly IEventAggregator _events;
@@ -24,9 +28,32 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
             _windowManager = windowManager;
             _gameDelete = gameDelete;
             _events = events;
-
+            
         }
 
+        protected override void OnViewLoaded()
+        {
+            SetVisibility();
+        }
+
+        private void SetVisibility()
+        {
+            var source = SelectedGame.SourceType;
+            if (source == AddGameSourceType.Vndb)
+            {
+                VndbEnabled = true;
+                NoSourceEnabled = false;
+                SelectedIndex = 0;
+            }
+
+            if (source == AddGameSourceType.NoSource)
+            {
+                VndbEnabled = false;
+                NoSourceEnabled = true;
+                SelectedIndex = 1;
+            }
+        }
+        
         /// <summary>
         /// Command to repair data, referenced by the View
         /// <see cref="RepairData"/>
