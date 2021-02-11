@@ -1879,6 +1879,15 @@ namespace VnManager.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Wikipedia.
+        /// </summary>
+        public static string Wikipedia {
+            get {
+                return ResourceManager.GetString("Wikipedia", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Working.
         /// </summary>
         public static string Working {

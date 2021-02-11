@@ -723,6 +723,9 @@
   <data name="WeightColon" xml:space="preserve">
     <value>Weight:</value>
   </data>
+  <data name="Wikipedia" xml:space="preserve">
+    <value>Wikipedia</value>
+  </data>
   <data name="Working" xml:space="preserve">
     <value>Working</value>
   </data>
