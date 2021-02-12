@@ -322,7 +322,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             List<UserDataGames> gamesList = new List<UserDataGames>();
             if (ExeType == ExeType.Collection)
             {
-                foreach (var entry in ExeCollection.Select(item => AddGameMainViewModel.GetDefaultUserDataEntry()))
+                foreach (var entry in ExeCollection.Select(item => AddGameMainViewModel.GetDefaultUserDataEntry))
                 {
                     entry.SourceType = AddGameSourceType.Vndb;
                     entry.ExeType = ExeType;
@@ -335,7 +335,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             }
             else
             {
-                var entry = AddGameMainViewModel.GetDefaultUserDataEntry();
+                var entry = AddGameMainViewModel.GetDefaultUserDataEntry;
                 entry.SourceType = AddGameSourceType.Vndb;
                 entry.ExeType = ExeType;
                 entry.GameId = VnId;

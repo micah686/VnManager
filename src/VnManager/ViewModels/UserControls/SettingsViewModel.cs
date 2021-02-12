@@ -152,8 +152,6 @@ namespace VnManager.ViewModels.UserControls
             }
         }
 
-
-        //TODO: move this to a better area, like maybe an information page?
         public void ExportUserData()
         {
             string savePath;

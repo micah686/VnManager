@@ -67,11 +67,6 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
             {
                 await RepairVndbData();
             }
-
-            if (source == AddGameSourceType.NoSource)
-            {
-                RepairNoSourceData();
-            }
         }
 
         public async Task RepairVndbData()
@@ -92,11 +87,6 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
                 _events.PublishOnUIThread(new UpdateEvent { ShouldUpdate = true }, EventChannels.RefreshGameGrid.ToString());
                 parentHost.UnlockControls();
             }
-        }
-
-        public void RepairNoSourceData()
-        {
-            throw new NotImplementedException("Need to implement for NoSource");
         }
     }
 }

@@ -135,7 +135,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
         private void SetGameDataEntryAsync()
         {
             const int maxFileSize = 5242880;//5MB
-            var entry = AddGameMainViewModel.GetDefaultUserDataEntry();
+            var entry = AddGameMainViewModel.GetDefaultUserDataEntry;
             entry.SourceType = AddGameSourceType.NoSource;
             entry.ExePath = ExePath;
             entry.Arguments = ExeArguments;

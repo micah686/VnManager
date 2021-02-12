@@ -56,9 +56,8 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             }
         }
 
-        public static UserDataGames GetDefaultUserDataEntry()
-        {
-            var entry = new UserDataGames
+        public static UserDataGames GetDefaultUserDataEntry =>
+            new UserDataGames
             {
                 Id = Guid.NewGuid(),
                 GameId = 0,
@@ -66,8 +65,6 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
                 PlayTime = TimeSpan.Zero,
                 Categories = new List<string> { "All" }
             };
-            return entry;
-        }
     }
     public enum AddGameSourceType { NoSource, Vndb }
     public enum ExeType { Normal, Launcher, Collection }
