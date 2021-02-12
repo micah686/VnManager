@@ -6,7 +6,6 @@ using System.Resources;
 using System.Windows;
 using VnManager.Models.Settings;
 using VnManager.Utilities;
-using VnManager.ViewModels.UserControls;
 
 namespace VnManager
 {

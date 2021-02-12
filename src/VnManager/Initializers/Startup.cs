@@ -2,7 +2,6 @@
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.
 
 using Stylet;
-using StyletIoC;
 using System;
 using System.IO;
 using System.Windows;

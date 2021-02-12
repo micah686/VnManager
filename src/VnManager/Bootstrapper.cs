@@ -11,7 +11,6 @@ using VnManager.Utilities;
 using VnManager.ViewModels;
 using MvvmDialogs;
 using Sentry;
-using VnManager.ViewModels.UserControls;
 using VnManager.ViewModels.Controls;
 using VnManager.ViewModels.Dialogs.AddGameSources;
 using VnManager.ViewModels.UserControls.MainPage.NoSource;
