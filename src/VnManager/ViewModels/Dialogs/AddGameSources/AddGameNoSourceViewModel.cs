@@ -9,7 +9,6 @@ using AdysTech.CredentialManager;
 using FluentValidation;
 using LiteDB;
 using MvvmDialogs;
-using MvvmDialogs.FrameworkDialogs.OpenFile;
 using Stylet;
 using VnManager.Helpers;
 using VnManager.Models.Db;
@@ -19,7 +18,6 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
 {
     public class AddGameNoSourceViewModel: Screen
     {
-        private readonly OpenFileDialogSettings _defaultOpenFileDialogSettings;
         public string Title { get; set; }
         public string CoverPath { get; private set; }
         public bool IsLockDown { get; set; }
@@ -66,14 +64,6 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             _navigationController = navigationController;
             _windowManager = windowManager;
 
-            _defaultOpenFileDialogSettings = new OpenFileDialogSettings
-            {
-                FileName = "",
-                DereferenceLinks = true,
-                CheckPathExists = true,
-                CheckFileExists = true,
-                ValidateNames = true
-            };
         }
 
         public void BrowseCover()

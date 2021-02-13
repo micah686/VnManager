@@ -9,7 +9,6 @@ using AdysTech.CredentialManager;
 using FluentValidation;
 using LiteDB;
 using MvvmDialogs;
-using MvvmDialogs.FrameworkDialogs.OpenFile;
 using Stylet;
 using VnManager.Helpers;
 using VnManager.Models.Db;
@@ -30,7 +29,6 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
         public Visibility NoSourceVisibility { get; set; } = Visibility.Collapsed;
 
         internal UserDataGames SelectedGame;
-        private readonly OpenFileDialogSettings _defaultOpenFileDialogSettings;
         private readonly IWindowManager _windowManager;
         private readonly IDialogService _dialogService;
 
@@ -39,14 +37,6 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
             DisplayName = App.ResMan.GetString("UpdatePaths");
             _windowManager = windowManager;
             _dialogService = dialogService;
-            _defaultOpenFileDialogSettings = new OpenFileDialogSettings
-            {
-                FileName = "",
-                DereferenceLinks = true,
-                CheckPathExists = true,
-                CheckFileExists = true,
-                ValidateNames = true
-            };
         }
 
         protected override void OnViewLoaded()

@@ -12,7 +12,6 @@ using AdysTech.CredentialManager;
 using FluentValidation;
 using LiteDB;
 using MvvmDialogs;
-using MvvmDialogs.FrameworkDialogs.OpenFile;
 using Stylet;
 using VndbSharp;
 using VndbSharp.Models;
@@ -30,7 +29,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
     public class AddGameVndbViewModel: Screen
     {
         #region Properties
-        private readonly OpenFileDialogSettings _defaultOpenFileDialogSettings;
+
         internal readonly List<MultiExeGamePaths> ExeCollection = new List<MultiExeGamePaths>();
         internal VndbResponse<VisualNovel> VnNameList;
         public BindableCollection<string> SuggestedNamesCollection { get; private set; }
@@ -141,15 +140,6 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             IsNotExeCollection = true;
             CanChangeVnName = true;
             SuggestedNamesCollection = new BindableCollection<string>();
-
-            _defaultOpenFileDialogSettings = new OpenFileDialogSettings
-            {
-                FileName = "",
-                DereferenceLinks = true,
-                CheckPathExists = true,
-                CheckFileExists = true,
-                ValidateNames = true
-            };
         }
 
 

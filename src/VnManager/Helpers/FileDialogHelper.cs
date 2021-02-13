@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using MvvmDialogs;
+﻿using MvvmDialogs;
 using MvvmDialogs.FrameworkDialogs.OpenFile;
 using System.ComponentModel;
 using Stylet;
