@@ -194,9 +194,7 @@ namespace VnManager.Helpers
             }
             var valType = value.GetType();
 
-#pragma warning disable S3900 // destinationType will never be null
             if (destinationType.IsAssignableFrom(this.valueType) && typeof(Stringable<>).IsAssignableFrom(valType))
-#pragma warning restore S3900 // destinationType will never be null
             {
                 var valueProperty = valType.GetProperty("Value", BindingFlags.Public | BindingFlags.Instance);
                 return valueProperty?.GetValue(value);

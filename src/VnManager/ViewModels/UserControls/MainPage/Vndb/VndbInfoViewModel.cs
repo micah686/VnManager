@@ -128,45 +128,14 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
         
         private void LoadRelations()
         {
-            if (VndbContentViewModel.VnId == 0)
-            {
-                return;
-            }
-            var cred = CredentialManager.GetCredentials(App.CredDb);
-            if (cred == null || cred.UserName.Length < 1)
-            {
-                return;
-            }
-            using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
-            {
-                var vnRelations = db.GetCollection<VnInfoRelations>(DbVnInfo.VnInfo_Relations.ToString()).Query()
-                    .Where(x => x.VnId == VndbContentViewModel.VnId && x.Official.ToUpper(CultureInfo.InvariantCulture) == "YES").ToList();
-                foreach (var relation in vnRelations)
-                {
-                    var entry = new VnRelationsBinding { RelTitle = relation.Title, RelRelation = relation.Relation };
-                    VnRelations.Add(entry);
-                }
-
-                RelationsDataVisibility = VnRelations.Count < 1 ? Visibility.Collapsed : Visibility.Visible;
-
-            }
+            var relations = VndbDataHelper.LoadRelations();
+            VnRelations.AddRange(relations);
+            RelationsDataVisibility = VnRelations.Count < 1 ? Visibility.Collapsed : Visibility.Visible;
         }
 
         private void LoadLinks()
         {
-            var cred = CredentialManager.GetCredentials(App.CredDb);
-            if (cred == null || cred.UserName.Length < 1)
-            {
-                return;
-            }
-            using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
-            var dbUserData = db.GetCollection<VnInfoLinks>(DbVnInfo.VnInfo_Links.ToString()).Query()
-                .Where(x => x.VnId == VndbContentViewModel.VnId).FirstOrDefault();
-            if (dbUserData != null && !string.IsNullOrEmpty(dbUserData.Wikidata))
-            {
-                var wikiLink = GetWikipediaLink(dbUserData.Wikidata);
-                WikiLink = !string.IsNullOrEmpty(wikiLink) ? new Tuple<string, Visibility>(wikiLink, Visibility.Visible) : new Tuple<string, Visibility>(string.Empty, Visibility.Collapsed);
-            }
+            WikiLink = VndbDataHelper.LoadLinks();
         }
 
         public void VndbLinkClick()
@@ -180,16 +149,6 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             Process.Start(ps);
         }
 
-        private string GetWikipediaLink(string wikiDataId)
-        {
-            var xmlResult = new WebClient().DownloadString(@$"https://www.wikidata.org/w/api.php?action=wbgetentities&format=xml&props=sitelinks&ids={wikiDataId}&sitefilter=enwiki");
-            XmlSerializer serializer = new XmlSerializer(typeof(WikiDataApi), new XmlRootAttribute("api"));
-            StringReader stringReader = new StringReader(xmlResult);
-            var xmlData = (WikiDataApi)serializer.Deserialize(stringReader);
-            var wikiTitle = xmlData.WdEntities?.WdEntity?.WdSitelinks?.WdSitelink?.Title;
-            return wikiTitle;
-        }
-        
         public void WikiLinkClick()
         {
             if (WikiLink.Item2 == Visibility.Visible)
@@ -208,22 +167,10 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
         
         private void LoadLanguages(ref VnInfo vnInfoEntry)
         {
+            var langCollection = VndbDataHelper.LoadLanguages(ref vnInfoEntry);
             LanguageCollection.Clear();
-            foreach (var language in GetLanguages(vnInfoEntry.Languages))
-            {
-                LanguageCollection.Add(new BitmapImage(new Uri(language)));
-            }
+            LanguageCollection.AddRange(langCollection);
         }
-
-        private static IEnumerable<string> GetLanguages(string csv)
-        {
-            string[] list = csv.Split(',');
-            return list.Select(lang => File.Exists($@"{App.ExecutableDirPath}\Resources\flags\{lang}.png")
-                    ? $@"{App.ExecutableDirPath}\Resources\flags\{lang}.png"
-                    : $@"{App.ExecutableDirPath}\Resources\flags\Unknown.png")
-                .ToList();
-        }
-
 
         /// <summary>
         /// Referenced by the Play button on the GUI
