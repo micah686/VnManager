@@ -1,5 +1,7 @@
-﻿// Copyright (c) micah686. All Rights Reserved.
-// Licensed under the MIT License.  See the LICENSE file in the project root for license information.
+﻿// Copyright (c) micah686. All rights reserved.
+// Licensed under the MIT License. See LICENSE file in the project root for full license information.
+
+//Used from https://gist.github.com/deerwood-mccord-jr/f029ee03716148666d743dece9568f37
 
 using System;
 using System.Collections.Generic;

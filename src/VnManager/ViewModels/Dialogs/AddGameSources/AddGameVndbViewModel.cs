@@ -20,7 +20,6 @@ using VndbSharp.Models.VisualNovel;
 using VnManager.Events;
 using VnManager.Helpers;
 using VnManager.Helpers.Vndb;
-using VnManager.MetadataProviders.Vndb;
 using VnManager.Models.Db;
 using VnManager.Models.Db.User;
 
@@ -291,45 +290,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
 
         private async Task SetGameDataEntryAsync()
         {
-            List<UserDataGames> gamesList = new List<UserDataGames>();
-            if (ExeType == ExeType.Collection)
-            {
-                foreach (var entry in ExeCollection.Select(item => AddGameMainViewModel.GetDefaultUserDataEntry))
-                {
-                    entry.SourceType = AddGameSourceType.Vndb;
-                    entry.ExeType = ExeType;
-                    entry.GameId = VnId;
-                    entry.ExePath = ExePath;
-                    entry.IconPath = IconPath;
-                    entry.Arguments = ExeArguments;
-                    gamesList.Add(entry);
-                }
-            }
-            else
-            {
-                var entry = AddGameMainViewModel.GetDefaultUserDataEntry;
-                entry.SourceType = AddGameSourceType.Vndb;
-                entry.ExeType = ExeType;
-                entry.GameId = VnId;
-                entry.ExePath = ExePath;
-                entry.IconPath = IconPath;
-                entry.Arguments = ExeArguments;
-                gamesList.Add(entry);
-            }
-
-            var cred = CredentialManager.GetCredentials(App.CredDb);
-            if (cred == null || cred.UserName.Length < 1)
-            {
-                return;
-            }
-            using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
-            {
-                var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString());
-                dbUserData.Insert(gamesList);
-            }
-
-            GetVndbData getData = new GetVndbData();
-            await getData.GetDataAsync(VnId, false);
+            await VndbAddGameHelper.SetGameDataEntryAsync(this);
         }
         
 
