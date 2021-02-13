@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using LiteDB;
 using VnManager.Extensions;
 using VnManager.Helpers;
@@ -30,7 +31,7 @@ namespace VnManager.Models.Db.User
         public string ExePath { get; set; }
         public string IconPath { get; set; }
         public string Arguments { get; set; }
-        public List<string> Categories { get; set; }
+        public Collection<string> Categories { get; internal set; }
 
         /// <summary>
         /// CoverPath should ONLY be used for NoSource games

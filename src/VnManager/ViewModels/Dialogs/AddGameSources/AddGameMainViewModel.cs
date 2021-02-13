@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows;
 using Stylet;
@@ -63,7 +64,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
                 GameId = 0,
                 LastPlayed = DateTime.MinValue,
                 PlayTime = TimeSpan.Zero,
-                Categories = new List<string> { "All" }
+                Categories = new Collection<string>(new List<string> { "All" })
             };
     }
     public enum AddGameSourceType { NoSource, Vndb }

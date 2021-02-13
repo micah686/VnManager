@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -134,8 +135,8 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
                 if (entry.Categories.Count > 0)
                 {
                     SelectedGame.Categories.Add(SelectedAddValue);
-                    SelectedGame.Categories = SelectedGame.Categories
-                        .Where(s => !string.IsNullOrWhiteSpace(s)).Distinct().ToList();
+                    SelectedGame.Categories = new Collection<string>(SelectedGame.Categories
+                        .Where(s => !string.IsNullOrWhiteSpace(s)).Distinct().ToList());
 
                 }
 
@@ -189,8 +190,8 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
                 if (entry.Categories.Count > 0)
                 {
                     SelectedGame.Categories.Remove(SelectedRemoveValue);
-                    SelectedGame.Categories = SelectedGame.Categories
-                        .Where(s => !string.IsNullOrWhiteSpace(s)).Distinct().ToList();
+                    SelectedGame.Categories = new Collection<string>(SelectedGame.Categories
+                        .Where(s => !string.IsNullOrWhiteSpace(s)).Distinct().ToList());
 
                 }
 
@@ -258,7 +259,7 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
                 {
                     if (userData.Categories != null && userData.Categories.Count > 1 && DeleteCategorySelectedValue != "All")
                     {
-                        userData.Categories.RemoveAll(x => x == DeleteCategorySelectedValue);
+                        userData.Categories = new Collection<string>(userData.Categories.Where(x => x != DeleteCategorySelectedValue).ToList());
                         newGamesList.Add(userData);
                     }
                 }
