@@ -65,9 +65,8 @@ namespace VnManager.Helpers
 
                 return true;
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                Console.WriteLine(e);
                 throw;
             }
 

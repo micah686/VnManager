@@ -126,11 +126,6 @@ namespace VnManager
         /// </summary>
         public static string GetDbStringWithoutPass => $"Filename={Path.Combine(ConfigDirPath, DbPath)};Password=";
 
-        /// <summary>
-        /// Static instance of the Statusbar, so any method can write values to it
-        /// </summary>
-        //public static StatusBarViewModel StatusBar { get; set; }
-
         public static bool DidDownloadTagTraitDump { get; set; }
 
         /// <summary>
