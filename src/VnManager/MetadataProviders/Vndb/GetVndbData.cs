@@ -125,14 +125,12 @@ namespace VnManager.MetadataProviders.Vndb
         internal async Task<List<Character>> GetCharactersAsync(VndbSharp.Vndb client, uint vnid, RequestOptions ro)
         {
             stopwatch.Restart();
-            bool hasMore = true;
+
             int pageCount = 1;
-            int characterCount = 0;
-            List<Character> characterList = new List<Character>();
             bool shouldContinue = true;
-            while (hasMore && shouldContinue)
+            List<Character> characterList = new List<Character>();
+            while (shouldContinue)
             {
-                shouldContinue = true;
                 ro.Page = pageCount;
                 VndbResponse<Character> characters = await client.GetCharacterAsync(VndbFilters.VisualNovel.Equals(vnid), VndbFlags.FullCharacter, ro);
 
@@ -147,10 +145,8 @@ namespace VnManager.MetadataProviders.Vndb
                         return null;
                     default:
                     {
-                        shouldContinue = false;
-                        hasMore = characters.HasMore;
+                        shouldContinue = characters.HasMore; //When false, it will exit the while loop
                         characterList.AddRange(characters.Items);
-                        characterCount = characterCount + characters.Count;
                         pageCount++;
                         if (stopwatch.Elapsed > maxTime)
                         {
@@ -159,7 +155,6 @@ namespace VnManager.MetadataProviders.Vndb
                         break;
                     }
                 }
-                
             }
             return characterList;
         }
