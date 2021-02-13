@@ -19,9 +19,9 @@
       },
       "FluentValidation": {
         "type": "Direct",
-        "requested": "[9.5.0, )",
-        "resolved": "9.5.0",
-        "contentHash": "gsu4SrlTgTCS57nynfUXmuEqOqQdsgZGd69dO4dJg/TRDvNTXKlw5TPKVoY/ieQLsmFBzd9ax/Y1Tx+8Ds3XKw=="
+        "requested": "[9.5.1, )",
+        "resolved": "9.5.1",
+        "contentHash": "By09e2m4N3giD7Giq8NCFgkgN5Hkm8Lv/bk8AadD9Xc6jjj2WDGrD6l9keZbWbkO9aygiHQREIt47iS2sVSU7w=="
       },
       "LiteDB": {
         "type": "Direct",
@@ -64,9 +64,9 @@
       },
       "Sentry": {
         "type": "Direct",
-        "requested": "[3.0.1, )",
-        "resolved": "3.0.1",
-        "contentHash": "eDcCLrVqdSG3HXPhFqWIDgj29CdzKu4l+M7jpEQ4EPO1nhsJXHmJbOs53K8GkZ/4urLKYxfSke/FFBPfQIuIcg=="
+        "requested": "[3.0.5, )",
+        "resolved": "3.0.5",
+        "contentHash": "r0c5TYFhPKr018pCEgHhAGZ9+VjM+JthtMGWldi9ljIUP+2mMy9xDWyHfF41UG0uKcHapOjsmZ+eP+zdSHSSLw=="
       },
       "Serilog": {
         "type": "Direct",
@@ -97,11 +97,11 @@
       },
       "System.IO.Abstractions.TestingHelpers": {
         "type": "Direct",
-        "requested": "[13.2.9, )",
-        "resolved": "13.2.9",
-        "contentHash": "R5ATxnRqYV9aFknnp3WIdTbyM7bObrkcG6njl0CM9plrlImPr1T/VgHQRwdHyjnuMdnFVl4G3XuXkgrSd6Bxuw==",
+        "requested": "[13.2.10, )",
+        "resolved": "13.2.10",
+        "contentHash": "mUWc87oExyLOWAdUgMOTQJAkKuqxNNl+8ad++3URqjDT8hYJHXEfBEvrpjVuC1oa+I0yqmzdX0Kv6eCRkuShgQ==",
         "dependencies": {
-          "System.IO.Abstractions": "13.2.9"
+          "System.IO.Abstractions": "13.2.10"
         }
       },
       "System.Management": {
@@ -633,8 +633,8 @@
       },
       "System.IO.Abstractions": {
         "type": "Transitive",
-        "resolved": "13.2.9",
-        "contentHash": "eyucRaO1g5CSKXHgl8Mq35+QohhWuBp1vKjsXh1LE+udAaA3vuIHo5t9LqAd+hxURZWTzXZs1P6d++UxXUmxnQ==",
+        "resolved": "13.2.10",
+        "contentHash": "BASg0+RBXAny4UZfUKkYu3zYFKjIEyZE6xxYpecEvltzwJF+Kb+5BNTxKRFGWy33hGgWWxvw71yJ+fEurFiqsQ==",
         "dependencies": {
           "System.IO.FileSystem.AccessControl": "4.7.0"
         }

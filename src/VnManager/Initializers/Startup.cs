@@ -12,7 +12,6 @@ using LiteDB;
 using Mayerch1.GithubUpdateCheck;
 using VnManager.Helpers;
 using VnManager.ViewModels.Dialogs;
-using VnManager.ViewModels.UserControls.MainPage.Vndb;
 using VnManager.ViewModels.Windows;
 
 namespace VnManager.Initializers
