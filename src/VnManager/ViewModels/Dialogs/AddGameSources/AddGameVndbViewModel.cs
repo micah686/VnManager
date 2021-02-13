@@ -258,16 +258,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
 
         public void BrowseExe()
         {
-            var settings = _defaultOpenFileDialogSettings;
-            settings.Title = App.ResMan.GetString("BrowseExe") ?? string.Empty;
-            settings.DefaultExt = ".exe";
-            settings.Filter = "Applications (*.exe)|*.exe";
-
-            bool? result = _dialogService.ShowOpenFileDialog(this, settings);
-            if (result == true)
-            {
-                ExePath = settings.FileName;
-            }
+            ExePath = FileDialogHelper.BrowseExe(_dialogService, this);
         }
 
         public void ManageExes()
@@ -285,16 +276,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
 
         public void BrowseIcon()
         {
-            var settings = _defaultOpenFileDialogSettings;
-            settings.Title = App.ResMan.GetString("BrowseForIcon") ?? string.Empty;
-            settings.DefaultExt = ".ico";
-            settings.Filter = "Icons (*.ico,*.exe)|*.ico;*.exe";
-
-            bool? result = _dialogService.ShowOpenFileDialog(this, settings);
-            if (result == true)
-            {
-                IconPath = settings.FileName;
-            }
+            IconPath = FileDialogHelper.BrowseIcon(_dialogService, this);
         }
 
         public async Task SubmitAsync()

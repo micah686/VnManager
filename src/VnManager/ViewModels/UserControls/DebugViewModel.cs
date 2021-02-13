@@ -49,26 +49,7 @@ namespace VnManager.ViewModels.UserControls
 
         public void NavTest()
         {
-            try
-            {
-                var result = new WebClient().DownloadString(@"https://www.wikidata.org/w/api.php?action=wbgetentities&format=xml&props=sitelinks&ids=Q857823&sitefilter=enwiki");
-
-                XmlSerializer serializer = new XmlSerializer(typeof(WikiDataApi), new XmlRootAttribute("api"));
-                StringReader stringReader = new StringReader(result);
-                var foo = (WikiDataApi) serializer.Deserialize(stringReader);
-
-
-
-
-
-
-
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                //throw;
-            }
+            
         }
 
 
