@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="About" xml:space="preserve">
+    <value>About</value>
+  </data>
   <data name="Add" xml:space="preserve">
     <value>Add</value>
   </data>
@@ -216,6 +219,9 @@
   <data name="Characters" xml:space="preserve">
     <value>Characters</value>
   </data>
+  <data name="Close" xml:space="preserve">
+    <value>Close</value>
+  </data>
   <data name="ClosingDisabledGameMessage" xml:space="preserve">
     <value>Game must be closed in order to proceed with this operation</value>
   </data>
@@ -239,6 +245,9 @@
   </data>
   <data name="ConfirmPassword" xml:space="preserve">
     <value>Confirm Password:</value>
+  </data>
+  <data name="Copyright" xml:space="preserve">
+    <value>Copyright:</value>
   </data>
   <data name="CoverImage" xml:space="preserve">
     <value>Cover Image:</value>
@@ -299,6 +308,9 @@
   </data>
   <data name="DeleteRow" xml:space="preserve">
     <value>Delete Row</value>
+  </data>
+  <data name="DevelopedBy" xml:space="preserve">
+    <value>Developed by:</value>
   </data>
   <data name="Done" xml:space="preserve">
     <value>Done</value>
@@ -422,6 +434,9 @@
   </data>
   <data name="Less1Min" xml:space="preserve">
     <value>&lt; 1 Minute</value>
+  </data>
+  <data name="LicensedUnderMIT" xml:space="preserve">
+    <value>Licensed under MIT</value>
   </data>
   <data name="LightTheme" xml:space="preserve">
     <value>Light Theme</value>

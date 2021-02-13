@@ -1,4 +1,4 @@
-- Update Info Page (Make it a dialog, not a toggle)  
+- ~~Update Info Page (Make it a dialog, not a toggle)~~
 - Add github updater  
 - Clean up remaining 12 issues on SonarCloud  
 - Add logging statements all over  

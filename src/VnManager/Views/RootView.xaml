@@ -26,9 +26,9 @@
             <ToggleButton Style="{DynamicResource {x:Static adonisUi:Styles.WindowToggleButton}}" IsChecked="{Binding IsSettingsPressed}">
                 <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.CogOutline}" Foreground="{Binding SettingsIconColor}" />
             </ToggleButton>
-            <ToggleButton Style="{DynamicResource {x:Static adonisUi:Styles.WindowToggleButton}}" IsChecked="{Binding AboutPressed}">
+            <Button Style="{DynamicResource {x:Static adonisUi:Styles.WindowButton}}" Click="{s:Action ActivateAboutClick}">
                 <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.InformationOutline}" Foreground="DeepSkyBlue" />
-            </ToggleButton>
+            </Button>
 
         </StackPanel>
     </controls:AdonisWindow.TitleBarContent>

@@ -61,6 +61,15 @@ namespace VnManager.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to About.
+        /// </summary>
+        public static string About {
+            get {
+                return ResourceManager.GetString("About", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add.
         /// </summary>
         public static string Add {
@@ -358,6 +367,15 @@ namespace VnManager.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Close.
+        /// </summary>
+        public static string Close {
+            get {
+                return ResourceManager.GetString("Close", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Game must be closed in order to proceed with this operation.
         /// </summary>
         public static string ClosingDisabledGameMessage {
@@ -426,6 +444,15 @@ namespace VnManager.Strings {
         public static string ConfirmPassword {
             get {
                 return ResourceManager.GetString("ConfirmPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copyright:.
+        /// </summary>
+        public static string Copyright {
+            get {
+                return ResourceManager.GetString("Copyright", resourceCulture);
             }
         }
         
@@ -606,6 +633,15 @@ namespace VnManager.Strings {
         public static string DeleteRow {
             get {
                 return ResourceManager.GetString("DeleteRow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Developed by:.
+        /// </summary>
+        public static string DevelopedBy {
+            get {
+                return ResourceManager.GetString("DevelopedBy", resourceCulture);
             }
         }
         
@@ -975,6 +1011,15 @@ namespace VnManager.Strings {
         public static string Less1Min {
             get {
                 return ResourceManager.GetString("Less1Min", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Licensed under MIT.
+        /// </summary>
+        public static string LicensedUnderMIT {
+            get {
+                return ResourceManager.GetString("LicensedUnderMIT", resourceCulture);
             }
         }
         

@@ -176,7 +176,9 @@ namespace VnManager.ViewModels
 
         public void ActivateAboutClick()
         {
-            ActivateItem(_aboutVmFactory());
+            //ActivateItem(_aboutVmFactory());
+            //_windowManager.ShowWindow(_aboutVmFactory(), this);
+            _windowManager.ShowDialog(_aboutVmFactory());
         }
         
         public void ActivateMainClick()
