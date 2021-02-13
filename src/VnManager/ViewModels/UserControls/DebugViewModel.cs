@@ -4,13 +4,9 @@
 using Stylet;
 using System;
 using System.Diagnostics.CodeAnalysis;
-using System.IO;
-using System.Net;
 using System.Runtime.InteropServices;
 using System.Windows.Media.Imaging;
-using System.Xml.Serialization;
 using StyletIoC;
-using VnManager.Models;
 
 
 namespace VnManager.ViewModels.UserControls

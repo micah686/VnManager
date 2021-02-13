@@ -65,8 +65,9 @@ namespace VnManager.Helpers
 
                 return true;
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                App.Logger.Error(e, "Failed to compact database");
                 throw;
             }
 
