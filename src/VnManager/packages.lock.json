@@ -35,6 +35,12 @@
         "resolved": "4.8.0",
         "contentHash": "KZ6BRhXtFlcKuuh5n13ezexZSuyVOo7O+tQwacLRvzfl421P+/rWfRO1rcsHimvo2Bpm4cG8uTj7KXagsioJyg=="
       },
+      "Mayerch1.GithubUpdateCheck": {
+        "type": "Direct",
+        "requested": "[1.2.0, )",
+        "resolved": "1.2.0",
+        "contentHash": "vGwmNGqiVpAVv6pN0cl2uSjFnqwr1c5u2QkXe6878mGhhSxKnZvmFWed1hDrzAZNRpqLUgcki5ohY/Ff8Ld5PA=="
+      },
       "Microsoft.Xaml.Behaviors.Wpf": {
         "type": "Direct",
         "requested": "[1.1.31, )",

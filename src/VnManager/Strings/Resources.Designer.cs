@@ -1582,6 +1582,24 @@ namespace VnManager.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Update Available.
+        /// </summary>
+        public static string UpdateAvailable {
+            get {
+                return ResourceManager.GetString("UpdateAvailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An update is currently available. Would you like to install it now?.
+        /// </summary>
+        public static string UpdateMsg {
+            get {
+                return ResourceManager.GetString("UpdateMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Update Paths.
         /// </summary>
         public static string UpdatePaths {

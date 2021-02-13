@@ -1,6 +1,6 @@
 - ~~Update Info Page (Make it a dialog, not a toggle)~~
-- Add github updater  
-- Clean up remaining 12 issues on SonarCloud  
+- ~~Add github updater~~  
+- ~~Clean up remaining 12 issues on SonarCloud~~  
 - Add logging statements all over  
 - Add summary comments on all methods  
 - Do one final "clean" test of the program, trying to find any remaining bugs  

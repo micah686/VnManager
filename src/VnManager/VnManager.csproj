@@ -18,6 +18,7 @@
     <PackageReference Include="FluentValidation" Version="9.5.0" />
     <PackageReference Include="LiteDB" Version="5.0.10" />
     <PackageReference Include="MahApps.Metro.IconPacks.Material" Version="4.8.0" />
+    <PackageReference Include="Mayerch1.GithubUpdateCheck" Version="1.2.0" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.31" />
     <PackageReference Include="MvvmDialogs" Version="8.0.0" />
     <PackageReference Include="PropertyChanged.Fody" Version="3.3.1" />

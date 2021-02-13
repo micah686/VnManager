@@ -624,6 +624,12 @@
   <data name="Update" xml:space="preserve">
     <value>Update</value>
   </data>
+  <data name="UpdateAvailable" xml:space="preserve">
+    <value>Update Available</value>
+  </data>
+  <data name="UpdateMsg" xml:space="preserve">
+    <value>An update is currently available. Would you like to install it now?</value>
+  </data>
   <data name="UpdatePaths" xml:space="preserve">
     <value>Update Paths</value>
   </data>

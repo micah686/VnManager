@@ -3,12 +3,16 @@
 
 using Stylet;
 using System;
+using System.Diagnostics;
 using System.IO;
+using System.Net;
 using System.Windows;
 using AdysTech.CredentialManager;
 using LiteDB;
+using Mayerch1.GithubUpdateCheck;
 using VnManager.Helpers;
 using VnManager.ViewModels.Dialogs;
+using VnManager.ViewModels.UserControls.MainPage.Vndb;
 using VnManager.ViewModels.Windows;
 
 namespace VnManager.Initializers
@@ -28,6 +32,8 @@ namespace VnManager.Initializers
 
         private void StartupCheck()
         {
+            CheckForUpdates();
+            
             if (!IsNormalStart())
             {
                 App.UserSettings = UserSettingsHelper.ReadUserSettings();
@@ -148,6 +154,40 @@ namespace VnManager.Initializers
             App.UserSettings = UserSettingsHelper.ReadUserSettings();
             var useEncryption = App.UserSettings.RequirePasswordEntry;
             return !useEncryption;
+        }
+
+        private void CheckForUpdates()
+        {
+            var updateCheck = new GithubUpdateCheck("micah686", "VnManager");
+            bool updateAvailable = updateCheck.IsUpdateAvailable(App.VersionString, VersionChange.Build);
+            if (updateAvailable == false)
+            {
+                return;
+            }
+            var result = _windowManager.ShowMessageBox(App.ResMan.GetString("UpdateMsg"), App.ResMan.GetString("UpdateAvailable"), MessageBoxButton.YesNo);
+            if (result == MessageBoxResult.Yes)
+            {
+                const int fiveMegaBytes = 8388608;
+                var releasePath = new Uri(@"https://github.com/micah686/VnManager/releases/latest/download/VnManager.exe");
+                var tempFolder = Path.GetTempPath();
+                var filePath = $@"{tempFolder}VnManager-{Guid.NewGuid()}.exe";
+                using (var client = new WebClient())
+                {
+                    client.DownloadFile(releasePath, filePath);
+                }
+
+                var totalBytes = new FileInfo(filePath).Length;
+                if (totalBytes > fiveMegaBytes)
+                {
+                    var ps = new ProcessStartInfo(filePath)
+                    {
+                        UseShellExecute = true,
+                        Verb = "open"
+                    };
+                    Process.Start(ps);
+                    Environment.Exit(0);
+                }
+            }
         }
     }
 }
