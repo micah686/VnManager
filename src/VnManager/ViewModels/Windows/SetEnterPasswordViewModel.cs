@@ -122,57 +122,55 @@ namespace VnManager.ViewModels.Windows
         /// <returns></returns>
         public async Task CreatePasswordClickAsync()
         {
+            File.Delete(Path.Combine(App.ConfigDirPath, App.DbPath));
             try
             {
-                File.Delete(Path.Combine(App.ConfigDirPath, App.DbPath));
-                try
+                ShouldCheckPassword = true;
+                if (RequirePasswordChecked)
                 {
-                    ShouldCheckPassword = true;
-                    if (RequirePasswordChecked)
+                    if (Password == null || Password.Length < 1 || ConfirmPassword == null || ConfirmPassword.Length < 1)
                     {
-                        if (Password == null || Password.Length < 1 || ConfirmPassword == null || ConfirmPassword.Length <1)
-                        {
-                            await ValidateAsync();
-                            return;
-                        }
-
-                    
-                        var hashStruct = Secure.GenerateHash(Password, Secure.GenerateRandomSalt());
-                        string username = $"{hashStruct.Hash}|{hashStruct.Salt}";
-                    
-                        var cred = new NetworkCredential(username, Password);
-                        CredentialManager.SaveCredentials(App.CredDb, cred);
-                        var validPasswords = await ValidateAsync();
-                        if(validPasswords != true)
-                        {
-                            return;
-                        }
-                        using (_ = new LiteDatabase(
-                            $"Filename={Path.Combine(App.ConfigDirPath, App.DbPath)};Password={cred.Password}"))
-                        {
-                            //create initial empty database
-                        }
-
-                        var settings = new UserSettings
-                        {
-                            RequirePasswordEntry = true
-                        };
-                        UserSettingsHelper.SaveUserSettings(settings);
-                        bool result = await ValidateAsync();
-                        if (result)
-                        {
-                            RequestClose(true);
-                        }
+                        await ValidateAsync();
+                        return;
                     }
-                    else
+
+
+                    var hashStruct = Secure.GenerateHash(Password, Secure.GenerateRandomSalt());
+                    string username = $"{hashStruct.Hash}|{hashStruct.Salt}";
+
+                    var cred = new NetworkCredential(username, Password);
+                    CredentialManager.SaveCredentials(App.CredDb, cred);
+                    var validPasswords = await ValidateAsync();
+                    if (validPasswords != true)
                     {
-                    
-                        var password = new SecureString();
+                        return;
+                    }
+                    using (_ = new LiteDatabase(
+                        $"Filename={Path.Combine(App.ConfigDirPath, App.DbPath)};Password={cred.Password}"))
+                    {
+                        //create initial empty database
+                    }
+
+                    var settings = new UserSettings
+                    {
+                        RequirePasswordEntry = true
+                    };
+                    UserSettingsHelper.SaveUserSettings(settings);
+                    bool result = await ValidateAsync();
+                    if (result)
+                    {
+                        RequestClose(true);
+                    }
+                }
+                else
+                {
+
+                    var password = new SecureString();
 #if DEBUG
-                        foreach (var character in "123456") //TODO:Debug only password
-                        {
-                            password.AppendChar(character);
-                        }
+                    foreach (var character in "123456")
+                    {
+                        password.AppendChar(character);
+                    }
 #else
                     const int passwordLength = 64;
                     const int specialCharacters = 16;
@@ -181,38 +179,32 @@ namespace VnManager.ViewModels.Windows
                         password.AppendChar(character);
                     }
 #endif
-                        var hashStruct = Secure.GenerateHash(password, Secure.GenerateRandomSalt());
-                        string username = $"{hashStruct.Hash}|{hashStruct.Salt}";
+                    var hashStruct = Secure.GenerateHash(password, Secure.GenerateRandomSalt());
+                    string username = $"{hashStruct.Hash}|{hashStruct.Salt}";
 
-                        var cred = new NetworkCredential(username, password);
-                        CredentialManager.SaveCredentials(App.CredDb, cred);
+                    var cred = new NetworkCredential(username, password);
+                    CredentialManager.SaveCredentials(App.CredDb, cred);
 
-                        using (_ = new LiteDatabase(
-                            $"Filename={Path.Combine(App.ConfigDirPath, App.DbPath)};Password={cred.Password}"))
-                        {
-                            //create initial empty database
-                        }
-
-                        bool result = await ValidateAsync();
-                        if (result)
-                        {
-                            RequestClose(true);
-                        }
+                    using (_ = new LiteDatabase(
+                        $"Filename={Path.Combine(App.ConfigDirPath, App.DbPath)};Password={cred.Password}"))
+                    {
+                        //create initial empty database
                     }
-                    ShouldCheckPassword = false;
+
+                    bool result = await ValidateAsync();
+                    if (result)
+                    {
+                        RequestClose(true);
+                    }
                 }
-                catch (Exception ex)
-                {
-                    App.Logger.Error(ex, "Couldn't Create Password");
-                    ShouldCheckPassword = false;
-                    RequestClose(false);
-                }
+                ShouldCheckPassword = false;
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                App.Logger.Error(e, "Failed to create password");
-                SentrySdk.CaptureException(e);
-                throw;
+                App.Logger.Error(ex, "Couldn't Create Password");
+                SentrySdk.CaptureException(ex);
+                ShouldCheckPassword = false;
+                RequestClose(false);
             }
         }
 
