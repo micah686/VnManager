@@ -9,6 +9,7 @@ using System.Net;
 using System.Threading.Tasks;
 using AdysTech.CredentialManager;
 using LiteDB;
+using Sentry;
 using VndbSharp;
 using VndbSharp.Models.Dumps;
 using VnManager.Converters;
@@ -24,6 +25,11 @@ namespace VnManager.MetadataProviders.Vndb
 {
     internal static class DownloadVndbContent
     {
+        /// <summary>
+        /// Download Vndb cover image
+        /// </summary>
+        /// <param name="vnId"></param>
+        /// <returns></returns>
         internal static async Task DownloadCoverImageAsync(uint vnId)
         {
             try
@@ -51,6 +57,7 @@ namespace VnManager.MetadataProviders.Vndb
             catch (Exception ex)
             {
                 App.Logger.Warning(ex, "Failed to download cover image");
+                SentrySdk.CaptureException(ex);
             }
             finally
             {
@@ -59,6 +66,11 @@ namespace VnManager.MetadataProviders.Vndb
             }
         }
 
+        /// <summary>
+        /// Download character images
+        /// </summary>
+        /// <param name="vnId"></param>
+        /// <returns></returns>
         internal static async Task DownloadCharacterImagesAsync(uint vnId)
         {
             try
@@ -98,6 +110,7 @@ namespace VnManager.MetadataProviders.Vndb
             catch (Exception e)
             {
                 App.Logger.Warning(e, "Failed to download character image");
+                SentrySdk.CaptureException(e);
             }
             finally
             {
@@ -106,6 +119,11 @@ namespace VnManager.MetadataProviders.Vndb
             }
         }
 
+        /// <summary>
+        /// Download Screenshots
+        /// </summary>
+        /// <param name="vnId"></param>
+        /// <returns></returns>
         internal static async Task DownloadScreenshotsAsync(uint vnId)
         {
             try
@@ -141,6 +159,7 @@ namespace VnManager.MetadataProviders.Vndb
             catch (Exception ex)
             {
                 App.Logger.Warning(ex, "Failed to download screenshots");
+                SentrySdk.CaptureException(ex);
                 throw;
             }
             finally
@@ -151,6 +170,11 @@ namespace VnManager.MetadataProviders.Vndb
         }
 
         //Tag and Trait Dumps
+        
+        /// <summary>
+        /// Save Tag Dump
+        /// </summary>
+        /// <returns></returns>
         public static async Task GetAndSaveTagDumpAsync()
         {
             try
@@ -197,6 +221,7 @@ namespace VnManager.MetadataProviders.Vndb
             catch (Exception ex)
             {
                 App.Logger.Error(ex, "An error happened while getting/saving the tag dump");
+                SentrySdk.CaptureException(ex);
                 StatusBarViewModel.ResetValues();
             }
             finally
@@ -206,6 +231,10 @@ namespace VnManager.MetadataProviders.Vndb
             }
         }
 
+        /// <summary>
+        /// Save TraitDump to db
+        /// </summary>
+        /// <returns></returns>
         public static async Task GetAndSaveTraitDumpAsync()
         {
             try
@@ -249,6 +278,7 @@ namespace VnManager.MetadataProviders.Vndb
             catch (Exception ex)
             {
                 App.Logger.Error(ex, "An error happened while getting/saving the trait dump");
+                SentrySdk.CaptureException(ex);
                 StatusBarViewModel.ResetValues();
                 throw;
             }

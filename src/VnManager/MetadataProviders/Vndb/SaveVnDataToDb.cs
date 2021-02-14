@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AdysTech.CredentialManager;
 using LiteDB;
+using Sentry;
 using VndbSharp.Models.Character;
 using VndbSharp.Models.VisualNovel;
 using VnManager.Converters;
@@ -22,7 +23,15 @@ namespace VnManager.MetadataProviders.Vndb
 {
     public static class SaveVnDataToDb
     {
-
+        /// <summary>
+        /// Sort all of the VnInfo and save it to the database
+        /// </summary>
+        /// <param name="vn"></param>
+        /// <param name="character"></param>
+        /// <param name="increment"></param>
+        /// <param name="currentProgress"></param>
+        /// <param name="isRepairing"></param>
+        /// <returns></returns>
         public static async Task SortVnInfoAsync(VisualNovel vn,  ICollection<Character> character, double increment, double currentProgress, bool isRepairing)
         {
             if (vn == null)
@@ -68,8 +77,10 @@ namespace VnManager.MetadataProviders.Vndb
                     RootViewModel.StatusBarPage.ProgressBarValue = currentValue;
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                App.Logger.Error(e, "Failed to Sort VnInfo");
+                SentrySdk.CaptureException(e);
                 StatusBarViewModel.ResetValues();
             }
             finally
@@ -83,6 +94,10 @@ namespace VnManager.MetadataProviders.Vndb
 
 
         #region VnInfo
+        /// <summary>
+        /// Save the Main VnInfo to the database
+        /// </summary>
+        /// <param name="visualNovel"></param>
         public static void SaveVnInfo(VisualNovel visualNovel)
         {
             if (visualNovel == null)
@@ -153,158 +168,231 @@ namespace VnManager.MetadataProviders.Vndb
             }
             catch (IOException e)
             {
-                App.Logger.Error(e, "an I/O exception occured");
+                App.Logger.Error(e, "an I/O exception occurred");
+                SentrySdk.CaptureException(e);
             }
             catch (Exception e)
             {
-                App.Logger.Error(e, "Something happened");
+                App.Logger.Error(e, "Failed to save VnInfo");
+                SentrySdk.CaptureException(e);
             }
         }
 
-
+        /// <summary>
+        /// Save the Screenshot info of VnInfo to db
+        /// </summary>
+        /// <param name="visualNovel"></param>
+        /// <param name="dbVnInfoScreens"></param>
+        /// <returns></returns>
         private static List<VnInfoScreens> FormatVnInfoScreens(VisualNovel visualNovel, ILiteCollection<VnInfoScreens> dbVnInfoScreens)
         {
-            List<VnInfoScreens> vnScreenshot = new List<VnInfoScreens>();
-            if (visualNovel.Screenshots.Count > 0)
+            try
             {
-                var prevVnInfoScreens = dbVnInfoScreens.Query().Where(x => x.VnId == visualNovel.Id).ToList();
-                foreach (var screenshot in visualNovel.Screenshots)
+                List<VnInfoScreens> vnScreenshot = new List<VnInfoScreens>();
+                if (visualNovel.Screenshots.Count > 0)
                 {
-                    var entry = prevVnInfoScreens.FirstOrDefault(x => x.ImageLink == screenshot.Url) ??
-                                new VnInfoScreens();
-                    entry.VnId = visualNovel.Id;
-                    entry.ImageLink = !string.IsNullOrEmpty(screenshot.Url) ? screenshot.Url : string.Empty;
-                    entry.ReleaseId = screenshot.ReleaseId;
-                    entry.Height = screenshot.Height;
-                    entry.Width = screenshot.Width;
-                    entry.ImageRating = screenshot.ImageRating;
-                    vnScreenshot.Add(entry);
+                    var prevVnInfoScreens = dbVnInfoScreens.Query().Where(x => x.VnId == visualNovel.Id).ToList();
+                    foreach (var screenshot in visualNovel.Screenshots)
+                    {
+                        var entry = prevVnInfoScreens.FirstOrDefault(x => x.ImageLink == screenshot.Url) ??
+                                    new VnInfoScreens();
+                        entry.VnId = visualNovel.Id;
+                        entry.ImageLink = !string.IsNullOrEmpty(screenshot.Url) ? screenshot.Url : string.Empty;
+                        entry.ReleaseId = screenshot.ReleaseId;
+                        entry.Height = screenshot.Height;
+                        entry.Width = screenshot.Width;
+                        entry.ImageRating = screenshot.ImageRating;
+                        vnScreenshot.Add(entry);
+                    }
                 }
-            }
             
-            return vnScreenshot;
+                return vnScreenshot;
+            }
+            catch (Exception e)
+            {
+                App.Logger.Error(e, "Failed to save VnInfo screens");
+                SentrySdk.CaptureException(e);
+                return new List<VnInfoScreens>();
+            }
         }
 
+        /// <summary>
+        /// Save list of VnInfo Relations
+        /// </summary>
+        /// <param name="visualNovel"></param>
+        /// <param name="dbVnInfoRelations"></param>
+        /// <returns></returns>
         private static List<VnInfoRelations> FormatVnInfoRelations(VisualNovel visualNovel, ILiteCollection<VnInfoRelations> dbVnInfoRelations)
         {
-            List<VnInfoRelations> vnRelations = new List<VnInfoRelations>();
-            if (visualNovel.Relations.Count > 0)
+            try
             {
-                var prevVnInfoRelations = dbVnInfoRelations.Query().Where(x => x.VnId == visualNovel.Id).ToList();
-                foreach (var relation in visualNovel.Relations)
+                List<VnInfoRelations> vnRelations = new List<VnInfoRelations>();
+                if (visualNovel.Relations.Count > 0)
                 {
-                    var entry = prevVnInfoRelations.FirstOrDefault(x => x.RelationId == relation.Id) ??
-                                new VnInfoRelations();
-                    entry.VnId = visualNovel.Id;
-                    entry.RelationId = relation.Id;
-                    entry.Relation = relation.Type.ToString();
-                    entry.Title = relation.Title;
-                    entry.Original = relation.Original;
-                    entry.Official = relation.Official ? "Yes" : "No";
-                    vnRelations.Add(entry);
+                    var prevVnInfoRelations = dbVnInfoRelations.Query().Where(x => x.VnId == visualNovel.Id).ToList();
+                    foreach (var relation in visualNovel.Relations)
+                    {
+                        var entry = prevVnInfoRelations.FirstOrDefault(x => x.RelationId == relation.Id) ??
+                                    new VnInfoRelations();
+                        entry.VnId = visualNovel.Id;
+                        entry.RelationId = relation.Id;
+                        entry.Relation = relation.Type.ToString();
+                        entry.Title = relation.Title;
+                        entry.Original = relation.Original;
+                        entry.Official = relation.Official ? "Yes" : "No";
+                        vnRelations.Add(entry);
+                    }
                 }
-            }
             
-            return vnRelations;
+                return vnRelations;
+            }
+            catch (Exception e)
+            {
+                App.Logger.Error(e, "Failed to save VnInfo Relations");
+                SentrySdk.CaptureException(e);
+                return new List<VnInfoRelations>();
+            }
         }
 
-
+        /// <summary>
+        /// Save VnInfo Tags
+        /// </summary>
+        /// <param name="visualNovel"></param>
+        /// <param name="dbVnInfoTags"></param>
+        /// <returns></returns>
         private static List<VnInfoTags> FormatVnInfoTags(VisualNovel visualNovel, ILiteCollection<VnInfoTags> dbVnInfoTags)
         {
-            List<VnInfoTags> vnTags = new List<VnInfoTags>();
-            if (visualNovel.Tags.Count > 0)
+            try
             {
-                List<VnInfoTags> prevVnInfoTags = dbVnInfoTags.Query().Where(x => x.VnId == visualNovel.Id).ToList();
-                foreach (var tag in visualNovel.Tags)
+                List<VnInfoTags> vnTags = new List<VnInfoTags>();
+                if (visualNovel.Tags.Count > 0)
                 {
-                    var entry = prevVnInfoTags.FirstOrDefault(x => x.TagId == tag.Id) ?? new VnInfoTags();
-                    entry.VnId = visualNovel.Id;
-                    entry.TagId = tag.Id;
-                    entry.Score = tag.Score;
-                    entry.Spoiler = tag.SpoilerLevel;
-                    vnTags.Add(entry);
+                    List<VnInfoTags> prevVnInfoTags = dbVnInfoTags.Query().Where(x => x.VnId == visualNovel.Id).ToList();
+                    foreach (var tag in visualNovel.Tags)
+                    {
+                        var entry = prevVnInfoTags.FirstOrDefault(x => x.TagId == tag.Id) ?? new VnInfoTags();
+                        entry.VnId = visualNovel.Id;
+                        entry.TagId = tag.Id;
+                        entry.Score = tag.Score;
+                        entry.Spoiler = tag.SpoilerLevel;
+                        vnTags.Add(entry);
+                    }
                 }
-            }
 
-            return vnTags;
+                return vnTags;
+            }
+            catch (Exception e)
+            {
+                App.Logger.Error(e, "Failed to save VnInfo Tags");
+                SentrySdk.CaptureException(e);
+                return new List<VnInfoTags>();
+            }
         }
         #endregion
 
         #region VnCharacters
+        /// <summary>
+        /// Save Vn Characters to db
+        /// </summary>
+        /// <param name="characters"></param>
+        /// <param name="vnid"></param>
         public static void SaveVnCharacters(ICollection<Character> characters, uint vnid)
         {
-            if (characters== null || characters.Count < 1)
+            try
             {
-                return;
-            }
-            var cred = CredentialManager.GetCredentials(App.CredDb);
-            if (cred == null || cred.UserName.Length < 1)
-            {
-                return;
-            }
-            using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
-            {
-                var dbCharInfo = db.GetCollection<VnCharacterInfo>(DbVnCharacter.VnCharacter.ToString());
-                ILiteCollection<VnCharacterTraits> dbCharTraits = db.GetCollection<VnCharacterTraits>(DbVnCharacter.VnCharacter_Traits.ToString());
-
-                if (characters.Count > 0)
+                if (characters== null || characters.Count < 1)
                 {
-                    List<VnCharacterInfo> vnCharactersList = new List<VnCharacterInfo>();
-                    List<VnCharacterTraits> vnCharacterTraitsList = new List<VnCharacterTraits>();
-                    foreach (Character vnCharacter in characters)
-                    {
-                        var prevVnCharacter = dbCharInfo.Query().Where(x => x.CharacterId == vnCharacter.Id);
-                        var character = prevVnCharacter.FirstOrDefault() ?? new VnCharacterInfo();
-
-                        character.VnId = vnid;
-                        character.CharacterId = vnCharacter.Id;
-                        character.Name = vnCharacter.Name;
-                        character.Original = vnCharacter.OriginalName;
-                        character.Gender = vnCharacter.Gender.ToString();
-                        character.BloodType = vnCharacter.BloodType.ToString();
-                        character.Age = vnCharacter.Age.ToString();
-                        character.Birthday = SimpleDateConverter.ConvertSimpleDate(vnCharacter.Birthday);
-                        character.Aliases = CsvConverter.ConvertToCsv(vnCharacter.Aliases);
-                        character.Description = vnCharacter.Description;
-                        character.ImageLink = !string.IsNullOrEmpty(vnCharacter.Image) ? vnCharacter.Image : string.Empty;
-                        character.ImageRating = vnCharacter.ImageRating;
-                        character.Bust = Convert.ToInt32(vnCharacter.Bust, CultureInfo.InvariantCulture);
-                        character.Waist = Convert.ToInt32(vnCharacter.Waist, CultureInfo.InvariantCulture);
-                        character.Hip = Convert.ToInt32(vnCharacter.Hip, CultureInfo.InvariantCulture);
-                        character.Height = Convert.ToInt32(vnCharacter.Height, CultureInfo.InvariantCulture);
-                        character.Weight = Convert.ToInt32(vnCharacter.Weight, CultureInfo.InvariantCulture);
-                        vnCharactersList.Add(character);
-
-                        vnCharacterTraitsList.AddRange(FormatVnCharacterTraits(vnCharacter, dbCharTraits));
-                    }
-
-                    dbCharInfo.Upsert(vnCharactersList);
-                    dbCharTraits.Upsert(vnCharacterTraitsList);
+                    return;
                 }
+                var cred = CredentialManager.GetCredentials(App.CredDb);
+                if (cred == null || cred.UserName.Length < 1)
+                {
+                    return;
+                }
+                using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
+                {
+                    var dbCharInfo = db.GetCollection<VnCharacterInfo>(DbVnCharacter.VnCharacter.ToString());
+                    ILiteCollection<VnCharacterTraits> dbCharTraits = db.GetCollection<VnCharacterTraits>(DbVnCharacter.VnCharacter_Traits.ToString());
+
+                    if (characters.Count > 0)
+                    {
+                        List<VnCharacterInfo> vnCharactersList = new List<VnCharacterInfo>();
+                        List<VnCharacterTraits> vnCharacterTraitsList = new List<VnCharacterTraits>();
+                        foreach (Character vnCharacter in characters)
+                        {
+                            var prevVnCharacter = dbCharInfo.Query().Where(x => x.CharacterId == vnCharacter.Id);
+                            var character = prevVnCharacter.FirstOrDefault() ?? new VnCharacterInfo();
+
+                            character.VnId = vnid;
+                            character.CharacterId = vnCharacter.Id;
+                            character.Name = vnCharacter.Name;
+                            character.Original = vnCharacter.OriginalName;
+                            character.Gender = vnCharacter.Gender.ToString();
+                            character.BloodType = vnCharacter.BloodType.ToString();
+                            character.Age = vnCharacter.Age.ToString();
+                            character.Birthday = SimpleDateConverter.ConvertSimpleDate(vnCharacter.Birthday);
+                            character.Aliases = CsvConverter.ConvertToCsv(vnCharacter.Aliases);
+                            character.Description = vnCharacter.Description;
+                            character.ImageLink = !string.IsNullOrEmpty(vnCharacter.Image) ? vnCharacter.Image : string.Empty;
+                            character.ImageRating = vnCharacter.ImageRating;
+                            character.Bust = Convert.ToInt32(vnCharacter.Bust, CultureInfo.InvariantCulture);
+                            character.Waist = Convert.ToInt32(vnCharacter.Waist, CultureInfo.InvariantCulture);
+                            character.Hip = Convert.ToInt32(vnCharacter.Hip, CultureInfo.InvariantCulture);
+                            character.Height = Convert.ToInt32(vnCharacter.Height, CultureInfo.InvariantCulture);
+                            character.Weight = Convert.ToInt32(vnCharacter.Weight, CultureInfo.InvariantCulture);
+                            vnCharactersList.Add(character);
+
+                            vnCharacterTraitsList.AddRange(FormatVnCharacterTraits(vnCharacter, dbCharTraits));
+                        }
+
+                        dbCharInfo.Upsert(vnCharactersList);
+                        dbCharTraits.Upsert(vnCharacterTraitsList);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                App.Logger.Error(e, "Failed to save VnCharacters");
+                SentrySdk.CaptureException(e);
             }
 
         }
 
+        /// <summary>
+        /// Format Traits for usage
+        /// </summary>
+        /// <param name="vnCharacter"></param>
+        /// <param name="dbCharTraits"></param>
+        /// <returns></returns>
         private static List<VnCharacterTraits> FormatVnCharacterTraits(Character vnCharacter, ILiteCollection<VnCharacterTraits> dbCharTraits)
         {
-            List<VnCharacterTraits> vnCharacterTraitsList = new List<VnCharacterTraits>();
-
-            if (vnCharacter.Traits.Count <= 0)
+            try
             {
+                List<VnCharacterTraits> vnCharacterTraitsList = new List<VnCharacterTraits>();
+
+                if (vnCharacter.Traits.Count <= 0)
+                {
+                    return vnCharacterTraitsList;
+                }
+                var prevVnCharacterTraits = dbCharTraits.Query().Where(x => x.CharacterId == vnCharacter.Id);
+            
+                foreach (var traits in vnCharacter.Traits)
+                {
+                    var entry = prevVnCharacterTraits.FirstOrDefault() ?? new VnCharacterTraits();
+                    entry.CharacterId = vnCharacter.Id;
+                    entry.TraitId = traits.Id;
+                    entry.SpoilerLevel = traits.SpoilerLevel;
+                    vnCharacterTraitsList.Add(entry);
+                }
+
                 return vnCharacterTraitsList;
             }
-            var prevVnCharacterTraits = dbCharTraits.Query().Where(x => x.CharacterId == vnCharacter.Id);
-            
-            foreach (var traits in vnCharacter.Traits)
+            catch (Exception e)
             {
-                var entry = prevVnCharacterTraits.FirstOrDefault() ?? new VnCharacterTraits();
-                entry.CharacterId = vnCharacter.Id;
-                entry.TraitId = traits.Id;
-                entry.SpoilerLevel = traits.SpoilerLevel;
-                vnCharacterTraitsList.Add(entry);
+                App.Logger.Error(e, "Failed to format VnTraits");
+                SentrySdk.CaptureException(e);
+                return new List<VnCharacterTraits>();
             }
-
-            return vnCharacterTraitsList;
         }
         #endregion
 

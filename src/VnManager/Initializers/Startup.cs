@@ -10,6 +10,7 @@ using System.Windows;
 using AdysTech.CredentialManager;
 using LiteDB;
 using Mayerch1.GithubUpdateCheck;
+using Sentry;
 using VnManager.Helpers;
 using VnManager.ViewModels.Dialogs;
 using VnManager.ViewModels.Windows;
@@ -29,6 +30,9 @@ namespace VnManager.Initializers
             StartupCheck();
         }
 
+        /// <summary>
+        /// Do some final checks before main window is allowed to load
+        /// </summary>
         private void StartupCheck()
         {
             CheckForUpdates();
@@ -123,13 +127,17 @@ namespace VnManager.Initializers
                 {
                     errorStr = $"{ex.Message}\n{appExit}";
                     _windowManager.ShowMessageBox(errorStr, dbError);
+                    App.Logger.Error(ex, "CheckDb LiteException error");
+                    SentrySdk.CaptureException(ex);
                     Environment.Exit(1);
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 errorStr = $"{App.ResMan.GetString("UnknownException")}\n{appExit}";
                 _windowManager.ShowMessageBox(errorStr, dbError);
+                App.Logger.Error(e, "CheckDbError failed");
+                SentrySdk.CaptureException(e);
                 Environment.Exit(1);
             }
         }
@@ -157,35 +165,43 @@ namespace VnManager.Initializers
 
         private void CheckForUpdates()
         {
-            var updateCheck = new GithubUpdateCheck("micah686", "VnManager");
-            bool updateAvailable = updateCheck.IsUpdateAvailable(App.VersionString, VersionChange.Build);
-            if (updateAvailable == false)
+            try
             {
-                return;
-            }
-            var result = _windowManager.ShowMessageBox(App.ResMan.GetString("UpdateMsg"), App.ResMan.GetString("UpdateAvailable"), MessageBoxButton.YesNo);
-            if (result == MessageBoxResult.Yes)
-            {
-                const int fiveMegaBytes = 8388608;
-                var releasePath = new Uri(@"https://github.com/micah686/VnManager/releases/latest/download/VnManager.exe");
-                var tempFolder = Path.GetTempPath();
-                var filePath = $@"{tempFolder}VnManager-{Guid.NewGuid()}.exe";
-                using (var client = new WebClient())
+                var updateCheck = new GithubUpdateCheck("micah686", "VnManager");
+                bool updateAvailable = updateCheck.IsUpdateAvailable(App.VersionString, VersionChange.Build);
+                if (updateAvailable == false)
                 {
-                    client.DownloadFile(releasePath, filePath);
+                    return;
                 }
-
-                var totalBytes = new FileInfo(filePath).Length;
-                if (totalBytes > fiveMegaBytes)
+                var result = _windowManager.ShowMessageBox(App.ResMan.GetString("UpdateMsg"), App.ResMan.GetString("UpdateAvailable"), MessageBoxButton.YesNo);
+                if (result == MessageBoxResult.Yes)
                 {
-                    var ps = new ProcessStartInfo(filePath)
+                    const int fiveMegaBytes = 8388608;
+                    var releasePath = new Uri(@"https://github.com/micah686/VnManager/releases/latest/download/VnManager.exe");
+                    var tempFolder = Path.GetTempPath();
+                    var filePath = $@"{tempFolder}VnManager-{Guid.NewGuid()}.exe";
+                    using (var client = new WebClient())
                     {
-                        UseShellExecute = true,
-                        Verb = "open"
-                    };
-                    Process.Start(ps);
-                    Environment.Exit(0);
+                        client.DownloadFile(releasePath, filePath);
+                    }
+
+                    var totalBytes = new FileInfo(filePath).Length;
+                    if (totalBytes > fiveMegaBytes)
+                    {
+                        var ps = new ProcessStartInfo(filePath)
+                        {
+                            UseShellExecute = true,
+                            Verb = "open"
+                        };
+                        Process.Start(ps);
+                        Environment.Exit(0);
+                    }
                 }
+            }
+            catch (Exception e)
+            {
+                App.Logger.Warning(e, "Failed to check for Updates");
+                SentrySdk.CaptureException(e);
             }
         }
     }

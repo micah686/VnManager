@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Sentry;
 using VndbSharp;
 using VndbSharp.Models;
 using VndbSharp.Models.Character;
@@ -22,6 +23,13 @@ namespace VnManager.MetadataProviders.Vndb
         private readonly Stopwatch stopwatch = new Stopwatch();
         private readonly TimeSpan maxTime = TimeSpan.FromMinutes(3);
         private bool _didErrorOccur = false;
+        
+        /// <summary>
+        /// Download main Vndb Data
+        /// </summary>
+        /// <param name="gameId"></param>
+        /// <param name="isRepairing"></param>
+        /// <returns></returns>
         public async Task GetDataAsync(int gameId, bool isRepairing)
         {
             uint vnId = (uint)gameId;
@@ -89,74 +97,106 @@ namespace VnManager.MetadataProviders.Vndb
             catch (Exception ex)
             {
                 App.Logger.Error(ex, "An error occurred when trying to get the vndb data from the API");
+                SentrySdk.CaptureException(ex);
                 StatusBarViewModel.ResetValues();
                 throw;
             }
         }
 
+        /// <summary>
+        /// Get Visual Novel data
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="vnid"></param>
+        /// <returns></returns>
         internal async Task<VisualNovel> GetVisualNovelAsync(VndbSharp.Vndb client, uint vnid)
         {
-            stopwatch.Restart();
-            while (true)
+            try
             {
-                if (stopwatch.Elapsed > maxTime)
+                stopwatch.Restart();
+                while (true)
                 {
-                    return null;
-                }
-                VndbResponse<VisualNovel> visualNovels = await client.GetVisualNovelAsync(VndbFilters.Id.Equals(vnid), VndbFlags.FullVisualNovel);
-
-
-                switch (visualNovels)
-                {
-                    case null when client.GetLastError().Type == ErrorType.Throttled:
-                        await HandleVndbErrors.ThrottledWaitAsync((ThrottledError)client.GetLastError(), 0);
-                        break;
-                    case null:
-                        HandleVndbErrors.HandleErrors(client.GetLastError());
-                        _didErrorOccur = true;
+                    if (stopwatch.Elapsed > maxTime)
+                    {
                         return null;
-                    default:
-                        return visualNovels.First();
-                }
+                    }
+                    VndbResponse<VisualNovel> visualNovels = await client.GetVisualNovelAsync(VndbFilters.Id.Equals(vnid), VndbFlags.FullVisualNovel);
+
+
+                    switch (visualNovels)
+                    {
+                        case null when client.GetLastError().Type == ErrorType.Throttled:
+                            await HandleVndbErrors.ThrottledWaitAsync((ThrottledError)client.GetLastError(), 0);
+                            break;
+                        case null:
+                            HandleVndbErrors.HandleErrors(client.GetLastError());
+                            _didErrorOccur = true;
+                            return null;
+                        default:
+                            return visualNovels.First();
+                    }
                 
+                }
+            }
+            catch (Exception e)
+            {
+                App.Logger.Warning(e, "Failed to Get Visual novel");
+                SentrySdk.CaptureException(e);
+                return null;
             }
         }
 
+        /// <summary>
+        /// Get character data
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="vnid"></param>
+        /// <param name="ro"></param>
+        /// <returns></returns>
         internal async Task<List<Character>> GetCharactersAsync(VndbSharp.Vndb client, uint vnid, RequestOptions ro)
         {
-            stopwatch.Restart();
-
-            int pageCount = 1;
-            bool shouldContinue = true;
-            List<Character> characterList = new List<Character>();
-            while (shouldContinue)
+            try
             {
-                ro.Page = pageCount;
-                VndbResponse<Character> characters = await client.GetCharacterAsync(VndbFilters.VisualNovel.Equals(vnid), VndbFlags.FullCharacter, ro);
+                stopwatch.Restart();
 
-                switch (characters)
+                int pageCount = 1;
+                bool shouldContinue = true;
+                List<Character> characterList = new List<Character>();
+                while (shouldContinue)
                 {
-                    case null when client.GetLastError().Type == ErrorType.Throttled:
-                        await HandleVndbErrors.ThrottledWaitAsync((ThrottledError)client.GetLastError(), 0);
-                        break;
-                    case null:
-                        HandleVndbErrors.HandleErrors(client.GetLastError());
-                        _didErrorOccur = true;
-                        return null;
-                    default:
+                    ro.Page = pageCount;
+                    VndbResponse<Character> characters = await client.GetCharacterAsync(VndbFilters.VisualNovel.Equals(vnid), VndbFlags.FullCharacter, ro);
+
+                    switch (characters)
                     {
-                        shouldContinue = characters.HasMore; //When false, it will exit the while loop
-                        characterList.AddRange(characters.Items);
-                        pageCount++;
-                        if (stopwatch.Elapsed > maxTime)
-                        {
+                        case null when client.GetLastError().Type == ErrorType.Throttled:
+                            await HandleVndbErrors.ThrottledWaitAsync((ThrottledError)client.GetLastError(), 0);
+                            break;
+                        case null:
+                            HandleVndbErrors.HandleErrors(client.GetLastError());
+                            _didErrorOccur = true;
                             return null;
+                        default:
+                        {
+                            shouldContinue = characters.HasMore; //When false, it will exit the while loop
+                            characterList.AddRange(characters.Items);
+                            pageCount++;
+                            if (stopwatch.Elapsed > maxTime)
+                            {
+                                return null;
+                            }
+                            break;
                         }
-                        break;
                     }
                 }
+                return characterList;
             }
-            return characterList;
+            catch (Exception e)
+            {
+                App.Logger.Warning(e, "Failed to Get Visual novel characters");
+                SentrySdk.CaptureException(e);
+                return null;
+            }
         }
 
     }
