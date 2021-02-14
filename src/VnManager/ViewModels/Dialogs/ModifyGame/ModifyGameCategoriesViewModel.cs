@@ -440,6 +440,7 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
             {
                 App.Logger.Warning(e, "Failed to check if max categories has been reached");
                 SentrySdk.CaptureException(e);
+                return false;
             }
         }
     }
