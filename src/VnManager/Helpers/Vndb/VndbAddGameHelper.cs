@@ -15,6 +15,11 @@ namespace VnManager.Helpers.Vndb
 {
     public static class VndbAddGameHelper
     {
+        /// <summary>
+        /// Create the userData entry for the database
+        /// </summary>
+        /// <param name="addGame"></param>
+        /// <returns></returns>
         public static async Task SetGameDataEntryAsync(AddGameVndbViewModel addGame)
         {
             if (addGame == null)

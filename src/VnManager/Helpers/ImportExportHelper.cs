@@ -9,6 +9,7 @@ using System.Text;
 using AdysTech.CredentialManager;
 using LiteDB;
 using LiteDB.Engine;
+using Sentry;
 
 namespace VnManager.Helpers
 {
@@ -20,6 +21,11 @@ namespace VnManager.Helpers
             Expand(Path.Combine(App.AssetDirPath, "example.vnbak"));
         }
 
+        /// <summary>
+        /// Creates a backup format for use with VnManager
+        /// </summary>
+        /// <param name="outputFile"></param>
+        /// <returns></returns>
         public static bool Compact(string outputFile)
         {
             try
@@ -67,67 +73,82 @@ namespace VnManager.Helpers
             }
             catch (Exception e)
             {
-                App.Logger.Error(e, "Failed to compact database");
+                App.Logger.Error(e, "Failed to compact into backup");
+                SentrySdk.CaptureException(e);
                 throw;
             }
 
         }
 
+        /// <summary>
+        /// Takes a .vnbak file, and extracts the contents
+        /// </summary>
+        /// <param name="inputFile"></param>
+        /// <returns></returns>
         public static bool Expand(string inputFile)
         {
-            if (!File.Exists(inputFile))
+            try
             {
-                return false;
-            }
-
-            if (File.Exists(@$"{App.AssetDirPath}\Import.db"))
-            {
-                File.Delete(@$"{App.AssetDirPath}\Import.db");
-            }
-            if (File.Exists(@$"{App.AssetDirPath}\Images.zip"))
-            {
-                File.Delete(@$"{App.AssetDirPath}\Images.zip");
-            }
-
-            var input = File.ReadAllBytes(inputFile);
-            char[] header = Encoding.UTF8.GetString(input.Take(7).ToArray()).ToCharArray();
-            var headerStr = new string(header);
-            if (headerStr != "VnMgBak")
-            {
-                return false;
-            }
-            var data = input.Skip(7);
-
-
-            const double thresholdRatio = 10;
-            using (var ms = new MemoryStream(data.ToArray()))
-            {
-                using (var archive = new ZipArchive(ms, ZipArchiveMode.Read))
+                if (!File.Exists(inputFile))
                 {
-                    var dbEntry = archive.Entries.FirstOrDefault(x => x.Name == "Import.db");
-                    if (dbEntry != null)
-                    {
-                        var compressionRatio = dbEntry.Length / dbEntry.CompressedLength;
-                        if (compressionRatio > thresholdRatio)
-                        {
-                            return false;
-                        }
+                    return false;
+                }
 
-                        dbEntry.ExtractToFile(@$"{App.AssetDirPath}\Import.db");
-                    }
-                    var imageEntry = archive.Entries.FirstOrDefault(x => x.Name == "Images.zip");
-                    if (imageEntry != null)
+                if (File.Exists(@$"{App.AssetDirPath}\Import.db"))
+                {
+                    File.Delete(@$"{App.AssetDirPath}\Import.db");
+                }
+                if (File.Exists(@$"{App.AssetDirPath}\Images.zip"))
+                {
+                    File.Delete(@$"{App.AssetDirPath}\Images.zip");
+                }
+
+                var input = File.ReadAllBytes(inputFile);
+                char[] header = Encoding.UTF8.GetString(input.Take(7).ToArray()).ToCharArray();
+                var headerStr = new string(header);
+                if (headerStr != "VnMgBak")
+                {
+                    return false;
+                }
+                var data = input.Skip(7);
+
+
+                const double thresholdRatio = 10;
+                using (var ms = new MemoryStream(data.ToArray()))
+                {
+                    using (var archive = new ZipArchive(ms, ZipArchiveMode.Read))
                     {
-                        var compressionRatio = imageEntry.Length / imageEntry.CompressedLength;
-                        if (compressionRatio > thresholdRatio)
+                        var dbEntry = archive.Entries.FirstOrDefault(x => x.Name == "Import.db");
+                        if (dbEntry != null)
                         {
-                            return false;
+                            var compressionRatio = dbEntry.Length / dbEntry.CompressedLength;
+                            if (compressionRatio > thresholdRatio)
+                            {
+                                return false;
+                            }
+
+                            dbEntry.ExtractToFile(@$"{App.AssetDirPath}\Import.db");
                         }
-                        imageEntry.ExtractToFile(@$"{App.AssetDirPath}\Images.zip");
+                        var imageEntry = archive.Entries.FirstOrDefault(x => x.Name == "Images.zip");
+                        if (imageEntry != null)
+                        {
+                            var compressionRatio = imageEntry.Length / imageEntry.CompressedLength;
+                            if (compressionRatio > thresholdRatio)
+                            {
+                                return false;
+                            }
+                            imageEntry.ExtractToFile(@$"{App.AssetDirPath}\Images.zip");
+                        }
                     }
                 }
+                return true;
             }
-            return true;
+            catch (Exception e)
+            {
+                App.Logger.Error(e, "Failed to expand backup");
+                SentrySdk.CaptureException(e);
+                throw;
+            }
         }
         
         private class BackupFormat

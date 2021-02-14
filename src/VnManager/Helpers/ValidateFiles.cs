@@ -95,6 +95,11 @@ namespace VnManager.Helpers
             }
         }
 
+        /// <summary>
+        /// Ends with .jpg or .png
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
         public static bool EndsWithJpgOrPng(string path)
         {
             try

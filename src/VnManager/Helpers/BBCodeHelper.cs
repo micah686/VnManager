@@ -9,7 +9,9 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Documents;
 using System.Windows.Navigation;
+using Sentry;
 using VndbSharp.Models.Common;
+using Span = System.Windows.Documents.Span;
 
 namespace VnManager.Helpers
 {
@@ -27,20 +29,29 @@ namespace VnManager.Helpers
         /// <returns>List of InLines. This needs to be bound using the Textblock Inline Binding Extension</returns>
         public static Inline[] Helper(string text)
         {
-            string modifiedText = text;
-            if (string.IsNullOrEmpty(modifiedText))
+            try
             {
-                return new Inline[] {new Span()};
-            }
-            modifiedText = ReplaceSpoilers(text);
-            modifiedText = ReplaceVndbLocalUrls(modifiedText);
-            modifiedText = StripUnneededBbCode(modifiedText);
-            modifiedText = ReplaceUrls(modifiedText);
+                string modifiedText = text;
+                if (string.IsNullOrEmpty(modifiedText))
+                {
+                    return new Inline[] {new Span()};
+                }
+                modifiedText = ReplaceSpoilers(text);
+                modifiedText = ReplaceVndbLocalUrls(modifiedText);
+                modifiedText = StripUnneededBbCode(modifiedText);
+                modifiedText = ReplaceUrls(modifiedText);
             
-            var inlineList = FormatUrlsInLine(modifiedText);
+                var inlineList = FormatUrlsInLine(modifiedText);
 
 
-            return inlineList.ToArray();
+                return inlineList.ToArray();
+            }
+            catch (Exception e)
+            {
+                App.Logger.Warning(e, "Failed to format BBCode");
+                SentrySdk.CaptureException(e);
+                return new Inline[0];
+            }
         }
 
 
@@ -74,6 +85,7 @@ namespace VnManager.Helpers
             catch (Exception ex)
             {
                 App.Logger.Error(ex, "failed to replace spoilers");
+                SentrySdk.CaptureException(ex);
                 throw;
             }
         }
@@ -116,6 +128,7 @@ namespace VnManager.Helpers
             catch (Exception ex)
             {
                 App.Logger.Error(ex, "failed to replace vndb local url");
+                SentrySdk.CaptureException(ex);
                 throw;
             }
         }

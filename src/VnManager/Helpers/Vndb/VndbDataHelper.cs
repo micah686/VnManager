@@ -12,6 +12,7 @@ using System.Windows.Media.Imaging;
 using System.Xml.Serialization;
 using AdysTech.CredentialManager;
 using LiteDB;
+using Sentry;
 using Stylet;
 using VnManager.Models;
 using VnManager.Models.Db;
@@ -22,89 +23,145 @@ namespace VnManager.Helpers.Vndb
 {
     public static class VndbDataHelper
     {
-        
+        /// <summary>
+        /// Load Vndb Relations
+        /// </summary>
+        /// <returns></returns>
         public static BindableCollection<VndbInfoViewModel.VnRelationsBinding> LoadRelations()
         {
-            if (VndbContentViewModel.VnId == 0)
+            try
             {
-                return new BindableCollection<VndbInfoViewModel.VnRelationsBinding>();
-            }
-            var cred = CredentialManager.GetCredentials(App.CredDb);
-            if (cred == null || cred.UserName.Length < 1)
-            {
-                return new BindableCollection<VndbInfoViewModel.VnRelationsBinding>();
-            }
-            using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
-            {
-                var relationCollection = new BindableCollection<VndbInfoViewModel.VnRelationsBinding>();
-                var vnRelations = db.GetCollection<VnInfoRelations>(DbVnInfo.VnInfo_Relations.ToString()).Query()
-                    .Where(x => x.VnId == VndbContentViewModel.VnId && x.Official.ToUpper(CultureInfo.InvariantCulture) == "YES").ToList();
-                foreach (var relation in vnRelations)
+                if (VndbContentViewModel.VnId == 0)
                 {
-                    var entry = new VndbInfoViewModel.VnRelationsBinding { RelTitle = relation.Title, RelRelation = relation.Relation };
-                    relationCollection.Add(entry);
+                    return new BindableCollection<VndbInfoViewModel.VnRelationsBinding>();
                 }
+                var cred = CredentialManager.GetCredentials(App.CredDb);
+                if (cred == null || cred.UserName.Length < 1)
+                {
+                    return new BindableCollection<VndbInfoViewModel.VnRelationsBinding>();
+                }
+                using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
+                {
+                    var relationCollection = new BindableCollection<VndbInfoViewModel.VnRelationsBinding>();
+                    var vnRelations = db.GetCollection<VnInfoRelations>(DbVnInfo.VnInfo_Relations.ToString()).Query()
+                        .Where(x => x.VnId == VndbContentViewModel.VnId && x.Official.ToUpper(CultureInfo.InvariantCulture) == "YES").ToList();
+                    foreach (var relation in vnRelations)
+                    {
+                        var entry = new VndbInfoViewModel.VnRelationsBinding { RelTitle = relation.Title, RelRelation = relation.Relation };
+                        relationCollection.Add(entry);
+                    }
 
-                return relationCollection;
-
+                    return relationCollection;
+                }
+            }
+            catch (Exception e)
+            {
+                App.Logger.Warning(e, "Failed to load vndb relations");
+                SentrySdk.CaptureException(e);
+                return new BindableCollection<VndbInfoViewModel.VnRelationsBinding>();
             }
         }
 
+        /// <summary>
+        /// Load Vndb Links
+        /// </summary>
+        /// <returns></returns>
         public static Tuple<string, Visibility> LoadLinks()
         {
-            var cred = CredentialManager.GetCredentials(App.CredDb);
-            if (cred == null || cred.UserName.Length < 1)
+            try
             {
-                return new Tuple<string, Visibility>(string.Empty, Visibility.Collapsed);
+                var cred = CredentialManager.GetCredentials(App.CredDb);
+                if (cred == null || cred.UserName.Length < 1)
+                {
+                    return new Tuple<string, Visibility>(string.Empty, Visibility.Collapsed);
+                }
+                using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
+                var dbUserData = db.GetCollection<VnInfoLinks>(DbVnInfo.VnInfo_Links.ToString()).Query()
+                    .Where(x => x.VnId == VndbContentViewModel.VnId).FirstOrDefault();
+                if (dbUserData != null && !string.IsNullOrEmpty(dbUserData.Wikidata))
+                {
+                    var wikiLink = GetWikipediaLink(dbUserData.Wikidata);
+                    var wikiLinkTuple = !string.IsNullOrEmpty(wikiLink) ? 
+                        new Tuple<string, Visibility>(wikiLink, Visibility.Visible) : new Tuple<string, Visibility>(string.Empty, Visibility.Collapsed);
+                    return wikiLinkTuple;
+                }
+                else
+                {
+                    return new Tuple<string, Visibility>(string.Empty, Visibility.Collapsed);
+                }
             }
-            using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
-            var dbUserData = db.GetCollection<VnInfoLinks>(DbVnInfo.VnInfo_Links.ToString()).Query()
-                .Where(x => x.VnId == VndbContentViewModel.VnId).FirstOrDefault();
-            if (dbUserData != null && !string.IsNullOrEmpty(dbUserData.Wikidata))
+            catch (Exception e)
             {
-                var wikiLink = GetWikipediaLink(dbUserData.Wikidata);
-                var wikiLinkTuple = !string.IsNullOrEmpty(wikiLink) ? new Tuple<string, Visibility>(wikiLink, Visibility.Visible) : new Tuple<string, Visibility>(string.Empty, Visibility.Collapsed);
-                return wikiLinkTuple;
-            }
-            else
-            {
+                App.Logger.Warning(e, "Failed to load vndb Links");
+                SentrySdk.CaptureException(e);
                 return new Tuple<string, Visibility>(string.Empty, Visibility.Collapsed);
             }
         }
 
+        /// <summary>
+        /// Get wikipedia link from WikiData ID
+        /// </summary>
+        /// <param name="wikiDataId"></param>
+        /// <returns></returns>
         private static string GetWikipediaLink(string wikiDataId)
         {
-            var xmlResult = new WebClient().
-                DownloadString(@$"https://www.wikidata.org/w/api.php?action=wbgetentities&format=xml&props=sitelinks&ids={wikiDataId}&sitefilter=enwiki");
-            XmlSerializer serializer = new XmlSerializer(typeof(WikiDataApi), new XmlRootAttribute("api"));
-            StringReader stringReader = new StringReader(xmlResult);
-            var xmlData = (WikiDataApi)serializer.Deserialize(stringReader);
-            var wikiTitle = xmlData.WdEntities?.WdEntity?.WdSitelinks?.WdSitelink?.Title;
-            return wikiTitle;
+            try
+            {
+                var xmlResult = new WebClient().
+                    DownloadString(@$"https://www.wikidata.org/w/api.php?action=wbgetentities&format=xml&props=sitelinks&ids={wikiDataId}&sitefilter=enwiki");
+                XmlSerializer serializer = new XmlSerializer(typeof(WikiDataApi), new XmlRootAttribute("api"));
+                StringReader stringReader = new StringReader(xmlResult);
+                var xmlData = (WikiDataApi)serializer.Deserialize(stringReader);
+                var wikiTitle = xmlData.WdEntities?.WdEntity?.WdSitelinks?.WdSitelink?.Title;
+                return wikiTitle;
+            }
+            catch (Exception e)
+            {
+                App.Logger.Warning(e, "Failed to get wikipedia link");
+                SentrySdk.CaptureException(e);
+                return string.Empty;
+            }
         }
 
 
-
+        /// <summary>
+        /// Load Collection of languages as BitmapSource
+        /// </summary>
+        /// <param name="vnInfoEntry"></param>
+        /// <returns></returns>
         public static BindableCollection<BitmapSource> LoadLanguages(ref VnInfo vnInfoEntry)
         {
-            if (vnInfoEntry != null)
+            try
             {
-                var languageCollection = new BindableCollection<BitmapSource>();
-                foreach (var language in GetLanguages(vnInfoEntry.Languages))
+                if (vnInfoEntry != null)
                 {
-                    languageCollection.Add(new BitmapImage(new Uri(language)));
-                }
+                    var languageCollection = new BindableCollection<BitmapSource>();
+                    foreach (var language in GetLanguages(vnInfoEntry.Languages))
+                    {
+                        languageCollection.Add(new BitmapImage(new Uri(language)));
+                    }
 
-                return languageCollection;
+                    return languageCollection;
+                }
+                else
+                {
+                    return new BindableCollection<BitmapSource>();
+                }
             }
-            else
+            catch (Exception e)
             {
+                App.Logger.Warning(e, "Failed to load relations");
+                SentrySdk.CaptureException(e);
                 return new BindableCollection<BitmapSource>();
             }
             
         }
 
-
+        /// <summary>
+        /// Get list of languages
+        /// </summary>
+        /// <param name="csv"></param>
+        /// <returns></returns>
         private static IEnumerable<string> GetLanguages(string csv)
         {
             string[] list = csv.Split(',');

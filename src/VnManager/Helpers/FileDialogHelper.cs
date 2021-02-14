@@ -20,6 +20,12 @@ namespace VnManager.Helpers
             Multiselect = false
         };
 
+        /// <summary>
+        /// Browse for Exe
+        /// </summary>
+        /// <param name="dialogService"></param>
+        /// <param name="ownerVm"></param>
+        /// <returns></returns>
         public static string BrowseExe(IDialogService dialogService, object ownerVm)
         {
             var settings = DefaultOpenFileDialogSettings;
@@ -42,6 +48,12 @@ namespace VnManager.Helpers
             return string.Empty;
         }
 
+        /// <summary>
+        /// Browse Icon
+        /// </summary>
+        /// <param name="dialogService"></param>
+        /// <param name="ownerVm"></param>
+        /// <returns></returns>
         public static string BrowseIcon(IDialogService dialogService, object ownerVm)
         {
             var settings = DefaultOpenFileDialogSettings;
@@ -64,6 +76,13 @@ namespace VnManager.Helpers
             return string.Empty;
         }
 
+        /// <summary>
+        /// Browse Cover
+        /// </summary>
+        /// <param name="dialogService"></param>
+        /// <param name="windowManager"></param>
+        /// <param name="ownerVm"></param>
+        /// <returns></returns>
         public static string BrowseCover(IDialogService dialogService, IWindowManager windowManager, object ownerVm)
         {
             var settings = DefaultOpenFileDialogSettings;

@@ -273,7 +273,11 @@ namespace VnManager.Helpers
             }
         }
 
-        
+        /// <summary>
+        /// Create an icon from the path
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
         public static BitmapSource CreateIcon(string path)
         {
             if (path == null|| !File.Exists(path))

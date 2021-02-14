@@ -4,6 +4,7 @@
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using Sentry;
 using VndbSharp.Interfaces;
 using VndbSharp.Models.Errors;
 using VnManager.ViewModels.UserControls;
@@ -63,25 +64,33 @@ namespace VnManager.Helpers.Vndb
         /// <returns></returns>
         public static async Task ThrottledWaitAsync(ThrottledError throttled, int counter)
         {
-            if (throttled == null)
+            try
             {
-                return;
-            }
-            const int bufferWait = 5;
-            var minWait = TimeSpan.FromSeconds((throttled.MinimumWait - DateTime.Now).TotalSeconds);
-            var maxWait = TimeSpan.FromSeconds((throttled.FullWait - DateTime.Now).TotalSeconds);
-            Debug.WriteLine($"Vndb API throttled! You need to wait {minWait.Seconds} seconds minimum or {maxWait.Seconds} seconds maximum before issuing new commands\nErrorCounter:{counter}");
-            App.Logger.Warning($"Vndb API throttled! You need to wait {minWait.Seconds} seconds minimum or {maxWait.Seconds} seconds maximum before issuing new commands");
+                if (throttled == null)
+                {
+                    return;
+                }
+                const int bufferWait = 5;
+                var minWait = TimeSpan.FromSeconds((throttled.MinimumWait - DateTime.Now).TotalSeconds);
+                var maxWait = TimeSpan.FromSeconds((throttled.FullWait - DateTime.Now).TotalSeconds);
+                Debug.WriteLine($"Vndb API throttled! You need to wait {minWait.Seconds} seconds minimum or {maxWait.Seconds} seconds maximum before issuing new commands\nErrorCounter:{counter}");
+                App.Logger.Warning($"Vndb API throttled! You need to wait {minWait.Seconds} seconds minimum or {maxWait.Seconds} seconds maximum before issuing new commands");
 
-            double waitTime = counter == 0 ? minWait.TotalSeconds : TimeSpan.FromSeconds(5).TotalSeconds;            
-            if (counter >= 1)
-            {
-                waitTime = waitTime > maxWait.TotalSeconds ? maxWait.TotalSeconds : minWait.TotalSeconds + bufferWait;
+                double waitTime = counter == 0 ? minWait.TotalSeconds : TimeSpan.FromSeconds(5).TotalSeconds;            
+                if (counter >= 1)
+                {
+                    waitTime = waitTime > maxWait.TotalSeconds ? maxWait.TotalSeconds : minWait.TotalSeconds + bufferWait;
+                }
+                waitTime = Math.Abs(waitTime);
+                var timeSpan = TimeSpan.FromSeconds(waitTime);
+                App.Logger.Warning($"Please wait {timeSpan.TotalMinutes} minutes and {timeSpan.TotalSeconds} seconds");
+                await Task.Delay(timeSpan);
             }
-            waitTime = Math.Abs(waitTime);
-            var timeSpan = TimeSpan.FromSeconds(waitTime);
-            App.Logger.Warning($"Please wait {timeSpan.TotalMinutes} minutes and {timeSpan.TotalSeconds} seconds");
-            await Task.Delay(timeSpan);
+            catch (Exception e)
+            {
+                App.Logger.Error(e, "Failed to wait for throttled to be complete");
+                SentrySdk.CaptureException(e);
+            }
             
         }
     }

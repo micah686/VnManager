@@ -20,17 +20,24 @@ namespace VnManager.Helpers
         /// </summary>
         public static void CreateDefaultConfig()
         {
-            if (!File.Exists(ConfigFile))
+            try
             {
-                var settings = new UserSettings();
-                UserSettingsVndb vndb = new UserSettingsVndb
+                if (!File.Exists(ConfigFile))
                 {
-                    Spoiler = SpoilerLevel.None
-                };
-                settings.SettingsVndb = vndb;
-                var json = JsonConvert.SerializeObject(settings);
-                File.WriteAllText(ConfigFile, json);
-                App.UserSettings = settings;
+                    var settings = new UserSettings();
+                    UserSettingsVndb vndb = new UserSettingsVndb
+                    {
+                        Spoiler = SpoilerLevel.None
+                    };
+                    settings.SettingsVndb = vndb;
+                    var json = JsonConvert.SerializeObject(settings);
+                    File.WriteAllText(ConfigFile, json);
+                    App.UserSettings = settings;
+                }
+            }
+            catch (Exception e)
+            {
+                App.Logger.Error(e, "Failed to create default config file");
             }
 
         }
