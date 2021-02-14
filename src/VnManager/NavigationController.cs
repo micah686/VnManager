@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.
 
 using System;
+using Sentry;
 using Stylet;
 using VnManager.Models.Db.User;
 using VnManager.ViewModels.UserControls;
@@ -29,19 +30,41 @@ namespace VnManager
         private readonly Func<NoSourceMainViewModel> _noSourceFactory;
         public INavigationControllerDelegate Delegate { get; set; }
 
+        /// <summary>
+        /// Main navigation controller for changing the main screen
+        /// </summary>
+        /// <param name="mainGrid"></param>
+        /// <param name="vndbHost"></param>
+        /// <param name="noSource"></param>
         public NavigationController(Func<MainGridViewModel> mainGrid, Func<VndbContentViewModel> vndbHost, Func<NoSourceMainViewModel> noSource)
         {
-            this._mainGridFactory = mainGrid ?? throw new ArgumentNullException(nameof(mainGrid));
-            this._vndbHostFactory = vndbHost;
-            this._noSourceFactory = noSource;
+            try
+            {
+                this._mainGridFactory = mainGrid;
+                this._vndbHostFactory = vndbHost;
+                this._noSourceFactory = noSource;
+            }
+            catch (Exception e)
+            {
+                App.Logger.Error(e, "Failed to init NavigationController");
+                SentrySdk.CaptureException(e);
+                throw;
+            }
+            
         }
 
-        
+        /// <summary>
+        /// Change the view to the MainGrid
+        /// </summary>
         public void NavigateToMainGrid()
         {
             this.Delegate?.NavigateTo(this._mainGridFactory());
         }
 
+        /// <summary>
+        /// Change the view to the selected Vndb game page
+        /// </summary>
+        /// <param name="selectedGame"></param>
         public void NavigateVndbHost(UserDataGames selectedGame)
         {
             var vm = this._vndbHostFactory();
@@ -49,6 +72,10 @@ namespace VnManager
             this.Delegate?.NavigateTo(vm);
         }
 
+        /// <summary>
+        /// Change the view to the selected NoSource game page
+        /// </summary>
+        /// <param name="selectedGame"></param>
         public void NavigateToNoSource(UserDataGames selectedGame)
         {
             var vm = this._noSourceFactory();

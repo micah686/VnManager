@@ -8,6 +8,7 @@ using System.Linq;
 using System.Windows.Media.Imaging;
 using AdysTech.CredentialManager;
 using LiteDB;
+using Sentry;
 using Stylet;
 using VnManager.Helpers;
 using VnManager.Models.Db;
@@ -60,21 +61,36 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             }
         }
 
+        /// <summary>
+        /// Get the list of images to bind to the ScreenSHotView
+        /// </summary>
+        /// <returns></returns>
         private List<BindingImage> LoadScreenshotList()
         {
-            var cred = CredentialManager.GetCredentials(App.CredDb);
-            if (cred == null || cred.UserName.Length < 1)
+            try
             {
+                var cred = CredentialManager.GetCredentials(App.CredDb);
+                if (cred == null || cred.UserName.Length < 1)
+                {
+                    return new List<BindingImage>();
+                }
+                using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
+                var dbUserData = db.GetCollection<VnInfoScreens>(DbVnInfo.VnInfo_Screens.ToString()).Query()
+                    .Where(x => x.VnId == VndbContentViewModel.VnId).ToEnumerable();
+                var scrList = dbUserData.Select(item => new BindingImage { ImageLink = item.ImageLink, Rating = item.ImageRating }).ToList();
+                return scrList;
+            }
+            catch (Exception e)
+            {
+                App.Logger.Warning(e, "Failed to load Screenshot list Vndb");
+                SentrySdk.CaptureException(e);
                 return new List<BindingImage>();
             }
-            using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
-            var dbUserData = db.GetCollection<VnInfoScreens>(DbVnInfo.VnInfo_Screens.ToString()).Query()
-                .Where(x => x.VnId == VndbContentViewModel.VnId).ToEnumerable();
-            var scrList = dbUserData.Select(item => new BindingImage { ImageLink = item.ImageLink, Rating = item.ImageRating }).ToList();
-            return scrList;
         }
 
-
+        /// <summary>
+        /// Loads the full sized screenshot, blurring if it needs to
+        /// </summary>
         private void LoadLargeScreenshot()
         {
             const int blurWeight = 20;
@@ -108,63 +124,90 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             catch (Exception e)
             {
                 App.Logger.Error(e, "Failed to load large screenshot");
-                throw;
+                SentrySdk.CaptureException(e);
             }
 
         }
 
+        /// <summary>
+        /// Binds the collection of thumbnails to the Vndb Screenshot View
+        /// </summary>
         private void BindScreenshotCollection()
         {
-            const int blurWeight = 10;
-            List<BindingImage> screenshotList = _scrList;
-            List<BindingImage> toDelete = new List<BindingImage>();
-            foreach (var item in screenshotList)
+            try
             {
-                BitmapSource image;
-                if (screenshotList.Count < 1)
+                const int blurWeight = 10;
+                List<BindingImage> screenshotList = _scrList;
+                List<BindingImage> toDelete = new List<BindingImage>();
+                foreach (var item in screenshotList)
                 {
-                    return;
-                }
-                string thumbPath = $@"{App.AssetDirPath}\sources\vndb\images\screenshots\{VndbContentViewModel.VnId}\thumbs\{Path.GetFileName(item.ImageLink)}";
-                string imagePath = $@"{App.AssetDirPath}\sources\vndb\images\screenshots\{VndbContentViewModel.VnId}\{Path.GetFileName(item.ImageLink)}";
+                    BitmapSource image;
+                    if (screenshotList.Count < 1)
+                    {
+                        return;
+                    }
+                    string thumbPath = $@"{App.AssetDirPath}\sources\vndb\images\screenshots\{VndbContentViewModel.VnId}\thumbs\{Path.GetFileName(item.ImageLink)}";
+                    string imagePath = $@"{App.AssetDirPath}\sources\vndb\images\screenshots\{VndbContentViewModel.VnId}\{Path.GetFileName(item.ImageLink)}";
 
-                bool rating = NsfwHelper.RawRatingIsNsfw(item.Rating);
-                bool userIsNsfw = NsfwHelper.UserIsNsfw(item.Rating);
-                if (rating && File.Exists($"{thumbPath}.aes") && File.Exists($"{imagePath}.aes"))
-                {
-                    var imgBytes = File.ReadAllBytes($"{thumbPath}.aes");
-                    var imgStream = Secure.DecStreamToStream(new MemoryStream(imgBytes));
-                    image = ImageHelper.CreateBitmapFromStream(imgStream);
-                    ScreenshotCollection.Add(CreateBlurBindingImage(image, userIsNsfw,blurWeight));
+                    bool rating = NsfwHelper.RawRatingIsNsfw(item.Rating);
+                    bool userIsNsfw = NsfwHelper.UserIsNsfw(item.Rating);
+                    if (rating && File.Exists($"{thumbPath}.aes") && File.Exists($"{imagePath}.aes"))
+                    {
+                        var imgBytes = File.ReadAllBytes($"{thumbPath}.aes");
+                        var imgStream = Secure.DecStreamToStream(new MemoryStream(imgBytes));
+                        image = ImageHelper.CreateBitmapFromStream(imgStream);
+                        ScreenshotCollection.Add(CreateBlurBindingImage(image, userIsNsfw,blurWeight));
+                    }
+                    else if (rating == false && File.Exists(thumbPath) && File.Exists(imagePath))
+                    {
+                        image = ImageHelper.CreateBitmapFromPath(thumbPath);
+                        ScreenshotCollection.Add(CreateBlurBindingImage(image, userIsNsfw, blurWeight));
+                    }
+                    else
+                    {
+                        toDelete.Add(item);
+
+                    }
                 }
-                else if (rating == false && File.Exists(thumbPath) && File.Exists(imagePath))
+
+                foreach (var delete in toDelete)
                 {
-                    image = ImageHelper.CreateBitmapFromPath(thumbPath);
-                    ScreenshotCollection.Add(CreateBlurBindingImage(image, userIsNsfw, blurWeight));
+                    _scrList.Remove(delete);
+                }
+            }
+            catch (Exception e)
+            {
+                App.Logger.Error(e, "Failed to bind Screenshot Collection");
+                SentrySdk.CaptureException(e);
+            }
+        }
+
+        /// <summary>
+        /// Creates a blurred image if the image is Nsfw
+        /// </summary>
+        /// <param name="image"></param>
+        /// <param name="isNsfw"></param>
+        /// <param name="blurRadius"></param>
+        /// <returns></returns>
+        private BindingImage CreateBlurBindingImage(BitmapSource image, bool isNsfw, int blurRadius)
+        {
+            try
+            {
+                if (isNsfw == false)
+                {
+                    return new BindingImage { Image = image, IsNsfw = true };
                 }
                 else
                 {
-                    toDelete.Add(item);
-
+                    var blurImage = ImageHelper.BlurImage(image, blurRadius);
+                    return new BindingImage { Image = blurImage, IsNsfw = true };
                 }
             }
-
-            foreach (var delete in toDelete)
+            catch (Exception e)
             {
-                _scrList.Remove(delete);
-            }
-        }
-
-        private BindingImage CreateBlurBindingImage(BitmapSource image, bool isNsfw, int blurRadius)
-        {
-            if (isNsfw == false)
-            {
-                return new BindingImage { Image = image, IsNsfw = true };
-            }
-            else
-            {
-                var blurImage = ImageHelper.BlurImage(image, blurRadius);
-                return new BindingImage { Image = blurImage, IsNsfw = true };
+                App.Logger.Warning(e, "Failed to create BlurBinding image");
+                SentrySdk.CaptureException(e);
+                return new BindingImage();
             }
         }
 

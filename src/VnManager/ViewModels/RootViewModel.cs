@@ -6,9 +6,12 @@ using Stylet;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Media;
+using Sentry;
+using VnManager.Initializers;
 using VnManager.ViewModels.Dialogs;
 using VnManager.ViewModels.UserControls;
 using VnManager.ViewModels.Windows;
+using Colors = AdonisUI.Colors;
 
 namespace VnManager.ViewModels
 {
@@ -85,74 +88,96 @@ namespace VnManager.ViewModels
 
         #endregion
 
-        #region AboutPressed
-        private bool _aboutPressed;
-        public bool AboutPressed
-        {
-            get => _aboutPressed;
-            set
-            {
-                if (_windowButtonPressedCounter == 0 || _windowButtonPressedCounter > 0 && !value)
-                {
-                    SetAndNotify(ref _aboutPressed, value);
-                    if (_aboutPressed)
-                    {
-                        _windowButtonPressedCounter += 1;
-                        ActivateAboutClick();
-                    }
-                    else
-                    {
-                        _windowButtonPressedCounter -= 1;
-                        ActivateMainClick();
-                    }
-                }
-            }
-        }
-        #endregion
-
-
 
 #if DEBUG
         private readonly Func<DebugViewModel> _debugVmFactory;
+        /// <summary>
+        /// Main Root Window that all elements are added to
+        /// </summary>
+        /// <param name="windowManager"></param>
+        /// <param name="mainGridFactory"></param>
+        /// <param name="settingsFactory"></param>
+        /// <param name="import"></param>
+        /// <param name="enterPass"></param>
+        /// <param name="about"></param>
+        /// <param name="debugFactory"></param>
         public RootViewModel(IWindowManager windowManager, Func<MainGridViewModel> mainGridFactory, Func<SettingsViewModel> settingsFactory, 
             Func<ImportViewModel> import, Func<SetEnterPasswordViewModel> enterPass, Func<AboutViewModel> about, Func<DebugViewModel> debugFactory)
         {
-            _windowManager = windowManager;
-            _mainGridVmFactory = mainGridFactory;
-            _settingsVmFactory = settingsFactory;
-            _aboutVmFactory = about;
+            try
+            {
+                _windowManager = windowManager;
+                _mainGridVmFactory = mainGridFactory;
+                _settingsVmFactory = settingsFactory;
+                _aboutVmFactory = about;
 
-            _importVm = import;
-            _enterPassVm = enterPass;
-            _debugVmFactory = debugFactory;
+                _importVm = import;
+                _enterPassVm = enterPass;
+                _debugVmFactory = debugFactory;
             
-            StatusBarPage = new StatusBarViewModel();
+                StatusBarPage = new StatusBarViewModel();
+            }
+            catch (Exception e)
+            {
+                App.Logger.Error(e, "Failed to create RootViewModel");
+                SentrySdk.CaptureException(e);
+                throw;
+            }
         }
 #else
+        /// <summary>
+        /// Main Root Window that all elements are added to
+        /// </summary>
+        /// <param name="windowManager"></param>
+        /// <param name="mainGridFactory"></param>
+        /// <param name="settingsFactory"></param>
+        /// <param name="import"></param>
+        /// <param name="enterPass"></param>
+        /// <param name="about"></param>
         public RootViewModel(IWindowManager windowManager, Func<MainGridViewModel> mainGridFactory, Func<SettingsViewModel> settingsFactory,
             Func<ImportViewModel> import, Func<SetEnterPasswordViewModel> enterPass, Func<AboutViewModel> about)
         {
-            _windowManager = windowManager;
-            _mainGridVmFactory = mainGridFactory;
-            _settingsVmFactory = settingsFactory;
-            _aboutVmFactory = about;
+            try
+            {
+                _windowManager = windowManager;
+                _mainGridVmFactory = mainGridFactory;
+                _settingsVmFactory = settingsFactory;
+                _aboutVmFactory = about;
 
-            _importVm = import;
-            _enterPassVm = enterPass;
+                _importVm = import;
+                _enterPassVm = enterPass;
 
-            StatusBarPage = new StatusBarViewModel();
+                StatusBarPage = new StatusBarViewModel();
+            }
+            catch (Exception e)
+            {
+                App.Logger.Error(e, "Failed to create RootViewModel");
+                SentrySdk.CaptureException(e);
+                throw;
+            }
         }
 #endif
 
 
-
+        /// <summary>
+        /// Does checks when the actual app is "Drawn"
+        /// </summary>
         protected override void OnViewLoaded()
         {
-            _ = new Initializers.Startup(_windowManager, _importVm, _enterPassVm);
-            var mainGridVm = _mainGridVmFactory();
-            ActivateItem(mainGridVm);
-            var result = Application.Current.TryFindResource(AdonisUI.Colors.ForegroundColor);
-            SettingsIconColor = result == null ? System.Windows.Media.Brushes.LightSteelBlue : new SolidColorBrush((System.Windows.Media.Color)result);
+            try
+            {
+                _ = new Startup(_windowManager, _importVm, _enterPassVm);
+                var mainGridVm = _mainGridVmFactory();
+                ActivateItem(mainGridVm);
+                var result = Application.Current.TryFindResource(Colors.ForegroundColor);
+                SettingsIconColor = result == null ? Brushes.LightSteelBlue : new SolidColorBrush((Color)result);
+            }
+            catch (Exception e)
+            {
+                App.Logger.Error(e, "Failed OnViewLoaded on RootViewModel");
+                SentrySdk.CaptureException(e);
+                throw;
+            }
         }
 
         /// <summary>
@@ -168,20 +193,57 @@ namespace VnManager.ViewModels
             return formatted;
         }
 
-        
+        /// <summary>
+        /// Activates Settings View. Linked to title buttons
+        /// <see cref="ActivateSettingsClick"/>
+        /// </summary>
         public void ActivateSettingsClick()
         {
-            ActivateItem(_settingsVmFactory());
+            try
+            {
+                ActivateItem(_settingsVmFactory());
+            }
+            catch (Exception e)
+            {
+                App.Logger.Error(e, "Failed to activate Settings View");
+                SentrySdk.CaptureException(e);
+                throw;
+            }
         }
-
+        /// <summary>
+        /// Activates About Window. Linked to title buttons
+        /// <see cref="ActivateAboutClick"/>
+        /// </summary>
         public void ActivateAboutClick()
         {
-            _windowManager.ShowDialog(_aboutVmFactory());
+            try
+            {
+                _windowManager.ShowDialog(_aboutVmFactory());
+            }
+            catch (Exception e)
+            {
+                App.Logger.Error(e, "Failed to activate About View");
+                SentrySdk.CaptureException(e);
+                throw;
+            }
         }
-        
+
+        /// <summary>
+        /// Activates Main Window.
+        /// <see cref="ActivateMainClick"/>
+        /// </summary>
         public void ActivateMainClick()
         {
-            ActivateItem(_mainGridVmFactory());
+            try
+            {
+                ActivateItem(_mainGridVmFactory());
+            }
+            catch (Exception e)
+            {
+                App.Logger.Error(e, "Failed to activate Main View");
+                SentrySdk.CaptureException(e);
+                throw;
+            }
         }
 
 
@@ -194,9 +256,22 @@ namespace VnManager.ViewModels
 #endif
         }
 
+        /// <summary>
+        /// Navigates to a given Screen
+        /// </summary>
+        /// <param name="screen">Screen to navigate to</param>
         public void NavigateTo(IScreen screen)
         {
-            this.ActivateItem(screen);
+            try
+            {
+                this.ActivateItem(screen);
+            }
+            catch (Exception e)
+            {
+                App.Logger.Error(e, "Failed to Navigate To specified View");
+                SentrySdk.CaptureException(e);
+                throw;
+            }
         }
     }
 }

@@ -10,6 +10,7 @@ using VnManager.Helpers;
 using AdysTech.CredentialManager;
 using MvvmDialogs;
 using MvvmDialogs.FrameworkDialogs.FolderBrowser;
+using Sentry;
 using VnManager.ViewModels.Dialogs;
 
 namespace VnManager.ViewModels.UserControls
@@ -26,6 +27,12 @@ namespace VnManager.ViewModels.UserControls
         private readonly IWindowManager _windowManager;
         private readonly IDialogService _dialogService;
         private readonly Func<DeleteEverythingViewModel> _deleteEverythingFactory;
+        /// <summary>
+        /// Main instance of the Settings View
+        /// </summary>
+        /// <param name="windowManager"></param>
+        /// <param name="dialogService"></param>
+        /// <param name="deleteEverything"></param>
         public SettingsViewModel(IWindowManager windowManager, IDialogService dialogService, Func<DeleteEverythingViewModel> deleteEverything)
         {
             _windowManager = windowManager;
@@ -36,78 +43,115 @@ namespace VnManager.ViewModels.UserControls
             FillSpoilerDropdown();
         }
 
+        /// <summary>
+        /// Fill the Sexual dropdown list with available values
+        /// </summary>
         private void FillSexualDropdown()
         {
-            if (App.UserSettings.SettingsVndb != null)
+            try
             {
-                switch (App.UserSettings.MaxSexualRating)
+                if (App.UserSettings.SettingsVndb != null)
                 {
-                    case SexualRating.Safe:
-                        MaxSexualIndex = (int)SexualRating.Safe;
-                        break;
-                    case SexualRating.Suggestive:
-                        MaxSexualIndex = (int)SexualRating.Suggestive;
-                        break;
-                    case SexualRating.Explicit:
-                        MaxSexualIndex = (int)SexualRating.Explicit;
-                        break;
-                    default:
-                        MaxSexualIndex = 0;
-                        _windowManager.ShowMessageBox(App.ResMan.GetString("UserSettingsInvalid"), App.ResMan.GetString("Error"));
-                        App.Logger.Warning("UserSetting Sexual Rating is invalid");
-                        break;
+                    switch (App.UserSettings.MaxSexualRating)
+                    {
+                        case SexualRating.Safe:
+                            MaxSexualIndex = (int)SexualRating.Safe;
+                            break;
+                        case SexualRating.Suggestive:
+                            MaxSexualIndex = (int)SexualRating.Suggestive;
+                            break;
+                        case SexualRating.Explicit:
+                            MaxSexualIndex = (int)SexualRating.Explicit;
+                            break;
+                        default:
+                            MaxSexualIndex = 0;
+                            _windowManager.ShowMessageBox(App.ResMan.GetString("UserSettingsInvalid"), App.ResMan.GetString("Error"));
+                            App.Logger.Warning("UserSetting Sexual Rating is invalid");
+                            break;
+                    }
                 }
+            }
+            catch (Exception e)
+            {
+                App.Logger.Warning(e, "Failed to fill Sexual dropdown on Settings");
+                SentrySdk.CaptureException(e);
             }
         }
 
+        /// <summary>
+        /// Fill the Violence dropdown list with available values
+        /// </summary>
         private void FillViolenceDropdown()
         {
-            if (App.UserSettings.SettingsVndb != null)
+            try
             {
-                switch (App.UserSettings.MaxViolenceRating)
+                if (App.UserSettings.SettingsVndb != null)
                 {
-                    case ViolenceRating.Tame:
-                        MaxViolenceIndex = (int)ViolenceRating.Tame;
-                        break;
-                    case ViolenceRating.Violent:
-                        MaxViolenceIndex = (int)ViolenceRating.Violent;
-                        break;
-                    case ViolenceRating.Brutal:
-                        MaxViolenceIndex = (int)ViolenceRating.Brutal;
-                        break;
-                    default:
-                        MaxViolenceIndex = 0;
-                        _windowManager.ShowMessageBox(App.ResMan.GetString("UserSettingsInvalid"), App.ResMan.GetString("Error"));
-                        App.Logger.Warning("UserSetting Violence Rating is invalid");
-                        break;
+                    switch (App.UserSettings.MaxViolenceRating)
+                    {
+                        case ViolenceRating.Tame:
+                            MaxViolenceIndex = (int)ViolenceRating.Tame;
+                            break;
+                        case ViolenceRating.Violent:
+                            MaxViolenceIndex = (int)ViolenceRating.Violent;
+                            break;
+                        case ViolenceRating.Brutal:
+                            MaxViolenceIndex = (int)ViolenceRating.Brutal;
+                            break;
+                        default:
+                            MaxViolenceIndex = 0;
+                            _windowManager.ShowMessageBox(App.ResMan.GetString("UserSettingsInvalid"), App.ResMan.GetString("Error"));
+                            App.Logger.Warning("UserSetting Violence Rating is invalid");
+                            break;
+                    }
                 }
+            }
+            catch (Exception e)
+            {
+                App.Logger.Warning(e, "Failed to fill Violence dropdown on Settings");
+                SentrySdk.CaptureException(e);
             }
         }
 
+        /// <summary>
+        /// Fill the Spoiler dropdown list with available values
+        /// </summary>
         private void FillSpoilerDropdown()
         {
-            if (App.UserSettings.SettingsVndb != null)
+            try
             {
-                switch (App.UserSettings.SettingsVndb.Spoiler)
+                if (App.UserSettings.SettingsVndb != null)
                 {
-                    case SpoilerLevel.None:
-                        SpoilerIndex = (int)SpoilerLevel.None;
-                        break;
-                    case SpoilerLevel.Minor:
-                        SpoilerIndex = (int)SpoilerLevel.Minor;
-                        break;
-                    case SpoilerLevel.Major:
-                        SpoilerIndex = (int)SpoilerLevel.Major;
-                        break;
-                    default:
-                        SpoilerIndex = 0;
-                        _windowManager.ShowMessageBox(App.ResMan.GetString("UserSettingsInvalid"), App.ResMan.GetString("Error"));
-                        App.Logger.Warning("UserSetting Spoiler Level is invalid");
-                        break;
+                    switch (App.UserSettings.SettingsVndb.Spoiler)
+                    {
+                        case SpoilerLevel.None:
+                            SpoilerIndex = (int)SpoilerLevel.None;
+                            break;
+                        case SpoilerLevel.Minor:
+                            SpoilerIndex = (int)SpoilerLevel.Minor;
+                            break;
+                        case SpoilerLevel.Major:
+                            SpoilerIndex = (int)SpoilerLevel.Major;
+                            break;
+                        default:
+                            SpoilerIndex = 0;
+                            _windowManager.ShowMessageBox(App.ResMan.GetString("UserSettingsInvalid"), App.ResMan.GetString("Error"));
+                            App.Logger.Warning("UserSetting Spoiler Level is invalid");
+                            break;
+                    }
                 }
+            }
+            catch (Exception e)
+            {
+                App.Logger.Warning(e, "Failed to fill Spoiler dropdown on Settings");
+                SentrySdk.CaptureException(e);
             }
         }
 
+        /// <summary>
+        /// Save the currently selected settings
+        /// </summary>
+        /// <param name="useEncryption"></param>
         public void SaveUserSettings(bool useEncryption)
         {
 
@@ -133,10 +177,12 @@ namespace VnManager.ViewModels.UserControls
             catch (Exception ex)
             {
                 App.Logger.Error(ex, "Couldn't write to config file");
+                SentrySdk.CaptureException(ex);
                 throw;
             }
         }
 
+        //TODO: Is this being used?
         public static void LoadUserSettings()
         {
             try
@@ -152,63 +198,97 @@ namespace VnManager.ViewModels.UserControls
             }
         }
 
+        /// <summary>
+        /// Export the Userdata and images into the .vnbak file
+        /// <see cref="ExportUserData"/>
+        /// </summary>
         public void ExportUserData()
         {
-            string savePath;
-            var settings = new FolderBrowserDialogSettings();
-            bool? result = _dialogService.ShowFolderBrowserDialog(this, settings);
-            if (result == true)
+            try
             {
-                savePath = settings.SelectedPath;
-            }
-            else
-            {
-                return;
-            }
+                string savePath;
+                var settings = new FolderBrowserDialogSettings();
+                bool? result = _dialogService.ShowFolderBrowserDialog(this, settings);
+                if (result == true)
+                {
+                    savePath = settings.SelectedPath;
+                }
+                else
+                {
+                    return;
+                }
 
             
-            var fileName = $@"{savePath}\VnManager_Export_{DateTime.UtcNow:yyyy-MMMM-dd}.vnbak";
-            var didCreate = ImportExportHelper.Compact(fileName);
-            if (didCreate)
+                var fileName = $@"{savePath}\VnManager_Export_{DateTime.UtcNow:yyyy-MMMM-dd}.vnbak";
+                var didCreate = ImportExportHelper.Compact(fileName);
+                if (didCreate)
+                {
+                    _windowManager.ShowMessageBox($"{App.ResMan.GetString("UserDataExportedPath")}\n{fileName}", $"{App.ResMan.GetString("UserDataExportedTitle")}");
+                }
+            }
+            catch (Exception e)
             {
-                _windowManager.ShowMessageBox($"{App.ResMan.GetString("UserDataExportedPath")}\n{fileName}", $"{App.ResMan.GetString("UserDataExportedTitle")}");
+                App.Logger.Warning(e, "Failed to export userData");
+                SentrySdk.CaptureException(e);
             }
         }
 
-
+        /// <summary>
+        /// Clear out ALL data and config created by the application
+        /// <see cref="ResetApplication"/>
+        /// </summary>
         public void ResetApplication()
         {
-            var warning = _deleteEverythingFactory();
-            bool? result = _windowManager.ShowDialog(warning);
-            switch (result)
+            try
             {
-                case null:
-                    return;
-                case true:
+                var warning = _deleteEverythingFactory();
+                bool? result = _windowManager.ShowDialog(warning);
+                switch (result)
                 {
-                    DeleteEverything();
-                    break;
+                    case null:
+                        return;
+                    case true:
+                    {
+                        DeleteEverything();
+                        break;
+                    }
+                    default:
+                        return;
                 }
-                default:
-                    return;
+            }
+            catch (Exception e)
+            {
+                App.Logger.Warning(e, "Failed to reset application");
+                SentrySdk.CaptureException(e);
             }
         }
 
+        /// <summary>
+        /// Delete all files associated with the application, then exit
+        /// </summary>
         private void DeleteEverything()
         {
-            if (App.AssetDirPath.Equals(App.ConfigDirPath))
+            try
             {
-                Directory.Delete(App.AssetDirPath, true);
+                if (App.AssetDirPath.Equals(App.ConfigDirPath))
+                {
+                    Directory.Delete(App.AssetDirPath, true);
+                }
+                else
+                {
+                    Directory.Delete(App.AssetDirPath, true);
+                    Directory.Delete(App.ConfigDirPath, true);
+                }
+                CredentialManager.RemoveCredentials(App.CredDb);
+                CredentialManager.RemoveCredentials(App.CredFile);
+                _windowManager.ShowMessageBox($"{App.ResMan.GetString("AppExit")}");
+                Environment.Exit(0);
             }
-            else
+            catch (Exception e)
             {
-                Directory.Delete(App.AssetDirPath, true);
-                Directory.Delete(App.ConfigDirPath, true);
+                App.Logger.Error(e, "Failed to delete all VnManager files");
+                SentrySdk.CaptureException(e);
             }
-            CredentialManager.RemoveCredentials(App.CredDb);
-            CredentialManager.RemoveCredentials(App.CredFile);
-            _windowManager.ShowMessageBox($"{App.ResMan.GetString("AppExit")}");
-            Environment.Exit(0);
         }
 
     }

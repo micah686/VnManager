@@ -11,6 +11,7 @@ using System.Windows.Documents;
 using System.Windows.Media.Imaging;
 using AdysTech.CredentialManager;
 using LiteDB;
+using Sentry;
 using Stylet;
 using VnManager.Extensions;
 using VnManager.Helpers;
@@ -54,7 +55,9 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
         #endregion
 
 
-
+        /// <summary>
+        /// Loads main data when the VnInfo view shows up
+        /// </summary>
         protected override void OnViewLoaded()
         {
             VndbLink = new Tuple<string, Visibility>(string.Empty, Visibility.Visible);
@@ -73,55 +76,80 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             IsStartButtonVisible = Visibility.Visible;
         }
 
+        /// <summary>
+        /// Get the main Vndb data
+        /// </summary>
         private void LoadMainData()
         {
-            if (VndbContentViewModel.VnId == 0)
+            try
             {
-                return;
-            }
-            var cred = CredentialManager.GetCredentials(App.CredDb);
-            if (cred == null || cred.UserName.Length < 1)
-            {
-                return;
-            }
-            using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
-            {
-                var vnInfoEntry = db.GetCollection<VnInfo>(DbVnInfo.VnInfo.ToString()).Query().Where(x => x.VnId == VndbContentViewModel.VnId).FirstOrDefault();
-                Title = vnInfoEntry.Title;
-                MainTitle = vnInfoEntry.Title;
-                Aliases = vnInfoEntry.Aliases;
-                ReleasedDate = TimeDateChanger.GetHumanDate(DateTime.Parse(vnInfoEntry.Released, CultureInfo.InvariantCulture));
-                VnLength = vnInfoEntry.Length;
-                Popularity = $"{vnInfoEntry.Popularity:F}";
-                Rating = $"{vnInfoEntry.Rating:F}";
-                LoadLanguages(ref vnInfoEntry);
-                var coverPath = $@"{App.AssetDirPath}\sources\vndb\images\cover\{vnInfoEntry.VnId}.jpg";
-                CoverImage = ImageHelper.CreateBitmapFromPath(coverPath);
+                if (VndbContentViewModel.VnId == 0)
+                {
+                    return;
+                }
+                var cred = CredentialManager.GetCredentials(App.CredDb);
+                if (cred == null || cred.UserName.Length < 1)
+                {
+                    return;
+                }
+                using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
+                {
+                    var vnInfoEntry = db.GetCollection<VnInfo>(DbVnInfo.VnInfo.ToString()).Query().Where(x => x.VnId == VndbContentViewModel.VnId).FirstOrDefault();
+                    Title = vnInfoEntry.Title;
+                    MainTitle = vnInfoEntry.Title;
+                    Aliases = vnInfoEntry.Aliases;
+                    ReleasedDate = TimeDateChanger.GetHumanDate(DateTime.Parse(vnInfoEntry.Released, CultureInfo.InvariantCulture));
+                    VnLength = vnInfoEntry.Length;
+                    Popularity = $"{vnInfoEntry.Popularity:F}";
+                    Rating = $"{vnInfoEntry.Rating:F}";
+                    LoadLanguages(ref vnInfoEntry);
+                    var coverPath = $@"{App.AssetDirPath}\sources\vndb\images\cover\{vnInfoEntry.VnId}.jpg";
+                    CoverImage = ImageHelper.CreateBitmapFromPath(coverPath);
 
-                DescriptionInLine = BBCodeHelper.Helper(vnInfoEntry.Description);
+                    DescriptionInLine = BBCodeHelper.Helper(vnInfoEntry.Description);
 
+                }
+            }
+            catch (Exception e)
+            {
+                App.Logger.Warning(e, "Failed to load Main Vndb Data");
+                SentrySdk.CaptureException(e);
             }
         }
 
+        /// <summary>
+        /// Load user data associated with the game
+        /// </summary>
         private void LoadUserData()
         {
-            var cred = CredentialManager.GetCredentials(App.CredDb);
-            if (cred == null || cred.UserName.Length < 1)
+            try
             {
-                return;
-            }
-            using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
-            var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString()).Query()
-                .Where(x => x.Id == VndbContentViewModel.SelectedGame.Id).FirstOrDefault();
-            if (dbUserData != null)
-            {
-                LastPlayed = TimeDateChanger.GetHumanDate(dbUserData.LastPlayed);
-                PlayTime = TimeDateChanger.GetHumanTime(dbUserData.PlayTime);
+                var cred = CredentialManager.GetCredentials(App.CredDb);
+                if (cred == null || cred.UserName.Length < 1)
+                {
+                    return;
+                }
+                using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
+                var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString()).Query()
+                    .Where(x => x.Id == VndbContentViewModel.SelectedGame.Id).FirstOrDefault();
+                if (dbUserData != null)
+                {
+                    LastPlayed = TimeDateChanger.GetHumanDate(dbUserData.LastPlayed);
+                    PlayTime = TimeDateChanger.GetHumanTime(dbUserData.PlayTime);
 
-                GameIcon = ImageHelper.CreateIcon(!string.IsNullOrEmpty(dbUserData.IconPath) ? dbUserData.IconPath : dbUserData.ExePath);
+                    GameIcon = ImageHelper.CreateIcon(!string.IsNullOrEmpty(dbUserData.IconPath) ? dbUserData.IconPath : dbUserData.ExePath);
+                }
+            }
+            catch (Exception e)
+            {
+                App.Logger.Warning(e, "Failed to load Vndb userData");
+                SentrySdk.CaptureException(e);
             }
         }
         
+        /// <summary>
+        /// Load Relation data
+        /// </summary>
         private void LoadRelations()
         {
             var relations = VndbDataHelper.LoadRelations();
@@ -134,6 +162,10 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             WikiLink = VndbDataHelper.LoadLinks();
         }
 
+        /// <summary>
+        /// Click event to the Vndb page
+        /// <see cref="VndbLinkClick"/>
+        /// </summary>
         public void VndbLinkClick()
         {
             var link = $"https://vndb.org/v{VndbContentViewModel.VnId}";
@@ -145,6 +177,10 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             Process.Start(ps);
         }
 
+        /// <summary>
+        /// Click event to the associated Wikipedia page
+        /// <see cref="WikiLinkClick"/>
+        /// </summary>
         public void WikiLinkClick()
         {
             if (WikiLink.Item2 == Visibility.Visible)
@@ -160,7 +196,10 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             }
         }
         
-        
+        /// <summary>
+        /// Load the languages, and add them to the view
+        /// </summary>
+        /// <param name="vnInfoEntry"></param>
         private void LoadLanguages(ref VnInfo vnInfoEntry)
         {
             var langCollection = VndbDataHelper.LoadLanguages(ref vnInfoEntry);
@@ -174,25 +213,33 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
         /// </summary>
         public void StartVn()
         {
-            var parent = (VndbContentViewModel)Parent;
-            if (parent.IsGameRunning)
+            try
             {
-                return;
+                var parent = (VndbContentViewModel)Parent;
+                if (parent.IsGameRunning)
+                {
+                    return;
+                }
+
+                if (VndbContentViewModel.SelectedGame?.ExePath != null && File.Exists(VndbContentViewModel.SelectedGame.ExePath))
+                {
+                    var filePath = VndbContentViewModel.SelectedGame.ExePath;
+                    Directory.SetCurrentDirectory(Path.GetDirectoryName(filePath));
+                    var process = new Process { StartInfo = { FileName = filePath, Arguments = VndbContentViewModel.SelectedGame.Arguments }, EnableRaisingEvents = true };
+                    parent.ProcessList.Add(process);
+                    process.Exited += MainOrChildProcessExited;
+
+                    process.Start();
+                    parent.IsGameRunning = true;
+                    parent.GameStopwatch.Start();
+                    IsStartButtonVisible = Visibility.Collapsed;
+                    parent.ProcessList.AddRange(process.GetChildProcesses());
+                }
             }
-
-            if (VndbContentViewModel.SelectedGame?.ExePath != null && File.Exists(VndbContentViewModel.SelectedGame.ExePath))
+            catch (Exception e)
             {
-                var filePath = VndbContentViewModel.SelectedGame.ExePath;
-                Directory.SetCurrentDirectory(Path.GetDirectoryName(filePath));
-                var process = new Process { StartInfo = { FileName = filePath, Arguments = VndbContentViewModel.SelectedGame.Arguments }, EnableRaisingEvents = true };
-                parent.ProcessList.Add(process);
-                process.Exited += MainOrChildProcessExited;
-
-                process.Start();
-                parent.IsGameRunning = true;
-                parent.GameStopwatch.Start();
-                IsStartButtonVisible = Visibility.Collapsed;
-                parent.ProcessList.AddRange(process.GetChildProcesses());
+                App.Logger.Warning(e, "Failed to start the game");
+                SentrySdk.CaptureException(e);
             }
 
         }
@@ -203,73 +250,90 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
         /// </summary>
         public void StopVn()
         {
-            var parent = (VndbContentViewModel)Parent;
-            if (!parent.GameStopwatch.IsRunning)
+            try
             {
-                return;
-            }
-            const int maxWaitTime = 30000; //30 seconds
-            foreach (var process in parent.ProcessList)
-            {
-                process.CloseMainWindow();
-                process.WaitForExit(maxWaitTime);
-            }
+                var parent = (VndbContentViewModel)Parent;
+                if (!parent.GameStopwatch.IsRunning)
+                {
+                    return;
+                }
+                const int maxWaitTime = 30000; //30 seconds
+                foreach (var process in parent.ProcessList)
+                {
+                    process.CloseMainWindow();
+                    process.WaitForExit(maxWaitTime);
+                }
 
-            parent.ProcessList = parent.ProcessList.Where(x => !x.HasExited).ToList();
-            foreach (var process in parent.ProcessList)
-            {
-                process.Kill(true);
-            }
+                parent.ProcessList = parent.ProcessList.Where(x => !x.HasExited).ToList();
+                foreach (var process in parent.ProcessList)
+                {
+                    process.Kill(true);
+                }
 
-            parent.IsGameRunning = false;
-            parent.GameStopwatch.Reset();
-            IsStartButtonVisible = Visibility.Visible;
-            parent.ProcessList.Clear();
+                parent.IsGameRunning = false;
+                parent.GameStopwatch.Reset();
+                IsStartButtonVisible = Visibility.Visible;
+                parent.ProcessList.Clear();
+            }
+            catch (Exception e)
+            {
+                App.Logger.Warning(e, "Failed to Stop the game");
+                SentrySdk.CaptureException(e);
+            }
         }
 
         private void MainOrChildProcessExited(object sender, EventArgs e)
         {
-            var parent = (VndbContentViewModel) Parent;
-            var process = (Process)sender;
-            if (process == null)
+            try
             {
-                return;
-            }
-            var children = process.GetChildProcesses().ToArray();
-            if (children.Length > 0)
-            {
-                foreach (var childProcess in children)
-                {
-                    childProcess.EnableRaisingEvents = true;
-                    childProcess.Exited += MainOrChildProcessExited;
-                }
-                parent.ProcessList.AddRange(children);
-
-                parent.ProcessList = parent.ProcessList.Where(x => x.HasExited == false).ToList();
-            }
-            else
-            {
-                parent.GameStopwatch.Stop();
-                var cred = CredentialManager.GetCredentials(App.CredDb);
-                if (cred == null || cred.UserName.Length < 1)
+                var parent = (VndbContentViewModel) Parent;
+                var process = (Process)sender;
+                if (process == null)
                 {
                     return;
                 }
-
-                using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
+                var children = process.GetChildProcesses().ToArray();
+                if (children.Length > 0)
                 {
-                    var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString());
-                    var gameEntry = dbUserData.Query().Where(x => x.Id == VndbContentViewModel.SelectedGame.Id).FirstOrDefault();
-                    gameEntry.LastPlayed = DateTime.UtcNow;
-                    gameEntry.PlayTime = gameEntry.PlayTime + parent.GameStopwatch.Elapsed;
-                    LastPlayed = $"{App.ResMan.GetString("LastPlayed")}: {TimeDateChanger.GetHumanDate(gameEntry.LastPlayed)}";
-                    PlayTime = $"{App.ResMan.GetString("PlayTime")}: {TimeDateChanger.GetHumanTime(gameEntry.PlayTime)}";
-                    dbUserData.Update(gameEntry);
-                    VndbContentViewModel.SelectedGame = gameEntry;
+                    foreach (var childProcess in children)
+                    {
+                        childProcess.EnableRaisingEvents = true;
+                        childProcess.Exited += MainOrChildProcessExited;
+                    }
+                    parent.ProcessList.AddRange(children);
+
+                    parent.ProcessList = parent.ProcessList.Where(x => x.HasExited == false).ToList();
                 }
-                parent.GameStopwatch.Reset();
-                parent.IsGameRunning = false;
-                IsStartButtonVisible = Visibility.Visible;
+                else
+                {
+                    parent.GameStopwatch.Stop();
+                    var cred = CredentialManager.GetCredentials(App.CredDb);
+                    if (cred == null || cred.UserName.Length < 1)
+                    {
+                        return;
+                    }
+
+                    using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
+                    {
+                        var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString());
+                        var gameEntry = dbUserData.Query().Where(x => x.Id == VndbContentViewModel.SelectedGame.Id).FirstOrDefault();
+                        gameEntry.LastPlayed = DateTime.UtcNow;
+                        gameEntry.PlayTime = gameEntry.PlayTime + parent.GameStopwatch.Elapsed;
+                        LastPlayed = $"{App.ResMan.GetString("LastPlayed")}: {TimeDateChanger.GetHumanDate(gameEntry.LastPlayed)}";
+                        PlayTime = $"{App.ResMan.GetString("PlayTime")}: {TimeDateChanger.GetHumanTime(gameEntry.PlayTime)}";
+                        dbUserData.Update(gameEntry);
+                        VndbContentViewModel.SelectedGame = gameEntry;
+                    }
+                    parent.GameStopwatch.Reset();
+                    parent.IsGameRunning = false;
+                    IsStartButtonVisible = Visibility.Visible;
+                }
+            }
+            catch (Exception exception)
+            {
+                App.Logger.Warning(exception, "Failed to deal with an exited Process");
+                SentrySdk.CaptureException(exception);
+                throw;
             }
         }
         

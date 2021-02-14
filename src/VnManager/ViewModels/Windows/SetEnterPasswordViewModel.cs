@@ -10,6 +10,7 @@ using System.Windows.Input;
 using AdysTech.CredentialManager;
 using FluentValidation;
 using LiteDB;
+using Sentry;
 using Stylet;
 using VnManager.Helpers;
 using VnManager.Models.Settings;
@@ -58,36 +59,58 @@ namespace VnManager.ViewModels.Windows
         /// </summary>
         private int _attemptCounter = 0;
 
-
+        /// <summary>
+        /// Constructor for the Set Password/Enter password window
+        /// </summary>
+        /// <param name="validator"></param>
         public SetEnterPasswordViewModel(IModelValidator<SetEnterPasswordViewModel> validator) : base(validator)
         {
-            ValidateFiles();
-            Title = App.ResMan.GetString("CreatePassTitle");
-            if (App.UserSettings.RequirePasswordEntry)
+            try
             {
-                IsCreatePasswordVisible = false; //sets form to unlock mode
-                Title = App.ResMan.GetString("UnlockDbTitle");
-                if (CredentialManager.GetCredentials(App.CredDb) == null && File.Exists(Path.Combine(App.ConfigDirPath, @"config\config.json")))
+                ValidateFiles();
+                Title = App.ResMan.GetString("CreatePassTitle");
+                if (App.UserSettings.RequirePasswordEntry)
                 {
-                    ClearPreviousCredentials();
-                    File.Delete(Path.Combine(App.ConfigDirPath, @"config\config.json"));
-                    Environment.Exit(0);
+                    IsCreatePasswordVisible = false; //sets form to unlock mode
+                    Title = App.ResMan.GetString("UnlockDbTitle");
+                    if (CredentialManager.GetCredentials(App.CredDb) == null && File.Exists(Path.Combine(App.ConfigDirPath, @"config\config.json")))
+                    {
+                        ClearPreviousCredentials();
+                        File.Delete(Path.Combine(App.ConfigDirPath, @"config\config.json"));
+                        Environment.Exit(0);
+                    }
                 }
+            }
+            catch (Exception e)
+            {
+                App.Logger.Error(e, "Failed to create Set/Enter password View");
+                SentrySdk.CaptureException(e);
+                throw;
             }
             
         }
-
+        /// <summary>
+        /// Clear any previously saved credentials
+        /// </summary>
         private static void ClearPreviousCredentials()
         {
-            //remove any previous credentials
-            string[] credStrings = new[] { App.CredDb, App.CredFile };
-            foreach (var cred in credStrings)
+            try
             {
-                var value = CredentialManager.GetCredentials(cred);
-                if (value != null)
+                //remove any previous credentials
+                string[] credStrings = new[] { App.CredDb, App.CredFile };
+                foreach (var cred in credStrings)
                 {
-                    CredentialManager.RemoveCredentials(cred);
+                    var value = CredentialManager.GetCredentials(cred);
+                    if (value != null)
+                    {
+                        CredentialManager.RemoveCredentials(cred);
+                    }
                 }
+            }
+            catch (Exception e)
+            {
+                App.Logger.Warning(e, "Failed to clear previous credentials");
+                SentrySdk.CaptureException(e);
             }
         }
 
@@ -99,55 +122,57 @@ namespace VnManager.ViewModels.Windows
         /// <returns></returns>
         public async Task CreatePasswordClickAsync()
         {
-            File.Delete(Path.Combine(App.ConfigDirPath, App.DbPath));
             try
             {
-                ShouldCheckPassword = true;
-                if (RequirePasswordChecked)
+                File.Delete(Path.Combine(App.ConfigDirPath, App.DbPath));
+                try
                 {
-                    if (Password == null || Password.Length < 1 || ConfirmPassword == null || ConfirmPassword.Length <1)
+                    ShouldCheckPassword = true;
+                    if (RequirePasswordChecked)
                     {
-                        await ValidateAsync();
-                        return;
-                    }
+                        if (Password == null || Password.Length < 1 || ConfirmPassword == null || ConfirmPassword.Length <1)
+                        {
+                            await ValidateAsync();
+                            return;
+                        }
 
                     
-                    var hashStruct = Secure.GenerateHash(Password, Secure.GenerateRandomSalt());
-                    string username = $"{hashStruct.Hash}|{hashStruct.Salt}";
+                        var hashStruct = Secure.GenerateHash(Password, Secure.GenerateRandomSalt());
+                        string username = $"{hashStruct.Hash}|{hashStruct.Salt}";
                     
-                    var cred = new NetworkCredential(username, Password);
-                    CredentialManager.SaveCredentials(App.CredDb, cred);
-                    var validPasswords = await ValidateAsync();
-                    if(validPasswords != true)
-                    {
-                        return;
-                    }
-                    using (_ = new LiteDatabase(
-                        $"Filename={Path.Combine(App.ConfigDirPath, App.DbPath)};Password={cred.Password}"))
-                    {
-                        //create initial empty database
-                    }
+                        var cred = new NetworkCredential(username, Password);
+                        CredentialManager.SaveCredentials(App.CredDb, cred);
+                        var validPasswords = await ValidateAsync();
+                        if(validPasswords != true)
+                        {
+                            return;
+                        }
+                        using (_ = new LiteDatabase(
+                            $"Filename={Path.Combine(App.ConfigDirPath, App.DbPath)};Password={cred.Password}"))
+                        {
+                            //create initial empty database
+                        }
 
-                    var settings = new UserSettings
-                    {
-                        RequirePasswordEntry = true
-                    };
-                    UserSettingsHelper.SaveUserSettings(settings);
-                    bool result = await ValidateAsync();
-                    if (result)
-                    {
-                        RequestClose(true);
+                        var settings = new UserSettings
+                        {
+                            RequirePasswordEntry = true
+                        };
+                        UserSettingsHelper.SaveUserSettings(settings);
+                        bool result = await ValidateAsync();
+                        if (result)
+                        {
+                            RequestClose(true);
+                        }
                     }
-                }
-                else
-                {
+                    else
+                    {
                     
-                    var password = new SecureString();
+                        var password = new SecureString();
 #if DEBUG
-                    foreach (var character in "123456") //TODO:Debug only password
-                    {
-                        password.AppendChar(character);
-                    }
+                        foreach (var character in "123456") //TODO:Debug only password
+                        {
+                            password.AppendChar(character);
+                        }
 #else
                     const int passwordLength = 64;
                     const int specialCharacters = 16;
@@ -156,31 +181,38 @@ namespace VnManager.ViewModels.Windows
                         password.AppendChar(character);
                     }
 #endif
-                    var hashStruct = Secure.GenerateHash(password, Secure.GenerateRandomSalt());
-                    string username = $"{hashStruct.Hash}|{hashStruct.Salt}";
+                        var hashStruct = Secure.GenerateHash(password, Secure.GenerateRandomSalt());
+                        string username = $"{hashStruct.Hash}|{hashStruct.Salt}";
 
-                    var cred = new NetworkCredential(username, password);
-                    CredentialManager.SaveCredentials(App.CredDb, cred);
+                        var cred = new NetworkCredential(username, password);
+                        CredentialManager.SaveCredentials(App.CredDb, cred);
 
-                    using (_ = new LiteDatabase(
-                        $"Filename={Path.Combine(App.ConfigDirPath, App.DbPath)};Password={cred.Password}"))
-                    {
-                        //create initial empty database
+                        using (_ = new LiteDatabase(
+                            $"Filename={Path.Combine(App.ConfigDirPath, App.DbPath)};Password={cred.Password}"))
+                        {
+                            //create initial empty database
+                        }
+
+                        bool result = await ValidateAsync();
+                        if (result)
+                        {
+                            RequestClose(true);
+                        }
                     }
-
-                    bool result = await ValidateAsync();
-                    if (result)
-                    {
-                        RequestClose(true);
-                    }
+                    ShouldCheckPassword = false;
                 }
-                ShouldCheckPassword = false;
+                catch (Exception ex)
+                {
+                    App.Logger.Error(ex, "Couldn't Create Password");
+                    ShouldCheckPassword = false;
+                    RequestClose(false);
+                }
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                App.Logger.Error(ex, "Couldn't Create Password");
-                ShouldCheckPassword = false;
-                RequestClose(false);
+                App.Logger.Error(e, "Failed to create password");
+                SentrySdk.CaptureException(e);
+                throw;
             }
         }
 
@@ -191,15 +223,23 @@ namespace VnManager.ViewModels.Windows
         /// <returns></returns>
         public async Task UnlockPasswordClickAsync()
         {
-            ShouldCheckPassword = true;
-            bool result = await ValidateAsync();
-            if (result)
+            try
             {
-                RequestClose(true);
+                ShouldCheckPassword = true;
+                bool result = await ValidateAsync();
+                if (result)
+                {
+                    RequestClose(true);
+                }
+                _attemptCounter += 1;
+                await PasswordAttemptCheckerAsync();
+                ShouldCheckPassword = false;
             }
-            _attemptCounter += 1;
-            await PasswordAttemptCheckerAsync();
-            ShouldCheckPassword = false;
+            catch (Exception e)
+            {
+                App.Logger.Warning(e, "Failed to unlock db with password");
+                SentrySdk.CaptureException(e);
+            }
         }
 
         /// <summary>
@@ -225,33 +265,41 @@ namespace VnManager.ViewModels.Windows
         /// <returns></returns>
         private async Task PasswordAttemptCheckerAsync()
         {
-            const int fewTries = 5;
-            const int fewTriesWait = 650;
-            const int mediumTries = 20;
-            const int maxTries = 50;
-            const int maxTriesWait = 30;
-            
-            switch (_attemptCounter)
+            try
             {
-                case { } n when (n <= fewTries):
-                    IsUnlockPasswordButtonEnabled = false;
-                    await Task.Delay(TimeSpan.FromMilliseconds(fewTriesWait));
-                    IsUnlockPasswordButtonEnabled = true;
-                    break;
-                case { } n when (n >= fewTries && n <= mediumTries):
-                    IsUnlockPasswordButtonEnabled = false;
-                    var wait = new Random().NextDouble() * new Random().Next(2,8) + 2;
-                    await Task.Delay(TimeSpan.FromSeconds(wait));
-                    IsUnlockPasswordButtonEnabled = true;
-                    break;
-                case { } n when (n > mediumTries && n <= maxTries):
-                    IsUnlockPasswordButtonEnabled = false;
-                    await Task.Delay(TimeSpan.FromSeconds(maxTriesWait));
-                    IsUnlockPasswordButtonEnabled = true;
-                    break;
-                default:
-                    Environment.Exit(0);
-                    break;
+                const int fewTries = 5;
+                const int fewTriesWait = 650;
+                const int mediumTries = 20;
+                const int maxTries = 50;
+                const int maxTriesWait = 30;
+            
+                switch (_attemptCounter)
+                {
+                    case { } n when (n <= fewTries):
+                        IsUnlockPasswordButtonEnabled = false;
+                        await Task.Delay(TimeSpan.FromMilliseconds(fewTriesWait));
+                        IsUnlockPasswordButtonEnabled = true;
+                        break;
+                    case { } n when (n >= fewTries && n <= mediumTries):
+                        IsUnlockPasswordButtonEnabled = false;
+                        var wait = new Random().NextDouble() * new Random().Next(2,8) + 2;
+                        await Task.Delay(TimeSpan.FromSeconds(wait));
+                        IsUnlockPasswordButtonEnabled = true;
+                        break;
+                    case { } n when (n > mediumTries && n <= maxTries):
+                        IsUnlockPasswordButtonEnabled = false;
+                        await Task.Delay(TimeSpan.FromSeconds(maxTriesWait));
+                        IsUnlockPasswordButtonEnabled = true;
+                        break;
+                    default:
+                        Environment.Exit(0);
+                        break;
+                }
+            }
+            catch (Exception e)
+            {
+                App.Logger.Warning(e, "Failed to check password attempts");
+                SentrySdk.CaptureException(e);
             }
 
         }
@@ -261,30 +309,38 @@ namespace VnManager.ViewModels.Windows
         /// </summary>
         private static void ValidateFiles()
         {
-            var configFile = Path.Combine(App.ConfigDirPath, @"config\config.json");
-            var database = Path.Combine(App.ConfigDirPath, App.DbPath);
-
-            if (!File.Exists(configFile))
+            try
             {
-                UserSettingsHelper.CreateDefaultConfig();
+                var configFile = Path.Combine(App.ConfigDirPath, @"config\config.json");
+                var database = Path.Combine(App.ConfigDirPath, App.DbPath);
+
+                if (!File.Exists(configFile))
+                {
+                    UserSettingsHelper.CreateDefaultConfig();
+                }
+
+                if (UserSettingsHelper.ValidateConfigFile()== false)
+                {
+                    File.Delete(configFile);
+                    UserSettingsHelper.CreateDefaultConfig();
+                }
+
+                if (App.UserSettings.RequirePasswordEntry == true && !File.Exists(database))
+                {
+                    File.Delete(configFile);
+                    App.UserSettings = UserSettingsHelper.ReadUserSettings();
+                }
+
+                if (CredentialManager.GetCredentials(App.CredFile) == null)
+                {
+                    var cred = new NetworkCredential(Convert.ToBase64String(Secure.GenerateRandomSalt()), Secure.GenerateSecurePassword(64,16));
+                    CredentialManager.SaveCredentials(App.CredFile, cred);
+                }
             }
-
-            if (UserSettingsHelper.ValidateConfigFile()== false)
+            catch (Exception e)
             {
-                File.Delete(configFile);
-                UserSettingsHelper.CreateDefaultConfig();
-            }
-
-            if (App.UserSettings.RequirePasswordEntry == true && !File.Exists(database))
-            {
-                File.Delete(configFile);
-                App.UserSettings = UserSettingsHelper.ReadUserSettings();
-            }
-
-            if (CredentialManager.GetCredentials(App.CredFile) == null)
-            {
-                var cred = new NetworkCredential(Convert.ToBase64String(Secure.GenerateRandomSalt()), Secure.GenerateSecurePassword(64,16));
-                CredentialManager.SaveCredentials(App.CredFile, cred);
+                App.Logger.Warning(e, "failed to validate files on SetEnterPassword");
+                SentrySdk.CaptureException(e);
             }
 
         }
@@ -323,18 +379,27 @@ namespace VnManager.ViewModels.Windows
         /// <returns></returns>
         private bool DoPasswordsMatch(SecureString securePass)
         {
-            var cred = CredentialManager.GetCredentials(App.CredDb);
-            if (cred == null|| cred.UserName.Length <1)
+            try
             {
+                var cred = CredentialManager.GetCredentials(App.CredDb);
+                if (cred == null|| cred.UserName.Length <1)
+                {
+                    return false;
+                }
+                var split = cred.UserName.Split('|');
+                var hashSalt = new  Secure.PassHash
+                {
+                    Hash = split[0], Salt = split[1]
+                };
+                bool result = Secure.ValidatePassword(securePass, hashSalt.Salt, hashSalt.Hash);
+                return result;
+            }
+            catch (Exception e)
+            {
+                App.Logger.Warning(e, "Failed to check if passwords match");
+                SentrySdk.CaptureException(e);
                 return false;
             }
-            var split = cred.UserName.Split('|');
-            var hashSalt = new  Secure.PassHash
-            {
-                Hash = split[0], Salt = split[1]
-            };
-            bool result = Secure.ValidatePassword(securePass, hashSalt.Salt, hashSalt.Hash);
-            return result;
         }
 
         
@@ -370,6 +435,7 @@ namespace VnManager.ViewModels.Windows
             catch (Exception ex)
             {
                 App.Logger.Error(ex,"DidEnterWithRightPassword an unknown error occurred");
+                SentrySdk.CaptureException(ex);
                 return false;
             }
         }
@@ -404,6 +470,7 @@ namespace VnManager.ViewModels.Windows
             catch (Exception ex)
             {
                 App.Logger.Error(ex, "CreateDbErrorMessage an unknown error occurred");
+                SentrySdk.CaptureException(ex);
                 return App.ResMan.GetString("UnknownException");
             }
         }

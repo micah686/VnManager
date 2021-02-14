@@ -40,6 +40,9 @@ namespace VnManager.ViewModels.UserControls
             SetInitialValues();
         }
 
+        /// <summary>
+        /// Set the default values of the statusBar
+        /// </summary>
         private void SetInitialValues()
         {
             StatusString = App.ResMan.GetString("Ready");
@@ -57,6 +60,9 @@ namespace VnManager.ViewModels.UserControls
 
         }
 
+        /// <summary>
+        /// Reset the statusBar back to default
+        /// </summary>
         public static void ResetValues()
         {
             RootViewModel.StatusBarPage.StatusString = App.ResMan.GetString("Ready");

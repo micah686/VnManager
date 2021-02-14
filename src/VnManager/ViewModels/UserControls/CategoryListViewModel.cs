@@ -5,6 +5,7 @@ using Stylet;
 using System;
 using AdysTech.CredentialManager;
 using LiteDB;
+using Sentry;
 using VnManager.Events;
 using VnManager.Models.Db;
 using VnManager.Models.Db.User;
@@ -19,6 +20,10 @@ namespace VnManager.ViewModels.UserControls
         public static string SelectedCategory { get; set; } = "All";
 
         private readonly IEventAggregator _events;
+        /// <summary>
+        /// Main view for CategoryListView
+        /// </summary>
+        /// <param name="events"></param>
         public CategoryListViewModel(IEventAggregator events)
         {
             _events = events;
@@ -26,12 +31,18 @@ namespace VnManager.ViewModels.UserControls
             ReloadCategories();
             
         }
-
+        /// <summary>
+        /// Subscribe to Refreshing Categories List
+        /// </summary>
+        /// <param name="eventAggregator"></param>
         private void SetupEvents(IEventAggregator eventAggregator)
         {
             eventAggregator.Subscribe(this, EventChannels.RefreshCategoryList.ToString());
         }
 
+        /// <summary>
+        /// Reload the categories list
+        /// </summary>
         private void ReloadCategories()
         {
             try
@@ -51,13 +62,15 @@ namespace VnManager.ViewModels.UserControls
             catch (Exception e)
             {
                 App.Logger.Error(e, "An Error happened in CategoryListViewModel");
-                throw;
+                SentrySdk.CaptureException(e);
             }
         }
         
         
         
-        
+        /// <summary>
+        /// Refresh the current Game Grid when a selected category changes
+        /// </summary>
         public void SelectionChanged()
         {
             _events.PublishOnUIThread(new UpdateEvent { ShouldUpdate = true }, EventChannels.RefreshGameGrid.ToString());
