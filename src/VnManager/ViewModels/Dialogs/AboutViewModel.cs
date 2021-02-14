@@ -24,21 +24,16 @@ namespace VnManager.ViewModels.Dialogs
         private void PopulateData()
         {
             Title = App.ResMan.GetString("About");
-            SoftwareVersion = $"VnManager {GetVersionInfo()}";
+            SoftwareVersion = $"VnManager {App.VersionString}";
             CopyrightDate = $"{App.ResMan.GetString("Copyright")} 2021-{DateTime.UtcNow.Year}";
             Website = @"https://github.com/micah686/VnManager";
             LicenseInfo = App.ResMan.GetString("LicensedUnderMIT");
             DeveloperName = $"{App.ResMan.GetString("DevelopedBy")} Micah686";
         }
-        
-        private string GetVersionInfo()
-        {
-            System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
-            System.Diagnostics.FileVersionInfo fvi = System.Diagnostics.FileVersionInfo.GetVersionInfo(assembly.Location);
-            string version = fvi.FileVersion;
-            return version;
-        }
 
+        /// <summary>
+        /// Load main Github page
+        /// </summary>
         public void WebsiteClick()
         {
             var link = Website;
@@ -49,6 +44,9 @@ namespace VnManager.ViewModels.Dialogs
             Process.Start(ps);
         }
 
+        /// <summary>
+        /// Close Window
+        /// </summary>
         public void CloseClick()
         {
             RequestClose();

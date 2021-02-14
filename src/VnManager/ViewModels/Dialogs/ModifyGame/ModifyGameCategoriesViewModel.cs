@@ -1,6 +1,7 @@
 ﻿// Copyright (c) micah686. All rights reserved.
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -9,6 +10,7 @@ using System.Windows;
 using AdysTech.CredentialManager;
 using FluentValidation;
 using LiteDB;
+using Sentry;
 using Stylet;
 using VnManager.Events;
 using VnManager.Models.Db;
@@ -59,42 +61,57 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
             FillCategories();
         }
 
-
+        /// <summary>
+        /// Fill the list of categories
+        /// </summary>
         private void FillCategories()
         {
-            var cred = CredentialManager.GetCredentials(App.CredDb);
-            if (cred == null || cred.UserName.Length < 1)
+            try
             {
-                return;
-            }
-            using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
-            var dbUserCategories = db.GetCollection<UserDataCategories>(DbUserData.UserData_Categories.ToString());
+                var cred = CredentialManager.GetCredentials(App.CredDb);
+                if (cred == null || cred.UserName.Length < 1)
+                {
+                    return;
+                }
+                using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
+                var dbUserCategories = db.GetCollection<UserDataCategories>(DbUserData.UserData_Categories.ToString());
 
-            var categoriesExceptAll = dbUserCategories.Query().Where(x => x.CategoryName != "All").Select(x => x.CategoryName).ToList();
+                var categoriesExceptAll = dbUserCategories.Query().Where(x => x.CategoryName != "All").Select(x => x.CategoryName).ToList();
 
-            var parent = (ModifyGameHostViewModel) Parent;
+                var parent = (ModifyGameHostViewModel) Parent;
             
-            AddCategoryMessage = $"{App.ResMan.GetString("AddCategoryTo")} {parent.GameTitle}";
-            RemoveCategoryMessage = $"{App.ResMan.GetString("RemoveCategoryFrom")} {parent.GameTitle}";
+                AddCategoryMessage = $"{App.ResMan.GetString("AddCategoryTo")} {parent.GameTitle}";
+                RemoveCategoryMessage = $"{App.ResMan.GetString("RemoveCategoryFrom")} {parent.GameTitle}";
 
-            AddCategoriesCollection.Clear();
-            RemoveCategoriesCollection.Clear();
-            DeleteCategoriesCollection.Clear();
+                AddCategoriesCollection.Clear();
+                RemoveCategoriesCollection.Clear();
+                DeleteCategoriesCollection.Clear();
 
-            if (SelectedGame.Categories == null)
-            {
-                return;
+                if (SelectedGame.Categories == null)
+                {
+                    return;
+                }
+
+                FillAddCategory(categoriesExceptAll);
+                FillRemoveCategory(categoriesExceptAll);
+                FillDeleteCategory(categoriesExceptAll);
+
+                DeleteCategoryIndex = 0;
             }
+            catch (Exception e)
+            {
+                App.Logger.Warning(e, "Failed to fill list of categories");
+                SentrySdk.CaptureException(e);
 
-            FillAddCategory(categoriesExceptAll);
-            FillRemoveCategory(categoriesExceptAll);
-            FillDeleteCategory(categoriesExceptAll);
-
-            DeleteCategoryIndex = 0;
+            }
 
         }
 
         #region AddCategory
+        /// <summary>
+        /// Fill the list of AddCategory
+        /// </summary>
+        /// <param name="exceptAllList"></param>
         private void FillAddCategory(List<string> exceptAllList)
         {
             if (exceptAllList.Count > 0 && SelectedGame.Categories.Count > 0)
@@ -121,35 +138,51 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
             }
         }
 
+        /// <summary>
+        /// Add the specified category
+        /// <see cref="SaveAddCategory"/>
+        /// </summary>
         public void SaveAddCategory()
         {
-            var cred = CredentialManager.GetCredentials(App.CredDb);
-            if (cred == null || cred.UserName.Length < 1)
+            try
             {
-                return;
-            }
-            using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
-            {
-                var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString());
-                var entry = SelectedGame;
-                if (entry.Categories.Count > 0)
+                var cred = CredentialManager.GetCredentials(App.CredDb);
+                if (cred == null || cred.UserName.Length < 1)
                 {
-                    SelectedGame.Categories.Add(SelectedAddValue);
-                    SelectedGame.Categories = new Collection<string>(SelectedGame.Categories
-                        .Where(s => !string.IsNullOrWhiteSpace(s)).Distinct().ToList());
+                    return;
+                }
+                using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
+                {
+                    var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString());
+                    var entry = SelectedGame;
+                    if (entry.Categories.Count > 0)
+                    {
+                        SelectedGame.Categories.Add(SelectedAddValue);
+                        SelectedGame.Categories = new Collection<string>(SelectedGame.Categories
+                            .Where(s => !string.IsNullOrWhiteSpace(s)).Distinct().ToList());
 
+                    }
+
+                    dbUserData.Update(SelectedGame);
                 }
 
-                dbUserData.Update(SelectedGame);
+                FillCategories();
             }
-
-            FillCategories();
+            catch (Exception e)
+            {
+                App.Logger.Warning(e, "Failed to add category");
+                SentrySdk.CaptureException(e);
+            }
 
         }
 
         #endregion
 
         #region RemoveCategory
+        /// <summary>
+        /// Fill list to remove categories
+        /// </summary>
+        /// <param name="exceptAllList"></param>
         private void FillRemoveCategory(List<string> exceptAllList)
         {
             if (exceptAllList.Count > 0 && SelectedGame.Categories.Count > 1)
@@ -176,28 +209,40 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
             }
         }
 
+        /// <summary>
+        /// Delete the specified category
+        /// <see cref="SaveRemoveCategory"/>
+        /// </summary>
         public void SaveRemoveCategory()
         {
-            var cred = CredentialManager.GetCredentials(App.CredDb);
-            if (cred == null || cred.UserName.Length < 1)
+            try
             {
-                return;
-            }
-            using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
-            {
-                var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString());
-                var entry = SelectedGame;
-                if (entry.Categories.Count > 0)
+                var cred = CredentialManager.GetCredentials(App.CredDb);
+                if (cred == null || cred.UserName.Length < 1)
                 {
-                    SelectedGame.Categories.Remove(SelectedRemoveValue);
-                    SelectedGame.Categories = new Collection<string>(SelectedGame.Categories
-                        .Where(s => !string.IsNullOrWhiteSpace(s)).Distinct().ToList());
-
+                    return;
                 }
+                using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
+                {
+                    var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString());
+                    var entry = SelectedGame;
+                    if (entry.Categories.Count > 0)
+                    {
+                        SelectedGame.Categories.Remove(SelectedRemoveValue);
+                        SelectedGame.Categories = new Collection<string>(SelectedGame.Categories
+                            .Where(s => !string.IsNullOrWhiteSpace(s)).Distinct().ToList());
 
-                dbUserData.Update(SelectedGame);
+                    }
+
+                    dbUserData.Update(SelectedGame);
+                }
+                FillCategories();
             }
-            FillCategories();
+            catch (Exception e)
+            {
+                App.Logger.Warning(e, "Failed to remove category");
+                SentrySdk.CaptureException(e);
+            }
         }
         #endregion
 
@@ -215,11 +260,56 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
 
         }
 
+        /// <summary>
+        /// Create new category
+        /// <see cref="CreateNewCategory"/>
+        /// </summary>
+        /// <returns></returns>
         public async Task CreateNewCategory()
         {
-            bool result = await ValidateAsync();
-            if (result)
+            try
             {
+                bool result = await ValidateAsync();
+                if (result)
+                {
+                    var cred = CredentialManager.GetCredentials(App.CredDb);
+                    if (cred == null || cred.UserName.Length < 1)
+                    {
+                        return;
+                    }
+                    using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
+                    {
+                        var dbUserCategories = db.GetCollection<UserDataCategories>(DbUserData.UserData_Categories.ToString());
+                        var newCategory = new UserDataCategories { CategoryName = NewCategoryValue };
+                        dbUserCategories.Insert(newCategory);
+                    }
+                    _windowManager.ShowMessageBox($"{App.ResMan.GetString("CreatedCategory")} {NewCategoryValue}", App.ResMan.GetString("CreatedCategory"));
+                    _events.PublishOnUIThread(new UpdateEvent { ShouldUpdate = true }, EventChannels.RefreshCategoryList.ToString());
+                    FillCategories();
+                    NewCategoryValue = string.Empty;
+                }
+            }
+            catch (Exception e)
+            {
+                App.Logger.Warning(e, "Failed to create new category");
+                SentrySdk.CaptureException(e);
+            }
+        }
+
+        /// <summary>
+        /// Delete specified category
+        /// <see cref="DeleteCategory"/>
+        /// </summary>
+        public void DeleteCategory()
+        {
+            try
+            {
+                var result = _windowManager.ShowMessageBox($"{App.ResMan.GetString("ConfirmDeleteCategoryMsg")} {NewCategoryValue}", 
+                    App.ResMan.GetString("ConfirmDeleteCategory"), MessageBoxButton.YesNo);
+                if (result == MessageBoxResult.No)
+                {
+                    return;
+                }
                 var cred = CredentialManager.GetCredentials(App.CredDb);
                 if (cred == null || cred.UserName.Length < 1)
                 {
@@ -228,47 +318,28 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
                 using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
                 {
                     var dbUserCategories = db.GetCollection<UserDataCategories>(DbUserData.UserData_Categories.ToString());
-                    var newCategory = new UserDataCategories { CategoryName = NewCategoryValue };
-                    dbUserCategories.Insert(newCategory);
+                    var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString());
+                    List<UserDataGames> newGamesList = new List<UserDataGames>();
+                    foreach (var userData in dbUserData.Query().ToArray())
+                    {
+                        if (userData.Categories != null && userData.Categories.Count > 1 && DeleteCategorySelectedValue != "All")
+                        {
+                            userData.Categories = new Collection<string>(userData.Categories.Where(x => x != DeleteCategorySelectedValue).ToList());
+                            newGamesList.Add(userData);
+                        }
+                    }
+
+                    dbUserCategories.DeleteMany(c => c.CategoryName == DeleteCategorySelectedValue);
                 }
-                _windowManager.ShowMessageBox($"{App.ResMan.GetString("CreatedCategory")} {NewCategoryValue}", App.ResMan.GetString("CreatedCategory"));
+
                 _events.PublishOnUIThread(new UpdateEvent { ShouldUpdate = true }, EventChannels.RefreshCategoryList.ToString());
                 FillCategories();
-                NewCategoryValue = string.Empty;
             }
-        }
-
-        public void DeleteCategory()
-        {
-            var result = _windowManager.ShowMessageBox($"{App.ResMan.GetString("ConfirmDeleteCategoryMsg")} {NewCategoryValue}", App.ResMan.GetString("ConfirmDeleteCategory"), MessageBoxButton.YesNo);
-            if (result == MessageBoxResult.No)
+            catch (Exception e)
             {
-                return;
+                App.Logger.Warning(e, "Failed to delete category");
+                SentrySdk.CaptureException(e);
             }
-            var cred = CredentialManager.GetCredentials(App.CredDb);
-            if (cred == null || cred.UserName.Length < 1)
-            {
-                return;
-            }
-            using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
-            {
-                var dbUserCategories = db.GetCollection<UserDataCategories>(DbUserData.UserData_Categories.ToString());
-                var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString());
-                List<UserDataGames> newGamesList = new List<UserDataGames>();
-                foreach (var userData in dbUserData.Query().ToArray())
-                {
-                    if (userData.Categories != null && userData.Categories.Count > 1 && DeleteCategorySelectedValue != "All")
-                    {
-                        userData.Categories = new Collection<string>(userData.Categories.Where(x => x != DeleteCategorySelectedValue).ToList());
-                        newGamesList.Add(userData);
-                    }
-                }
-
-                dbUserCategories.DeleteMany(c => c.CategoryName == DeleteCategorySelectedValue);
-            }
-
-            _events.PublishOnUIThread(new UpdateEvent { ShouldUpdate = true }, EventChannels.RefreshCategoryList.ToString());
-            FillCategories();
         }
 
     }
@@ -297,51 +368,78 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
             return validCharacters && minimumLetters > minLetters;
         }
 
+        /// <summary>
+        /// Checks if the entry is a new category
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
         private bool IsNewCategory(string input)
         {
-            if (input == null || input == AllCategory)
+            try
             {
-                return false;
+                if (input == null || input == AllCategory)
+                {
+                    return false;
+                }
+                var cred = CredentialManager.GetCredentials(App.CredDb);
+                if (cred == null || cred.UserName.Length < 1)
+                {
+                    return false;
+                }
+                using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
+                var userCategories = db.GetCollection<UserDataCategories>(DbUserData.UserData_Categories.ToString())
+                    .Query().ToArray();
+                if (userCategories != null && userCategories.Any(x => x.CategoryName != input))
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
-            var cred = CredentialManager.GetCredentials(App.CredDb);
-            if (cred == null || cred.UserName.Length < 1)
+            catch (Exception e)
             {
-                return false;
-            }
-            using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
-            var userCategories = db.GetCollection<UserDataCategories>(DbUserData.UserData_Categories.ToString())
-                .Query().ToArray();
-            if (userCategories != null && userCategories.Any(x => x.CategoryName != input))
-            {
-                return true;
-            }
-            else
-            {
+                App.Logger.Warning(e, "Failed to check if entry is a new category");
+                SentrySdk.CaptureException(e);
                 return false;
             }
         }
 
+        /// <summary>
+        /// Checks if maximum categories has been reached
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
         private bool IsNotMaxCategoriesCount(string input)
         {
-            if (input == null || input == AllCategory)
+            try
             {
-                return false;
+                if (input == null || input == AllCategory)
+                {
+                    return false;
+                }
+                var cred = CredentialManager.GetCredentials(App.CredDb);
+                if (cred == null || cred.UserName.Length < 1)
+                {
+                    return false;
+                }
+                using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
+                var userCategories = db.GetCollection<UserDataCategories>(DbUserData.UserData_Categories.ToString()).Query()
+                    .ToArray();
+                if (userCategories != null && userCategories.Length <= MaxCategories)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
-            var cred = CredentialManager.GetCredentials(App.CredDb);
-            if (cred == null || cred.UserName.Length < 1)
+            catch (Exception e)
             {
-                return false;
-            }
-            using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
-            var userCategories = db.GetCollection<UserDataCategories>(DbUserData.UserData_Categories.ToString()).Query()
-                .ToArray();
-            if (userCategories != null && userCategories.Length <= MaxCategories)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
+                App.Logger.Warning(e, "Failed to check if max categories has been reached");
+                SentrySdk.CaptureException(e);
             }
         }
     }

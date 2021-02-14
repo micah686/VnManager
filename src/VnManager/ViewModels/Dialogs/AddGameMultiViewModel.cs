@@ -1,9 +1,11 @@
 ﻿// Copyright (c) micah686. All rights reserved.
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.
 
+using System;
 using FluentValidation;
 using MvvmDialogs;
 using MvvmDialogs.FrameworkDialogs.OpenFile;
+using Sentry;
 using Stylet;
 using VnManager.Helpers;
 
@@ -60,28 +62,37 @@ namespace VnManager.ViewModels.Dialogs
             _dialogService = dialogService;
         }
 
+        /// <summary>
+        /// Add entry to GameCollection
+        /// </summary>
         public void Add()
-        { 
-            var validator = new AddGameMultiViewModelValidator();
-            this.Validate();
-            bool result = validator.Validate(this).IsValid;
-            if (result == true)
+        {
+            try
             {
-                var exe = ExePath;
-                var icon = IconPath;
-                var args = ExeArguments;
+                var validator = new AddGameMultiViewModelValidator();
+                this.Validate();
+                bool result = validator.Validate(this).IsValid;
+                if (result == true)
+                {
+                    var exe = ExePath;
+                    var icon = IconPath;
+                    var args = ExeArguments;
 
-                GameCollection.Add(new MultiExeGamePaths { ExePath = exe, IconPath = icon, ArgumentsString = args });
+                    GameCollection.Add(new MultiExeGamePaths { ExePath = exe, IconPath = icon, ArgumentsString = args });
 
-                ShowValidationErrors = false;//prevent validation errors from showing up after a sucessful Add
-                ExePath = string.Empty;
-                IconPath = string.Empty;
-                ExeArguments = string.Empty;
-                Validate();
-                ShowValidationErrors = true;
+                    ShowValidationErrors = false;//prevent validation errors from showing up after a sucessful Add
+                    ExePath = string.Empty;
+                    IconPath = string.Empty;
+                    ExeArguments = string.Empty;
+                    Validate();
+                    ShowValidationErrors = true;
+                }
             }
-            
-            
+            catch (Exception e)
+            {
+                App.Logger.Warning(e, "Failed to add game");
+                SentrySdk.CaptureException(e);
+            }
         }
 
         public void Remove()
@@ -92,6 +103,10 @@ namespace VnManager.ViewModels.Dialogs
             }
         }
         
+        /// <summary>
+        /// Browse for exe
+        /// <see cref="BrowseExePath"/>
+        /// </summary>
         public void BrowseExePath()
         {
             var settings = new OpenFileDialogSettings
@@ -112,6 +127,10 @@ namespace VnManager.ViewModels.Dialogs
             }
         }
 
+        /// <summary>
+        /// Browse for Icon
+        /// <see cref="BrowseIconPath"/>
+        /// </summary>
         public void BrowseIconPath()
         {
             var settings = new OpenFileDialogSettings
@@ -167,6 +186,7 @@ namespace VnManager.ViewModels.Dialogs
                         
         }
 
+        //TODO:Check if this is used
         public static bool ContainsIllegalCharacters(string format)
         {
             if (format == null)

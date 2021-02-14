@@ -4,6 +4,7 @@
 using System;
 using System.Threading.Tasks;
 using System.Windows;
+using Sentry;
 using Stylet;
 using VnManager.Events;
 using VnManager.MetadataProviders.Vndb;
@@ -36,6 +37,9 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
             SetVisibility();
         }
 
+        /// <summary>
+        /// Set Visibility of Repair Tabs
+        /// </summary>
         private void SetVisibility()
         {
             var source = SelectedGame.SourceType;
@@ -69,23 +73,35 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
             }
         }
 
+        /// <summary>
+        /// Try repairing VndbData
+        /// </summary>
+        /// <returns></returns>
         public async Task RepairVndbData()
         {
-            var result = _windowManager.ShowMessageBox(
-                $"{App.ResMan.GetString("RepairMessage1")}\n{App.ResMan.GetString("RepairMessage2")}",
-                App.ResMan.GetString("RepairVndb"), MessageBoxButton.YesNo);
-            if (result == MessageBoxResult.Yes)
+            try
             {
-                var parentHost = (ModifyGameHostViewModel)Parent;
-                parentHost.LockControls();
+                var result = _windowManager.ShowMessageBox(
+                    $"{App.ResMan.GetString("RepairMessage1")}\n{App.ResMan.GetString("RepairMessage2")}",
+                    App.ResMan.GetString("RepairVndb"), MessageBoxButton.YesNo);
+                if (result == MessageBoxResult.Yes)
+                {
+                    var parentHost = (ModifyGameHostViewModel)Parent;
+                    parentHost.LockControls();
 
-                var modifyDelete = _gameDelete();
-                modifyDelete.SetSelectedGame(SelectedGame);
-                modifyDelete.DeleteVndbContent();
-                GetVndbData getData = new GetVndbData();
-                await getData.GetDataAsync(SelectedGame.GameId.Value, true);
-                _events.PublishOnUIThread(new UpdateEvent { ShouldUpdate = true }, EventChannels.RefreshGameGrid.ToString());
-                parentHost.UnlockControls();
+                    var modifyDelete = _gameDelete();
+                    modifyDelete.SetSelectedGame(SelectedGame);
+                    modifyDelete.DeleteVndbContent();
+                    GetVndbData getData = new GetVndbData();
+                    await getData.GetDataAsync(SelectedGame.GameId.Value, true);
+                    _events.PublishOnUIThread(new UpdateEvent { ShouldUpdate = true }, EventChannels.RefreshGameGrid.ToString());
+                    parentHost.UnlockControls();
+                }
+            }
+            catch (Exception e)
+            {
+                App.Logger.Warning(e, "Failed to repair Vndb Data");
+                SentrySdk.CaptureException(e);
             }
         }
     }

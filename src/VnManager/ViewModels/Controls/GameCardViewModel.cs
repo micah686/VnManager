@@ -96,6 +96,9 @@ namespace VnManager.ViewModels.Controls
             _windowManager.ShowDialog(modifyHost);
         }
 
+        /// <summary>
+        /// Sets the currently selected game on the views that will be opened up 
+        /// </summary>
         private void SetGameEntry()
         {
             var cred = CredentialManager.GetCredentials(App.CredDb);

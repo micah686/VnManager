@@ -12,6 +12,7 @@ using AdysTech.CredentialManager;
 using FluentValidation;
 using LiteDB;
 using MvvmDialogs;
+using Sentry;
 using Stylet;
 using VndbSharp;
 using VndbSharp.Models;
@@ -144,7 +145,11 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
 
 
 
-
+        /// <summary>
+        /// Search for name of entered text
+        /// <see cref="SearchAsync"/>
+        /// </summary>
+        /// <returns></returns>
         public async Task SearchAsync()
         {
             if(await PreSearchCheckAsync() == false)
@@ -200,11 +205,16 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             catch (Exception ex)
             {
                 App.Logger.Error(ex, "Failed to search VnName");
+                SentrySdk.CaptureException(ex);
                 IsSearchingForNames = false;
             }
 
         }
 
+        /// <summary>
+        /// Do a quick check of if it can connect to Vndb
+        /// </summary>
+        /// <returns></returns>
         private async Task<bool> PreSearchCheckAsync()
         {
             
@@ -237,6 +247,10 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             return false;
         }
 
+        /// <summary>
+        /// Resets the entered name
+        /// <see cref="ResetName"/>
+        /// </summary>
         public void ResetName()
         {
             IsNameDropDownOpen = false;
@@ -245,29 +259,54 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             IsSearchNameButtonEnabled = true;
         }
 
+        /// <summary>
+        /// Browse for Exe
+        /// <see cref="BrowseExe"/>
+        /// </summary>
         public void BrowseExe()
         {
             ExePath = FileDialogHelper.BrowseExe(_dialogService, this);
         }
 
+        /// <summary>
+        /// Loads the form to have a collection of Exes
+        /// <see cref="ManageExes"/>
+        /// </summary>
         public void ManageExes()
         {
-            var multiVm = _addGameMultiFactory();
-            var result = _windowManager.ShowDialog(_addGameMultiFactory());
-            if (result != null && (result == true && multiVm.GameCollection != null))
+            try
             {
-                ExeCollection.Clear();
-                ExeCollection.AddRange(from item in multiVm.GameCollection
-                    select new MultiExeGamePaths { ExePath = item.ExePath, IconPath = item.IconPath, ArgumentsString = item.ArgumentsString });
+                var multiVm = _addGameMultiFactory();
+                var result = _windowManager.ShowDialog(_addGameMultiFactory());
+                if (result != null && (result == true && multiVm.GameCollection != null))
+                {
+                    ExeCollection.Clear();
+                    ExeCollection.AddRange(from item in multiVm.GameCollection
+                        select new MultiExeGamePaths { ExePath = item.ExePath, IconPath = item.IconPath, ArgumentsString = item.ArgumentsString });
+                }
+                multiVm.Remove();
             }
-            multiVm.Remove();
+            catch (Exception e)
+            {
+                App.Logger.Error(e, "Failed to manage Exes");
+                SentrySdk.CaptureException(e);
+            }
         }
 
+        /// <summary>
+        /// Browse Icon
+        /// <see cref="BrowseIcon"/>
+        /// </summary>
         public void BrowseIcon()
         {
             IconPath = FileDialogHelper.BrowseIcon(_dialogService, this);
         }
 
+        /// <summary>
+        /// Submit entry to add to the database
+        /// <see cref="SubmitAsync"/>
+        /// </summary>
+        /// <returns></returns>
         public async Task SubmitAsync()
         {
             IsLockDown = true;
@@ -374,7 +413,12 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
 
         }
 
-
+        /// <summary>
+        /// Checks if the the game is a deleted vn on Vndb.Org (Like The Witcher 3)
+        /// </summary>
+        /// <param name="inputid"></param>
+        /// <param name="cancellation"></param>
+        /// <returns></returns>
         private static async Task<bool> IsNotDeletedVnAsync(int inputid, CancellationToken cancellation)
         {
             try
@@ -397,10 +441,17 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             catch (Exception ex)
             {
                 App.Logger.Error(ex, "check for deleted vn failed");
+                SentrySdk.CaptureException(ex);
                 return false;
             }
         }
 
+        /// <summary>
+        /// Check if the submitted ID is above the max Vndb ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="cancellation"></param>
+        /// <returns></returns>
         private static async Task<bool> IsNotAboveMaxIdAsync(int id, CancellationToken cancellation)
         {
             try
@@ -421,10 +472,17 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             catch (Exception ex)
             {
                 App.Logger.Error(ex, "Could not check max vndb id", ex.Data);
+                SentrySdk.CaptureException(ex);
                 return false;
             }
         }
 
+        /// <summary>
+        /// Checks if the Vn is a duplicate to one in the database
+        /// </summary>
+        /// <param name="exePath"></param>
+        /// <param name="exeType"></param>
+        /// <returns></returns>
         private static bool IsNotDuplicateVndbExe(string exePath, ExeType exeType)
         {
             //if type is normal and game id in db or exe in db
@@ -460,10 +518,17 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             catch (Exception ex)
             {
                 App.Logger.Error(ex, "IsValidExe");
+                SentrySdk.CaptureException(ex);
                 throw;
             }
         }
 
+        /// <summary>
+        /// Checks if the database already has the selected ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="exeType"></param>
+        /// <returns></returns>
         private static bool IsNotDuplicateId(int id, ExeType exeType)
         {
             try
@@ -499,6 +564,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             catch (Exception ex)
             {
                 App.Logger.Error(ex, $"IsNotDuplicateId encountered an error");
+                SentrySdk.CaptureException(ex);
                 throw;
             }
         }
@@ -529,6 +595,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             catch (Exception ex)
             {
                 App.Logger.Error(ex,"Failed to set ID from selected Vndb Name");
+                SentrySdk.CaptureException(ex);
                 throw;
             }
         }

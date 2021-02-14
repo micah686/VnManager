@@ -26,6 +26,11 @@ namespace VnManager.ViewModels.Dialogs
             _timer.Start();
         }
 
+        /// <summary>
+        /// Wait for a bit before allowing user to delete everything
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void TimerOnElapsed(object sender, ElapsedEventArgs e)
         {
             const int initialCount = 0;
@@ -64,11 +69,17 @@ namespace VnManager.ViewModels.Dialogs
             }
         }
 
+        /// <summary>
+        /// Close window setting it to Delete Everything
+        /// </summary>
         public void DeleteEverything()
         {
             RequestClose(true);
         }
 
+        /// <summary>
+        /// Cancel the delete everything
+        /// </summary>
         public void Cancel()
         {
             RequestClose(false);

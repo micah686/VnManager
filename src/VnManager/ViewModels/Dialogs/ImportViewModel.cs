@@ -58,7 +58,8 @@ namespace VnManager.ViewModels.Dialogs
                 DereferenceLinks = true,
                 CheckPathExists = true,
                 CheckFileExists = true,
-                ValidateNames = true
+                ValidateNames = true,
+                Multiselect = false
             };
             bool? result = _dialogService.ShowOpenFileDialog(this, settings);
             if (result == true)
@@ -146,7 +147,8 @@ namespace VnManager.ViewModels.Dialogs
                     DereferenceLinks = true,
                     CheckPathExists = true,
                     CheckFileExists = true,
-                    ValidateNames = true
+                    ValidateNames = true,
+                    Multiselect = false
                 };
                 bool? result = _dialogService.ShowOpenFileDialog(this, settings);
                 if (result == true)
@@ -168,27 +170,35 @@ namespace VnManager.ViewModels.Dialogs
         /// <returns></returns>
         public async Task BrowseIcon(int idCol)
         {
-            if (idCol != -1)
+            try
             {
-                var settings = new OpenFileDialogSettings
+                if (idCol != -1)
                 {
-                    Title = $"{App.ResMan.GetString("BrowseForIcon")}",
-                    DefaultExt = ".exe",
-                    Filter = $"{App.ResMan.GetString("Icons")} (*.exe)|*.exe",
-                    FileName = "",
-                    DereferenceLinks = true,
-                    CheckPathExists = true,
-                    CheckFileExists = true,
-                    ValidateNames = true
-                };
-                bool? result = _dialogService.ShowOpenFileDialog(this, settings);
-                if (result == true)
-                {
-                    UserDataGamesCollection[idCol].IconPath = settings.FileName;
-                    UserDataGamesCollection.Refresh();
-                    UserDataGamesCollection[idCol].ClearAllErrors();
-                    await _validator.ValidateAsync(UserDataGamesCollection[idCol]);
+                    var settings = new OpenFileDialogSettings
+                    {
+                        Title = $"{App.ResMan.GetString("BrowseForIcon")}",
+                        DefaultExt = ".exe",
+                        Filter = $"{App.ResMan.GetString("Icons")} (*.exe)|*.exe",
+                        FileName = "",
+                        DereferenceLinks = true,
+                        CheckPathExists = true,
+                        CheckFileExists = true,
+                        ValidateNames = true
+                    };
+                    bool? result = _dialogService.ShowOpenFileDialog(this, settings);
+                    if (result == true)
+                    {
+                        UserDataGamesCollection[idCol].IconPath = settings.FileName;
+                        UserDataGamesCollection.Refresh();
+                        UserDataGamesCollection[idCol].ClearAllErrors();
+                        await _validator.ValidateAsync(UserDataGamesCollection[idCol]);
+                    }
                 }
+            }
+            catch (Exception e)
+            {
+                App.Logger.Warning(e, "Failed to browse for icon");
+                throw;
             }
 
         }
@@ -296,8 +306,8 @@ namespace VnManager.ViewModels.Dialogs
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
-                
+                App.Logger.Error(ex, "Failed to import data");
+                SentrySdk.CaptureException(ex);
                 throw;
             }
             

@@ -1,6 +1,7 @@
 ﻿// Copyright (c) micah686. All rights reserved.
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Drawing;
 using System.IO;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ using AdysTech.CredentialManager;
 using FluentValidation;
 using LiteDB;
 using MvvmDialogs;
+using Sentry;
 using Stylet;
 using VnManager.Helpers;
 using VnManager.Models.Db;
@@ -73,6 +75,12 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
             CoverPath = FileDialogHelper.BrowseCover(_dialogService, _windowManager, this);
         }
 
+        
+        /// <summary>
+        /// Update the data in the Database
+        /// <see cref="UpdateAsync"/>
+        /// </summary>
+        /// <returns></returns>
         public async Task UpdateAsync()
         {
             bool result = await ValidateAsync();
@@ -110,23 +118,40 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
             }
         }
 
+        /// <summary>
+        /// Update the cover image
+        /// </summary>
+        /// <param name="cover"></param>
         private void UpdateCover(string cover)
         {
-            if (cover == string.Empty || !File.Exists(cover))
+            try
             {
-                return;
+                if (cover == string.Empty || !File.Exists(cover))
+                {
+                    return;
+                }
+                const int maxFileSize = 5242880;//5MB
+                var length = new FileInfo(cover).Length;
+                if(length <= maxFileSize)
+                {
+                    return;
+                }
+                var png = Image.FromFile(cover);
+                png.Save($"{Path.Combine(App.AssetDirPath, @"sources\noSource\images\cover\")}{SelectedGame.Id}.png");
+                png.Dispose();
             }
-            const int maxFileSize = 5242880;//5MB
-            var length = new FileInfo(cover).Length;
-            if(length <= maxFileSize)
+            catch (Exception e)
             {
-                return;
+                App.Logger.Warning(e, "Failed to update cover image");
+                SentrySdk.CaptureException(e);
             }
-            var png = Image.FromFile(cover);
-            png.Save($"{Path.Combine(App.AssetDirPath, @"sources\noSource\images\cover\")}{SelectedGame.Id}.png");
-            png.Dispose();
         }
         
+        /// <summary>
+        /// Recheck the validation
+        /// <see cref="RecheckValidationAsync"/>
+        /// </summary>
+        /// <returns></returns>
         public async Task RecheckValidationAsync()
         {
             await ValidateAsync();

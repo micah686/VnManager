@@ -85,6 +85,9 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
             
         }
 
+        /// <summary>
+        /// Set the title of the game
+        /// </summary>
         private void SetTitle()
         {
             switch (_selectedGame.SourceType)
@@ -105,20 +108,30 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
             }
         }
 
+        /// <summary>
+        /// Set the Vndb Title of the Window
+        /// </summary>
         private void SetVndbTitle()
         {
-            var cred = CredentialManager.GetCredentials(App.CredDb);
-            if (cred == null || cred.UserName.Length < 1)
+            try
             {
-                return;
+                var cred = CredentialManager.GetCredentials(App.CredDb);
+                if (cred == null || cred.UserName.Length < 1)
+                {
+                    return;
+                }
+                using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
+                var dbUserData = db.GetCollection<VnInfo>(DbVnInfo.VnInfo.ToString()).Query()
+                    .Where(x => x.VnId == _selectedGame.GameId.Value).FirstOrDefault();
+                if (dbUserData != null)
+                {
+                    WindowTitle = $"{App.ResMan.GetString("Modify")} {dbUserData.Title}";
+                    GameTitle = dbUserData.Title;
+                }
             }
-            using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
-            var dbUserData = db.GetCollection<VnInfo>(DbVnInfo.VnInfo.ToString()).Query()
-                .Where(x => x.VnId == _selectedGame.GameId.Value).FirstOrDefault();
-            if (dbUserData != null)
+            catch (Exception e)
             {
-                WindowTitle = $"{App.ResMan.GetString("Modify")} {dbUserData.Title}";
-                GameTitle = dbUserData.Title;
+                App.Logger.Warning(e, "Failed to set Vndb Title ModifyGameHost");
             }
         }
 
