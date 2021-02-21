@@ -119,10 +119,10 @@ jobs:
       uses: actions/upload-artifact@v1
       with:
         name: VnManager-Build
-        path:  "${{ github.workspace }}/build/"
+        path:  "${{ github.workspace }}/output/build/"
         
     - name: Upload Artifact Setup
       uses: actions/upload-artifact@v1
       with:
         name: VnManager-Setup
-        path:  "${{ github.workspace }}/setup/"        
+        path:  "${{ github.workspace }}/output/setup/"        
