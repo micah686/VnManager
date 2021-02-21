@@ -35,18 +35,6 @@ jobs:
         fetch-depth: 0
         submodules: true
 
-
-    - name: Check For Tags
-      if: startsWith(github.ref, 'refs/tags/')
-      run: |
-        echo "A tag was found"  
-
-    - name: Check For No Tags
-      if: startsWith(github.ref, 'refs/tags/') == false
-      run: |
-        echo "This will fail as not tag was found"  
-
-
     - name: Setup Java 11
       uses: actions/setup-java@v1
       with:
@@ -119,7 +107,7 @@ jobs:
           & 'C:/Program Files (x86)/Windows Kits/10/bin/10.0.17763.0/x86/signtool.exe' sign /fd sha256 /f ${{ github.workspace }}\output\setup\certificate.pfx /p '${{ secrets.CERTIFICATE_PASS }}' /t http://timestamp.digicert.com "${{ github.workspace }}/output/build/VnManager.dll"          
                   
               
-    - name: Install and compile Inno
+    - name: Install and Compile Inno Setup Installer
       shell: powershell
       run: |
         cd ${{ github.workspace }}\output\setup
