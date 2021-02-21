@@ -1,0 +1,58 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+# This workflow will build, test, sign and package a WPF or Windows Forms desktop application
+# built on .NET Core.
+# To learn how to migrate your existing application to .NET Core,
+# refer to https://docs.microsoft.com/en-us/dotnet/desktop-wpf/migration/convert-project-from-net-framework
+#
+
+
+name: Build Normal
+on:
+  push:
+    branches:
+      - '*'
+      - '!master'
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+
+jobs:
+
+  #Build Job any branch except master, making sure that it builds sucessfully
+  build:
+    name: Build Project
+    runs-on: windows-latest                             
+    env:
+      Solution_Name: src/VnManager.sln                         
+      
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+        submodules: true
+
+    - name: Cache NuGet Packages
+      uses: actions/cache@v1
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
+          
+    - name: Build 
+      shell: powershell
+      run: |
+        mkdir ${{ github.workspace }}/build
+        dir ${{ github.workspace }}
+        dotnet publish src/VnManager/VnManager.csproj --framework netcoreapp3.1 -c Release -o --output "${{ github.workspace }}/build"        
+                
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v1
+      with:
+        name: VnManager
+        path:  "${{ github.workspace }}/build/"
