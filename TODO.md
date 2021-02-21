@@ -1,14 +1,4 @@
 TODO:  
-- add logging statments all over 
-- Add an info/about page to top bar 
-- Add Msi/Updater (Squirrel?)  
-
-
---- 
-code cleanup  
-add comments to methods  
-Finalize Project  
-
 
 Next Version: 
 - Border brush to Blue/Orange on game running  
