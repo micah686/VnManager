@@ -23,18 +23,15 @@ A program to keep track of your visual novels
 
 
 
+![alt text](https://raw.githubusercontent.com/micah686/VnManager/master/Screenshots/01-Main.PNG)
+You can find more information here: [VnManager](https://micah686.github.io/VnManager/)
 
-### Please note that all work on v2 of the program has ceased (Visual-Novel-Manager-v2) 
-
-The application is being completely redesinged, using new frameworks. 
-
-The old application archive can be found in the v2-archive branch. 
-
-This application is still under heavy development. 
-
-If you want to clone this project, make sure that you clone the submodules too, otherwise it won't compile.
 
 #### Analytics
 Please be aware that metrics data be uploaded to a remote server in order to help find issues. 
 
 If you wish to opt out of data collection, please create a file named: `METRICS_OPT_OUT` in `%APPDATA\VnManager` or in the root of the `Data` folder
+
+---
+If you are looking for my previous implementation of the project, you can find it here:  
+[V2-Archive](https://github.com/micah686/VnManager/tree/v2-archive)
