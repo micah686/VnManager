@@ -6,6 +6,7 @@
     <UseWPF>true</UseWPF>
     <ProjectGuid>{55015BBA-83EE-440C-8F1F-F39BF835E2C1}</ProjectGuid>
     <CodeAnalysisRuleSet>VnManager.ruleset</CodeAnalysisRuleSet>
+    <ApplicationIcon>Resources\icon\vnmgrlogo.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -51,6 +52,7 @@
 
   <ItemGroup>
     <Folder Include="Resources\flags\" />
+    <Folder Include="Resources\icon\" />
     <Folder Include="Resources\placeholders\" />
   </ItemGroup>
 
