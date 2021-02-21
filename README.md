@@ -1,4 +1,4 @@
-# VnManager
+# VnManager 1.0.0
 A program to keep track of your visual novels
 
 | | Active Integrations |
