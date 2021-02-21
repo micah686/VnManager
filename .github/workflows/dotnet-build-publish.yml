@@ -35,6 +35,15 @@ jobs:
         fetch-depth: 0
         submodules: true
 
+
+    - name: Check For Tags
+      if: startsWith(github.ref, 'refs/tags/')
+      run: |
+        echo "This will fail as not tag was found"  
+
+
+
+
     - name: Setup Java 11
       uses: actions/setup-java@v1
       with:
