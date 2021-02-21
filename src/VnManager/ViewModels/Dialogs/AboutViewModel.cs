@@ -25,7 +25,7 @@ namespace VnManager.ViewModels.Dialogs
         {
             Title = App.ResMan.GetString("About");
             SoftwareVersion = $"VnManager {App.VersionString}";
-            CopyrightDate = $"{App.ResMan.GetString("Copyright")} 2021-{DateTime.UtcNow.Year}";
+            CopyrightDate = $"{App.ResMan.GetString("Copyright")} 2020-{DateTime.UtcNow.Year}";
             Website = @"https://github.com/micah686/VnManager";
             LicenseInfo = App.ResMan.GetString("LicensedUnderMIT");
             DeveloperName = $"{App.ResMan.GetString("DevelopedBy")} Micah686";
