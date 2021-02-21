@@ -103,8 +103,8 @@ jobs:
           
     - name: Code Sign VnManager binaries
       run: |
-          & 'C:/Program Files (x86)/Windows Kits/10/bin/10.0.17763.0/x86/signtool.exe' sign /fd sha256 /f certificate\certificate.pfx /p '${{ secrets.CERTIFICATE_PASS }}' /t http://timestamp.digicert.com "${{ github.workspace }}/output/build/VnManager.exe"
-          & 'C:/Program Files (x86)/Windows Kits/10/bin/10.0.17763.0/x86/signtool.exe' sign /fd sha256 /f certificate\certificate.pfx /p '${{ secrets.CERTIFICATE_PASS }}' /t http://timestamp.digicert.com "${{ github.workspace }}/output/build/VnManager.dll"          
+          & 'C:/Program Files (x86)/Windows Kits/10/bin/10.0.17763.0/x86/signtool.exe' sign /fd sha256 /f ${{ github.workspace }}\output\setup\certificate.pfx /p '${{ secrets.CERTIFICATE_PASS }}' /t http://timestamp.digicert.com "${{ github.workspace }}/output/build/VnManager.exe"
+          & 'C:/Program Files (x86)/Windows Kits/10/bin/10.0.17763.0/x86/signtool.exe' sign /fd sha256 /f ${{ github.workspace }}\output\setup\certificate.pfx /p '${{ secrets.CERTIFICATE_PASS }}' /t http://timestamp.digicert.com "${{ github.workspace }}/output/build/VnManager.dll"          
           
     - name: Install and compile Inno
       shell: powershell
