@@ -24,7 +24,7 @@ jobs:
   #Build Job for prepping the environment for build (installing .net core, getting nuget packages,...
   build:
     name: Build Project
-    runs-on: windows-latest                             
+    runs-on: windows-2019                             
     env:
       Solution_Name: src/VnManager.sln                         
       
@@ -101,6 +101,11 @@ jobs:
           Set-Content -Path certificate\certificate.txt -Value '${{ secrets.CERTIFICATE }}'
           certutil -decode certificate\certificate.txt ${{ github.workspace }}\output\setup\certificate.pfx     
           
+    - name: Code Sign VnManager binaries
+      run: |
+          & 'C:/Program Files (x86)/Windows Kits/10/bin/10.0.17763.0/x86/signtool.exe' sign /fd sha256 /f certificate\certificate.pfx /p '${{ secrets.CERTIFICATE_PASS }}' /t http://timestamp.digicert.com "${{ github.workspace }}/output/build/VnManager.exe"
+          & 'C:/Program Files (x86)/Windows Kits/10/bin/10.0.17763.0/x86/signtool.exe' sign /fd sha256 /f certificate\certificate.pfx /p '${{ secrets.CERTIFICATE_PASS }}' /t http://timestamp.digicert.com "${{ github.workspace }}/output/build/VnManager.dll"          
+          
     - name: Install and compile Inno
       shell: powershell
       run: |
@@ -114,6 +119,8 @@ jobs:
         echo "listing build directory"
         dir ${{ github.workspace }}\output\build
         iscc "VnManagerSetup.iss"          
+                
+                
                 
     - name: Upload Artifact Build
       uses: actions/upload-artifact@v1
