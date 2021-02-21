@@ -139,15 +139,17 @@ jobs:
       uses: actions/upload-artifact@v1
       with:
         name: VnManager-Setup
-        path:  "${{ github.workspace }}/output/setup/"         
+        path:  "${{ github.workspace }}/output/setup/Output/VnManagerSetup.exe"         
         
                 
 ###################################
 # Everything below is only for tagged Releases
+# be sure to add this to force it to be for tags only
+# if: startsWith(github.ref, 'refs/tags/')
 ##################################                      
                 
     - name: Create Release
-      #if: startsWith(github.ref, 'refs/tags/')
+      if: startsWith(github.ref, 'refs/tags/')
       id: create_release #Don't touch this ID
       uses: actions/create-release@v1
       env:
@@ -156,15 +158,10 @@ jobs:
        tag_name: ${{ github.ref }}
        release_name: Release ${{ github.ref }}
        draft: false
-       prerelease: false
+       prerelease: false     
       
-    - name: Upload Artifact Setup Installer
-      uses: actions/upload-artifact@v1
-      with:
-        name: VnManagerInstaller
-        path:  "${{ github.workspace }}/output/setup/Output/VnManagerSetup.exe"        
-      
-    - name: Upload Release Asset      
+    - name: Upload Release Asset
+      if: startsWith(github.ref, 'refs/tags/')
       id: upload-release-asset
       uses: actions/upload-release-asset@v1
       env:
