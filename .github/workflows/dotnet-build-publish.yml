@@ -125,11 +125,9 @@ jobs:
         cd ${{ github.workspace }}\output\setup
         iscc "VnManagerSetup.iss" 
         
-        
-          
-    - name: Check github refs
+    - name: Code Sign VnManager Setup File
       run: |
-        echo "The ref is ${{ github.ref }}"
+          & 'C:/Program Files (x86)/Windows Kits/10/bin/10.0.17763.0/x86/signtool.exe' sign /fd sha256 /f ${{ github.workspace }}\output\setup\certificate.pfx /p '${{ secrets.CERTIFICATE_PASS }}' /t http://timestamp.digicert.com "${{ github.workspace }}/output/setup/Output/VnManagerSetup.exe"                          
       
     - name: Upload Artifact Build
       uses: actions/upload-artifact@v1
@@ -160,16 +158,22 @@ jobs:
        draft: false
        prerelease: false
       
-    - name: Upload Release Asset      
-      id: upload-release-asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Upload Setup      
+    - uses: AButler/upload-release-assets@v2.0
       with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-        asset_path: ${{ github.workspace }}/output/setup/Output/VnManagerSetup.exe
-        asset_name: VnManagerSetup.exe
-        asset_content_type: application/vnd.microsoft.portable-executable
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+        files: ${{ github.workspace }}/output/setup/Output/VnManagerSetup.exe
+      
+#    - name: Upload Release Asset      
+#      id: upload-release-asset
+#      uses: actions/upload-release-asset@v1
+#      env:
+#        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#      with:
+#        upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+#        asset_path: ${{ github.workspace }}/output/setup/Output/VnManagerSetup.exe
+#        asset_name: VnManagerSetup.exe
+#        asset_content_type: application/vnd.microsoft.portable-executable
       
       
       
