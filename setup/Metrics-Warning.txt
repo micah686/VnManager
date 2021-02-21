@@ -1,0 +1,8 @@
+This application will upload metric data to a remote server in order to help find and diagnose issues.
+
+If you wish to opt out of collection of this data, do the following:
+Create an extensionless file named METRICS_OPT_OUT in %APPDATA%\VnManager
+
+If you do not create the METRICS_OPT_OUT file, you agree to the collection of metrics and error data.
+
+If you have any questions/concerns, please open an issue at https://github.com/micah686/VnManager/issues
