@@ -107,6 +107,8 @@ jobs:
         cd ${{ github.workspace }}\output\setup
         echo "listing current directory"
         dir 
+        echo "listing output directory"
+        dir ${{ github.workspace }}\output\
         echo "listing setup directory"
         dir ${{ github.workspace }}\output\setup
         echo "listing build directory"
