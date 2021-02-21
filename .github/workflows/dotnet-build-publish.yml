@@ -136,22 +136,27 @@ jobs:
 # Everything below is only for tagged Releases
 ##################################                
                 
-    - name: Check For Tag
-      if: contains('refs/tags', ${{ github.ref }})
+    - name: Check For Tag True
+      if: contains('refs/tags', ${{ github.ref }}) == true
       run: |
         echo "This will execute as it found a valid tag"                
+        
+    - name: Check For Tag False
+      if: contains('refs/tags', ${{ github.ref }}) == false
+      run: |
+        echo "This will fail as not tag was found"         
                 
-    - name: Create Release
-      if: contains('refs/tags', ${{ github.ref }})
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
-        draft: false
-        prerelease: false
+#    - name: Create Release
+#      if: contains('refs/tags', ${{ github.ref }})
+##      id: create_release
+ #     uses: actions/create-release@v1
+ #     env:
+ #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+ #     with:
+ #       tag_name: ${{ github.ref }}
+ #       release_name: Release ${{ github.ref }}
+ #       draft: false
+ #       prerelease: false
       
       
       
