@@ -104,8 +104,13 @@ jobs:
     - name: Install and compile Inno
       shell: powershell
       run: |
-        cd ${{ github.workspace }}/setup
+        cd ${{ github.workspace }}\output\setup
+        echo "listing current directory"
         dir 
+        echo "listing setup directory"
+        dir ${{ github.workspace }}\output\setup
+        echo "listing build directory"
+        ${{ github.workspace }}\output\build
         iscc "VnManagerSetup.iss"          
                 
     - name: Upload Artifact Build
