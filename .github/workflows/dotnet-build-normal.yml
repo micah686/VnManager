@@ -16,6 +16,7 @@ on:
     branches:
       - '*'
       - '!master'
+      - '!gh-pages'
   pull_request:
     types: [opened, synchronize, reopened]
 
