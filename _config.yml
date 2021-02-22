@@ -26,7 +26,21 @@ social:
 timezone: Etc/UTC
 
 
+paginate: 10
+paginate_path: "/blog/:num/"
+permalink: pretty
+
 defaults:
+  -
+    scope:
+      path: ""
+      type: "posts"
+    values:
+      layout: "post"
+      _options:
+        content:
+          width: 1500
+          height: 2500
   -
     scope:
       path: ""
@@ -37,8 +51,18 @@ defaults:
       path: "index.html"
     values:
       layout: "default"
+  -
+    scope:
+      path: "contact.html"
+    values:
+      full_width: true
+
+jekyll-archives:
+  enabled:
+    - categories
 
 plugins:
+  - jekyll-archives
   - jekyll-sitemap
   - jekyll-seo-tag
   - jekyll-feed
