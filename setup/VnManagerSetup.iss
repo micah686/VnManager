@@ -65,6 +65,7 @@ Source: "..\build\System.Security.AccessControl.dll"; DestDir: "{app}"; Flags: i
 Source: "..\build\System.Security.Principal.Windows.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\build\VndbSharp.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\build\VnManager.deps.json"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\build\PropertyChanged.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\build\VnManager.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\build\VnManager.pdb"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\build\VnManager.runtimeconfig.json"; DestDir: "{app}"; Flags: ignoreversion
