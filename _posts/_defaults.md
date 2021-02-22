@@ -1,5 +1,0 @@
----
-title:
-categories:
-date:
----
