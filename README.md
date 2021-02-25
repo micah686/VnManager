@@ -2,7 +2,8 @@
 A program to keep track of your visual novels
 
 ![alt text](https://raw.githubusercontent.com/micah686/VnManager/master/Screenshots/01-Main.PNG)  
-You can find more information here: [https://micah686.github.io/VnManager/](https://micah686.github.io/VnManager/)
+You can find more information here: [https://micah686.github.io/VnManager/](https://micah686.github.io/VnManager/)  
+The installer might give a warning when downloading the file, as it has a self signed certificate that Chrome/Firefox/Edge doesn't trust.
 
 | | Active Integrations |
 | --- | --- |
