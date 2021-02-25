@@ -1,4 +1,4 @@
-# VnManager 1.0.0
+# VnManager
 A program to keep track of your visual novels
 
 ![alt text](https://raw.githubusercontent.com/micah686/VnManager/master/Screenshots/01-Main.PNG)  
