@@ -24,7 +24,7 @@ You can find more information here: [https://micah686.github.io/VnManager/](http
 **Commit Frequency** | ![Commits](https://img.shields.io/github/commit-activity/w/micah686/VnManager)
 **Latest Release** | ![Release](https://badgen.net/github/release/micah686/VnManager)  
 **Last Commit** | ![Commit](https://badgen.net/github/last-commit/micah686/VnManager/master)  
-** Total Downloads** | ![Downloads](https://img.shields.io/github/downloads/micah686/VnManager/total)  
+**Total Downloads** | ![Downloads](https://img.shields.io/github/downloads/micah686/VnManager/total)  
 **Chat** | [![Gitter Chat](https://badges.gitter.im/micah686/VnManager.svg)](https://gitter.im/micah686/VnManager) |
 
 
