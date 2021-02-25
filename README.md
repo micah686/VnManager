@@ -48,4 +48,4 @@ If you wish to opt out of data collection, please create a file named: `METRICS_
 
 ---
 If you are looking for my previous implementation of the project, you can find it here:  
-[V2-Archive](https://github.com/micah686/VnManager/tree/v2-archive)
+[V2-Archive](https://github.com/micah686/VnManager/tree/(archive)v2/)
