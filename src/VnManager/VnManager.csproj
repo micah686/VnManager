@@ -7,6 +7,7 @@
     <ProjectGuid>{55015BBA-83EE-440C-8F1F-F39BF835E2C1}</ProjectGuid>
     <CodeAnalysisRuleSet>VnManager.ruleset</CodeAnalysisRuleSet>
     <ApplicationIcon>Resources\icon\vnmgrlogo.ico</ApplicationIcon>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
