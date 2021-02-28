@@ -113,7 +113,11 @@ jobs:
       shell: powershell
       run: |
         cd ${{ github.workspace }}\output\setup
-        iscc "VnManagerSetup.iss"                                
+        iscc "VnManagerSetup.iss" 
+        
+    - name: Code Sign VnManager Setup File
+      run: |
+          & 'C:/Program Files (x86)/Windows Kits/10/bin/10.0.17763.0/x86/signtool.exe' sign /fd sha256 /f ${{ github.workspace }}\output\setup\certificate.pfx /p '${{ secrets.CERTIFICATE_PASS }}' /t http://timestamp.digicert.com "${{ github.workspace }}/output/setup/Output/VnManagerSetup.exe"                          
       
     - name: Upload Artifact Build
       uses: actions/upload-artifact@v1
