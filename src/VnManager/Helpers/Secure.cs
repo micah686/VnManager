@@ -348,48 +348,81 @@ namespace VnManager.Helpers
         [DebuggerHidden]
         public static string GenerateSecurePassword(int length, int numberOfNonAlphanumericCharacters)
         {
-            const int maxLength = 128;
-            if (length < 1 || length > maxLength)
+            try
             {
-                throw new ArgumentException(nameof(length));
-            }
-
-            if (numberOfNonAlphanumericCharacters > length || numberOfNonAlphanumericCharacters < 0)
-            {
-                throw new ArgumentException(nameof(numberOfNonAlphanumericCharacters));
-            }
-
-            using (var rng = RandomNumberGenerator.Create())
-            {
-                var byteBuffer = new byte[length];
-
-                rng.GetBytes(byteBuffer);
-
-                var count = 0;
-
-                var characterBuffer = LoopCharBuffer(length, byteBuffer, ref count);
-
-                if (count >= numberOfNonAlphanumericCharacters)
+                const int maxLength = 128;
+                const int maxNum = 10;
+                const int maxCapsAlpha = 36;
+                const int maxLowerAlpha = 62;
+                if (length < 1 || length > maxLength)
                 {
+                    throw new ArgumentException(nameof(length));
+                }
+
+                if (numberOfNonAlphanumericCharacters > length || numberOfNonAlphanumericCharacters < 0)
+                {
+                    throw new ArgumentException(nameof(numberOfNonAlphanumericCharacters));
+                }
+
+                using (var rng = RandomNumberGenerator.Create())
+                {
+                    var byteBuffer = new byte[length];
+
+                    rng.GetBytes(byteBuffer);
+
+                    var count = 0;
+                    var characterBuffer = new char[length];
+
+                    for (var iter = 0; iter < length; iter++)
+                    {
+                        var i = byteBuffer[iter] % 87;
+
+                        if (i < maxNum)
+                        {
+                            characterBuffer[iter] = (char)('0' + i);
+                        }
+                        else if (i < maxCapsAlpha)
+                        {
+                            characterBuffer[iter] = (char)('A' + i - maxNum);
+                        }
+                        else if (i < maxLowerAlpha)
+                        {
+                            characterBuffer[iter] = (char)('a' + i - maxCapsAlpha);
+                        }
+                        else
+                        {
+                            characterBuffer[iter] = Punctuations[i - maxLowerAlpha];
+                            count++;
+                        }
+                    }
+
+                    if (count >= numberOfNonAlphanumericCharacters)
+                    {
+                        return new string(characterBuffer);
+                    }
+
+                    int j;
+                    var rand = new Random();
+
+                    for (j = 0; j < numberOfNonAlphanumericCharacters - count; j++)
+                    {
+                        int k;
+                        do
+                        {
+                            k = rand.Next(0, length);
+                        }
+                        while (!char.IsLetterOrDigit(characterBuffer[k]));
+
+                        characterBuffer[k] = Punctuations[rand.Next(0, Punctuations.Length)];
+                    }
+
                     return new string(characterBuffer);
                 }
-
-                int j;
-                var rand = new Random();
-
-                for (j = 0; j < numberOfNonAlphanumericCharacters - count; j++)
-                {
-                    int k;
-                    do
-                    {
-                        k = rand.Next(0, length);
-                    }
-                    while (!char.IsLetterOrDigit(characterBuffer[k]));
-
-                    characterBuffer[k] = Punctuations[rand.Next(0, Punctuations.Length)];
-                }
-
-                return new string(characterBuffer);
+            }
+            catch (Exception a)
+            {
+                Console.WriteLine(a);
+                throw;
             }
         }
 
