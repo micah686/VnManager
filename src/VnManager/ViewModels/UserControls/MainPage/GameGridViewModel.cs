@@ -69,7 +69,7 @@ namespace VnManager.ViewModels.UserControls.MainPage
                 {
                     return;
                 }
-                using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
+                using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}'{cred.Password}'"))
                 {
                     var dbAll = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString()).Query().ToList();
                     GameCollection.Clear();

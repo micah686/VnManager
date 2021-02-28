@@ -37,7 +37,7 @@ namespace VnManager.Helpers
                 }
                 File.Copy(Path.Combine(App.ConfigDirPath, App.DbPath), @$"{App.AssetDirPath}\Import.db");
                 var fileName = @$"{App.AssetDirPath}\Import.db";
-                using (var db = new LiteDatabase($"Filename={fileName};Password={cred.Password}"))
+                using (var db = new LiteDatabase($"Filename={fileName};Password='{cred.Password}'"))
                 {
                     db.Rebuild(new RebuildOptions { Password = App.ImportExportDbKey });
                 }

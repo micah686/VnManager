@@ -54,7 +54,7 @@ namespace VnManager.ViewModels.UserControls
                 {
                     return;
                 }
-                using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
+                using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}'{cred.Password}'");
                 var categoryArray = db.GetCollection<UserDataCategories>(DbUserData.UserData_Categories.ToString()).Query()
                     .Select(x => x.CategoryName).ToArray();
                 CategoryCollection.AddRange(categoryArray);

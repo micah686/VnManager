@@ -106,7 +106,7 @@ namespace VnManager.ViewModels.Controls
             {
                 return;
             }
-            using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
+            using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}'{cred.Password}'");
             var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString()).Query()
                 .Where(x => x.Id == UserDataId).FirstOrDefault();
             if (dbUserData != null)

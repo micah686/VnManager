@@ -73,7 +73,7 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
                 {
                     return;
                 }
-                using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
+                using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}'{cred.Password}'");
                 var dbUserCategories = db.GetCollection<UserDataCategories>(DbUserData.UserData_Categories.ToString());
 
                 var categoriesExceptAll = dbUserCategories.Query().Where(x => x.CategoryName != "All").Select(x => x.CategoryName).ToList();
@@ -151,7 +151,7 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
                 {
                     return;
                 }
-                using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
+                using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}'{cred.Password}'"))
                 {
                     var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString());
                     var entry = SelectedGame;
@@ -222,7 +222,7 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
                 {
                     return;
                 }
-                using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
+                using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}'{cred.Password}'"))
                 {
                     var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString());
                     var entry = SelectedGame;
@@ -277,7 +277,7 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
                     {
                         return;
                     }
-                    using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
+                    using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}'{cred.Password}'"))
                     {
                         var dbUserCategories = db.GetCollection<UserDataCategories>(DbUserData.UserData_Categories.ToString());
                         var newCategory = new UserDataCategories { CategoryName = NewCategoryValue };
@@ -315,7 +315,7 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
                 {
                     return;
                 }
-                using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
+                using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}'{cred.Password}'"))
                 {
                     var dbUserCategories = db.GetCollection<UserDataCategories>(DbUserData.UserData_Categories.ToString());
                     var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString());
@@ -386,7 +386,7 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
                 {
                     return false;
                 }
-                using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
+                using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}'{cred.Password}'");
                 var userCategories = db.GetCollection<UserDataCategories>(DbUserData.UserData_Categories.ToString())
                     .Query().ToArray();
                 if (userCategories != null && userCategories.Any(x => x.CategoryName != input))
@@ -424,7 +424,7 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
                 {
                     return false;
                 }
-                using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
+                using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}'{cred.Password}'");
                 var userCategories = db.GetCollection<UserDataCategories>(DbUserData.UserData_Categories.ToString()).Query()
                     .ToArray();
                 if (userCategories != null && userCategories.Length <= MaxCategories)

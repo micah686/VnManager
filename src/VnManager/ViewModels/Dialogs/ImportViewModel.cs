@@ -394,7 +394,7 @@ namespace VnManager.ViewModels.Dialogs
             {
                 return false;
             }
-            using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
+            using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}'{cred.Password}'"))
             {
                 var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString()).Query().Select(x => x.Id).ToList();
                 return !dbUserData.Contains(id);

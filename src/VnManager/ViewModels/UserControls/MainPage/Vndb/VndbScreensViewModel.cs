@@ -74,7 +74,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
                 {
                     return new List<BindingImage>();
                 }
-                using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
+                using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}'{cred.Password}'");
                 var dbUserData = db.GetCollection<VnInfoScreens>(DbVnInfo.VnInfo_Screens.ToString()).Query()
                     .Where(x => x.VnId == VndbContentViewModel.VnId).ToEnumerable();
                 var scrList = dbUserData.Select(item => new BindingImage { ImageLink = item.ImageLink, Rating = item.ImageRating }).ToList();

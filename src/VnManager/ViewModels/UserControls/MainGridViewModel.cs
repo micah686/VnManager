@@ -52,7 +52,7 @@ namespace VnManager.ViewModels.UserControls
                 }
 
                 int gameCount;
-                using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
+                using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}'{cred.Password}'"))
                 {
                     gameCount = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString()).Count();
                 

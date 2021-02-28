@@ -146,7 +146,7 @@ namespace VnManager.ViewModels.Windows
                         return;
                     }
                     using (_ = new LiteDatabase(
-                        $"Filename={Path.Combine(App.ConfigDirPath, App.DbPath)};Password={cred.Password}"))
+                        $"Filename={Path.Combine(App.ConfigDirPath, App.DbPath)};Password='{cred.Password}'"))
                     {
                         //create initial empty database
                     }
@@ -186,7 +186,7 @@ namespace VnManager.ViewModels.Windows
                     CredentialManager.SaveCredentials(App.CredDb, cred);
 
                     using (_ = new LiteDatabase(
-                        $"Filename={Path.Combine(App.ConfigDirPath, App.DbPath)};Password={cred.Password}"))
+                        $"Filename={Path.Combine(App.ConfigDirPath, App.DbPath)};Password='{cred.Password}'"))
                     {
                         //create initial empty database
                     }
@@ -409,7 +409,7 @@ namespace VnManager.ViewModels.Windows
                 {
                     return false;
                 }
-                using (_ = new LiteDatabase($"Filename={Path.Combine(App.ConfigDirPath, App.DbPath)};Password={cred.Password}"))
+                using (_ = new LiteDatabase($"Filename={Path.Combine(App.ConfigDirPath, App.DbPath)};Password='{cred.Password}'"))
                 {
                     //test if the database can be opened
                 }
@@ -445,7 +445,7 @@ namespace VnManager.ViewModels.Windows
                 {
                     return App.ResMan.GetString("PasswordNoEmpty");
                 }
-                using (_ = new LiteDatabase($"Filename={Path.Combine(App.ConfigDirPath, App.DbPath)};Password={cred.Password}"))
+                using (_ = new LiteDatabase($"Filename={Path.Combine(App.ConfigDirPath, App.DbPath)};Password='{cred.Password}'"))
                 {
                     //test if the database can be opened
                 }

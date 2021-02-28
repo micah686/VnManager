@@ -92,7 +92,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
                 {
                     return;
                 }
-                using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
+                using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}'{cred.Password}'"))
                 {
                     var vnInfoEntry = db.GetCollection<VnInfo>(DbVnInfo.VnInfo.ToString()).Query().Where(x => x.VnId == VndbContentViewModel.VnId).FirstOrDefault();
                     Title = vnInfoEntry.Title;
@@ -129,7 +129,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
                 {
                     return;
                 }
-                using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
+                using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}'{cred.Password}'");
                 var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString()).Query()
                     .Where(x => x.Id == VndbContentViewModel.SelectedGame.Id).FirstOrDefault();
                 if (dbUserData != null)
@@ -313,7 +313,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
                         return;
                     }
 
-                    using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
+                    using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}'{cred.Password}'"))
                     {
                         var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString());
                         var gameEntry = dbUserData.Query().Where(x => x.Id == VndbContentViewModel.SelectedGame.Id).FirstOrDefault();

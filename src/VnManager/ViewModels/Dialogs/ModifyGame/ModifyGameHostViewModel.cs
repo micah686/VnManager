@@ -120,7 +120,7 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
                 {
                     return;
                 }
-                using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
+                using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}'{cred.Password}'");
                 var dbUserData = db.GetCollection<VnInfo>(DbVnInfo.VnInfo.ToString()).Query()
                     .Where(x => x.VnId == _selectedGame.GameId.Value).FirstOrDefault();
                 if (dbUserData != null)

@@ -209,7 +209,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.NoSource
                         return;
                     }
 
-                    using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
+                    using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}'{cred.Password}'"))
                     {
                         var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString());
                         var gameEntry = dbUserData.Query().Where(x => x.Id == _selectedGame.Id).FirstOrDefault();

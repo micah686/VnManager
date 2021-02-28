@@ -40,7 +40,7 @@ namespace VnManager.MetadataProviders.Vndb
                 {
                     return;
                 }
-                using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
+                using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}'{cred.Password}'");
                 VnInfo entry = db.GetCollection<VnInfo>(DbVnInfo.VnInfo.ToString()).Query().Where(x => x.VnId == vnId).FirstOrDefault();
                 if (entry == null)
                 {
@@ -81,7 +81,7 @@ namespace VnManager.MetadataProviders.Vndb
                 {
                     return;
                 }
-                using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
+                using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}'{cred.Password}'");
                 var entries = db.GetCollection<VnCharacterInfo>(DbVnCharacter.VnCharacter.ToString()).Query().Where(x => x.VnId == vnId)
                     .ToList();
                 if (entries == null || entries.Count == 0)
@@ -134,7 +134,7 @@ namespace VnManager.MetadataProviders.Vndb
                 {
                     return;
                 }
-                using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
+                using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}'{cred.Password}'"))
                 {
                     var entries = db.GetCollection<VnInfoScreens>(DbVnInfo.VnInfo_Screens.ToString()).Query().Where(x => x.VnId == vnId)
                         .ToList();
@@ -185,7 +185,7 @@ namespace VnManager.MetadataProviders.Vndb
                     return;
                 }
 
-                using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
+                using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}'{cred.Password}'"))
                 {
                     RootViewModel.StatusBarPage.IsWorking = true;
                     var dbTags = db.GetCollection<VnTagData>(DbVnDump.VnDump_TagData.ToString());
@@ -245,7 +245,7 @@ namespace VnManager.MetadataProviders.Vndb
                     return;
                 }
 
-                using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
+                using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}'{cred.Password}'"))
                 {
                     RootViewModel.StatusBarPage.IsWorking = true;
                     var dbTraits = db.GetCollection<VnTraitData>(DbVnDump.VnDump_TraitData.ToString());

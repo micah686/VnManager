@@ -136,7 +136,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
                 {
                     return;
                 }
-                using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
+                using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}'{cred.Password}'"))
                 {
                     var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString());
                     dbUserData.Insert(entry);
@@ -214,7 +214,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
                 {
                     return false;
                 }
-                using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
+                using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}'{cred.Password}'"))
                 {
                     var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString()).Query()
                         .Where(x => x.SourceType == AddGameSourceType.NoSource).ToEnumerable();

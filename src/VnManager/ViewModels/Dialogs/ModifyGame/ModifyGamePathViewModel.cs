@@ -97,7 +97,7 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
                     Arguments = string.Empty;
                 }
                 
-                using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
+                using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}'{cred.Password}'");
                 var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString());
                 var entry = dbUserData.Query().Where(x => x.Id == SelectedGame.Id)
                     .FirstOrDefault();

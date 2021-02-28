@@ -35,7 +35,7 @@ namespace VnManager.Helpers.Vndb
                 {
                     return new[] {new TagTraitBinding()};
                 }
-                using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
+                using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}'{cred.Password}'"))
                 {
 
                     tagList = db.GetCollection<VnInfoTags>(DbVnInfo.VnInfo_Tags.ToString()).Query()
@@ -116,7 +116,7 @@ namespace VnManager.Helpers.Vndb
                 {
                     return new[] {new TagTraitBinding()};
                 }
-                using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
+                using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}'{cred.Password}'"))
                 {
 
                     traitList = db.GetCollection<VnCharacterTraits>(DbVnCharacter.VnCharacter_Traits.ToString()).Query()

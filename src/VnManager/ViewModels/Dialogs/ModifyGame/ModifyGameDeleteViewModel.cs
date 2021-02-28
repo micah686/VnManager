@@ -71,7 +71,7 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
                     return;
                 }
 
-                using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
+                using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}'{cred.Password}'"))
                 {
                     var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString());
                     dbUserData.DeleteMany(x => x.Id == SelectedGame.Id);
@@ -101,7 +101,7 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
                     return;
                 }
                 var vnid = SelectedGame.GameId.Value;
-                using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
+                using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}'{cred.Password}'"))
                 {
                     var dbInfo = db.GetCollection<VnInfo>(DbVnInfo.VnInfo.ToString());
                     var dbInfoLinks = db.GetCollection<VnInfoLinks>(DbVnInfo.VnInfo_Links.ToString());
@@ -196,7 +196,7 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
                 {
                     return;
                 }
-                using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
+                using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}'{cred.Password}'"))
                 {
                     var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString());
                     var currentGame = dbUserData.Query().Where(x => x.Id == SelectedGame.Id).FirstOrDefault();

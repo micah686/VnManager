@@ -166,7 +166,7 @@ namespace VnManager.Initializers
             {
                 return;
             }
-            using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
+            using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}'{cred.Password}'");
             var dbUserData = db.GetCollection<UserDataCategories>(DbUserData.UserData_Categories.ToString());
 
             var userDataList = dbUserData.Query().ToList();

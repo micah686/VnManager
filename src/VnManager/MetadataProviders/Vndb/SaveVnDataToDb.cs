@@ -111,7 +111,7 @@ namespace VnManager.MetadataProviders.Vndb
                 {
                     return;
                 }
-                using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
+                using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}'{cred.Password}'"))
                 {
                     var dbVnInfo = db.GetCollection<VnInfo>(DbVnInfo.VnInfo.ToString());
                     var dbVnInfoLinks = db.GetCollection<VnInfoLinks>(DbVnInfo.VnInfo_Links.ToString());
@@ -309,7 +309,7 @@ namespace VnManager.MetadataProviders.Vndb
                 {
                     return;
                 }
-                using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
+                using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}'{cred.Password}'"))
                 {
                     var dbCharInfo = db.GetCollection<VnCharacterInfo>(DbVnCharacter.VnCharacter.ToString());
                     ILiteCollection<VnCharacterTraits> dbCharTraits = db.GetCollection<VnCharacterTraits>(DbVnCharacter.VnCharacter_Traits.ToString());

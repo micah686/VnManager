@@ -90,7 +90,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
                 {
                     return;
                 }
-                using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
+                using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}'{cred.Password}'"))
                 {
                     var dbCharacterData = db.GetCollection<VnCharacterInfo>(DbVnCharacter.VnCharacter.ToString()).Query()
                         .Where(x => x.VnId == VndbContentViewModel.VnId).ToArray();
@@ -198,7 +198,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
                 {
                     return;
                 }
-                using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
+                using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}'{cred.Password}'"))
                 {
                     var charInfo = db.GetCollection<VnCharacterInfo>(DbVnCharacter.VnCharacter.ToString()).Query()
                         .Where(x => x.CharacterId == _characterId).FirstOrDefault();

@@ -493,7 +493,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
                 {
                     return false;
                 }
-                using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
+                using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}'{cred.Password}'"))
                 {
                     var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString()).Query().ToEnumerable();
                     switch (exeType)
@@ -538,7 +538,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
                 {
                     return false;
                 }
-                using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
+                using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}'{cred.Password}'"))
                 {
                     var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString()).Query()
                         .Where(x => x.SourceType == AddGameSourceType.Vndb).ToEnumerable();

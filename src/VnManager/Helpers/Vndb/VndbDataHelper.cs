@@ -40,7 +40,7 @@ namespace VnManager.Helpers.Vndb
                 {
                     return new BindableCollection<VndbInfoViewModel.VnRelationsBinding>();
                 }
-                using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}"))
+                using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}'{cred.Password}'"))
                 {
                     var relationCollection = new BindableCollection<VndbInfoViewModel.VnRelationsBinding>();
                     var vnRelations = db.GetCollection<VnInfoRelations>(DbVnInfo.VnInfo_Relations.ToString()).Query()
@@ -75,7 +75,7 @@ namespace VnManager.Helpers.Vndb
                 {
                     return new Tuple<string, Visibility>(string.Empty, Visibility.Collapsed);
                 }
-                using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}{cred.Password}");
+                using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}'{cred.Password}'");
                 var dbUserData = db.GetCollection<VnInfoLinks>(DbVnInfo.VnInfo_Links.ToString()).Query()
                     .Where(x => x.VnId == VndbContentViewModel.VnId).FirstOrDefault();
                 if (dbUserData != null && !string.IsNullOrEmpty(dbUserData.Wikidata))
