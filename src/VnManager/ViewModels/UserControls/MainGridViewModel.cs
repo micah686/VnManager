@@ -6,6 +6,7 @@ using AdysTech.CredentialManager;
 using LiteDB;
 using Sentry;
 using Stylet;
+using VnManager.Events;
 using VnManager.Models.Db;
 using VnManager.Models.Db.User;
 using VnManager.ViewModels.Dialogs.AddGameSources;
@@ -13,12 +14,15 @@ using VnManager.ViewModels.UserControls.MainPage;
 
 namespace VnManager.ViewModels.UserControls
 {
-    public class MainGridViewModel: Conductor<Screen>
+    public class MainGridViewModel: Conductor<Screen>, IHandle<UpdateEvent>
     {
         public CategoryListViewModel CategoryListPage { get; set; }
 
         private readonly IWindowManager _windowManager;
+        private readonly IEventAggregator _events;
         private readonly Func<AddGameMainViewModel> _addGameFactory;
+        private readonly Func<NoGamesViewModel> _noGame;
+        private readonly Func<GameGridViewModel> _gameGrid;
         /// <summary>
         /// The main grid of the application. This excludes the categoriesListView
         /// </summary>
@@ -28,13 +32,19 @@ namespace VnManager.ViewModels.UserControls
         /// <param name="gameGrid"></param>
         /// <param name="noGames"></param>
         public MainGridViewModel(IWindowManager windowManager, Func<CategoryListViewModel> category, Func<AddGameMainViewModel> addGame,
-            Func<GameGridViewModel> gameGrid, Func<NoGamesViewModel> noGames)
+            Func<GameGridViewModel> gameGrid, Func<NoGamesViewModel> noGames, IEventAggregator events)
         {
             _windowManager = windowManager;
             _addGameFactory = addGame;
+
+            _events = events;
+            SetupEvents(events);
+            _gameGrid = gameGrid;
+            _noGame = noGames;
             CategoryListPage = category();
-            CheckGames(gameGrid, noGames);
+            CheckGames(_gameGrid, _noGame);
         }
+
 
         /// <summary>
         /// Check how many games there are, and display the correct view accourdingly
@@ -89,6 +99,15 @@ namespace VnManager.ViewModels.UserControls
                 App.Logger.Error(e, "Failed to show AddGameDialog");
                 SentrySdk.CaptureException(e);
             }
+        }
+
+        public void Handle(UpdateEvent message)
+        {
+            CheckGames(_gameGrid, _noGame);
+        }
+        private void SetupEvents(IEventAggregator eventAggregator)
+        {
+            eventAggregator.Subscribe(this, EventChannels.RefreshGameGrid.ToString());
         }
     }
 }

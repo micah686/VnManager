@@ -19,7 +19,7 @@ using VnManager.ViewModels.Dialogs.AddGameSources;
 
 namespace VnManager.ViewModels.UserControls.MainPage
 {
-    public class GameGridViewModel: Screen, IHandle<UpdateEvent>
+    public class GameGridViewModel: Screen
     {
         public BindableCollection<GameCardViewModel> GameCollection { get; } = new BindableCollection<GameCardViewModel>();
 
@@ -33,7 +33,7 @@ namespace VnManager.ViewModels.UserControls.MainPage
         {
             _gameCard = gameCard;
 
-            SetupEvents(events);
+            //SetupEvents(events);
 
             GetGameData();
         }
@@ -44,15 +44,6 @@ namespace VnManager.ViewModels.UserControls.MainPage
         protected override void OnClose()
         {
             RootViewModel.StatusBarPage.GameCount = "0";
-        }
-
-        /// <summary>
-        /// Subscribe to any RefreshGameGrid messages
-        /// </summary>
-        /// <param name="eventAggregator"></param>
-        private void SetupEvents(IEventAggregator eventAggregator)
-        {
-            eventAggregator.Subscribe(this, EventChannels.RefreshGameGrid.ToString());
         }
 
         /// <summary>
@@ -202,15 +193,6 @@ namespace VnManager.ViewModels.UserControls.MainPage
                 App.Logger.Warning(e, "Failed to create Vndb GameCards");
                 SentrySdk.CaptureException(e);
             }
-        }
-        
-        public void Handle(UpdateEvent message)
-        {
-            if (message != null && message.ShouldUpdate)
-            {
-                GetGameData();
-            }
-            
         }
     }
 }
