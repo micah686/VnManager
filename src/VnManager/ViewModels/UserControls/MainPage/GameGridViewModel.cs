@@ -66,7 +66,7 @@ namespace VnManager.ViewModels.UserControls.MainPage
                     GameCollection.Clear();
                     foreach (var userData in dbAll)
                     {
-                        if (userData.Categories != null && userData.Categories.Contains(CategoryListViewModel.SelectedCategory))
+                        if (userData.Categories != null && (userData.Categories.Contains(CategoryListViewModel.SelectedCategory))|| CategoryListViewModel.SelectedCategory == null)
                         {
                             dbUserData.Add(userData);
                         }
