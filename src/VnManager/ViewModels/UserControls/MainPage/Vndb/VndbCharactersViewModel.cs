@@ -62,6 +62,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             _finishedLoad = false;
             if(CharacterNamesCollection.Count >0)
             {
+                _finishedLoad = true;
                 return;
             }
             PopulateCharacterList();
