@@ -176,8 +176,8 @@ namespace VnManager.Initializers
                 var result = _windowManager.ShowMessageBox(App.ResMan.GetString("UpdateMsg"), App.ResMan.GetString("UpdateAvailable"), MessageBoxButton.YesNo);
                 if (result == MessageBoxResult.Yes)
                 {
-                    const int fiveMegaBytes = 8388608;
-                    var releasePath = new Uri(@"https://github.com/micah686/VnManager/releases/latest/download/VnManager.exe");
+                    const int twoMegaBytes = 2000000;
+                    var releasePath = new Uri(@"https://github.com/micah686/VnManager/releases/latest/download/VnManagerInstaller.exe");
                     var tempFolder = Path.GetTempPath();
                     var filePath = $@"{tempFolder}VnManager-{Guid.NewGuid()}.exe";
                     using (var client = new WebClient())
@@ -186,7 +186,7 @@ namespace VnManager.Initializers
                     }
 
                     var totalBytes = new FileInfo(filePath).Length;
-                    if (totalBytes > fiveMegaBytes)
+                    if (totalBytes > twoMegaBytes)
                     {
                         var ps = new ProcessStartInfo(filePath)
                         {
