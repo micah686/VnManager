@@ -81,6 +81,9 @@
                             <Setter Property="MaxLength" Value="70"/>
                         </Style>
                     </ComboBox.Resources>
+                    <ComboBox.InputBindings>
+                        <KeyBinding Key="Enter" Command="{s:Action SearchAsync}"/>
+                    </ComboBox.InputBindings>
                 </ComboBox>
                 <Button Margin="5,0,0,0" Command="{s:Action SearchAsync}" IsEnabled="{Binding IsSearchNameButtonEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                     <iconPacks:PackIconMaterial Kind="{x:Static iconPacks:PackIconMaterialKind.Magnify}"  />
