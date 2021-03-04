@@ -1,8 +1,8 @@
 # ----
 # Site
 
-title: Hydra Template
-url: "https://proud-alligator.cloudvent.net"
+title: VnManager
+url: "https://github.com/micah686/VnManager"
 baseurl:
 google_analytics_key:
 google_maps_javascript_api_key:
