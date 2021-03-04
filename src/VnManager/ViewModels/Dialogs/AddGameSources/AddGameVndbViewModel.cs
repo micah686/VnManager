@@ -395,8 +395,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
 
 
             //Exe Path Validation
-            RuleFor(x => x.ExePath).Cascade(CascadeMode.Stop).ExeValidation()
-                .Must((x,y)=> IsNotDuplicateVndbExe(x.ExePath, x.ExeType)).WithMessage(App.ResMan.GetString("ExeAlreadyExistsInDb"));
+            RuleFor(x => x.ExePath).Cascade(CascadeMode.Stop).ExeValidation();
 
             //Icon
             When(x => x.IsIconChecked == true, () =>
@@ -474,52 +473,6 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
                 App.Logger.Error(ex, "Could not check max vndb id", ex.Data);
                 SentrySdk.CaptureException(ex);
                 return false;
-            }
-        }
-
-        /// <summary>
-        /// Checks if the Vn is a duplicate to one in the database
-        /// </summary>
-        /// <param name="exePath"></param>
-        /// <param name="exeType"></param>
-        /// <returns></returns>
-        private static bool IsNotDuplicateVndbExe(string exePath, ExeType exeType)
-        {
-            //if type is normal and game id in db or exe in db
-            try
-            {
-                var cred = CredentialManager.GetCredentials(App.CredDb);
-                if (cred == null || cred.UserName.Length < 1)
-                {
-                    return false;
-                }
-                using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}'{cred.Password}'"))
-                {
-                    var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString()).Query().ToEnumerable();
-                    switch (exeType)
-                    {
-                        case ExeType.Normal:
-                        {
-                            var count = dbUserData.Count(x => x.ExePath == exePath);
-                            return count <= 0;
-                        }
-                        case ExeType.Launcher:
-                        {
-                            var count = dbUserData.Count(x => x.ExePath == exePath);
-                            return count <= 0;
-                        }
-                        case ExeType.Collection:
-                            return true;
-                        default:
-                            throw new ArgumentOutOfRangeException($"Unknown Enum Source");
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                App.Logger.Error(ex, "IsValidExe");
-                SentrySdk.CaptureException(ex);
-                throw;
             }
         }
 

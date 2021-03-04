@@ -43,8 +43,7 @@ namespace VnManager.Helpers
         public static IRuleBuilderOptions<T, string> ArgsValidation<T>(this IRuleBuilder<T, string> rule)
         {
             return rule
-                .NotEmpty().WithMessage(App.ResMan.GetString("ValidationArgumentsEmpty"))
-                .Must(ContainsIllegalCharacters).WithMessage(App.ResMan.GetString("ValidationArgumentsIllegalChars"));
+                .NotEmpty().WithMessage(App.ResMan.GetString("ValidationArgumentsEmpty"));
 
         }
 

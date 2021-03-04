@@ -185,8 +185,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
                 .Must(ValidateFiles.EndsWithJpgOrPng).WithMessage(App.ResMan.GetString("ValidationImagePathNotValid"))
                 .Must(ImageHelper.IsValidImage).WithMessage(App.ResMan.GetString("ValidationNotValidImage"));
 
-            RuleFor(x => x.ExePath).Cascade(CascadeMode.Stop).ExeValidation()
-                .Must(IsNotDuplicateExe).WithMessage(App.ResMan.GetString("ExeAlreadyExistsInDb"));
+            RuleFor(x => x.ExePath).Cascade(CascadeMode.Stop).ExeValidation();
 
             When(x => x.IsIconChecked == true, () =>
             {
@@ -198,36 +197,6 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
                 RuleFor(x => x.ExeArguments).Cascade(CascadeMode.Stop).ArgsValidation();
             });
 
-        }
-
-        /// <summary>
-        /// Checks against duplicate Exe
-        /// </summary>
-        /// <param name="exePath"></param>
-        /// <returns></returns>
-        private static bool IsNotDuplicateExe(string exePath)
-        {
-            try
-            {
-                var cred = CredentialManager.GetCredentials(App.CredDb);
-                if (cred == null || cred.UserName.Length < 1)
-                {
-                    return false;
-                }
-                using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}'{cred.Password}'"))
-                {
-                    var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString()).Query()
-                        .Where(x => x.SourceType == AddGameSourceType.NoSource).ToEnumerable();
-                    var count = dbUserData.Count(x => x.ExePath == exePath);
-                    return count <= 0;
-                }
-            }
-            catch (Exception e)
-            {
-                App.Logger.Warning(e, "Failed to check if duplicate Exe");
-                SentrySdk.CaptureException(e);
-                return false;
-            }
         }
     }
 }
