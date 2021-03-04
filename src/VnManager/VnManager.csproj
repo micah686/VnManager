@@ -7,7 +7,7 @@
     <ProjectGuid>{55015BBA-83EE-440C-8F1F-F39BF835E2C1}</ProjectGuid>
     <CodeAnalysisRuleSet>VnManager.ruleset</CodeAnalysisRuleSet>
     <ApplicationIcon>Resources\icon\vnmgrlogo.ico</ApplicationIcon>
-    <Version>1.0.3.1</Version>
+    <Version>1.0.4</Version>
     <Authors>micah686</Authors>
     <PackageProjectUrl>https://micah686.github.io/VnManager/</PackageProjectUrl>
     <Description>A program for managing your visual novels</Description>
