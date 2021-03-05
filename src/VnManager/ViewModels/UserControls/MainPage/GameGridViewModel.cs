@@ -118,6 +118,12 @@ namespace VnManager.ViewModels.UserControls.MainPage
                     var rating = NsfwHelper.RawRatingIsNsfw(game.ImageRating);
 
                     var card = _gameCard();
+                    card.UserDataId = entry.Id;
+                    card.ShouldDisplayNsfwContent = !NsfwHelper.UserIsNsfw(game.ImageRating);
+                    card.Title = game.Title;
+                    card.LastPlayedString = $"Last Played: {TimeDateChanger.GetHumanDate(entry.LastPlayed)}";
+                    card.TotalTimeString = $"Play Time: {TimeDateChanger.GetHumanTime(entry.PlayTime)}";
+                    
                     if (rating == true && File.Exists($"{coverPath}.aes"))
                     {
                         var imgBytes = File.ReadAllBytes($"{coverPath}.aes");
@@ -126,33 +132,20 @@ namespace VnManager.ViewModels.UserControls.MainPage
                         var bi = new BindingImage { Image = imgNsfw, IsNsfw = NsfwHelper.RawRatingIsNsfw(game.ImageRating) };
 
                         card.CoverImage = bi;
-                        card.Title = game.Title;
-                        card.LastPlayedString = $"{App.ResMan.GetString("LastPlayed")}: {TimeDateChanger.GetHumanDate(entry.LastPlayed)}";
-                        card.TotalTimeString = $"{App.ResMan.GetString("PlayTime")}: {TimeDateChanger.GetHumanTime(entry.PlayTime)}";
-                        card.UserDataId = entry.Id;
-                        card.ShouldDisplayNsfwContent = !NsfwHelper.UserIsNsfw(game.ImageRating);
                     }
                     else
                     {
-                        var bi = new BindingImage
-                        {
-                            Image = ImageHelper.CreateEmptyBitmapImage(),
-                            IsNsfw = false
-                        };
                         if (File.Exists(coverPath))
                         {
-                            bi = new BindingImage
-                            {
-                                Image = ImageHelper.CreateBitmapFromPath(coverPath),
-                                IsNsfw = false
-                            };
+                            var bi = new BindingImage { Image = ImageHelper.CreateBitmapFromPath(coverPath), IsNsfw = false };
+                            card.CoverImage = bi;
                         }
-                        card.CoverImage = bi;
-                        card.Title = game.Title;
-                        card.LastPlayedString = $"Last Played: {TimeDateChanger.GetHumanDate(entry.LastPlayed)}";
-                        card.TotalTimeString = $"Play Time: {TimeDateChanger.GetHumanTime(entry.PlayTime)}";
-                        card.UserDataId = entry.Id;
-                        card.ShouldDisplayNsfwContent = !NsfwHelper.UserIsNsfw(game.ImageRating);
+                        else
+                        {
+                            var bi = new BindingImage { Image = ImageHelper.CreateEmptyBitmapImage(), IsNsfw = false };
+                            card.CoverImage = bi;
+                        }
+
                     }
                     GameCollection.Add(card);
                 }

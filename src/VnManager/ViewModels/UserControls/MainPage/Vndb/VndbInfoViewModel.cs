@@ -104,7 +104,24 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
                     Rating = $"{vnInfoEntry.Rating:F}";
                     LoadLanguages(ref vnInfoEntry);
                     var coverPath = $@"{App.AssetDirPath}\sources\vndb\images\cover\{vnInfoEntry.VnId}.jpg";
-                    CoverImage = ImageHelper.CreateBitmapFromPath(coverPath);
+
+                    var rawRating = NsfwHelper.RawRatingIsNsfw(vnInfoEntry.ImageRating);
+                    if (rawRating && File.Exists($"{coverPath}.aes"))
+                    {
+                        var imgBytes = File.ReadAllBytes($"{coverPath}.aes");
+                        var imgStream = Secure.DecStreamToStream(new MemoryStream(imgBytes));
+                        var imgNsfw = ImageHelper.CreateBitmapFromStream(imgStream);
+                        CoverImage = imgNsfw;
+                        if (NsfwHelper.UserIsNsfw(vnInfoEntry.ImageRating))
+                        {
+                            const int blurWeight = 10;
+                            CoverImage = ImageHelper.BlurImage(imgNsfw, blurWeight);
+                        }
+                    }
+                    else
+                    {
+                        CoverImage = File.Exists(coverPath) ? ImageHelper.CreateBitmapFromPath(coverPath) : ImageHelper.CreateEmptyBitmapImage();
+                    }
 
                     DescriptionInLine = BBCodeHelper.Helper(vnInfoEntry.Description);
 
