@@ -25,6 +25,7 @@ The installer might give a warning when downloading the file, as it has a self s
 **Commit Frequency** | ![Commits](https://img.shields.io/github/commit-activity/w/micah686/VnManager)
 **Latest Release** | ![Release](https://badgen.net/github/release/micah686/VnManager)  
 **Last Commit** | ![Commit](https://badgen.net/github/last-commit/micah686/VnManager/master)  
+**Downloads Latest Release** | ![Latest Downloads](https://img.shields.io/github/downloads/micah686/VnManager/latest/total)  
 **Total Downloads** | ![Downloads](https://img.shields.io/github/downloads/micah686/VnManager/total)  
 **Chat** | [![Gitter Chat](https://badges.gitter.im/micah686/VnManager.svg)](https://gitter.im/micah686/VnManager) |
 
