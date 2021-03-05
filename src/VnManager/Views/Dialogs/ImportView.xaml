@@ -73,7 +73,7 @@
                         <DataGridTextColumn Header="{x:Static res:Resources.ExeType}" IsReadOnly="True" Binding="{Binding ExeType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
                         <DataGridTextColumn Header="{x:Static res:Resources.LastPlayed}" IsReadOnly="True" Binding="{Binding LastPlayed, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
                         <DataGridTextColumn Header="{x:Static res:Resources.PlayTime}" IsReadOnly="True" Binding="{Binding PlayTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
-                        <DataGridTextColumn Header="{x:Static res:Resources.Categories}"  Binding="{Binding Categories, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True, Converter={StaticResource BindingCsvConverter}}"/>
+                        <DataGridTextColumn Header="{x:Static res:Resources.Categories}"  Binding="{Binding Categories, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True, Converter={StaticResource BindingCsvConverter}}"/>
                         <DataGridTemplateColumn Header="{x:Static res:Resources.DeleteRow}">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
