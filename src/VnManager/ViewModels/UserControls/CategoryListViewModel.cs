@@ -57,8 +57,6 @@ namespace VnManager.ViewModels.UserControls
                     return;
                 }
                 using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}'{cred.Password}'");
-                //var categoryArray = db.GetCollection<UserDataCategories>(DbUserData.UserData_Categories.ToString())
-                //    .Query().OrderBy(x => x.CategoryName).Select(x => x.CategoryName).ToArray();
                 var categoryData = db.GetCollection<UserDataCategories>(DbUserData.UserData_Categories.ToString()).FindAll();
                 var categoryList = categoryData.Where(x => x.CategoryName != "All").OrderBy(x => x.CategoryName)
                     .Select(x => x.CategoryName).ToList();
