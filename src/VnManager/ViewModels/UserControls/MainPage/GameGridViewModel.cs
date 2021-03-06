@@ -22,7 +22,8 @@ namespace VnManager.ViewModels.UserControls.MainPage
     public class GameGridViewModel: Screen
     {
         public BindableCollection<GameCardViewModel> GameCollection { get; } = new BindableCollection<GameCardViewModel>();
-
+        private readonly List<GameCardViewModel> _gameCollection = new List<GameCardViewModel>();
+        
         private readonly Func<GameCardViewModel> _gameCard;
         /// <summary>
         /// Main Grid host for gameCards to show up in
@@ -32,8 +33,6 @@ namespace VnManager.ViewModels.UserControls.MainPage
         public GameGridViewModel(IEventAggregator events, Func<GameCardViewModel> gameCard)
         {
             _gameCard = gameCard;
-
-            //SetupEvents(events);
 
             GetGameData();
         }
@@ -88,6 +87,9 @@ namespace VnManager.ViewModels.UserControls.MainPage
                     GetVndbData(vndbData, dbVnInfo.ToArray());
                 }
 
+                var gameCollection = _gameCollection.OrderBy(x => x.Title);
+                GameCollection.AddRange(gameCollection);
+                GameCollection.Refresh();
                 RootViewModel.StatusBarPage.GameCount = GameCollection.Count.ToString();
             }
             catch (Exception e)
@@ -147,7 +149,7 @@ namespace VnManager.ViewModels.UserControls.MainPage
                         }
 
                     }
-                    GameCollection.Add(card);
+                    _gameCollection.Add(card);
                 }
             }
             catch (Exception e)
@@ -177,8 +179,7 @@ namespace VnManager.ViewModels.UserControls.MainPage
                         new BindingImage { Image = ImageHelper.CreateEmptyBitmapImage() };
                     card.UserDataId = entry.Id;
 
-
-                    GameCollection.Add(card);
+                    _gameCollection.Add(card);
                 }
             }
             catch (Exception e)
