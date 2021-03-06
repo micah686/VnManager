@@ -3,6 +3,7 @@
 
 using Stylet;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using AdysTech.CredentialManager;
 using LiteDB;
@@ -56,9 +57,13 @@ namespace VnManager.ViewModels.UserControls
                     return;
                 }
                 using var db = new LiteDatabase($"{App.GetDbStringWithoutPass}'{cred.Password}'");
-                var categoryArray = db.GetCollection<UserDataCategories>(DbUserData.UserData_Categories.ToString())
-                    .Query().OrderBy(x => x.CategoryName).Select(x => x.CategoryName).ToArray();
-                CategoryCollection.AddRange(categoryArray);
+                //var categoryArray = db.GetCollection<UserDataCategories>(DbUserData.UserData_Categories.ToString())
+                //    .Query().OrderBy(x => x.CategoryName).Select(x => x.CategoryName).ToArray();
+                var categoryData = db.GetCollection<UserDataCategories>(DbUserData.UserData_Categories.ToString()).FindAll();
+                var categoryList = categoryData.Where(x => x.CategoryName != "All").OrderBy(x => x.CategoryName)
+                    .Select(x => x.CategoryName).ToList();
+                categoryList.Insert(0, "All");
+                CategoryCollection.AddRange(categoryList);
             }
             catch (Exception e)
             {
