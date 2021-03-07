@@ -353,7 +353,6 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             {
                 App.Logger.Warning(exception, "Failed to deal with an exited Process");
                 SentrySdk.CaptureException(exception);
-                throw;
             }
         }
         
