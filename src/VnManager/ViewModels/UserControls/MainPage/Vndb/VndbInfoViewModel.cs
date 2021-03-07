@@ -60,6 +60,10 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
         /// </summary>
         protected override void OnViewLoaded()
         {
+            LanguageCollection.Clear();
+            TagCollection.Clear();
+            VnRelations.Clear();
+            
             VndbLink = new Tuple<string, Visibility>(string.Empty, Visibility.Visible);
             WikiLink = new Tuple<string, Visibility>(string.Empty, Visibility.Collapsed);
             LoadMainData();
@@ -67,7 +71,6 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             LoadRelations();
             LoadLinks();
             
-            TagCollection.Clear();
             TagCollection.AddRange(VndbTagTraitHelper.GetTags(VndbContentViewModel.VnId));
             SummaryHeaderVisibility = DescriptionInLine.Length < 1 ? Visibility.Collapsed : Visibility.Visible;
             TagHeaderVisibility = TagCollection.Count < 1 ? Visibility.Collapsed : Visibility.Visible;
