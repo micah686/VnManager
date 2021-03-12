@@ -153,11 +153,15 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
                 {
                     return;
                 }
-                if (SelectedCharacterIndex != -1)
+                if (SelectedCharacterIndex != -1 && SelectedCharacterIndex <= CharacterNamesCollection.Count)
                 {
                     _characterId = CharacterNamesCollection[SelectedCharacterIndex].Key;
+                    UpdateCharacterData();
                 }
-                UpdateCharacterData();
+                else
+                {
+                    return;
+                }
             }
             catch (Exception e)
             {
