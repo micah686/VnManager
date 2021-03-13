@@ -336,6 +336,8 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
                     using (var db = new LiteDatabase($"{App.GetDbStringWithoutPass}'{cred.Password}'"))
                     {
                         var dbUserData = db.GetCollection<UserDataGames>(DbUserData.UserData_Games.ToString());
+                        
+                        SentrySdk.AddBreadcrumb($"MainChildExited{dbUserData.FindAll().Count()}, VnId:{VndbContentViewModel.SelectedGame.Id}");
                         var gameEntry = dbUserData.Query().Where(x => x.Id == VndbContentViewModel.SelectedGame.Id).FirstOrDefault();
                         gameEntry.LastPlayed = DateTime.UtcNow;
                         gameEntry.PlayTime = gameEntry.PlayTime + parent.GameStopwatch.Elapsed;

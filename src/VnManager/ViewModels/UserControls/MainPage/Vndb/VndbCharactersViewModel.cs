@@ -155,6 +155,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
                 }
                 if (SelectedCharacterIndex != -1 && SelectedCharacterIndex <= CharacterNamesCollection.Count)
                 {
+                    SentrySdk.AddBreadcrumb($"CharNameCollCnt:{CharacterNamesCollection.Count}, CharIdx:{SelectedCharacterIndex}, VnId:{VndbContentViewModel.VnId}");
                     _characterId = CharacterNamesCollection[SelectedCharacterIndex].Key;
                     UpdateCharacterData();
                 }

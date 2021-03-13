@@ -68,6 +68,7 @@ namespace VnManager.Helpers
                 string rawText = text;
                 
                 Regex regex = new Regex(@"\[spoiler\]((?:.|\n)+?)\[\/spoiler\]", RegexOptions.IgnoreCase);
+                SentrySdk.AddBreadcrumb($"ReplaceSpoilerText:{text}");
                 foreach (Match match in regex.Matches(text))
                 {
                     rawText = rawText.Replace(match.Groups[0].ToString(), match.Groups[1].ToString());

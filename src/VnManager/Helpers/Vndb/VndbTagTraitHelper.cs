@@ -42,6 +42,8 @@ namespace VnManager.Helpers.Vndb
                         .Where(x => x.VnId == VndbContentViewModel.VnId).ToList();
                     tagDump = db.GetCollection<VnTagData>(DbVnDump.VnDump_TagData.ToString()).Query().ToList();
 
+                    SentrySdk.AddBreadcrumb($"tagList: {tagList.Count}");
+
                     tagList = tagList.Where(t => t.Spoiler <= App.UserSettings.SettingsVndb.Spoiler).ToList();
                     tagList = tagList.OrderByDescending(x => x.Spoiler).ToList();
 
@@ -123,6 +125,8 @@ namespace VnManager.Helpers.Vndb
                         .Where(x => x.CharacterId == characterId).ToList();
                     traitDump = db.GetCollection<VnTraitData>(DbVnDump.VnDump_TraitData.ToString()).Query().ToList();
 
+                    SentrySdk.AddBreadcrumb($"traitList: {traitList.Count}");
+                    
                     traitList = traitList.Where(t => t.SpoilerLevel <= App.UserSettings.SettingsVndb.Spoiler).ToList();
                     traitList = traitList.OrderByDescending(x => x.SpoilerLevel).ToList();
 
@@ -154,7 +158,7 @@ namespace VnManager.Helpers.Vndb
             catch (Exception e)
             {
                 App.Logger.Warning(e, "GetTraits failed");
-                SentryHelper.SendException(e, null, SentryLevel.Warning);
+                SentryHelper.SendException(e, SentryLevel.Warning);
                 return new TagTraitBinding[0];
             }
         }
