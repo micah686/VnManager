@@ -13,6 +13,7 @@ using Sentry;
 using VndbSharp.Models.Character;
 using VndbSharp.Models.VisualNovel;
 using VnManager.Converters;
+using VnManager.Helpers;
 using VnManager.Models.Db;
 using VnManager.Models.Db.Vndb.Character;
 using VnManager.Models.Db.Vndb.Main;
@@ -80,7 +81,7 @@ namespace VnManager.MetadataProviders.Vndb
             catch (Exception e)
             {
                 App.Logger.Error(e, "Failed to Sort VnInfo");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Warning);
                 StatusBarViewModel.ResetValues();
             }
             finally
@@ -169,12 +170,12 @@ namespace VnManager.MetadataProviders.Vndb
             catch (IOException e)
             {
                 App.Logger.Error(e, "an I/O exception occurred");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Error);
             }
             catch (Exception e)
             {
                 App.Logger.Error(e, "Failed to save VnInfo");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Error);
             }
         }
 
@@ -211,7 +212,7 @@ namespace VnManager.MetadataProviders.Vndb
             catch (Exception e)
             {
                 App.Logger.Error(e, "Failed to save VnInfo screens");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Warning);
                 return new List<VnInfoScreens>();
             }
         }
@@ -249,7 +250,7 @@ namespace VnManager.MetadataProviders.Vndb
             catch (Exception e)
             {
                 App.Logger.Error(e, "Failed to save VnInfo Relations");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Warning);
                 return new List<VnInfoRelations>();
             }
         }
@@ -284,7 +285,7 @@ namespace VnManager.MetadataProviders.Vndb
             catch (Exception e)
             {
                 App.Logger.Error(e, "Failed to save VnInfo Tags");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Warning);
                 return new List<VnInfoTags>();
             }
         }
@@ -353,7 +354,7 @@ namespace VnManager.MetadataProviders.Vndb
             catch (Exception e)
             {
                 App.Logger.Error(e, "Failed to save VnCharacters");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Error);
             }
 
         }
@@ -390,7 +391,7 @@ namespace VnManager.MetadataProviders.Vndb
             catch (Exception e)
             {
                 App.Logger.Error(e, "Failed to format VnTraits");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Warning);
                 return new List<VnCharacterTraits>();
             }
         }

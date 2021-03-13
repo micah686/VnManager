@@ -143,7 +143,7 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
             catch (Exception e)
             {
                 App.Logger.Warning(e, "Failed to update cover image");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Warning);
             }
         }
         

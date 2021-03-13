@@ -74,7 +74,7 @@ namespace VnManager.ViewModels.UserControls
             catch (Exception e)
             {
                 App.Logger.Warning(e, "Failed to fill Sexual dropdown on Settings");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Warning);
             }
         }
 
@@ -109,7 +109,7 @@ namespace VnManager.ViewModels.UserControls
             catch (Exception e)
             {
                 App.Logger.Warning(e, "Failed to fill Violence dropdown on Settings");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Warning);
             }
         }
 
@@ -144,7 +144,7 @@ namespace VnManager.ViewModels.UserControls
             catch (Exception e)
             {
                 App.Logger.Warning(e, "Failed to fill Spoiler dropdown on Settings");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Warning);
             }
         }
 
@@ -177,7 +177,7 @@ namespace VnManager.ViewModels.UserControls
             catch (Exception ex)
             {
                 App.Logger.Error(ex, "Couldn't write to config file");
-                SentrySdk.CaptureException(ex);
+                SentryHelper.SendException(ex, null, SentryLevel.Error);
                 throw;
             }
         }
@@ -229,7 +229,7 @@ namespace VnManager.ViewModels.UserControls
             catch (Exception e)
             {
                 App.Logger.Warning(e, "Failed to export userData");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Error);
             }
         }
 
@@ -259,7 +259,7 @@ namespace VnManager.ViewModels.UserControls
             catch (Exception e)
             {
                 App.Logger.Warning(e, "Failed to reset application");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Error);
             }
         }
 
@@ -287,7 +287,7 @@ namespace VnManager.ViewModels.UserControls
             catch (Exception e)
             {
                 App.Logger.Error(e, "Failed to delete all VnManager files");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Error);
             }
         }
 

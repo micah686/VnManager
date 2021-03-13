@@ -128,7 +128,7 @@ namespace VnManager.Initializers
                     errorStr = $"{ex.Message}\n{appExit}";
                     _windowManager.ShowMessageBox(errorStr, dbError);
                     App.Logger.Error(ex, "CheckDb LiteException error");
-                    SentrySdk.CaptureException(ex);
+                    SentryHelper.SendException(ex, null, SentryLevel.Error);
                     Environment.Exit(1);
                 }
             }
@@ -137,7 +137,7 @@ namespace VnManager.Initializers
                 errorStr = $"{App.ResMan.GetString("UnknownException")}\n{appExit}";
                 _windowManager.ShowMessageBox(errorStr, dbError);
                 App.Logger.Error(e, "CheckDbError failed");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Error);
                 Environment.Exit(1);
             }
         }
@@ -201,7 +201,7 @@ namespace VnManager.Initializers
             catch (Exception e)
             {
                 App.Logger.Warning(e, "Failed to check for Updates");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Warning);
             }
         }
     }

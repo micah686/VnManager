@@ -84,7 +84,7 @@ namespace VnManager.ViewModels.Windows
             catch (Exception e)
             {
                 App.Logger.Error(e, "Failed to create Set/Enter password View");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Error);
                 throw;
             }
             
@@ -110,7 +110,7 @@ namespace VnManager.ViewModels.Windows
             catch (Exception e)
             {
                 App.Logger.Warning(e, "Failed to clear previous credentials");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Warning);
             }
         }
 
@@ -202,7 +202,7 @@ namespace VnManager.ViewModels.Windows
             catch (Exception ex)
             {
                 App.Logger.Error(ex, "Couldn't Create Password");
-                SentrySdk.CaptureException(ex);
+                SentryHelper.SendException(ex, null, SentryLevel.Error);
                 ShouldCheckPassword = false;
                 RequestClose(false);
             }
@@ -230,7 +230,7 @@ namespace VnManager.ViewModels.Windows
             catch (Exception e)
             {
                 App.Logger.Warning(e, "Failed to unlock db with password");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Error);
             }
         }
 
@@ -291,7 +291,7 @@ namespace VnManager.ViewModels.Windows
             catch (Exception e)
             {
                 App.Logger.Warning(e, "Failed to check password attempts");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Warning);
             }
 
         }
@@ -332,7 +332,7 @@ namespace VnManager.ViewModels.Windows
             catch (Exception e)
             {
                 App.Logger.Warning(e, "failed to validate files on SetEnterPassword");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Warning);
             }
 
         }
@@ -389,7 +389,7 @@ namespace VnManager.ViewModels.Windows
             catch (Exception e)
             {
                 App.Logger.Warning(e, "Failed to check if passwords match");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Warning);
                 return false;
             }
         }
@@ -427,7 +427,7 @@ namespace VnManager.ViewModels.Windows
             catch (Exception ex)
             {
                 App.Logger.Error(ex,"DidEnterWithRightPassword an unknown error occurred");
-                SentrySdk.CaptureException(ex);
+                SentryHelper.SendException(ex, null, SentryLevel.Warning);
                 return false;
             }
         }
@@ -462,7 +462,7 @@ namespace VnManager.ViewModels.Windows
             catch (Exception ex)
             {
                 App.Logger.Error(ex, "CreateDbErrorMessage an unknown error occurred");
-                SentrySdk.CaptureException(ex);
+                SentryHelper.SendException(ex, null, SentryLevel.Error);
                 return App.ResMan.GetString("UnknownException");
             }
         }

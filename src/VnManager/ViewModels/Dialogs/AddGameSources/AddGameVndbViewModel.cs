@@ -205,7 +205,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             catch (Exception ex)
             {
                 App.Logger.Error(ex, "Failed to search VnName");
-                SentrySdk.CaptureException(ex);
+                SentryHelper.SendException(ex, null, SentryLevel.Warning);
                 IsSearchingForNames = false;
             }
 
@@ -289,7 +289,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             catch (Exception e)
             {
                 App.Logger.Error(e, "Failed to manage Exes");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Warning);
             }
         }
 
@@ -440,7 +440,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             catch (Exception ex)
             {
                 App.Logger.Error(ex, "check for deleted vn failed");
-                SentrySdk.CaptureException(ex);
+                SentryHelper.SendException(ex, null, SentryLevel.Warning);
                 return false;
             }
         }
@@ -471,7 +471,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             catch (Exception ex)
             {
                 App.Logger.Error(ex, "Could not check max vndb id", ex.Data);
-                SentrySdk.CaptureException(ex);
+                SentryHelper.SendException(ex, null, SentryLevel.Warning);
                 return false;
             }
         }
@@ -517,7 +517,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             catch (Exception ex)
             {
                 App.Logger.Error(ex, $"IsNotDuplicateId encountered an error");
-                SentrySdk.CaptureException(ex);
+                SentryHelper.SendException(ex, null, SentryLevel.Warning);
                 throw;
             }
         }
@@ -548,7 +548,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             catch (Exception ex)
             {
                 App.Logger.Error(ex,"Failed to set ID from selected Vndb Name");
-                SentrySdk.CaptureException(ex);
+                SentryHelper.SendException(ex, null, SentryLevel.Warning);
                 throw;
             }
         }

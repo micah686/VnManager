@@ -91,7 +91,7 @@ namespace VnManager.ViewModels.Dialogs
             catch (Exception e)
             {
                 App.Logger.Warning(e, "Failed to add game");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Error);
             }
         }
 

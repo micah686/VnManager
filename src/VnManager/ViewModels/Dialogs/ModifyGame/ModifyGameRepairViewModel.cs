@@ -7,6 +7,7 @@ using System.Windows;
 using Sentry;
 using Stylet;
 using VnManager.Events;
+using VnManager.Helpers;
 using VnManager.MetadataProviders.Vndb;
 using VnManager.Models.Db.User;
 using VnManager.ViewModels.Dialogs.AddGameSources;
@@ -101,7 +102,7 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
             catch (Exception e)
             {
                 App.Logger.Warning(e, "Failed to repair Vndb Data");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Error);
             }
         }
     }

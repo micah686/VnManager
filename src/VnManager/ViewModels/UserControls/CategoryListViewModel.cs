@@ -9,6 +9,7 @@ using AdysTech.CredentialManager;
 using LiteDB;
 using Sentry;
 using VnManager.Events;
+using VnManager.Helpers;
 using VnManager.Models.Db;
 using VnManager.Models.Db.User;
 
@@ -66,7 +67,7 @@ namespace VnManager.ViewModels.UserControls
             catch (Exception e)
             {
                 App.Logger.Error(e, "An Error happened in CategoryListViewModel");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Warning);
             }
         }
         

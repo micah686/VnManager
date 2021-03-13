@@ -95,7 +95,7 @@ namespace VnManager.ViewModels.UserControls.MainPage
             catch (Exception e)
             {
                 App.Logger.Error(e, "Failed to get GameData");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Error);
             }
         }
 
@@ -155,7 +155,7 @@ namespace VnManager.ViewModels.UserControls.MainPage
             catch (Exception e)
             {
                 App.Logger.Warning(e, "Failed to create Vndb GameCards");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Warning);
             }
         }
 
@@ -185,7 +185,7 @@ namespace VnManager.ViewModels.UserControls.MainPage
             catch (Exception e)
             {
                 App.Logger.Warning(e, "Failed to create Vndb GameCards");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Error);
             }
         }
     }

@@ -7,6 +7,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Media;
 using Sentry;
+using VnManager.Helpers;
 using VnManager.Initializers;
 using VnManager.ViewModels.Dialogs;
 using VnManager.ViewModels.UserControls;
@@ -120,7 +121,7 @@ namespace VnManager.ViewModels
             catch (Exception e)
             {
                 App.Logger.Error(e, "Failed to create RootViewModel");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Error);
                 throw;
             }
         }
@@ -175,7 +176,7 @@ namespace VnManager.ViewModels
             catch (Exception e)
             {
                 App.Logger.Error(e, "Failed OnViewLoaded on RootViewModel");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Error);
                 throw;
             }
         }
@@ -206,7 +207,7 @@ namespace VnManager.ViewModels
             catch (Exception e)
             {
                 App.Logger.Error(e, "Failed to activate Settings View");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Warning);
                 throw;
             }
         }
@@ -223,7 +224,7 @@ namespace VnManager.ViewModels
             catch (Exception e)
             {
                 App.Logger.Error(e, "Failed to activate About View");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Warning);
                 throw;
             }
         }
@@ -241,7 +242,7 @@ namespace VnManager.ViewModels
             catch (Exception e)
             {
                 App.Logger.Error(e, "Failed to activate Main View");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Warning);
                 throw;
             }
         }
@@ -269,7 +270,7 @@ namespace VnManager.ViewModels
             catch (Exception e)
             {
                 App.Logger.Error(e, "Failed to Navigate To specified View");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Error);
                 throw;
             }
         }

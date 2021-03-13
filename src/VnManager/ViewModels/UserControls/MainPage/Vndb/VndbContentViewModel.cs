@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Sentry;
 using Stylet;
+using VnManager.Helpers;
 using VnManager.Models.Db.User;
 
 namespace VnManager.ViewModels.UserControls.MainPage.Vndb
@@ -48,7 +49,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             catch (Exception e)
             {
                 App.Logger.Error(e, "Failed to create VndbContentHost");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Error);
                 throw;
             }
         }

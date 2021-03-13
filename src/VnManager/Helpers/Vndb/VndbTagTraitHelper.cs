@@ -73,7 +73,7 @@ namespace VnManager.Helpers.Vndb
             catch (Exception e)
             {
                 App.Logger.Warning(e, "GetTags failed");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Warning);
                 return new TagTraitBinding[0];
             }
         }
@@ -154,7 +154,7 @@ namespace VnManager.Helpers.Vndb
             catch (Exception e)
             {
                 App.Logger.Warning(e, "GetTraits failed");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Warning);
                 return new TagTraitBinding[0];
             }
         }

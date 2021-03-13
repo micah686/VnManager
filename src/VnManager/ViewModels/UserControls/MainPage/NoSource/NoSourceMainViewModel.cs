@@ -98,7 +98,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.NoSource
             catch (Exception e)
             {
                 App.Logger.Warning(e, "Failed to load NoSource MainData");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Error);
             }
         }
 
@@ -133,7 +133,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.NoSource
             catch (Exception e)
             {
                 App.Logger.Error(e, "Failed to start NoSource game");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Error);
             }
         }
 
@@ -170,7 +170,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.NoSource
             catch (Exception e)
             {
                 App.Logger.Error(e, "Failed to stop NoSource game");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Error);
             }
             
         }
@@ -228,7 +228,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.NoSource
             catch (Exception exception)
             {
                 App.Logger.Error(exception, "Failed to deal with an exited NoSource process");
-                SentrySdk.CaptureException(exception);
+                SentryHelper.SendException(exception, null, SentryLevel.Warning);
                 throw;
             }
         }

@@ -89,7 +89,7 @@ namespace VnManager.Helpers.Vndb
             catch (Exception e)
             {
                 App.Logger.Error(e, "Failed to wait for throttled to be complete");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Warning);
             }
             
         }

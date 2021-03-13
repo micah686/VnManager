@@ -13,6 +13,7 @@ using LiteDB;
 using Sentry;
 using Stylet;
 using VnManager.Events;
+using VnManager.Helpers;
 using VnManager.Models.Db;
 using VnManager.Models.Db.User;
 
@@ -101,7 +102,7 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
             catch (Exception e)
             {
                 App.Logger.Warning(e, "Failed to fill list of categories");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Warning);
 
             }
 
@@ -171,7 +172,7 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
             catch (Exception e)
             {
                 App.Logger.Warning(e, "Failed to add category");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Error);
             }
 
         }
@@ -241,7 +242,7 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
             catch (Exception e)
             {
                 App.Logger.Warning(e, "Failed to remove category");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Error);
             }
         }
         #endregion
@@ -292,7 +293,7 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
             catch (Exception e)
             {
                 App.Logger.Warning(e, "Failed to create new category");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Error);
             }
         }
 
@@ -338,7 +339,7 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
             catch (Exception e)
             {
                 App.Logger.Warning(e, "Failed to delete category");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Error);
             }
         }
 
@@ -401,7 +402,7 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
             catch (Exception e)
             {
                 App.Logger.Warning(e, "Failed to check if entry is a new category");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Warning);
                 return false;
             }
         }
@@ -439,7 +440,7 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
             catch (Exception e)
             {
                 App.Logger.Warning(e, "Failed to check if max categories has been reached");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Warning);
                 return false;
             }
         }

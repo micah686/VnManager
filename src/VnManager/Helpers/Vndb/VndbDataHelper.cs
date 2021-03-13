@@ -57,7 +57,7 @@ namespace VnManager.Helpers.Vndb
             catch (Exception e)
             {
                 App.Logger.Warning(e, "Failed to load vndb relations");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Warning);
                 return new BindableCollection<VndbInfoViewModel.VnRelationsBinding>();
             }
         }
@@ -93,7 +93,7 @@ namespace VnManager.Helpers.Vndb
             catch (Exception e)
             {
                 App.Logger.Warning(e, "Failed to load vndb Links");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Warning);
                 return new Tuple<string, Visibility>(string.Empty, Visibility.Collapsed);
             }
         }
@@ -118,7 +118,7 @@ namespace VnManager.Helpers.Vndb
             catch (Exception e)
             {
                 App.Logger.Warning(e, "Failed to get wikipedia link");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Warning);
                 return string.Empty;
             }
         }
@@ -151,7 +151,7 @@ namespace VnManager.Helpers.Vndb
             catch (Exception e)
             {
                 App.Logger.Warning(e, "Failed to load relations");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Warning);
                 return new BindableCollection<BitmapSource>();
             }
             

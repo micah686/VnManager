@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Management;
 using Sentry;
+using VnManager.Helpers;
 
 namespace VnManager.Extensions
 {
@@ -28,7 +29,7 @@ namespace VnManager.Extensions
             catch (Exception ex)
             {
                 App.Logger.Warning(ex, "Failed to get child processes");
-                SentrySdk.CaptureException(ex);
+                SentryHelper.SendException(ex, null, SentryLevel.Error);
                 throw;
             }
         }

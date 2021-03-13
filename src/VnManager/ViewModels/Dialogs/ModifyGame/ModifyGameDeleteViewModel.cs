@@ -11,6 +11,7 @@ using LiteDB;
 using Sentry;
 using Stylet;
 using VnManager.Events;
+using VnManager.Helpers;
 using VnManager.Models.Db;
 using VnManager.Models.Db.User;
 using VnManager.Models.Db.Vndb.Character;
@@ -83,7 +84,7 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
             catch (Exception e)
             {
                 App.Logger.Warning(e, "Delete VndbData");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Error);
                 throw;
             }
         }
@@ -140,7 +141,7 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
             catch (Exception e)
             {
                 App.Logger.Error(e, "Failed to Delete Vndb Data from Db");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Error);
                 throw;
             }
 
@@ -178,7 +179,7 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
             catch (Exception e)
             {
                 App.Logger.Error(e, "Failed to Delete Vndb Images");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Error);
                 throw;
             }
 
@@ -218,7 +219,7 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
             catch (Exception e)
             {
                 App.Logger.Error(e, "Failed to Delete NoSource Data from Db");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Error);
                 throw;
             }
         }

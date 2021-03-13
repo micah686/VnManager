@@ -7,6 +7,7 @@ using LiteDB;
 using Sentry;
 using Stylet;
 using VnManager.Events;
+using VnManager.Helpers;
 using VnManager.Models.Db;
 using VnManager.Models.Db.User;
 using VnManager.ViewModels.Dialogs.AddGameSources;
@@ -80,7 +81,7 @@ namespace VnManager.ViewModels.UserControls
             catch (Exception e)
             {
                 App.Logger.Warning(e, "Failed to check games for GameGrid");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Warning);
             }
         }
 
@@ -97,7 +98,7 @@ namespace VnManager.ViewModels.UserControls
             catch (Exception e)
             {
                 App.Logger.Error(e, "Failed to show AddGameDialog");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Error);
             }
         }
 

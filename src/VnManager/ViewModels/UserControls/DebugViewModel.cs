@@ -6,7 +6,9 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using System.Windows.Media.Imaging;
+using Sentry;
 using StyletIoC;
+using VnManager.Helpers;
 
 
 namespace VnManager.ViewModels.UserControls
@@ -45,7 +47,16 @@ namespace VnManager.ViewModels.UserControls
 
         public void NavTest()
         {
-            
+            try
+            {
+                CauseException();
+            }
+            catch (Exception e)
+            {
+                SentryHelper.SendException(e, "bad information", SentryLevel.Fatal);
+                //Console.WriteLine(e);
+                throw;
+            }
         }
 
 

@@ -105,7 +105,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             catch (Exception e)
             {
                 App.Logger.Error(e, "Failed to fill Vndb Character List");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Warning);
                 throw;
             }
         }
@@ -138,7 +138,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             catch (Exception e)
             {
                 App.Logger.Warning(e, "Failed to search for selected character");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Warning);
             }
         }
 
@@ -166,7 +166,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             catch (Exception e)
             {
                 App.Logger.Warning(e, "Failed to search for Change character data on SelectionChanged");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Warning);
             }
         }
         #endregion
@@ -253,7 +253,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             catch (Exception e)
             {
                 App.Logger.Error(e, "Failed to update character data");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Warning);
             }
         }
 

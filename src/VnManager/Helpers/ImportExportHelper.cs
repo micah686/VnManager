@@ -74,7 +74,7 @@ namespace VnManager.Helpers
             catch (Exception e)
             {
                 App.Logger.Error(e, "Failed to compact into backup");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Error);
                 throw;
             }
 
@@ -146,7 +146,7 @@ namespace VnManager.Helpers
             catch (Exception e)
             {
                 App.Logger.Error(e, "Failed to expand backup");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Error);
                 throw;
             }
         }

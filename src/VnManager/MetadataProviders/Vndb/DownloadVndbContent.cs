@@ -57,7 +57,7 @@ namespace VnManager.MetadataProviders.Vndb
             catch (Exception ex)
             {
                 App.Logger.Warning(ex, "Failed to download cover image");
-                SentrySdk.CaptureException(ex);
+                SentryHelper.SendException(ex, null, SentryLevel.Error);
             }
             finally
             {
@@ -110,7 +110,7 @@ namespace VnManager.MetadataProviders.Vndb
             catch (Exception e)
             {
                 App.Logger.Warning(e, "Failed to download character image");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Error);
             }
             finally
             {
@@ -159,7 +159,7 @@ namespace VnManager.MetadataProviders.Vndb
             catch (Exception ex)
             {
                 App.Logger.Warning(ex, "Failed to download screenshots");
-                SentrySdk.CaptureException(ex);
+                SentryHelper.SendException(ex, null, SentryLevel.Error);
                 throw;
             }
             finally
@@ -221,7 +221,7 @@ namespace VnManager.MetadataProviders.Vndb
             catch (Exception ex)
             {
                 App.Logger.Error(ex, "An error happened while getting/saving the tag dump");
-                SentrySdk.CaptureException(ex);
+                SentryHelper.SendException(ex, null, SentryLevel.Error);
                 StatusBarViewModel.ResetValues();
             }
             finally
@@ -278,7 +278,7 @@ namespace VnManager.MetadataProviders.Vndb
             catch (Exception ex)
             {
                 App.Logger.Error(ex, "An error happened while getting/saving the trait dump");
-                SentrySdk.CaptureException(ex);
+                SentryHelper.SendException(ex, null, SentryLevel.Error);
                 StatusBarViewModel.ResetValues();
                 throw;
             }

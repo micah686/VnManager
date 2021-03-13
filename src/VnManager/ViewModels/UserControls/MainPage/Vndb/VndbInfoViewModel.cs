@@ -133,7 +133,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             catch (Exception e)
             {
                 App.Logger.Warning(e, "Failed to load Main Vndb Data");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Warning);
             }
         }
 
@@ -163,7 +163,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             catch (Exception e)
             {
                 App.Logger.Warning(e, "Failed to load Vndb userData");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Warning);
             }
         }
         
@@ -259,7 +259,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             catch (Exception e)
             {
                 App.Logger.Warning(e, "Failed to start the game");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Error);
             }
 
         }
@@ -298,7 +298,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             catch (Exception e)
             {
                 App.Logger.Warning(e, "Failed to Stop the game");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Error);
             }
         }
 
@@ -352,7 +352,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             catch (Exception exception)
             {
                 App.Logger.Warning(exception, "Failed to deal with an exited Process");
-                SentrySdk.CaptureException(exception);
+                SentryHelper.SendException(exception, null, SentryLevel.Error);
             }
         }
         

@@ -121,7 +121,7 @@ namespace VnManager.ViewModels.Dialogs
             catch (Exception ex)
             {
                 App.Logger.Warning(ex, "Failed to load database for import");
-                SentrySdk.CaptureException(ex);
+                SentryHelper.SendException(ex, null, SentryLevel.Error);
                 _windowManager.ShowMessageBox($"{App.ResMan.GetString("ImportInvalidDb")}\n{Path.GetFileName(filePath)}",
                     $"{App.ResMan.GetString("ImportInvalidDbTitle")}", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
@@ -307,7 +307,7 @@ namespace VnManager.ViewModels.Dialogs
             catch (Exception ex)
             {
                 App.Logger.Error(ex, "Failed to import data");
-                SentrySdk.CaptureException(ex);
+                SentryHelper.SendException(ex, null, SentryLevel.Error);
                 throw;
             }
             

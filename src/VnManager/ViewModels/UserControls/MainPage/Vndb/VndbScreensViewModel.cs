@@ -83,7 +83,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             catch (Exception e)
             {
                 App.Logger.Warning(e, "Failed to load Screenshot list Vndb");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Warning);
                 return new List<BindingImage>();
             }
         }
@@ -124,7 +124,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             catch (Exception e)
             {
                 App.Logger.Error(e, "Failed to load large screenshot");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Warning);
             }
 
         }
@@ -178,7 +178,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             catch (Exception e)
             {
                 App.Logger.Error(e, "Failed to bind Screenshot Collection");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Warning);
             }
         }
 
@@ -206,7 +206,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
             catch (Exception e)
             {
                 App.Logger.Warning(e, "Failed to create BlurBinding image");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Error);
                 return new BindingImage();
             }
         }

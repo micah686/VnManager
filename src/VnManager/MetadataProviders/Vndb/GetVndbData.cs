@@ -12,6 +12,7 @@ using VndbSharp.Models;
 using VndbSharp.Models.Character;
 using VndbSharp.Models.Errors;
 using VndbSharp.Models.VisualNovel;
+using VnManager.Helpers;
 using VnManager.Helpers.Vndb;
 using VnManager.ViewModels;
 using VnManager.ViewModels.UserControls;
@@ -97,7 +98,7 @@ namespace VnManager.MetadataProviders.Vndb
             catch (Exception ex)
             {
                 App.Logger.Error(ex, "An error occurred when trying to get the vndb data from the API");
-                SentrySdk.CaptureException(ex);
+                SentryHelper.SendException(ex, null, SentryLevel.Warning);
                 StatusBarViewModel.ResetValues();
                 throw;
             }
@@ -141,7 +142,7 @@ namespace VnManager.MetadataProviders.Vndb
             catch (Exception e)
             {
                 App.Logger.Warning(e, "Failed to Get Visual novel");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Warning);
                 return null;
             }
         }
@@ -194,7 +195,7 @@ namespace VnManager.MetadataProviders.Vndb
             catch (Exception e)
             {
                 App.Logger.Warning(e, "Failed to Get Visual novel characters");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Warning);
                 return null;
             }
         }

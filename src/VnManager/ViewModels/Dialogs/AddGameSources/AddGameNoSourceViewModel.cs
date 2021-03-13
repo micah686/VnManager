@@ -154,7 +154,7 @@ namespace VnManager.ViewModels.Dialogs.AddGameSources
             catch (Exception e)
             {
                 App.Logger.Error(e,"Failed to save NoSource game to db");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Error);
                 throw;
             }
 

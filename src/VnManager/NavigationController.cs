@@ -4,6 +4,7 @@
 using System;
 using Sentry;
 using Stylet;
+using VnManager.Helpers;
 using VnManager.Models.Db.User;
 using VnManager.ViewModels.UserControls;
 using VnManager.ViewModels.UserControls.MainPage.NoSource;
@@ -47,7 +48,7 @@ namespace VnManager
             catch (Exception e)
             {
                 App.Logger.Error(e, "Failed to init NavigationController");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Error);
                 throw;
             }
             

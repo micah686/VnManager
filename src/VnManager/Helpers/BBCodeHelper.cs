@@ -49,7 +49,7 @@ namespace VnManager.Helpers
             catch (Exception e)
             {
                 App.Logger.Warning(e, "Failed to format BBCode");
-                SentrySdk.CaptureException(e);
+                SentryHelper.SendException(e, null, SentryLevel.Warning);
                 return new Inline[0];
             }
         }
@@ -85,7 +85,7 @@ namespace VnManager.Helpers
             catch (Exception ex)
             {
                 App.Logger.Error(ex, "failed to replace spoilers");
-                SentrySdk.CaptureException(ex);
+                SentryHelper.SendException(ex, null, SentryLevel.Warning);
                 throw;
             }
         }
@@ -128,7 +128,7 @@ namespace VnManager.Helpers
             catch (Exception ex)
             {
                 App.Logger.Error(ex, "failed to replace vndb local url");
-                SentrySdk.CaptureException(ex);
+                SentryHelper.SendException(ex, null, SentryLevel.Warning);
                 throw;
             }
         }
