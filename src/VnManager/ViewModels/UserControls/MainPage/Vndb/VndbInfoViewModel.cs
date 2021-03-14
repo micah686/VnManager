@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE file in the project root for full license information.
 
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -118,6 +119,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
                         if (NsfwHelper.UserIsNsfw(vnInfoEntry.ImageRating))
                         {
                             const int blurWeight = 10;
+                            SentrySdk.AddBreadcrumb($"BlurCoverImage-{VndbContentViewModel.VnId}");
                             CoverImage = ImageHelper.BlurImage(imgNsfw, blurWeight);
                         }
                     }
@@ -235,17 +237,22 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
         {
             try
             {
-                var parent = (VndbContentViewModel)Parent;
+                var parent = (VndbContentViewModel) Parent;
                 if (parent.IsGameRunning)
                 {
                     return;
                 }
 
-                if (VndbContentViewModel.SelectedGame?.ExePath != null && File.Exists(VndbContentViewModel.SelectedGame.ExePath))
+                if (VndbContentViewModel.SelectedGame?.ExePath != null &&
+                    File.Exists(VndbContentViewModel.SelectedGame.ExePath))
                 {
                     var filePath = VndbContentViewModel.SelectedGame.ExePath;
                     Directory.SetCurrentDirectory(Path.GetDirectoryName(filePath));
-                    var process = new Process { StartInfo = { FileName = filePath, Arguments = VndbContentViewModel.SelectedGame.Arguments }, EnableRaisingEvents = true };
+                    var process = new Process
+                    {
+                        StartInfo = {FileName = filePath, Arguments = VndbContentViewModel.SelectedGame.Arguments},
+                        EnableRaisingEvents = true
+                    };
                     parent.ProcessList.Add(process);
                     process.Exited += MainOrChildProcessExited;
 
@@ -255,6 +262,10 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
                     IsStartButtonVisible = Visibility.Collapsed;
                     parent.ProcessList.AddRange(process.GetChildProcesses());
                 }
+            }
+            catch (Win32Exception e)
+            {
+                App.Logger.Warning(e, "Failed to start the game, W32");
             }
             catch (Exception e)
             {
@@ -294,6 +305,10 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
                 parent.GameStopwatch.Reset();
                 IsStartButtonVisible = Visibility.Visible;
                 parent.ProcessList.Clear();
+            }
+            catch (Win32Exception e)
+            {
+                App.Logger.Warning(e, "Failed to stop the game, W32");
             }
             catch (Exception e)
             {
@@ -350,6 +365,10 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
                     parent.IsGameRunning = false;
                     IsStartButtonVisible = Visibility.Visible;
                 }
+            }
+            catch (Win32Exception ex)
+            {
+                App.Logger.Warning(ex, "Failed to exit the process, W32");
             }
             catch (Exception exception)
             {

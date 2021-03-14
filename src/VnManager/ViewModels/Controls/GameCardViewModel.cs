@@ -4,6 +4,7 @@
 using System;
 using AdysTech.CredentialManager;
 using LiteDB;
+using Sentry;
 using Stylet;
 using VnManager.Helpers;
 using VnManager.Models.Db;
@@ -46,6 +47,7 @@ namespace VnManager.ViewModels.Controls
                 else
                 {
                     const int blurWeight = 10;
+                    SentrySdk.AddBreadcrumb($"GameCardBlur:{Title}");
                     value.Image = ImageHelper.BlurImage(value.Image, blurWeight);
                     SetAndNotify(ref _coverImage, value);
 

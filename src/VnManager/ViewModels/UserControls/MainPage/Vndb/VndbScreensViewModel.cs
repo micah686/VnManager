@@ -108,6 +108,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
                 string path = $@"{App.AssetDirPath}\sources\vndb\images\screenshots\{VndbContentViewModel.VnId}\{Path.GetFileName(screenshotList[SelectedScreenIndex].ImageLink)}";
                 var rating = NsfwHelper.RawRatingIsNsfw(screenshotList[SelectedScreenIndex].Rating);
                 var userIsNsfw = NsfwHelper.UserIsNsfw(screenshotList[SelectedScreenIndex].Rating);
+                SentrySdk.AddBreadcrumb($"BlurLargeScreen:{VndbContentViewModel.VnId}");
                 if (rating == true && File.Exists($"{path}.aes"))
                 {
                     var imgBytes = File.ReadAllBytes($"{path}.aes");
@@ -151,6 +152,7 @@ namespace VnManager.ViewModels.UserControls.MainPage.Vndb
 
                     bool rating = NsfwHelper.RawRatingIsNsfw(item.Rating);
                     bool userIsNsfw = NsfwHelper.UserIsNsfw(item.Rating);
+                    SentrySdk.AddBreadcrumb($"BlurThumbImage:{VndbContentViewModel.VnId}");
                     if (rating && File.Exists($"{thumbPath}.aes") && File.Exists($"{imagePath}.aes"))
                     {
                         var imgBytes = File.ReadAllBytes($"{thumbPath}.aes");
