@@ -58,7 +58,10 @@ namespace VnManager.Helpers
 
                 backup.ZippedData = originalBytes;
 
-
+                if (File.Exists(outputFile))
+                {
+                    File.Delete(outputFile);
+                }
                 using (var fs = new FileStream(outputFile, FileMode.CreateNew, FileAccess.Write, FileShare.Write))
                 {
                     using (var writer = new BinaryWriter(fs, Encoding.UTF8, true))
