@@ -264,6 +264,9 @@
   <data name="CreatePassTitle" xml:space="preserve">
     <value>Set a password</value>
   </data>
+  <data name="CustomGameTitle" xml:space="preserve">
+    <value>Custom Game Title:</value>
+  </data>
   <data name="DarkTheme" xml:space="preserve">
     <value>Dark Theme</value>
   </data>

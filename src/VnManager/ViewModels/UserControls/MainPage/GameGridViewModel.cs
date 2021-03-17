@@ -122,7 +122,7 @@ namespace VnManager.ViewModels.UserControls.MainPage
                     var card = _gameCard();
                     card.UserDataId = entry.Id;
                     card.ShouldDisplayNsfwContent = !NsfwHelper.UserIsNsfw(game.ImageRating);
-                    card.Title = game.Title;
+                    card.Title = !string.IsNullOrEmpty(entry.CustomGameName) ? entry.CustomGameName : game.Title;
                     card.LastPlayedString = $"Last Played: {TimeDateChanger.GetHumanDate(entry.LastPlayed)}";
                     card.TotalTimeString = $"Play Time: {TimeDateChanger.GetHumanTime(entry.PlayTime)}";
                     
@@ -171,6 +171,7 @@ namespace VnManager.ViewModels.UserControls.MainPage
                 {
                     //TODO:Add in cover and ratings
                     var card = _gameCard();
+                    card.Title = !string.IsNullOrEmpty(entry.CustomGameName) ? entry.CustomGameName : entry.Title;
                     card.Title = entry.Title;
                     card.LastPlayedString = $"{App.ResMan.GetString("LastPlayed")}: {TimeDateChanger.GetHumanDate(entry.LastPlayed)}";
                     card.TotalTimeString = $"{App.ResMan.GetString("PlayTime")}: {TimeDateChanger.GetHumanTime(entry.PlayTime)}";

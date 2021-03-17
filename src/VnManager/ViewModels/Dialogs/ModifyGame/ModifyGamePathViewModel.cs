@@ -12,6 +12,7 @@ using LiteDB;
 using MvvmDialogs;
 using Sentry;
 using Stylet;
+using VnManager.Events;
 using VnManager.Helpers;
 using VnManager.Models.Db;
 using VnManager.Models.Db.User;
@@ -25,6 +26,7 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
         public string IconPath { get; set; }
         public string Arguments { get; set; }
         public string Title { get; set; }
+        public string CustomGameTitle { get; set; }
         public string CoverPath { get; set; }
         public bool EnableArgs { get; set; }
 
@@ -33,7 +35,6 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
         internal UserDataGames SelectedGame;
         private readonly IWindowManager _windowManager;
         private readonly IDialogService _dialogService;
-
         public ModifyGamePathViewModel(IWindowManager windowManager, IDialogService dialogService, IModelValidator<ModifyGamePathViewModel> validator): base(validator)
         {
             DisplayName = App.ResMan.GetString("UpdatePaths");
@@ -49,6 +50,7 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
         private void SetOriginalValues()
         {
             ExePath = SelectedGame.ExePath;
+            CustomGameTitle = SelectedGame.CustomGameName;
             IconPath = SelectedGame.IconPath;
             Arguments = SelectedGame.Arguments;
             EnableArgs = !string.IsNullOrEmpty(Arguments);
@@ -104,6 +106,7 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
                 if (entry != null)
                 {
                     entry.ExePath = ExePath ?? string.Empty;
+                    entry.CustomGameName = CustomGameTitle ?? string.Empty;
                     entry.IconPath = IconPath ?? string.Empty;
                     entry.Arguments = Arguments ?? string.Empty;
                     entry.Title = Title ?? string.Empty;
@@ -113,7 +116,7 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
                 }
 
                 UpdateCover(CoverPath);
-
+                
                 _windowManager.ShowMessageBox(App.ResMan.GetString("GameUpdatedMsg"), App.ResMan.GetString("GameUpdated"));
             }
         }

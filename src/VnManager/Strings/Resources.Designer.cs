@@ -502,6 +502,15 @@ namespace VnManager.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Custom Game Title:.
+        /// </summary>
+        public static string CustomGameTitle {
+            get {
+                return ResourceManager.GetString("CustomGameTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Dark Theme.
         /// </summary>
         public static string DarkTheme {
