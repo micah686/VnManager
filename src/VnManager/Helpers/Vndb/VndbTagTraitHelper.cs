@@ -42,7 +42,7 @@ namespace VnManager.Helpers.Vndb
                         .Where(x => x.VnId == VndbContentViewModel.VnId).ToList();
                     tagDump = db.GetCollection<VnTagData>(DbVnDump.VnDump_TagData.ToString()).Query().ToList();
 
-                    SentrySdk.AddBreadcrumb($"tagList: {tagList.Count}");
+                    SentrySdk.AddBreadcrumb($"tagList: {tagList.Count}, VnId:{VndbContentViewModel.VnId}");
 
                     tagList = tagList.Where(t => t.Spoiler <= App.UserSettings.SettingsVndb.Spoiler).ToList();
                     tagList = tagList.OrderByDescending(x => x.Spoiler).ToList();
@@ -125,7 +125,7 @@ namespace VnManager.Helpers.Vndb
                         .Where(x => x.CharacterId == characterId).ToList();
                     traitDump = db.GetCollection<VnTraitData>(DbVnDump.VnDump_TraitData.ToString()).Query().ToList();
 
-                    SentrySdk.AddBreadcrumb($"traitList: {traitList.Count}");
+                    SentrySdk.AddBreadcrumb($"traitList: {traitList.Count}, CharId:{characterId}");
                     
                     traitList = traitList.Where(t => t.SpoilerLevel <= App.UserSettings.SettingsVndb.Spoiler).ToList();
                     traitList = traitList.OrderByDescending(x => x.SpoilerLevel).ToList();
