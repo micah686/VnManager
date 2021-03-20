@@ -34,6 +34,11 @@ namespace VnManager.ViewModels.UserControls.MainPage
         {
             _gameCard = gameCard;
 
+            
+        }
+
+        protected override void OnViewLoaded()
+        {
             GetGameData();
         }
 
