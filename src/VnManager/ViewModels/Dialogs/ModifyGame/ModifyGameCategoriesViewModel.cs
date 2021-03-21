@@ -330,6 +330,10 @@ namespace VnManager.ViewModels.Dialogs.ModifyGame
                         }
                     }
 
+                    foreach (var newGame in newGamesList)
+                    {
+                        dbUserData.Update(newGame);
+                    }
                     dbUserCategories.DeleteMany(c => c.CategoryName == DeleteCategorySelectedValue);
                 }
 
