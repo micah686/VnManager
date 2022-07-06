@@ -155,17 +155,7 @@ namespace VnManager.ViewModels.UserControls
         public void SaveUserSettings(bool useEncryption)
         {
 
-            UserSettingsVndb vndb = new UserSettingsVndb
-            {
-                Spoiler = (SpoilerLevel)SpoilerIndex
-            };
-            UserSettings settings = new UserSettings
-            {
-                SettingsVndb = vndb,
-                RequirePasswordEntry = useEncryption,
-                MaxSexualRating = (SexualRating)MaxSexualIndex,
-                MaxViolenceRating = (ViolenceRating)MaxViolenceIndex
-            };
+            var settings = UserSettingsHelper.ReadUserSettings();
 
             try
             {
