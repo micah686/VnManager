@@ -26,9 +26,7 @@ jobs:
   #Build Job any branch except master, making sure that it builds sucessfully
   build:
     name: Build Project
-    runs-on: windows-latest                             
-    env:
-      Solution_Name: src/VnManager.sln                         
+    runs-on: windows-latest                                                   
       
     steps:
     - name: Checkout
@@ -50,7 +48,7 @@ jobs:
       run: |
         mkdir ${{ github.workspace }}/build
         dir ${{ github.workspace }}
-        dotnet publish src/VnManager/VnManager.csproj --framework netcoreapp3.1 -c Release -o --output "${{ github.workspace }}/build"        
+        dotnet publish src\VnManager\VnManager.csproj -c Release --output "${{ github.workspace }}\build"      
                 
     - name: Upload Artifact
       uses: actions/upload-artifact@v1
