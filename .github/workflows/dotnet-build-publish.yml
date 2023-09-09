@@ -83,7 +83,7 @@ jobs:
     - name: Build VnManager
       run: |
         dotnet restore
-        dotnet publish src/VnManager/VnManager.csproj --framework netcoreapp3.1 -c Release -o --output "${{ github.workspace }}/output/build"         
+        dotnet publish src\VnManager\VnManager.csproj -c Release        
         
     - name: Rebuild and Analyze
       env:
@@ -94,7 +94,7 @@ jobs:
         mkdir ${{ github.workspace }}/build
         dir ${{ github.workspace }}
         .\.sonar\scanner\dotnet-sonarscanner begin /k:"micah686_VnManager" /o:"micah686" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
-        dotnet publish src/VnManager/VnManager.csproj --framework netcoreapp3.1 -c Release
+        dotnet publish src/VnManager/VnManager.csproj -c Release
         .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
         
     - name: Create Code Signing Certificate
