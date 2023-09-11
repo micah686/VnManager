@@ -54,7 +54,7 @@ jobs:
     - name: Build VnManager
       run: |
         dotnet restore
-        dotnet publish src\VnManager\VnManager.csproj -c Release -o "${{ github.workspace }}\build"             
+        dotnet publish src\VnManager\VnManager.csproj -c Release -o "${{ github.workspace }}\output\build"             
         
     - name: Create Code Signing Certificate
       run: |
