@@ -26,7 +26,7 @@ jobs:
   #Build Job for prepping the environment for build (installing .net core, getting nuget packages,...
   build:
     name: Publish VnManager
-    runs-on: windows-2019                             
+    runs-on: windows-latest                             
     env:
       Solution_Name: src/VnManager.sln                         
       
