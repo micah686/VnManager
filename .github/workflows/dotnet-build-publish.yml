@@ -37,38 +37,24 @@ jobs:
         fetch-depth: 0
         submodules: true
 
-    - name: Setup Java 11
-      uses: actions/setup-java@v1
-      with:
-        java-version: '11.x.x'
-        java-package: jdk
-        architecture: x64
-
     - name: Cache NuGet Packages
       uses: actions/cache@v1
       with:
         path: ~/.nuget/packages
         key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
         restore-keys: |
-          ${{ runner.os }}-nuget-
-          
-    - name: Cache SonarCloud packages
-      uses: actions/cache@v1
-      with:
-        path: ~\sonar\cache
-        key: ${{ runner.os }}-sonar
-        restore-keys: ${{ runner.os }}-sonar
+          ${{ runner.os }}-nuget-          
           
     - name: Create Output Directories
       run: |
-        mkdir ${{ github.workspace }}/output/setup
-        mkdir ${{ github.workspace }}/output/build
+        mkdir ${{ github.workspace }}\output\setup
+        mkdir ${{ github.workspace }}\output\build
         xcopy /E /I ${{ github.workspace }}\setup ${{ github.workspace }}\output\setup
         
     - name: Build VnManager
       run: |
         dotnet restore
-        dotnet publish src\VnManager\VnManager.csproj -c Release                
+        dotnet publish src\VnManager\VnManager.csproj -c Release -o "${{ github.workspace }}\build"             
         
     - name: Create Code Signing Certificate
       run: |
@@ -78,8 +64,8 @@ jobs:
           
     - name: Code Sign VnManager binaries
       run: |
-          & 'C:/Program Files (x86)/Windows Kits/10/bin/10.0.17763.0/x86/signtool.exe' sign /fd sha256 /f ${{ github.workspace }}\output\setup\certificate.pfx /p '${{ secrets.CERTIFICATE_PASS }}' /t http://timestamp.digicert.com "${{ github.workspace }}/output/build/VnManager.exe"
-          & 'C:/Program Files (x86)/Windows Kits/10/bin/10.0.17763.0/x86/signtool.exe' sign /fd sha256 /f ${{ github.workspace }}\output\setup\certificate.pfx /p '${{ secrets.CERTIFICATE_PASS }}' /t http://timestamp.digicert.com "${{ github.workspace }}/output/build/VnManager.dll"          
+          & 'C:/Program Files (x86)/Windows Kits/10/bin/10.0.17763.0/x86/signtool.exe' sign /fd sha256 /f ${{ github.workspace }}\output\setup\certificate.pfx /p '${{ secrets.CERTIFICATE_PASS }}' /t http://timestamp.digicert.com "${{ github.workspace }}\output\build\VnManager.exe"
+          & 'C:/Program Files (x86)/Windows Kits/10/bin/10.0.17763.0/x86/signtool.exe' sign /fd sha256 /f ${{ github.workspace }}\output\setup\certificate.pfx /p '${{ secrets.CERTIFICATE_PASS }}' /t http://timestamp.digicert.com "${{ github.workspace }}\output\build\VnManager.dll"          
                   
               
     - name: Install and Compile Inno Setup Installer
